@@ -1,19 +1,19 @@
 
 # Thesis-App
 
-## First-Time Setup
+## **First-Time Setup**
 
-### **Server Setup**
-- Ensure Python **3.10+** is installed.
-- Open a terminal and navigate to the server directory:
+### Server Setup
+1. Ensure Python **3.10+** is installed.
+2. Open a terminal and navigate to the server directory:
    ```sh
    cd server
    ```
-- Create a virtual environment:
+3. Create a virtual environment:
    ```sh
    python -m venv venv
    ```
-- Activate the virtual environment:
+4. Activate the virtual environment:
    - **Linux/Mac:**
      ```sh
      source venv/bin/activate
@@ -22,18 +22,18 @@
      ```sh
      .\venv\Scripts\Activate
      ```
-- Install dependencies:
+5. Install dependencies:
    ```sh
    pip install -r requirements.txt
    ```
-- Start the server:
+6. Start the server:
    ```sh
    python server.py
    ```
 
 ---
 
-### **Client Setup**
+### Client Setup
 1. Download and install [Node.js](https://nodejs.org/en) (if not installed).
 2. Open a terminal and navigate to the client directory:
    ```sh
