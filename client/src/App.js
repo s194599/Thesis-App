@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import axios from "axios";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [numQuestions, setNumQuestions] = useState(10);
+    const [response, setResponse] = useState("");
+
+    const handleSubmit = async () => {
+        try {
+            const res = await axios.post("http://127.0.0.1:5000/generate-quiz", {
+                num_questions: numQuestions,
+            });
+            setResponse(res.data.message);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
+    return (
+        <div>
+            <h1>Quiz Generator</h1>
+            <input 
+                type="number" 
+                value={numQuestions} 
+                onChange={(e) => setNumQuestions(e.target.value)}
+            />
+            <button onClick={handleSubmit}>Generate Quiz</button>
+            <p>{response}</p>
+        </div>
+    );
 }
 
 export default App;
