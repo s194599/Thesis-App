@@ -1,0 +1,23 @@
+Du er en quiz-generator. Baseret på følgende danske tekst skal du lave en **2-spørgsmåls multiple-choice quiz**.  
+    Brug **kun** det præcise format herunder. .  
+    Giv **ingen** forklaringer, opsummeringer eller introduktioner.  
+
+    **Tekst:**  
+    {pdf_text}  
+
+    **Format:**  
+    1. [Spørgsmål 1]  
+        A) [Mulighed 1]  
+        B) [Mulighed 2]  
+        C) [Mulighed 3]  
+        D) [Mulighed 4]  
+    Korrekt svar: [Korrekt bogstav]  
+
+    2. [Spørgsmål 2]  
+        A) [Mulighed 1]  
+        B) [Mulighed 2]  
+        C) [Mulighed 3]  
+        D) [Mulighed 4]  
+    Korrekt svar: [Korrekt bogstav]  
+
+    Svar **kun** med quizzen. Giv **ingen** forklaringer, opsummeringer eller ekstra tekst. Skriv quizzen på dansk.
