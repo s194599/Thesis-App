@@ -36,7 +36,7 @@ const QuizForm = () => {
       case 'webpage':
         return formData.url.trim() !== '';
       case 'document':
-        return formData.file !== null;
+        return formData.files.length > 0;
       default:
         return false;
     }
@@ -88,9 +88,9 @@ const QuizForm = () => {
           break;
           
         case 'document':
-          // Upload file to the backend
-          const fileData = await uploadFile(formData.file);
-          contentToProcess = fileData.content;
+          // Upload files to the backend
+          const filesData = await Promise.all(formData.files.map(file => uploadFile(file)));
+          contentToProcess = filesData.map(data => data.content).join('\n\n');
           break;
           
         default:
