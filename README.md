@@ -88,3 +88,4 @@ If the setup has already been done, follow these steps:
 - The server runs on `http://127.0.0.1:5000`
 - The client runs on `http://localhost:3000`
 - If you install new dependencies, run `pip install -r requirements.txt` (server) or `npm install` (client) again.
+- To add new server dependencies, run `pip freeze > requirements.txt`
