@@ -65,7 +65,7 @@ If the setup has already been done, follow these steps:
      ```
    - **Windows:**
      ```sh
-     .\venv\Scripts\Activate
+     .\venv\Scripts\activate
      ```
 3. Start the server:
    ```sh
