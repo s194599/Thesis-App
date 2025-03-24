@@ -40,7 +40,7 @@ export const QuizProvider = ({ children }) => {
     topic: '',                  // Used when inputType is 'topic'
     text: '',                   // Used when inputType is 'text'
     url: '',                    // Used when inputType is 'webpage'
-    files: [],                  // Used when inputType is 'document' - now an array for multiple files
+    file: null,                 // Used when inputType is 'document'
     questionType: 'multipleChoice', // multipleChoice, trueFalse, shortAnswer
     studentLevel: 'highSchool', // studentLevel (optional)
     additionalInstructions: '', // Additional instructions (optional)
@@ -194,7 +194,7 @@ export const QuizProvider = ({ children }) => {
       topic: '',
       text: '',
       url: '',
-      files: [],
+      file: null,
       questionType: 'multipleChoice',
       studentLevel: 'highSchool',
       additionalInstructions: '',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, Form, Button, InputGroup, Badge } from 'react-bootstrap';
 import { BsPencil, BsTrash, BsCheck, BsX } from 'react-icons/bs';
 import { useQuizContext } from '../context/QuizContext';
@@ -7,7 +7,7 @@ const QuizQuestion = ({ question, index }) => {
   const { 
     updateQuestion, 
     updateOption, 
-    toggleCorrectAnswer, 
+    updateCorrectAnswer, 
     deleteQuestion 
   } = useQuizContext();
 
@@ -19,23 +19,8 @@ const QuizQuestion = ({ question, index }) => {
   // Local values for controlled inputs
   const [questionText, setQuestionText] = useState(question.question);
   const [options, setOptions] = useState([...question.options]);
-  
-  // Support both legacy correctAnswer and new correctAnswers format
-  const [correctAnswers, setCorrectAnswers] = useState(
-    question.correctAnswers || (question.correctAnswer ? [question.correctAnswer] : [])
-  );
-  
+  const [correctAnswer, setCorrectAnswer] = useState(question.correctAnswer);
   const [explanation, setExplanation] = useState(question.explanation || '');
-
-  // Update local state when question changes
-  useEffect(() => {
-    setQuestionText(question.question);
-    setOptions([...question.options]);
-    setCorrectAnswers(
-      question.correctAnswers || (question.correctAnswer ? [question.correctAnswer] : [])
-    );
-    setExplanation(question.explanation || '');
-  }, [question]);
 
   // Save question text
   const saveQuestionText = () => {
@@ -43,26 +28,20 @@ const QuizQuestion = ({ question, index }) => {
     setIsEditingQuestion(false);
   };
 
-  // Save options and correct answers
+  // Save options
   const saveOptions = () => {
     // Update each option
     options.forEach((option, idx) => {
       updateOption(question.id, idx, option);
     });
     
-    // Make sure all correctAnswers are in the options
-    const validCorrectAnswers = correctAnswers.filter(answer => 
-      options.includes(answer)
-    );
-    
-    // Ensure there's at least one correct answer
-    if (validCorrectAnswers.length === 0 && options.length > 0) {
-      validCorrectAnswers.push(options[0]);
+    // Ensure correctAnswer is still in the options
+    if (!options.includes(correctAnswer) && options.length > 0) {
+      updateCorrectAnswer(question.id, options[0]);
+      setCorrectAnswer(options[0]);
+    } else {
+      updateCorrectAnswer(question.id, correctAnswer);
     }
-    
-    // Update correctAnswers in the question
-    updateQuestion(question.id, 'correctAnswers', validCorrectAnswers);
-    setCorrectAnswers(validCorrectAnswers);
     
     setIsEditingOptions(false);
   };
@@ -93,33 +72,10 @@ const QuizQuestion = ({ question, index }) => {
     const newOptions = options.filter((_, idx) => idx !== index);
     setOptions(newOptions);
     
-    // Remove the option from correctAnswers if it was correct
-    if (correctAnswers.includes(options[index])) {
-      const newCorrectAnswers = correctAnswers.filter(answer => 
-        answer !== options[index]
-      );
-      setCorrectAnswers(newCorrectAnswers.length > 0 ? newCorrectAnswers : [newOptions[0]]);
+    // If removing the correct answer, set first option as correct
+    if (options[index] === correctAnswer) {
+      setCorrectAnswer(newOptions[0]);
     }
-  };
-
-  // Handle toggling an option as correct/incorrect
-  const handleToggleCorrectAnswer = (option) => {
-    let newCorrectAnswers;
-    
-    if (correctAnswers.includes(option)) {
-      // Remove from correctAnswers if it's already there
-      newCorrectAnswers = correctAnswers.filter(answer => answer !== option);
-      
-      // Ensure there's at least one correct answer
-      if (newCorrectAnswers.length === 0) {
-        return; // Don't allow removing the last correct answer
-      }
-    } else {
-      // Add to correctAnswers
-      newCorrectAnswers = [...correctAnswers, option];
-    }
-    
-    setCorrectAnswers(newCorrectAnswers);
   };
 
   return (
@@ -127,9 +83,6 @@ const QuizQuestion = ({ question, index }) => {
       <Card.Header className="d-flex justify-content-between align-items-center">
         <div>
           <strong>Question {index + 1}</strong>
-          {!isEditingOptions && correctAnswers.length > 1 && (
-            <Badge bg="info" className="ms-2">Multiple Answers</Badge>
-          )}
         </div>
         <Button 
           variant="outline-danger" 
@@ -211,10 +164,6 @@ const QuizQuestion = ({ question, index }) => {
           
           {isEditingOptions ? (
             <div>
-              <div className="alert alert-info small">
-                <strong>Note:</strong> Check multiple options to allow multiple correct answers.
-              </div>
-              
               {options.map((option, optionIndex) => (
                 <InputGroup className="mb-2" key={optionIndex}>
                   <Form.Control 
@@ -223,9 +172,10 @@ const QuizQuestion = ({ question, index }) => {
                   />
                   <InputGroup.Text className="bg-white">
                     <Form.Check
-                      type="checkbox"
-                      checked={correctAnswers.includes(option)}
-                      onChange={() => handleToggleCorrectAnswer(option)}
+                      type="radio"
+                      name={`correct-answer-${question.id}`}
+                      checked={option === correctAnswer}
+                      onChange={() => setCorrectAnswer(option)}
                       label="Correct"
                     />
                   </InputGroup.Text>
@@ -255,10 +205,7 @@ const QuizQuestion = ({ question, index }) => {
                     className="me-2"
                     onClick={() => {
                       setOptions([...question.options]);
-                      setCorrectAnswers(
-                        question.correctAnswers || 
-                        (question.correctAnswer ? [question.correctAnswer] : [])
-                      );
+                      setCorrectAnswer(question.correctAnswer);
                       setIsEditingOptions(false);
                     }}
                   >
@@ -276,33 +223,26 @@ const QuizQuestion = ({ question, index }) => {
             </div>
           ) : (
             <div>
-              {question.options.map((option, optionIndex) => {
-                // Support both correctAnswer and correctAnswers formats
-                const isCorrect = question.correctAnswers 
-                  ? question.correctAnswers.includes(option)
-                  : option === question.correctAnswer;
-                  
-                return (
-                  <div 
-                    key={optionIndex} 
-                    className={`mb-2 p-2 border rounded ${
-                      isCorrect ? 'border-success bg-light' : ''
-                    }`}
-                  >
-                    <Form.Check
-                      type={question.correctAnswers && question.correctAnswers.length > 1 ? "checkbox" : "radio"}
-                      id={`q${index}-opt${optionIndex}`}
-                      name={`question-${index}`}
-                      label={option}
-                      checked={isCorrect}
-                      readOnly
-                    />
-                    {isCorrect && (
-                      <Badge bg="success" className="ms-2">Correct Answer</Badge>
-                    )}
-                  </div>
-                );
-              })}
+              {question.options.map((option, optionIndex) => (
+                <div 
+                  key={optionIndex} 
+                  className={`mb-2 p-2 border rounded ${
+                    option === question.correctAnswer ? 'border-success bg-light' : ''
+                  }`}
+                >
+                  <Form.Check
+                    type="radio"
+                    id={`q${index}-opt${optionIndex}`}
+                    name={`question-${index}`}
+                    label={option}
+                    checked={option === question.correctAnswer}
+                    readOnly
+                  />
+                  {option === question.correctAnswer && (
+                    <Badge bg="success" className="ms-2">Correct Answer</Badge>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>

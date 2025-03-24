@@ -1,9 +1,8 @@
 import React from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import { useQuizContext } from '../context/QuizContext';
-import { BsPencilSquare, BsFilePdf } from 'react-icons/bs';
+import { BsPencilSquare } from 'react-icons/bs';
 import QuizEditor from './QuizEditor';
-import { downloadQuizPDF } from '../utils/pdfGenerator';
 
 const QuizOutput = () => {
   const { generatedQuiz, resetForm, isEditing, startEditing } = useQuizContext();
@@ -15,10 +14,6 @@ const QuizOutput = () => {
 
   if (!generatedQuiz) return null;
 
-  const handleDownloadPDF = () => {
-    downloadQuizPDF(generatedQuiz);
-  };
-
   const renderQuizQuestions = () => {
     return generatedQuiz.questions.map((question, questionIndex) => (
       <Card className="mb-3" key={question.id || questionIndex}>
@@ -28,27 +23,20 @@ const QuizOutput = () => {
         <Card.Body>
           <Card.Title>{question.question}</Card.Title>
           <div className="mt-3">
-            {question.options.map((option, optionIndex) => {
-              // Handle both single correct answer (string) and multiple correct answers (array)
-              const isCorrect = Array.isArray(question.correctAnswers)
-                ? question.correctAnswers.includes(option)
-                : option === question.correctAnswer;
-                
-              return (
-                <Form.Check
-                  type="radio"
-                  id={`q${questionIndex}-opt${optionIndex}`}
-                  name={`question-${questionIndex}`}
-                  label={option}
-                  key={optionIndex}
-                  className={`mb-2 ${
-                    isCorrect ? 'border-start border-success border-3 ps-2' : ''
-                  }`}
-                  disabled
-                  checked={isCorrect}
-                />
-              );
-            })}
+            {question.options.map((option, optionIndex) => (
+              <Form.Check
+                type="radio"
+                id={`q${questionIndex}-opt${optionIndex}`}
+                name={`question-${questionIndex}`}
+                label={option}
+                key={optionIndex}
+                className={`mb-2 ${
+                  option === question.correctAnswer ? 'border-start border-success border-3 ps-2' : ''
+                }`}
+                disabled
+                checked={option === question.correctAnswer}
+              />
+            ))}
           </div>
           
           {question.explanation && (
@@ -95,11 +83,8 @@ const QuizOutput = () => {
       </div>
       
       <div className="mt-4 d-flex justify-content-end gap-2">
-        <Button
-          variant="outline-secondary"
-          onClick={handleDownloadPDF}
-        >
-          <BsFilePdf className="me-1" /> Download as PDF
+        <Button variant="outline-secondary">
+          Download as PDF
         </Button>
         <Button variant="outline-success">
           Save Quiz
