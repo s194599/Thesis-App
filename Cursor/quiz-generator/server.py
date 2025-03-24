@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+<<<<<<< Updated upstream
 import os
 import tempfile
 import json
@@ -252,3 +253,17 @@ if __name__ == '__main__':
     print("- POST /api/fetch-url - Fetch content from a URL")
     print("\nPress Ctrl+C to stop the server")
     app.run(debug=True, port=PORT, host='0.0.0.0')
+=======
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for React frontend
+
+@app.route('/generate-quiz', methods=['POST'])
+def generate_quiz():
+    data = request.json
+    num_questions = data.get("num_questions", 10)
+    return jsonify({"message": f"Generated {num_questions} quiz questions."})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+>>>>>>> Stashed changes

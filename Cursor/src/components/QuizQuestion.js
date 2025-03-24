@@ -104,21 +104,22 @@ const QuizQuestion = ({ question, index }) => {
 
   // Handle toggling an option as correct/incorrect
   const handleToggleCorrectAnswer = (option) => {
-    // Check if removing this option would leave no correct answers
-    if (correctAnswers.includes(option) && correctAnswers.length === 1) {
-      return; // Don't allow removing the last correct answer
-    }
+    let newCorrectAnswers;
     
-    // Call the context function to update the quiz data
-    toggleCorrectAnswer(question.id, option);
-    
-    // Update local state to match what will be in the context
-    // This gives immediate UI feedback without waiting for the next render
     if (correctAnswers.includes(option)) {
-      setCorrectAnswers(prev => prev.filter(a => a !== option));
+      // Remove from correctAnswers if it's already there
+      newCorrectAnswers = correctAnswers.filter(answer => answer !== option);
+      
+      // Ensure there's at least one correct answer
+      if (newCorrectAnswers.length === 0) {
+        return; // Don't allow removing the last correct answer
+      }
     } else {
-      setCorrectAnswers(prev => [...prev, option]);
+      // Add to correctAnswers
+      newCorrectAnswers = [...correctAnswers, option];
     }
+    
+    setCorrectAnswers(newCorrectAnswers);
   };
 
   return (

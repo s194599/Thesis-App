@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from 'react';
+=======
+import React, { useState } from 'react';
+>>>>>>> Stashed changes
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useQuizContext } from '../context/QuizContext';
 import InputTypeSelector from './InputTypeSelector';
@@ -8,7 +12,11 @@ import StudentLevelSelector from './StudentLevelSelector';
 import LanguageSelector from './LanguageSelector';
 import LoadingSpinner from './LoadingSpinner';
 import QuizOutput from './QuizOutput';
+<<<<<<< Updated upstream
 import { generateQuiz, uploadFile, fetchUrlContent, checkStatus } from '../services/api';
+=======
+import { generateQuiz, uploadFile, fetchUrlContent } from '../services/api';
+>>>>>>> Stashed changes
 
 const QuizForm = () => {
   const { 
@@ -26,6 +34,7 @@ const QuizForm = () => {
   // Local state for form validation
   const [validated, setValidated] = useState(false);
   
+<<<<<<< Updated upstream
   // Local state for API status
   const [apiStatus, setApiStatus] = useState({
     checking: true,
@@ -78,6 +87,28 @@ const QuizForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+=======
+  // Check if form is valid for submission
+  const isFormValid = () => {
+    switch (formData.inputType) {
+      case 'topic':
+        return formData.topic.trim() !== '';
+      case 'text':
+        return formData.text.trim() !== '';
+      case 'webpage':
+        return formData.url.trim() !== '';
+      case 'document':
+        return formData.files && formData.files.length > 0;
+      default:
+        return false;
+    }
+  };
+  
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+>>>>>>> Stashed changes
     // Mark form as validated to show validation errors
     setValidated(true);
     
@@ -86,28 +117,51 @@ const QuizForm = () => {
       return;
     }
     
+<<<<<<< Updated upstream
     // First check if Ollama is available
     if (!apiStatus.ollama_available) {
       setError('Ollama LLM is not available. Please start it with "ollama serve" and refresh the page.');
       return;
     }
     
+=======
+>>>>>>> Stashed changes
     setLoading(true);
     setError(null);
     
     try {
+<<<<<<< Updated upstream
       // This is the real implementation that connects to the backend
+=======
+      // For demonstration, we'll just load a sample quiz
+      // In a real implementation, this would call the backend API
+      
+      // Simulating API call delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Load sample quiz for demonstration
+      loadSampleQuiz();
+
+      /* 
+      // This is the code that would be used with a real backend:
+>>>>>>> Stashed changes
       let contentToProcess = '';
       
       // Process different input types
       switch (formData.inputType) {
         case 'topic':
+<<<<<<< Updated upstream
           // For topic-based quizzes, we'll send the topic directly
+=======
+>>>>>>> Stashed changes
           contentToProcess = formData.topic;
           break;
           
         case 'text':
+<<<<<<< Updated upstream
           // For text-based quizzes, we'll send the text directly
+=======
+>>>>>>> Stashed changes
           contentToProcess = formData.text;
           break;
           
@@ -118,6 +172,7 @@ const QuizForm = () => {
           break;
           
         case 'document':
+<<<<<<< Updated upstream
           // For document-based quizzes, we need to upload each file
           // and combine their content
           const fileContents = [];
@@ -137,6 +192,11 @@ const QuizForm = () => {
           
           // Combine the content from all files
           contentToProcess = fileContents.join('\n\n');
+=======
+          // Upload file to the backend
+          const fileData = await uploadFile(formData.file);
+          contentToProcess = fileData.content;
+>>>>>>> Stashed changes
           break;
           
         default:
@@ -150,8 +210,12 @@ const QuizForm = () => {
         questionType: formData.questionType,
         studentLevel: formData.studentLevel,
         additionalInstructions: formData.additionalInstructions,
+<<<<<<< Updated upstream
         language: formData.language,
         num_questions: 5 // Default to 5 questions
+=======
+        language: formData.language
+>>>>>>> Stashed changes
       };
       
       // Send to backend for quiz generation
@@ -159,10 +223,18 @@ const QuizForm = () => {
       
       // Update the state with the generated quiz
       setGeneratedQuiz(generatedQuizData);
+<<<<<<< Updated upstream
       
     } catch (err) {
       console.error('Error generating quiz:', err);
       setError(`Failed to generate quiz: ${err.message || 'Please try again later.'}`);
+=======
+      */
+      
+    } catch (err) {
+      console.error('Error generating quiz:', err);
+      setError('Failed to generate quiz. Please try again later.');
+>>>>>>> Stashed changes
     } finally {
       setLoading(false);
     }
@@ -176,6 +248,7 @@ const QuizForm = () => {
       ) : (
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           
+<<<<<<< Updated upstream
           {/* Display API status warning if needed */}
           {!apiStatus.checking && !apiStatus.ollama_available && (
             <Alert variant="warning" className="mb-4">
@@ -206,6 +279,8 @@ const QuizForm = () => {
             </Alert>
           )}
           
+=======
+>>>>>>> Stashed changes
           {/* Display error message if any */}
           {error && (
             <Alert variant="danger" className="mb-4">
@@ -255,6 +330,7 @@ const QuizForm = () => {
               variant="primary" 
               size="lg" 
               type="submit"
+<<<<<<< Updated upstream
               disabled={loading || !isFormValid() || !apiStatus.ollama_available}
             >
               Generate Quiz
@@ -264,6 +340,12 @@ const QuizForm = () => {
                 <em>Quiz generation requires the Ollama LLM service to be running</em>
               </div>
             )}
+=======
+              disabled={loading || !isFormValid()}
+            >
+              Generate Quiz
+            </Button>
+>>>>>>> Stashed changes
           </div>
           
           {/* Loading spinner */}

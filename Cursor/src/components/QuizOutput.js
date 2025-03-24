@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Form, Badge } from 'react-bootstrap';
+import { Card, Button, Form } from 'react-bootstrap';
 import { useQuizContext } from '../context/QuizContext';
 import { BsPencilSquare, BsFilePdf } from 'react-icons/bs';
 import QuizEditor from './QuizEditor';
@@ -22,11 +22,8 @@ const QuizOutput = () => {
   const renderQuizQuestions = () => {
     return generatedQuiz.questions.map((question, questionIndex) => (
       <Card className="mb-3" key={question.id || questionIndex}>
-        <Card.Header className="d-flex justify-content-between">
+        <Card.Header>
           <strong>Question {questionIndex + 1}</strong>
-          {Array.isArray(question.correctAnswers) && question.correctAnswers.length > 1 && (
-            <Badge bg="info">Multiple Correct Answers</Badge>
-          )}
         </Card.Header>
         <Card.Body>
           <Card.Title>{question.question}</Card.Title>
@@ -37,14 +34,9 @@ const QuizOutput = () => {
                 ? question.correctAnswers.includes(option)
                 : option === question.correctAnswer;
                 
-              // Determine if we should use a checkbox (multiple correct) or radio button (single correct)
-              const inputType = Array.isArray(question.correctAnswers) && question.correctAnswers.length > 1 
-                ? "checkbox" 
-                : "radio";
-                
               return (
                 <Form.Check
-                  type={inputType}
+                  type="radio"
                   id={`q${questionIndex}-opt${optionIndex}`}
                   name={`question-${questionIndex}`}
                   label={option}
@@ -54,7 +46,6 @@ const QuizOutput = () => {
                   }`}
                   disabled
                   checked={isCorrect}
-                  readOnly
                 />
               );
             })}
