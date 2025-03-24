@@ -36,7 +36,7 @@ const QuizForm = () => {
       case 'webpage':
         return formData.url.trim() !== '';
       case 'document':
-        return formData.files.length > 0;
+        return formData.files && formData.files.length > 0;
       default:
         return false;
     }
@@ -58,64 +58,16 @@ const QuizForm = () => {
     setError(null);
     
     try {
-      // For demonstration, we'll just load a sample quiz
-      // In a real implementation, this would call the backend API
-      
-      // Simulating API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Load sample quiz for demonstration
-      loadSampleQuiz();
-
-      /* 
-      // This is the code that would be used with a real backend:
-      let contentToProcess = '';
-      
-      // Process different input types
-      switch (formData.inputType) {
-        case 'topic':
-          contentToProcess = formData.topic;
-          break;
-          
-        case 'text':
-          contentToProcess = formData.text;
-          break;
-          
-        case 'webpage':
-          // Fetch webpage content from the backend
-          const urlData = await fetchUrlContent(formData.url);
-          contentToProcess = urlData.content;
-          break;
-          
-        case 'document':
-          // Upload files to the backend
-          const filesData = await Promise.all(formData.files.map(file => uploadFile(file)));
-          contentToProcess = filesData.map(data => data.content).join('\n\n');
-          break;
-          
-        default:
-          throw new Error('Invalid input type');
-      }
-      
-      // Prepare data for quiz generation
-      const quizRequestData = {
-        content: contentToProcess,
-        inputType: formData.inputType,
-        questionType: formData.questionType,
-        studentLevel: formData.studentLevel,
-        additionalInstructions: formData.additionalInstructions,
-        language: formData.language
-      };
-      
       // Send to backend for quiz generation
-      const generatedQuizData = await generateQuiz(quizRequestData);
+      const response = await generateQuiz(formData);
       
-      // Update the state with the generated quiz
-      setGeneratedQuiz(generatedQuizData);
-      */
-      
-    } catch (err) {
-      console.error('Error generating quiz:', err);
+      if (response.success) {
+        setGeneratedQuiz(response.quiz);
+      } else {
+        setError(response.error || 'Failed to generate quiz. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error generating quiz:', error);
       setError('Failed to generate quiz. Please try again later.');
     } finally {
       setLoading(false);
