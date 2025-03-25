@@ -55,12 +55,13 @@ export const QuizProvider = ({ children }) => {
     topic: "", // Used when inputType is 'topic'
     text: "", // Used when inputType is 'text'
     url: "", // Used when inputType is 'webpage'
-    file: null, // Used when inputType is 'document'
+    files: null, // Used when inputType is 'document' - now supports multiple files
     questionType: "multipleChoice", // multipleChoice, trueFalse, shortAnswer
     studentLevel: "highSchool", // studentLevel (optional)
     additionalInstructions: "", // Additional instructions (optional)
     language: "danish", // Output language
     numQuestions: 5, // Number of questions to generate (default: 5)
+    useSampleQuiz: false, // Whether to use sample quiz instead of AI-generated quiz
   });
 
   // Loading state
@@ -211,12 +212,13 @@ export const QuizProvider = ({ children }) => {
       topic: "",
       text: "",
       url: "",
-      file: null,
+      files: null,
       questionType: "multipleChoice",
       studentLevel: "highSchool",
       additionalInstructions: "",
       language: "danish",
       numQuestions: 5,
+      useSampleQuiz: false,
     });
     setGeneratedQuiz(null);
     setEditingQuiz(null);

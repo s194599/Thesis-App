@@ -9,7 +9,7 @@ import LanguageSelector from "./LanguageSelector";
 import NumQuestionsSelector from "./NumQuestionsSelector";
 import LoadingSpinner from "./LoadingSpinner";
 import QuizOutput from "./QuizOutput";
-import { generateQuiz, uploadFile, fetchUrlContent } from "../services/api";
+import { generateQuiz, uploadFiles, fetchUrlContent } from "../services/api";
 
 const QuizForm = () => {
   const {
@@ -37,7 +37,7 @@ const QuizForm = () => {
       case "webpage":
         return formData.url.trim() !== "";
       case "document":
-        return formData.file !== null;
+        return formData.files && formData.files.length > 0;
       default:
         return false;
     }
@@ -59,7 +59,14 @@ const QuizForm = () => {
     setError(null);
 
     try {
-      // Use the backend API instead of the sample quiz
+      // If using sample quiz, load it directly
+      if (formData.useSampleQuiz) {
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Small delay for UX
+        loadSampleQuiz();
+        return;
+      }
+
+      // Otherwise, use the backend API
       let contentToProcess = "";
 
       // Process different input types
@@ -79,9 +86,11 @@ const QuizForm = () => {
           break;
 
         case "document":
-          // Upload file to the backend
-          const fileData = await uploadFile(formData.file);
-          contentToProcess = fileData.content;
+          // Upload files to the backend
+          if (formData.files && formData.files.length > 0) {
+            const filesData = await uploadFiles(formData.files);
+            contentToProcess = filesData.combinedContent || filesData.content;
+          }
           break;
 
         default:
@@ -170,6 +179,24 @@ const QuizForm = () => {
             </Form.Group>
           </div>
 
+          {/* Sample Quiz Toggle */}
+          <div className="mb-4">
+            <Form.Check
+              type="switch"
+              id="sample-quiz-toggle"
+              label="Use sample quiz (bypass AI generation)"
+              checked={formData.useSampleQuiz}
+              onChange={(e) =>
+                updateFormData("useSampleQuiz", e.target.checked)
+              }
+              className="mb-2"
+            />
+            <Form.Text className="text-muted">
+              Toggle this option to quickly test with a sample quiz instead of
+              using the AI model.
+            </Form.Text>
+          </div>
+
           {/* Submit button */}
           <div className="d-grid gap-2 mt-4">
             <Button
@@ -178,7 +205,9 @@ const QuizForm = () => {
               type="submit"
               disabled={loading || !isFormValid()}
             >
-              Generate Quiz
+              {formData.useSampleQuiz
+                ? "Generate Sample Quiz"
+                : "Generate Quiz"}
             </Button>
           </div>
 
