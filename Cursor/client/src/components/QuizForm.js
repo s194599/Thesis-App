@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { useQuizContext } from "../context/QuizContext";
 import InputTypeSelector from "./InputTypeSelector";
@@ -26,6 +26,19 @@ const QuizForm = () => {
 
   // Local state for form validation
   const [validated, setValidated] = useState(false);
+  
+  // Effect to scroll to loading spinner when loading state changes to true
+  useEffect(() => {
+    if (loading) {
+      // Small delay to ensure the loading spinner is rendered
+      setTimeout(() => {
+        const loadingElement = document.getElementById("loading-spinner-section");
+        if (loadingElement) {
+          loadingElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
+    }
+  }, [loading]);
 
   // Check if form is valid for submission
   const isFormValid = () => {

@@ -5,7 +5,7 @@ const LoadingSpinner = ({ loading, message = 'Generating quiz...' }) => {
   if (!loading) return null;
 
   return (
-    <div className="text-center my-4 py-4">
+    <div id="loading-spinner-section" className="text-center my-4 py-4">
       <BeatLoader color="#0d6efd" size={15} margin={5} loading={loading} />
       <p className="mt-3 text-muted">{message}</p>
       <div className="mt-4">
