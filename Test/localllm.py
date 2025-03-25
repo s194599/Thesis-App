@@ -2,6 +2,7 @@ import fitz  # PyMuPDF for PDF processing
 import requests
 import json
 
+
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path, max_pages=10):
     doc = fitz.open(pdf_path)
@@ -15,7 +16,7 @@ def extract_text_from_pdf(pdf_path, max_pages=10):
 
 # Function to generate quiz using Ollama
 # Model options: llama3.2 - deepseek-r1:8b - mistral - gemma3:4b
-def generate_quiz(pdf_text, num_questions = 5, model="mistral"):  # Change model if needed
+def generate_quiz(pdf_text, num_questions=5, model="mistral"):  # Change model if needed
     OLLAMA_API = "http://localhost:11434/api/generate"
 
     prompt = f"""
@@ -46,13 +47,13 @@ def generate_quiz(pdf_text, num_questions = 5, model="mistral"):  # Change model
 def main():
     num_questions = 4
     pdf_files = [
-        # "Files/romantikken.pdf", 
+        # "Files/romantikken.pdf",
         # "Files/kompendium-om-1800-tallet.pdf",
         "Files/Intro-to-Romanticism.pdf"
     ]
 
     print("Extracting text from PDF...")
-    
+
     # Extract and combine text from all PDFs
     all_text = ""
     for pdf in pdf_files:
@@ -60,13 +61,16 @@ def main():
         all_text += extract_text_from_pdf(pdf) + "\n\n"
 
     if len(all_text) > 128000:  # 🔹 Limit text length for token constraints
-        print("Warning: Combined PDF text is too long. Using only the first 128,000 characters.")
+        print(
+            "Warning: Combined PDF text is too long. Using only the first 128,000 characters."
+        )
         all_text = all_text[:128000]
 
     print("\nGenerating quiz...\n")
     quiz = generate_quiz(all_text, num_questions, "mistral")
-    
+
     print(quiz)
+
 
 # Run the script
 if __name__ == "__main__":

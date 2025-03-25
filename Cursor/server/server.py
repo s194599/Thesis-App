@@ -46,48 +46,70 @@ def generate_quiz_with_ollama(
         Generate a multiple-choice quiz based on this content:
         {content}
 
-        The quiz should have {num_questions} questions and follow this format:
+        The quiz should have {num_questions} questions and follow EXACTLY this format:
 
-        [Question 1]
+        1. [Question text]
         A) [Option 1]
         B) [Option 2]
         C) [Option 3]
         D) [Option 4]
         Correct answer: [A, B, C, or D]
-        Explanation: [Brief explanation of the correct answer]
 
-        [Question 2]
-        ...and so on.
+        2. [Question text]
+        A) [Option 1]
+        B) [Option 2]
+        C) [Option 3]
+        D) [Option 4]
+        Correct answer: [A, B, C, or D]
+
+        And so on. IMPORTANT: 
+        - Number the questions starting with 1.
+        - Make each question challenging but fair
+        - Ensure there is only ONE correct answer
+        - Format the options exactly as shown with A), B), C), D)
+        - End each question with "Correct answer: X" where X is the letter
         """
     elif question_type == "trueFalse":
         format_instructions = f"""
         Generate a true/false quiz based on this content:
         {content}
 
-        The quiz should have {num_questions} questions and follow this format:
+        The quiz should have {num_questions} questions and follow EXACTLY this format:
 
-        [Question 1]
+        1. [Question text]
         A) True
         B) False
         Correct answer: [A or B]
-        Explanation: [Brief explanation of the correct answer]
 
-        [Question 2]
-        ...and so on.
+        2. [Question text]
+        A) True
+        B) False
+        Correct answer: [A or B]
+
+        And so on. IMPORTANT:
+        - Number the questions starting with 1.
+        - Make each question testing accurate information from the content
+        - Format the options exactly as shown with A), B)
+        - End each question with "Correct answer: X" where X is the letter
         """
     else:  # Short answer
         format_instructions = f"""
         Generate a short answer quiz based on this content:
         {content}
 
-        The quiz should have {num_questions} questions and follow this format:
+        The quiz should have {num_questions} questions and follow EXACTLY this format:
 
-        [Question 1]
+        1. [Question text]
         Correct answer: [Brief answer]
-        Explanation: [Brief explanation of the correct answer]
 
-        [Question 2]
-        ...and so on.
+        2. [Question text]
+        Correct answer: [Brief answer]
+
+        And so on. IMPORTANT:
+        - Number the questions starting with 1.
+        - Make each question testing specific information from the content
+        - Format the answer as "Correct answer: [brief answer]"
+        - Keep answers concise but complete
         """
 
     # Add any additional instructions from the user
@@ -117,84 +139,128 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
     questions = []
 
     if question_type == "multipleChoice":
-        # Split by question
-        raw_questions = raw_quiz.split("[Question")
+        # Split by numbered questions (1., 2., etc.)
+        raw_questions = []
+        current_question = ""
+
+        # Process line by line
+        lines = raw_quiz.split("\n")
+        for line in lines:
+            line = line.strip()
+
+            # Check if this is a new question (starts with a number followed by a period)
+            if line and line[0].isdigit() and ". " in line[:10]:
+                if current_question:  # Save the previous question if it exists
+                    raw_questions.append(current_question)
+                current_question = line
+            elif current_question:  # Append to the current question
+                current_question += "\n" + line
+
+        # Add the last question
+        if current_question:
+            raw_questions.append(current_question)
 
         # Process each question
         for i, q in enumerate(raw_questions):
-            if i == 0 and not q.strip():  # Skip empty first part
-                continue
-
-            q = q.strip()
-            if not q:
+            if not q.strip():
                 continue
 
             # Initialize question object
             question = {
-                "id": f"q{i}",
+                "id": f"q{i+1}",  # Start from q1 instead of q0
                 "question": "",
                 "options": [],
                 "correctAnswer": "",
                 "explanation": "",
             }
 
-            # Extract question text
-            question_parts = q.split("\n", 1)
-            if len(question_parts) > 1:
-                question_text = question_parts[0].replace("]", "").strip()
-                # If the question is numbered at the beginning, clean it up
-                if question_text.startswith(str(i)):
-                    question_text = question_text[1:].strip()
+            # Split the question into lines for processing
+            lines = q.strip().split("\n")
+
+            # Extract question text (first line)
+            question_text = ""
+            if lines:
+                # Remove the question number (e.g., "1. ")
+                first_line = lines[0]
+                dot_index = first_line.find(". ")
+                if dot_index != -1:
+                    question_text = first_line[dot_index + 2 :].strip()
+                else:
+                    question_text = first_line.strip()
+
                 question["question"] = question_text
 
-                # Process options and answer
-                options_text = question_parts[1]
+            # Process options and correct answer
+            options = []
+            correct_answer_line = ""
 
-                # Extract options
-                options = []
-                for line in options_text.split("\n"):
-                    line = line.strip()
-                    if (
-                        line.startswith("A)")
-                        or line.startswith("B)")
-                        or line.startswith("C)")
-                        or line.startswith("D)")
-                    ):
-                        option_letter = line[0]
-                        option_text = line[2:].strip()
-                        options.append(option_text)
+            for line in lines[1:]:  # Skip the first line (question text)
+                line = line.strip()
 
-                # Add options to question
-                question["options"] = options
+                # Check if it's an option line
+                if (
+                    line.startswith("A)")
+                    or line.startswith("B)")
+                    or line.startswith("C)")
+                    or line.startswith("D)")
+                    or line.startswith("A. ")
+                    or line.startswith("B. ")
+                    or line.startswith("C. ")
+                    or line.startswith("D. ")
+                ):
+                    option_letter = line[0]
+                    # Handle both A) and A. formats
+                    delimiter = line[1]
+                    option_text = (
+                        line[2:].strip() if delimiter == ")" else line[2:].strip()
+                    )
+                    options.append(option_text)
 
-                # Extract correct answer
-                for line in options_text.split("\n"):
-                    if "Correct answer:" in line:
-                        answer_letter = line.split("Correct answer:")[1].strip()
-                        # Convert letter to option text
-                        if answer_letter == "A":
-                            question["correctAnswer"] = (
-                                options[0] if len(options) > 0 else ""
-                            )
-                        elif answer_letter == "B":
-                            question["correctAnswer"] = (
-                                options[1] if len(options) > 1 else ""
-                            )
-                        elif answer_letter == "C":
-                            question["correctAnswer"] = (
-                                options[2] if len(options) > 2 else ""
-                            )
-                        elif answer_letter == "D":
-                            question["correctAnswer"] = (
-                                options[3] if len(options) > 3 else ""
-                            )
+                # Check if it's the correct answer line
+                elif "Correct answer:" in line:
+                    correct_answer_line = line
+                elif line.startswith("Correct answer"):  # Also handle without colon
+                    correct_answer_line = line
 
-                # Extract explanation
-                for line in options_text.split("\n"):
-                    if "Explanation:" in line:
-                        question["explanation"] = line.split("Explanation:")[1].strip()
+            # Add options to question
+            question["options"] = options
 
-                questions.append(question)
+            # Process correct answer
+            if correct_answer_line:
+                parts = (
+                    correct_answer_line.split(":", 1)
+                    if ":" in correct_answer_line
+                    else correct_answer_line.split(" ", 2)
+                )
+                if len(parts) > 1:
+                    answer_letter = parts[1].strip()
+                    # Handle multi-character answers like "A" or just "A"
+                    answer_letter = answer_letter[0] if answer_letter else ""
+
+                    # Convert letter to option text
+                    if answer_letter == "A":
+                        question["correctAnswer"] = (
+                            options[0] if len(options) > 0 else ""
+                        )
+                    elif answer_letter == "B":
+                        question["correctAnswer"] = (
+                            options[1] if len(options) > 1 else ""
+                        )
+                    elif answer_letter == "C":
+                        question["correctAnswer"] = (
+                            options[2] if len(options) > 2 else ""
+                        )
+                    elif answer_letter == "D":
+                        question["correctAnswer"] = (
+                            options[3] if len(options) > 3 else ""
+                        )
+
+            # Look for an explanation (if present)
+            for line in lines:
+                if "Explanation:" in line:
+                    question["explanation"] = line.split("Explanation:")[1].strip()
+
+            questions.append(question)
 
     # Create a quiz object
     quiz = {

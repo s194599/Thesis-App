@@ -3,6 +3,7 @@ import requests
 import json
 import math
 
+
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path, max_pages=10):
     doc = fitz.open(pdf_path)
@@ -13,10 +14,12 @@ def extract_text_from_pdf(pdf_path, max_pages=10):
 
     return text.strip()
 
+
 # Function to split text into equal chunks
 def split_text(text, num_chunks):
     chunk_size = math.ceil(len(text) / num_chunks)
-    return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+    return [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
+
 
 # Function to generate quiz using Ollama
 def generate_quiz(pdf_text, num_questions=6, model="mistral"):  # Change model if needed
@@ -32,29 +35,29 @@ def generate_quiz(pdf_text, num_questions=6, model="mistral"):  # Change model i
 
     for i, chunk in enumerate(text_chunks):
         # quiz_format = f"""
-        # 1. [Spørgsmål 1]  
-        #     A) [Mulighed 1]  
-        #     B) [Mulighed 2]  
-        #     C) [Mulighed 3]  
-        #     D) [Mulighed 4]  
+        # 1. [Spørgsmål 1]
+        #     A) [Mulighed 1]
+        #     B) [Mulighed 2]
+        #     C) [Mulighed 3]
+        #     D) [Mulighed 4]
         # Korrekt svar: [Korrekt bogstav]
 
-        # 2. [Spørgsmål 2]  
-        #     A) [Mulighed 1]  
-        #     B) [Mulighed 2]  
-        #     C) [Mulighed 3]  
-        #     D) [Mulighed 4]  
+        # 2. [Spørgsmål 2]
+        #     A) [Mulighed 1]
+        #     B) [Mulighed 2]
+        #     C) [Mulighed 3]
+        #     D) [Mulighed 4]
         # Korrekt svar: [Korrekt bogstav]
         # """
 
         # prompt = f"""
-        # Du er en quiz-generator. Baseret på følgende danske tekst skal du lave en **2-spørgsmåls multiple-choice quiz**.  
-        # Brug **kun** det præcise format herunder.  
+        # Du er en quiz-generator. Baseret på følgende danske tekst skal du lave en **2-spørgsmåls multiple-choice quiz**.
+        # Brug **kun** det præcise format herunder.
 
-        # **Tekst:**  
-        # {chunk}  
+        # **Tekst:**
+        # {chunk}
 
-        # **Format:**  
+        # **Format:**
         # {quiz_format}
 
         # Svar **kun** med quizzen. Giv **ingen** forklaringer, opsummeringer eller ekstra tekst. Skriv quizzen på dansk.
@@ -86,7 +89,6 @@ def generate_quiz(pdf_text, num_questions=6, model="mistral"):  # Change model i
         # What is 2 + 2
         # """
 
-
         payload = {"model": model, "prompt": prompt, "stream": False}
         response = requests.post(OLLAMA_API, json=payload)
 
@@ -102,13 +104,13 @@ def generate_quiz(pdf_text, num_questions=6, model="mistral"):  # Change model i
 def main():
     num_questions = 2  # Should be an even number
     pdf_files = [
-        # "Files/romantikken.pdf", 
+        # "Files/romantikken.pdf",
         # "Files/kompendium-om-1800-tallet.pdf",
         "Files/Intro-to-Romanticism.pdf"
     ]
 
     print("Extracting text from PDF...")
-    
+
     # Extract and combine text from all PDFs
     all_text = ""
     for pdf in pdf_files:
@@ -116,13 +118,16 @@ def main():
         all_text += extract_text_from_pdf(pdf) + "\n\n"
 
     if len(all_text) > 128000:  # 🔹 Limit text length for token constraints
-        print("Warning: Combined PDF text is too long. Using only the first 128,000 characters.")
+        print(
+            "Warning: Combined PDF text is too long. Using only the first 128,000 characters."
+        )
         all_text = all_text[:128000]
 
     print("\nGenerating quiz...\n")
     quiz = generate_quiz(all_text, num_questions, "mistral")
-    
+
     print(quiz)
+
 
 # Run the script
 if __name__ == "__main__":
