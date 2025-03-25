@@ -36,7 +36,34 @@ export const generateQuiz = async (quizData) => {
   }
 };
 
-// Function to upload a file to the backend
+// Function to upload multiple files to the backend
+export const uploadFiles = async (files) => {
+  try {
+    const formData = new FormData();
+
+    // Append each file to the form data
+    files.forEach((file, index) => {
+      formData.append(`files`, file);
+    });
+
+    const response = await axios.post(
+      `${API_BASE_URL}/upload-files`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading files:", error);
+    throw error;
+  }
+};
+
+// For backward compatibility - single file upload
 export const uploadFile = async (file) => {
   try {
     const formData = new FormData();

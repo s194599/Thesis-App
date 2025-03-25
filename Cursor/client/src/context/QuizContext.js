@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 const QuizContext = createContext();
 
@@ -11,65 +11,82 @@ const sampleQuiz = {
   questions: [
     {
       id: "q1",
-      question: "What is the green pigment in plants that absorbs sunlight called?",
+      question:
+        "What is the green pigment in plants that absorbs sunlight called?",
       options: ["Chlorophyll", "Carotene", "Xanthophyll", "Melanin"],
       correctAnswer: "Chlorophyll",
-      explanation: "Chlorophyll is the green pigment in plants that captures sunlight for photosynthesis."
+      explanation:
+        "Chlorophyll is the green pigment in plants that captures sunlight for photosynthesis.",
     },
     {
       id: "q2",
-      question: "What is the process by which plants make their own food using sunlight?",
-      options: ["Photosynthesis", "Respiration", "Transpiration", "Germination"],
+      question:
+        "What is the process by which plants make their own food using sunlight?",
+      options: [
+        "Photosynthesis",
+        "Respiration",
+        "Transpiration",
+        "Germination",
+      ],
       correctAnswer: "Photosynthesis",
-      explanation: "Photosynthesis is the process where plants convert light energy into chemical energy to fuel their activities."
+      explanation:
+        "Photosynthesis is the process where plants convert light energy into chemical energy to fuel their activities.",
     },
     {
       id: "q3",
       question: "Which organelle is known as the 'powerhouse' of the cell?",
-      options: ["Mitochondria", "Nucleus", "Chloroplast", "Endoplasmic reticulum"],
+      options: [
+        "Mitochondria",
+        "Nucleus",
+        "Chloroplast",
+        "Endoplasmic reticulum",
+      ],
       correctAnswer: "Mitochondria",
-      explanation: "Mitochondria generate most of the cell's supply of ATP, used as a source of chemical energy."
-    }
-  ]
+      explanation:
+        "Mitochondria generate most of the cell's supply of ATP, used as a source of chemical energy.",
+    },
+  ],
 };
 
 export const QuizProvider = ({ children }) => {
   // Main form state
   const [formData, setFormData] = useState({
-    inputType: 'topic',         // topic, text, webpage, document
-    topic: '',                  // Used when inputType is 'topic'
-    text: '',                   // Used when inputType is 'text'
-    url: '',                    // Used when inputType is 'webpage'
-    file: null,                 // Used when inputType is 'document'
-    questionType: 'multipleChoice', // multipleChoice, trueFalse, shortAnswer
-    studentLevel: 'highSchool', // studentLevel (optional)
-    additionalInstructions: '', // Additional instructions (optional)
-    language: 'danish',         // Output language
+    inputType: "topic", // topic, text, webpage, document
+    topic: "", // Used when inputType is 'topic'
+    text: "", // Used when inputType is 'text'
+    url: "", // Used when inputType is 'webpage'
+    files: null, // Used when inputType is 'document' - now supports multiple files
+    questionType: "multipleChoice", // multipleChoice, trueFalse, shortAnswer
+    studentLevel: "highSchool", // studentLevel (optional)
+    additionalInstructions: "", // Additional instructions (optional)
+    language: "danish", // Output language
+    numQuestions: 5, // Number of questions to generate (default: 5)
+    useSampleQuiz: false, // Whether to use sample quiz instead of AI-generated quiz
   });
 
   // Loading state
   const [loading, setLoading] = useState(false);
-  
+
   // Generated quiz state - initialized with sample quiz for development
   const [generatedQuiz, setGeneratedQuiz] = useState(null);
-  
+
   // Editing state - separate from the generated quiz
   const [editingQuiz, setEditingQuiz] = useState(null);
-  
+
   // Editing mode
   const [isEditing, setIsEditing] = useState(false);
-  
+
   // Loading state for AI question generation
   const [generatingQuestion, setGeneratingQuestion] = useState(false);
-  
+
   // Error state
   const [error, setError] = useState(null);
 
   // Handler to update form data
   const updateFormData = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -82,36 +99,36 @@ export const QuizProvider = ({ children }) => {
 
   // Update a question in the editing quiz
   const updateQuestion = (questionId, field, value) => {
-    setEditingQuiz(prev => ({
+    setEditingQuiz((prev) => ({
       ...prev,
-      questions: prev.questions.map(q => 
+      questions: prev.questions.map((q) =>
         q.id === questionId ? { ...q, [field]: value } : q
-      )
+      ),
     }));
   };
 
   // Update an option in a question
   const updateOption = (questionId, optionIndex, value) => {
-    setEditingQuiz(prev => ({
+    setEditingQuiz((prev) => ({
       ...prev,
-      questions: prev.questions.map(q => {
+      questions: prev.questions.map((q) => {
         if (q.id === questionId) {
           const newOptions = [...q.options];
           newOptions[optionIndex] = value;
           return { ...q, options: newOptions };
         }
         return q;
-      })
+      }),
     }));
   };
 
   // Update the correct answer for a question
   const updateCorrectAnswer = (questionId, value) => {
-    setEditingQuiz(prev => ({
+    setEditingQuiz((prev) => ({
       ...prev,
-      questions: prev.questions.map(q => 
+      questions: prev.questions.map((q) =>
         q.id === questionId ? { ...q, correctAnswer: value } : q
-      )
+      ),
     }));
   };
 
@@ -122,12 +139,12 @@ export const QuizProvider = ({ children }) => {
       question: "New Question",
       options: ["Option 1", "Option 2", "Option 3", "Option 4"],
       correctAnswer: "Option 1",
-      explanation: "Add explanation here"
+      explanation: "Add explanation here",
     };
-    
-    setEditingQuiz(prev => ({
+
+    setEditingQuiz((prev) => ({
       ...prev,
-      questions: [...prev.questions, newQuestion]
+      questions: [...prev.questions, newQuestion],
     }));
   };
 
@@ -137,29 +154,30 @@ export const QuizProvider = ({ children }) => {
     try {
       // Mock API call - in reality, this would call your backend
       // await api.generateAdditionalQuestion(formData);
-      
+
       // For now, let's just simulate a delay and add a mock question
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       const newQuestion = {
         id: `q${Date.now()}`,
         question: "AI Generated Question: What is the main function of DNA?",
         options: [
-          "Store genetic information", 
-          "Produce energy", 
-          "Break down nutrients", 
-          "Transport oxygen"
+          "Store genetic information",
+          "Produce energy",
+          "Break down nutrients",
+          "Transport oxygen",
         ],
         correctAnswer: "Store genetic information",
-        explanation: "DNA (deoxyribonucleic acid) stores genetic information in the form of genes."
+        explanation:
+          "DNA (deoxyribonucleic acid) stores genetic information in the form of genes.",
       };
-      
-      setEditingQuiz(prev => ({
+
+      setEditingQuiz((prev) => ({
         ...prev,
-        questions: [...prev.questions, newQuestion]
+        questions: [...prev.questions, newQuestion],
       }));
     } catch (err) {
-      setError('Failed to generate a new question');
+      setError("Failed to generate a new question");
       console.error(err);
     } finally {
       setGeneratingQuestion(false);
@@ -168,9 +186,9 @@ export const QuizProvider = ({ children }) => {
 
   // Delete a question
   const deleteQuestion = (questionId) => {
-    setEditingQuiz(prev => ({
+    setEditingQuiz((prev) => ({
       ...prev,
-      questions: prev.questions.filter(q => q.id !== questionId)
+      questions: prev.questions.filter((q) => q.id !== questionId),
     }));
   };
 
@@ -190,15 +208,17 @@ export const QuizProvider = ({ children }) => {
   // Reset the form data
   const resetForm = () => {
     setFormData({
-      inputType: 'topic',
-      topic: '',
-      text: '',
-      url: '',
-      file: null,
-      questionType: 'multipleChoice',
-      studentLevel: 'highSchool',
-      additionalInstructions: '',
-      language: 'danish',
+      inputType: "topic",
+      topic: "",
+      text: "",
+      url: "",
+      files: null,
+      questionType: "multipleChoice",
+      studentLevel: "highSchool",
+      additionalInstructions: "",
+      language: "danish",
+      numQuestions: 5,
+      useSampleQuiz: false,
     });
     setGeneratedQuiz(null);
     setEditingQuiz(null);
@@ -235,7 +255,7 @@ export const QuizProvider = ({ children }) => {
         error,
         setError,
         resetForm,
-        loadSampleQuiz
+        loadSampleQuiz,
       }}
     >
       {children}
