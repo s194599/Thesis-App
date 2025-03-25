@@ -506,6 +506,63 @@ def upload_file():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
+# Add endpoint for uploading multiple files
+@app.route("/api/upload-files", methods=["POST"])
+def upload_files():
+    try:
+        logger.info("Received multiple files upload request")
+        if "files" not in request.files:
+            logger.error("No files part in request")
+            return jsonify({"success": False, "message": "No files part"}), 400
+
+        files = request.files.getlist("files")
+        if not files or all(file.filename == "" for file in files):
+            logger.error("No files selected")
+            return jsonify({"success": False, "message": "No files selected"}), 400
+
+        uploaded_contents = []
+        for file in files:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            logger.info(f"Saving file to: {filepath}")
+            
+            try:
+                file.save(filepath)
+            except Exception as e:
+                logger.error(f"Error saving file {filename}: {str(e)}")
+                continue
+
+            # Extract content if it's a PDF
+            content = ""
+            if filename.lower().endswith(".pdf"):
+                try:
+                    content = extract_text_from_pdf(filepath)
+                    logger.info(f"Extracted {len(content)} characters from PDF: {filename}")
+                    uploaded_contents.append(content)
+                except Exception as e:
+                    logger.error(f"Error processing PDF {filename}: {str(e)}")
+                    continue
+            else:
+                content = f"Content from {filename}"
+                uploaded_contents.append(content)
+
+        if not uploaded_contents:
+            return jsonify({"success": False, "message": "No files were successfully processed"}), 400
+
+        # Combine all contents with newlines between them
+        combined_content = "\n\n".join(uploaded_contents)
+
+        return jsonify({
+            "success": True,
+            "message": "Files uploaded successfully",
+            "content": combined_content[:1000] + "..." if len(combined_content) > 1000 else combined_content,
+        })
+
+    except Exception as e:
+        logger.error(f"Error in upload_files: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
 if __name__ == "__main__":
     # Disable Flask's reloader to prevent file system monitoring issues
     app.run(debug=True, port=5001, use_reloader=False)
