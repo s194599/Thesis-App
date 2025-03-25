@@ -5,9 +5,30 @@ import json
 import requests
 from werkzeug.utils import secure_filename
 import fitz  # PyMuPDF for PDF processing
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
+# Configure CORS with specific origins
+CORS(app, 
+     resources={
+         r"/api/*": {
+             "origins": ["http://localhost:3000"],  # React development server
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+             "allow_headers": ["Content-Type", "Authorization"],
+             "supports_credentials": True
+         }
+     })
+
+# Configure Flask app
+app.config['PERMANENT_SESSION_LIFETIME'] = 300  # 5 minutes
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300  # 5 minutes
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['TEMPLATES_AUTO_RELOAD'] = False  # Disable template auto-reload
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable file caching
 
 UPLOAD_FOLDER = "uploads"
 if not os.path.exists(UPLOAD_FOLDER):
@@ -16,13 +37,16 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path, max_pages=10):
-    doc = fitz.open(pdf_path)
-    text = ""
-
-    for page_num in range(min(len(doc), max_pages)):  # Limit to 10 pages
-        text += doc[page_num].get_text("text") + "\n"
-
-    return text.strip()
+    try:
+        doc = fitz.open(pdf_path)
+        text = ""
+        for page_num in range(min(len(doc), max_pages)):
+            text += doc[page_num].get_text("text") + "\n"
+        doc.close()  # Close the document properly
+        return text.strip()
+    except Exception as e:
+        logger.error(f"Error extracting text from PDF: {str(e)}")
+        raise
 
 
 # Function to generate quiz using Ollama's Mistral model
@@ -34,10 +58,11 @@ def generate_quiz_with_ollama(
     additional_instructions="",
 ):
     OLLAMA_API = "http://localhost:11434/api/generate"
+    logger.info("Starting quiz generation with Ollama")
 
     # Limit content length for token constraints
     if len(content) > 128000:
-        print("Warning: Content is too long. Using only the first 128,000 characters.")
+        logger.warning("Content too long, truncating to 128,000 characters")
         content = content[:128000]
 
     # Adjust prompt based on question type
@@ -120,7 +145,8 @@ def generate_quiz_with_ollama(
     payload = {"model": model, "prompt": format_instructions, "stream": False}
 
     try:
-        response = requests.post(OLLAMA_API, json=payload)
+        # Add timeout to the Ollama API call
+        response = requests.post(OLLAMA_API, json=payload, timeout=300)  # 5-minute timeout
 
         if response.status_code == 200:
             raw_quiz = response.json().get("response", "No response received.")
@@ -129,6 +155,9 @@ def generate_quiz_with_ollama(
             print(f"Error from Ollama API: {response.status_code}")
             print(response.text)
             return None
+    except requests.exceptions.Timeout:
+        print("Timeout while calling Ollama API")
+        return None
     except Exception as e:
         print(f"Exception when calling Ollama API: {e}")
         return None
@@ -424,23 +453,38 @@ def fetch_url_content():
 @app.route("/api/upload-file", methods=["POST"])
 def upload_file():
     try:
+        logger.info("Received upload request")
         if "file" not in request.files:
+            logger.error("No file part in request")
             return jsonify({"success": False, "message": "No file part"}), 400
 
         file = request.files["file"]
+        logger.info(f"Received file: {file.filename}")
 
         if file.filename == "":
+            logger.error("Empty filename")
             return jsonify({"success": False, "message": "No file selected"}), 400
 
         if file:
             filename = secure_filename(file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(filepath)
+            logger.info(f"Saving file to: {filepath}")
+            
+            try:
+                file.save(filepath)
+            except Exception as e:
+                logger.error(f"Error saving file: {str(e)}")
+                return jsonify({"success": False, "message": "Error saving file"}), 500
 
             # Extract content if it's a PDF
             content = ""
             if filename.lower().endswith(".pdf"):
-                content = extract_text_from_pdf(filepath)
+                try:
+                    content = extract_text_from_pdf(filepath)
+                    logger.info(f"Extracted {len(content)} characters from PDF")
+                except Exception as e:
+                    logger.error(f"Error processing PDF: {str(e)}")
+                    return jsonify({"success": False, "message": "Error processing PDF"}), 500
             else:
                 content = f"Content from {filename}"
 
@@ -449,15 +493,15 @@ def upload_file():
                     "success": True,
                     "message": "File uploaded successfully",
                     "filename": filename,
-                    "content": (
-                        content[:1000] + "..." if len(content) > 1000 else content
-                    ),  # Return preview
+                    "content": content[:1000] + "..." if len(content) > 1000 else content,
                 }
             )
 
     except Exception as e:
+        logger.error(f"Error in upload_file: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Disable Flask's reloader to prevent file system monitoring issues
+    app.run(debug=True, port=5001, use_reloader=False)
