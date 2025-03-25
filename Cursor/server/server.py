@@ -287,6 +287,7 @@ def generate_quiz():
             student_level = data.get("studentLevel", "highSchool")
             additional_instructions = data.get("additionalInstructions", "")
             language = data.get("language", "danish")
+            num_questions = data.get("numQuestions", 5)  # Default to 5 if not provided
         else:
             # For backward compatibility with form data
             input_type = request.form.get("inputType", "topic")
@@ -295,6 +296,9 @@ def generate_quiz():
             student_level = request.form.get("studentLevel", "highSchool")
             additional_instructions = request.form.get("additionalInstructions", "")
             language = request.form.get("language", "danish")
+            num_questions = int(
+                request.form.get("numQuestions", 5)
+            )  # Default to 5 if not provided
 
             # Handle document upload if present
             document = request.files.get("document")
@@ -324,10 +328,10 @@ def generate_quiz():
             # Combine all instructions
             combined_instructions = f"{additional_instructions} {lang_instruction}"
 
-            # Generate quiz using Ollama
+            # Generate quiz using Ollama with the user-specified number of questions
             raw_quiz = generate_quiz_with_ollama(
                 content,
-                num_questions=5,  # Adjust as needed
+                num_questions=num_questions,  # Use the value from the request
                 model="mistral",
                 question_type=question_type,
                 additional_instructions=combined_instructions,

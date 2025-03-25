@@ -6,6 +6,7 @@ import QuizInputSection from "./QuizInputSection";
 import QuestionTypeSelector from "./QuestionTypeSelector";
 import StudentLevelSelector from "./StudentLevelSelector";
 import LanguageSelector from "./LanguageSelector";
+import NumQuestionsSelector from "./NumQuestionsSelector";
 import LoadingSpinner from "./LoadingSpinner";
 import QuizOutput from "./QuizOutput";
 import { generateQuiz, uploadFile, fetchUrlContent } from "../services/api";
@@ -95,6 +96,7 @@ const QuizForm = () => {
         studentLevel: formData.studentLevel,
         additionalInstructions: formData.additionalInstructions,
         language: formData.language,
+        numQuestions: formData.numQuestions,
       };
 
       // Send to backend for quiz generation
@@ -136,11 +138,15 @@ const QuizForm = () => {
           <hr className="my-4" />
 
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-4">
               {/* Student level selection */}
               <StudentLevelSelector />
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
+              {/* Number of questions selection */}
+              <NumQuestionsSelector />
+            </div>
+            <div className="col-md-4">
               {/* Language selection */}
               <LanguageSelector />
             </div>
