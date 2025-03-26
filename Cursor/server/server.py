@@ -453,74 +453,41 @@ def fetch_url_content():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-# Add endpoint for uploading files
+# Combined endpoint for uploading one or multiple files
 @app.route("/api/upload-file", methods=["POST"])
-def upload_file():
-    try:
-        logger.info("Received upload request")
-        if "file" not in request.files:
-            logger.error("No file part in request")
-            return jsonify({"success": False, "message": "No file part"}), 400
-
-        file = request.files["file"]
-        logger.info(f"Received file: {file.filename}")
-
-        if file.filename == "":
-            logger.error("Empty filename")
-            return jsonify({"success": False, "message": "No file selected"}), 400
-
-        if file:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-            logger.info(f"Saving file to: {filepath}")
-            
-            try:
-                file.save(filepath)
-            except Exception as e:
-                logger.error(f"Error saving file: {str(e)}")
-                return jsonify({"success": False, "message": "Error saving file"}), 500
-
-            # Extract content if it's a PDF
-            content = ""
-            if filename.lower().endswith(".pdf"):
-                try:
-                    content = extract_text_from_pdf(filepath)
-                    logger.info(f"Extracted {len(content)} characters from PDF")
-                except Exception as e:
-                    logger.error(f"Error processing PDF: {str(e)}")
-                    return jsonify({"success": False, "message": "Error processing PDF"}), 500
-            else:
-                content = f"Content from {filename}"
-
-            return jsonify(
-                {
-                    "success": True,
-                    "message": "File uploaded successfully",
-                    "filename": filename,
-                    "content": content[:1000] + "..." if len(content) > 1000 else content,
-                }
-            )
-
-    except Exception as e:
-        logger.error(f"Error in upload_file: {str(e)}")
-        return jsonify({"success": False, "message": str(e)}), 500
-
-
-# Add endpoint for uploading multiple files
 @app.route("/api/upload-files", methods=["POST"])
 def upload_files():
     try:
-        logger.info("Received multiple files upload request")
-        if "files" not in request.files:
-            logger.error("No files part in request")
-            return jsonify({"success": False, "message": "No files part"}), 400
-
-        files = request.files.getlist("files")
+        # Log which route was used
+        endpoint = request.path
+        logger.info(f"Received upload request at {endpoint}")
+        
+        # Check if it's a single file or multiple files request
+        if endpoint == "/api/upload-file":
+            # Handle single file upload
+            if "file" not in request.files:
+                logger.error("No file part in request")
+                return jsonify({"success": False, "message": "No file part"}), 400
+                
+            files = [request.files["file"]]
+            is_single_file = True
+        else:
+            # Handle multiple files upload
+            if "files" not in request.files:
+                logger.error("No files part in request")
+                return jsonify({"success": False, "message": "No files part"}), 400
+                
+            files = request.files.getlist("files")
+            is_single_file = False
+        
+        # Check if any files were selected
         if not files or all(file.filename == "" for file in files):
             logger.error("No files selected")
             return jsonify({"success": False, "message": "No files selected"}), 400
-
+        
         uploaded_contents = []
+        uploaded_filenames = []
+        
         for file in files:
             filename = secure_filename(file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
@@ -528,10 +495,11 @@ def upload_files():
             
             try:
                 file.save(filepath)
+                uploaded_filenames.append(filename)
             except Exception as e:
                 logger.error(f"Error saving file {filename}: {str(e)}")
                 continue
-
+                
             # Extract content if it's a PDF
             content = ""
             if filename.lower().endswith(".pdf"):
@@ -545,19 +513,29 @@ def upload_files():
             else:
                 content = f"Content from {filename}"
                 uploaded_contents.append(content)
-
+        
         if not uploaded_contents:
             return jsonify({"success": False, "message": "No files were successfully processed"}), 400
-
-        # Combine all contents with newlines between them
+            
+        # Combine contents
         combined_content = "\n\n".join(uploaded_contents)
-
-        return jsonify({
-            "success": True,
-            "message": "Files uploaded successfully",
-            "content": combined_content[:1000] + "..." if len(combined_content) > 1000 else combined_content,
-        })
-
+        
+        # Create response based on whether it was a single or multiple file upload
+        if is_single_file:
+            return jsonify({
+                "success": True,
+                "message": "File uploaded successfully",
+                "filename": uploaded_filenames[0],
+                "content": combined_content[:1000] + "..." if len(combined_content) > 1000 else combined_content,
+            })
+        else:
+            return jsonify({
+                "success": True,
+                "message": "Files uploaded successfully",
+                "filenames": uploaded_filenames,
+                "content": combined_content[:1000] + "..." if len(combined_content) > 1000 else combined_content,
+            })
+            
     except Exception as e:
         logger.error(f"Error in upload_files: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500

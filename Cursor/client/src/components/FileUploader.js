@@ -14,10 +14,24 @@ const FileUploader = () => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        updateFormData("files", acceptedFiles);
+        const currentFiles = formData.files || [];
+        
+        const uniqueFiles = new Map();
+        
+        currentFiles.forEach(file => {
+          uniqueFiles.set(file.name + file.size, file);
+        });
+        
+        acceptedFiles.forEach(file => {
+          uniqueFiles.set(file.name + file.size, file);
+        });
+        
+        const updatedFiles = Array.from(uniqueFiles.values());
+        
+        updateFormData("files", updatedFiles);
       }
     },
-    [updateFormData]
+    [updateFormData, formData.files]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

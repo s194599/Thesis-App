@@ -3,9 +3,34 @@ import axios from "axios";
 // API base URL - using the proxy configured in package.json
 const API_BASE_URL = "/api";
 
+// Create a source for cancellation tokens
+let cancelTokenSource = null;
+
+// Function to create a new cancel token source
+export const createCancelToken = () => {
+  // Cancel any existing requests
+  if (cancelTokenSource) {
+    cancelTokenSource.cancel('Operation canceled by the user.');
+  }
+  // Create a new token
+  cancelTokenSource = axios.CancelToken.source();
+  return cancelTokenSource;
+};
+
+// Function to cancel ongoing requests
+export const cancelRequests = () => {
+  if (cancelTokenSource) {
+    cancelTokenSource.cancel('Operation canceled by the user.');
+    cancelTokenSource = null;
+  }
+};
+
 // Function to generate quiz based on inputs
 export const generateQuiz = async (quizData) => {
   try {
+    // Create a new cancel token for this request
+    const source = createCancelToken();
+    
     const response = await axios.post(
       `${API_BASE_URL}/generate-quiz`,
       quizData,
@@ -16,7 +41,8 @@ export const generateQuiz = async (quizData) => {
         timeout: 300000, // 5-minute timeout for LLM processing
         validateStatus: function (status) {
           return status >= 200 && status < 500; // Don't reject if status is less than 500
-        }
+        },
+        cancelToken: source.token
       }
     );
 
@@ -26,6 +52,12 @@ export const generateQuiz = async (quizData) => {
 
     return response.data;
   } catch (error) {
+    if (axios.isCancel(error)) {
+      console.log('Request canceled:', error.message);
+      // Return a specific object to indicate cancellation
+      return { canceled: true };
+    }
+    
     console.error("Error generating quiz:", error);
     if (error.response) {
       console.error("Error response data:", error.response.data);
@@ -42,7 +74,7 @@ export const uploadFiles = async (files) => {
     const formData = new FormData();
 
     // Append each file to the form data
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       formData.append(`files`, file);
     });
 
@@ -53,17 +85,30 @@ export const uploadFiles = async (files) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 300000, // 5-minute timeout
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Don't reject if status is less than 500
+        }
       }
     );
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to upload files");
+    }
 
     return response.data;
   } catch (error) {
     console.error("Error uploading files:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      console.error("Error response headers:", error.response.headers);
+    }
     throw error;
   }
 };
 
-// For backward compatibility - single file upload
+// Single file upload - uses the same backend endpoint
 export const uploadFile = async (file) => {
   try {
     const formData = new FormData();

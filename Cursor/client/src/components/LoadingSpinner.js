@@ -1,7 +1,11 @@
 import React from 'react';
 import { BeatLoader } from 'react-spinners';
+import { Button } from 'react-bootstrap';
+import { useQuizContext } from '../context/QuizContext';
 
 const LoadingSpinner = ({ loading, message = 'Generating quiz...' }) => {
+  const { cancelQuizGeneration } = useQuizContext();
+  
   if (!loading) return null;
 
   return (
@@ -16,9 +20,19 @@ const LoadingSpinner = ({ loading, message = 'Generating quiz...' }) => {
             style={{ width: '100%' }}
           ></div>
         </div>
-        <p className="mt-2 small text-muted">
-          This may take up to a minute depending on the complexity and length of the content.
-        </p>
+        <div className="d-flex justify-content-between align-items-center mt-2">
+          <p className="small text-muted mb-0">
+            This may take up to a minute depending on the complexity and length of the content.
+          </p>
+          <Button 
+            variant="outline-secondary" 
+            size="sm" 
+            onClick={cancelQuizGeneration}
+            className="ms-3"
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   );

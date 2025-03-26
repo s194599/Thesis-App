@@ -123,6 +123,12 @@ const QuizForm = () => {
 
       // Send to backend for quiz generation
       const generatedQuizData = await generateQuiz(quizRequestData);
+      
+      // Check if the request was canceled
+      if (generatedQuizData && generatedQuizData.canceled) {
+        // Request was canceled, do nothing further
+        return;
+      }
 
       // Update the state with the generated quiz
       setGeneratedQuiz(generatedQuizData);

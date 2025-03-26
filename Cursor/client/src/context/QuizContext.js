@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import { cancelRequests } from "../services/api";
 
 const QuizContext = createContext();
 
@@ -231,6 +232,15 @@ export const QuizProvider = ({ children }) => {
     setGeneratedQuiz(sampleQuiz);
   };
 
+  // Cancel quiz generation
+  const cancelQuizGeneration = () => {
+    // Cancel any ongoing API requests
+    cancelRequests();
+    setLoading(false);
+    setError(null);
+    // We don't reset the form data or files to keep them available for another attempt
+  };
+
   return (
     <QuizContext.Provider
       value={{
@@ -256,6 +266,7 @@ export const QuizProvider = ({ children }) => {
         setError,
         resetForm,
         loadSampleQuiz,
+        cancelQuizGeneration,
       }}
     >
       {children}
