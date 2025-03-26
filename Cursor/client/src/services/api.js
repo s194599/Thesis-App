@@ -16,14 +16,14 @@ export const generateQuiz = async (quizData) => {
         timeout: 300000, // 5-minute timeout for LLM processing
         validateStatus: function (status) {
           return status >= 200 && status < 500; // Don't reject if status is less than 500
-        }
+        },
       }
     );
 
     if (response.status >= 400) {
       throw new Error(response.data.message || "Failed to generate quiz");
     }
-
+    console.log("Quiz generated successfully:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error generating quiz:", error);
@@ -76,7 +76,7 @@ export const uploadFile = async (file) => {
       timeout: 300000, // 5-minute timeout
       validateStatus: function (status) {
         return status >= 200 && status < 500; // Don't reject if status is less than 500
-      }
+      },
     });
 
     if (response.status >= 400) {
@@ -98,12 +98,16 @@ export const uploadFile = async (file) => {
 // Function to fetch quiz content from a URL
 export const fetchUrlContent = async (url) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/fetch-url`, { url }, {
-      timeout: 300000, // 5-minute timeout
-      validateStatus: function (status) {
-        return status >= 200 && status < 500; // Don't reject if status is less than 500
+    const response = await axios.post(
+      `${API_BASE_URL}/fetch-url`,
+      { url },
+      {
+        timeout: 300000, // 5-minute timeout
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Don't reject if status is less than 500
+        },
       }
-    });
+    );
 
     if (response.status >= 400) {
       throw new Error(response.data.message || "Failed to fetch URL content");

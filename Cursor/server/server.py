@@ -202,7 +202,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
             # Initialize question object
             question = {
                 "id": f"q{i+1}",  # Start from q1 instead of q0
-                "question": "",
+                "questionText": "",
                 "options": [],
                 "correctAnswer": "",
                 # "explanation": "",
@@ -231,29 +231,10 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
             for line in lines[1:]:  # Skip the first line (question text)
                 line = line.strip()
 
-                # Check if it's an option line
-                if (
-                    line.startswith("A)")
-                    or line.startswith("B)")
-                    or line.startswith("C)")
-                    or line.startswith("D)")
-                    or line.startswith("A. ")
-                    or line.startswith("B. ")
-                    or line.startswith("C. ")
-                    or line.startswith("D. ")
-                ):
-                    option_letter = line[0]
-                    # Handle both A) and A. formats
-                    delimiter = line[1]
-                    option_text = (
-                        line[2:].strip() if delimiter == ")" else line[2:].strip()
-                    )
-                    options.append(option_text)
-
-                # Check if it's the correct answer line
-                elif "Correct answer:" in line:
-                    correct_answer_line = line
-                elif line.startswith("Correct answer"):  # Also handle without colon
+                # Check if it's an option line (A), B), A., B. etc)
+                if line and line[0] in "ABCD" and line[1] in ").":
+                    options.append(line[2:].strip())
+                elif "Correct answer" in line.lower():  # Case insensitive check
                     correct_answer_line = line
 
             # Add options to question
@@ -299,7 +280,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
     # Create a quiz object
     quiz = {
         "id": f"quiz_{len(questions)}",
-        "title": "Generated Quiz",
+        "title": "Quiz",
         "description": "Quiz generated from your content",
         "questions": questions,
     }
