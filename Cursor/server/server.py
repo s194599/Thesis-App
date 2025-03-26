@@ -155,22 +155,36 @@ def generate_quiz_with_ollama(
         )  # 5-minute timeout
 
         if response.status_code == 200:
-            raw_quiz = response.json().get("response", "No response received.")
+            # Get the full response
+            response_json = response.json()
+            raw_quiz = response_json.get("response", "No response received.")
+
+            # Log the complete response
+            logger.info("Ollama raw response:")
+            logger.info(raw_quiz)
+
+            # Also log information about tokens
+            if "eval_count" in response_json:
+                logger.info(f"Tokens used: {response_json.get('eval_count')}")
+            if "eval_duration" in response_json:
+                logger.info(f"Generation time: {response_json.get('eval_duration')}ns")
+
             return raw_quiz
         else:
-            print(f"Error from Ollama API: {response.status_code}")
-            print(response.text)
+            logger.error(f"Error from Ollama API: {response.status_code}")
+            logger.error(response.text)
             return None
     except requests.exceptions.Timeout:
-        print("Timeout while calling Ollama API")
+        logger.error("Timeout while calling Ollama API")
         return None
     except Exception as e:
-        print(f"Exception when calling Ollama API: {e}")
+        logger.error(f"Exception when calling Ollama API: {e}")
         return None
 
 
 # Function to parse raw quiz text into structured format
 def parse_quiz(raw_quiz, question_type="multipleChoice"):
+    logger.info("Starting to parse quiz text")
     questions = []
 
     if question_type == "multipleChoice":
@@ -180,6 +194,8 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
 
         # Split up all questions line by line
         lines = raw_quiz.split("\n")
+        logger.info(f"Raw quiz has {len(lines)} lines")
+
         for line in lines:
             line = line.strip()
 
@@ -195,15 +211,19 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
         if current_question:
             raw_questions.append(current_question)
 
+        logger.info(f"Found {len(raw_questions)} raw questions")
+
         # Process each question
         for i, q in enumerate(raw_questions):
             if not q.strip():
                 continue
 
+            logger.info(f"Processing question {i+1}")
+
             # Initialize question object
             question = {
                 "id": f"q{i+1}",  # Start from q1 instead of q0
-                "questionText": "",
+                "question": "",  # Use only question, not questionText
                 "options": [],
                 "correctAnswer": "",
                 # "explanation": "",
@@ -211,6 +231,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
 
             # Split the question into lines for processing
             lines = q.strip().split("\n")
+            logger.info(f"Question {i+1} has {len(lines)} lines")
 
             # Extract question text (first line)
             question_text = ""
@@ -224,6 +245,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
                     question_text = first_line.strip()
 
                 question["question"] = question_text
+                logger.info(f"Question text: {question_text[:50]}...")
 
             # Process options and correct answer
             options = []
@@ -232,14 +254,26 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
             for line in lines[1:]:  # Skip the first line (question text)
                 line = line.strip()
 
+                # Log current line for debugging
+                if line:
+                    logger.debug(f"Processing line: {line}")
+
                 # Check if it's an option line (A), B), A., B. etc)
                 if line and line[0] in "ABCD" and line[1] in ").":
                     options.append(line[2:].strip())
-                elif "Correct answer" in line.lower():  # Case insensitive check
+                    logger.debug(f"Added option: {line[0]}: {line[2:].strip()}")
+                # Check various formats of correct answer lines
+                elif (
+                    "correct answer" in line.lower()
+                    or "correct:" in line.lower()
+                    or "answer:" in line.lower()
+                ):
                     correct_answer_line = line
+                    logger.info(f"Found correct answer line: {line}")
 
             # Add options to question
             question["options"] = options
+            logger.info(f"Question has {len(options)} options")
 
             # Process correct answer
             if correct_answer_line:
@@ -248,33 +282,41 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
                     if ":" in correct_answer_line
                     else correct_answer_line.split(" ", 2)
                 )
+                logger.debug(f"Split correct answer line into parts: {parts}")
+
                 if len(parts) > 1:
                     answer_letter = parts[1].strip()
                     # Handle multi-character answers like "A" or just "A"
                     answer_letter = answer_letter[0] if answer_letter else ""
+                    logger.info(f"Extracted answer letter: {answer_letter}")
 
                     # Convert letter to option text
-                    if answer_letter == "A":
-                        question["correctAnswer"] = (
-                            options[0] if len(options) > 0 else ""
-                        )
-                    elif answer_letter == "B":
-                        question["correctAnswer"] = (
-                            options[1] if len(options) > 1 else ""
-                        )
-                    elif answer_letter == "C":
-                        question["correctAnswer"] = (
-                            options[2] if len(options) > 2 else ""
-                        )
-                    elif answer_letter == "D":
-                        question["correctAnswer"] = (
-                            options[3] if len(options) > 3 else ""
-                        )
+                    option_index = -1
 
-            # # Look for an explanation (if present)
-            # for line in lines:
-            #     if "Explanation:" in line:
-            #         question["explanation"] = line.split("Explanation:")[1].strip()
+                    if answer_letter == "A":
+                        option_index = 0
+                    elif answer_letter == "B":
+                        option_index = 1
+                    elif answer_letter == "C":
+                        option_index = 2
+                    elif answer_letter == "D":
+                        option_index = 3
+
+                    if option_index >= 0 and option_index < len(options):
+                        question["correctAnswer"] = options[option_index]
+                        logger.info(
+                            f"Set correct answer to: {question['correctAnswer'][:50]}..."
+                        )
+                    else:
+                        logger.warning(
+                            f"Invalid answer letter: {answer_letter} or options index out of range"
+                        )
+                else:
+                    logger.warning(
+                        f"Could not parse correct answer from: {correct_answer_line}"
+                    )
+            else:
+                logger.warning(f"No correct answer line found for question {i+1}")
 
             questions.append(question)
 
@@ -286,6 +328,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
         "questions": questions,
     }
 
+    logger.info(f"Finished parsing quiz with {len(questions)} questions")
     return quiz
 
 
@@ -293,6 +336,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
 @app.route("/api/generate-quiz", methods=["POST"])
 def generate_quiz():
     try:
+        logger.info("=== Starting Quiz Generation Process ===")
         # Check if the request is JSON or form data
         if request.is_json:
             # Handle JSON request from the frontend
@@ -304,7 +348,16 @@ def generate_quiz():
             additional_instructions = data.get("additionalInstructions", "")
             language = data.get("language", "danish")
             num_questions = data.get("numQuestions", 5)  # Default to 5 if not provided
-            quiz_title = data.get("quizTitle", "Quiz")  # Get quiz title with default value
+            quiz_title = data.get(
+                "quizTitle", "Quiz"
+            )  # Get quiz title with default value
+
+            logger.info(
+                f"Received JSON request with input_type: {input_type}, question_type: {question_type}, language: {language}"
+            )
+            logger.info(
+                f"Content length: {len(content)} characters, requested questions: {num_questions}"
+            )
         else:
             # For backward compatibility with form data
             input_type = request.form.get("inputType", "topic")
@@ -316,22 +369,30 @@ def generate_quiz():
             num_questions = int(
                 request.form.get("numQuestions", 5)
             )  # Default to 5 if not provided
-            quiz_title = request.form.get("quizTitle", "Quiz")  # Get quiz title with default value
+            quiz_title = request.form.get(
+                "quizTitle", "Quiz"
+            )  # Get quiz title with default value
+
+            logger.info(
+                f"Received form data with input_type: {input_type}, question_type: {question_type}, language: {language}"
+            )
 
             # Handle document upload if present
             document = request.files.get("document")
             if document and input_type == "document":
                 filename = secure_filename(document.filename)
                 filepath = os.path.join(UPLOAD_FOLDER, filename)
+                logger.info(f"Handling document upload: {filename}")
                 document.save(filepath)
 
                 # Process PDF to extract content if it's a PDF
                 if filename.lower().endswith(".pdf"):
+                    logger.info(f"Extracting text from PDF: {filename}")
                     content = extract_text_from_pdf(filepath)
-                    print(f"Extracted {len(content)} characters from PDF.")
+                    logger.info(f"Extracted {len(content)} characters from PDF")
                 else:
                     # For non-PDF files, just use the filename as a placeholder
-                    # In a production app, you would add support for other file types
+                    logger.info(f"Non-PDF file uploaded: {filename}")
                     content = f"Content from uploaded file: {filename}"
 
         # If content is available, generate quiz with Ollama
@@ -346,7 +407,12 @@ def generate_quiz():
             # Combine all instructions
             combined_instructions = f"{additional_instructions} {lang_instruction}"
 
+            logger.info(
+                f"Calling Ollama with language: {language}, instructions: '{combined_instructions}'"
+            )
+
             # Generate quiz using Ollama with the user-specified number of questions
+            logger.info("Starting LLM quiz generation")
             raw_quiz = generate_quiz_with_ollama(
                 content,
                 num_questions=num_questions,  # Use the value from the request
@@ -356,15 +422,33 @@ def generate_quiz():
             )
 
             if raw_quiz:
+                logger.info(
+                    f"Successfully received raw quiz from Ollama (length: {len(raw_quiz)} characters)"
+                )
+
+                # Log the raw quiz with line numbers for easier debugging
+                logger.info("Raw quiz content with line numbers:")
+                for i, line in enumerate(raw_quiz.strip().split("\n")):
+                    logger.info(f"Line {i+1}: {line}")
+
                 # Parse the raw quiz text into structured format
+                logger.info("Parsing raw quiz text into structured format")
                 quiz = parse_quiz(raw_quiz, question_type)
-                
+
                 # Add the title from the request to the quiz data
                 quiz["title"] = quiz_title
-                
+
+                logger.info(f"Returning quiz with {len(quiz['questions'])} questions")
                 return jsonify(quiz)
+            else:
+                logger.error(
+                    "Failed to get a response from Ollama or response was empty"
+                )
+        else:
+            logger.warning("No content provided for quiz generation")
 
         # Fallback to sample quiz if unable to generate one
+        logger.info("Using fallback sample quiz")
         sample_quiz = {
             "id": "quiz123",
             "title": quiz_title,
@@ -402,7 +486,9 @@ def generate_quiz():
         return jsonify(sample_quiz)
 
     except Exception as e:
-        print(f"Error in generate_quiz: {e}")
+        logger.error(
+            f"Error in generate_quiz: {e}", exc_info=True
+        )  # Include stack trace
         return jsonify({"success": False, "message": str(e)}), 500
 
 
@@ -454,14 +540,14 @@ def upload_files():
         # Log which route was used
         endpoint = request.path
         logger.info(f"Received upload request at {endpoint}")
-        
+
         # Check if it's a single file or multiple files request
         if endpoint == "/api/upload-file":
             # Handle single file upload
             if "file" not in request.files:
                 logger.error("No file part in request")
                 return jsonify({"success": False, "message": "No file part"}), 400
-                
+
             files = [request.files["file"]]
             is_single_file = True
         else:
@@ -469,18 +555,18 @@ def upload_files():
             if "files" not in request.files:
                 logger.error("No files part in request")
                 return jsonify({"success": False, "message": "No files part"}), 400
-                
+
             files = request.files.getlist("files")
             is_single_file = False
-        
+
         # Check if any files were selected
         if not files or all(file.filename == "" for file in files):
             logger.error("No files selected")
             return jsonify({"success": False, "message": "No files selected"}), 400
-        
+
         uploaded_contents = []
         uploaded_filenames = []
-        
+
         for file in files:
             filename = secure_filename(file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
@@ -492,7 +578,7 @@ def upload_files():
             except Exception as e:
                 logger.error(f"Error saving file {filename}: {str(e)}")
                 continue
-                
+
             # Extract content if it's a PDF
             content = ""
             if filename.lower().endswith(".pdf"):
@@ -508,29 +594,49 @@ def upload_files():
             else:
                 content = f"Content from {filename}"
                 uploaded_contents.append(content)
-        
+
         if not uploaded_contents:
-            return jsonify({"success": False, "message": "No files were successfully processed"}), 400
-            
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "message": "No files were successfully processed",
+                    }
+                ),
+                400,
+            )
+
         # Combine contents
         combined_content = "\n\n".join(uploaded_contents)
-        
+
         # Create response based on whether it was a single or multiple file upload
         if is_single_file:
-            return jsonify({
-                "success": True,
-                "message": "File uploaded successfully",
-                "filename": uploaded_filenames[0],
-                "content": combined_content[:1000] + "..." if len(combined_content) > 1000 else combined_content,
-            })
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "File uploaded successfully",
+                    "filename": uploaded_filenames[0],
+                    "content": (
+                        combined_content[:1000] + "..."
+                        if len(combined_content) > 1000
+                        else combined_content
+                    ),
+                }
+            )
         else:
-            return jsonify({
-                "success": True,
-                "message": "Files uploaded successfully",
-                "filenames": uploaded_filenames,
-                "content": combined_content[:1000] + "..." if len(combined_content) > 1000 else combined_content,
-            })
-            
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "Files uploaded successfully",
+                    "filenames": uploaded_filenames,
+                    "content": (
+                        combined_content[:1000] + "..."
+                        if len(combined_content) > 1000
+                        else combined_content
+                    ),
+                }
+            )
+
     except Exception as e:
         logger.error(f"Error in upload_files: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
@@ -541,28 +647,28 @@ def upload_files():
 def save_quiz():
     try:
         quiz_data = request.json
-        
+
         if not quiz_data:
             logger.error("No quiz data provided")
             return jsonify({"success": False, "message": "No quiz data provided"}), 400
-            
+
         # Create a quizzes directory if it doesn't exist
         QUIZZES_FOLDER = "quizzes"
         if not os.path.exists(QUIZZES_FOLDER):
             os.makedirs(QUIZZES_FOLDER)
-            
+
         # Generate a unique ID for the quiz if not present
         if "id" not in quiz_data:
             quiz_data["id"] = f"quiz_{int(time.time())}"
-            
+
         # Add timestamp if not present
         if "timestamp" not in quiz_data:
             quiz_data["timestamp"] = time.time()
-            
+
         # Load existing quizzes
         quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
         quizzes = []
-        
+
         if os.path.exists(quizzes_file):
             try:
                 with open(quizzes_file, "r") as f:
@@ -570,7 +676,7 @@ def save_quiz():
             except json.JSONDecodeError:
                 logger.error(f"Error reading quizzes file: invalid JSON")
                 quizzes = []
-                
+
         # Check if quiz with same ID already exists
         updated = False
         for i, quiz in enumerate(quizzes):
@@ -578,24 +684,27 @@ def save_quiz():
                 quizzes[i] = quiz_data
                 updated = True
                 break
-                
+
         # Add quiz if it doesn't exist
         if not updated:
             quizzes.append(quiz_data)
-            
+
         # Save quizzes back to file
         with open(quizzes_file, "w") as f:
             json.dump(quizzes, f, indent=2)
-            
-        return jsonify({
-            "success": True, 
-            "message": "Quiz saved successfully",
-            "quizId": quiz_data["id"]
-        })
-            
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Quiz saved successfully",
+                "quizId": quiz_data["id"],
+            }
+        )
+
     except Exception as e:
         logger.error(f"Error saving quiz: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
+
 
 # Add endpoint for getting all saved quizzes
 @app.route("/api/quizzes", methods=["GET"])
@@ -603,18 +712,19 @@ def get_quizzes():
     try:
         QUIZZES_FOLDER = "quizzes"
         quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
-        
+
         if not os.path.exists(quizzes_file):
             return jsonify([])
-            
+
         with open(quizzes_file, "r") as f:
             quizzes = json.load(f)
-            
+
         return jsonify(quizzes)
-        
+
     except Exception as e:
         logger.error(f"Error getting quizzes: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
+
 
 # Add endpoint for getting a specific quiz
 @app.route("/api/quizzes/<quiz_id>", methods=["GET"])
@@ -622,20 +732,20 @@ def get_quiz(quiz_id):
     try:
         QUIZZES_FOLDER = "quizzes"
         quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
-        
+
         if not os.path.exists(quizzes_file):
             return jsonify({"success": False, "message": "Quiz not found"}), 404
-            
+
         with open(quizzes_file, "r") as f:
             quizzes = json.load(f)
-            
+
         quiz = next((q for q in quizzes if q.get("id") == quiz_id), None)
-        
+
         if not quiz:
             return jsonify({"success": False, "message": "Quiz not found"}), 404
-            
+
         return jsonify(quiz)
-        
+
     except Exception as e:
         logger.error(f"Error getting quiz: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
