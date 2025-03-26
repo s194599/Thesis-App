@@ -309,45 +309,6 @@ export const QuizProvider = ({ children }) => {
     }
   };
 
-  const handleGenerateQuiz = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      setGeneratedQuizStatus('loading');
-
-      // Ensure there's a valid model and input 
-      if (!formData.model) {
-        throw new Error("Please select an AI model");
-      }
-
-      // Build form data for API request
-      const quizRequestData = {
-        model: formData.model,
-        quizTitle: formData.quizTitle || "Quiz", // Include the quiz title
-        // ... existing code ...
-      };
-
-      // ... existing code with API call ...
-
-      // When API response comes back
-      if (data && data.questions) {
-        // Apply the title from form data to ensure consistency
-        const quizWithTitle = {
-          ...data,
-          title: formData.quizTitle || "Quiz"
-        };
-        setGeneratedQuiz(quizWithTitle);
-        setGeneratedQuizStatus('success');
-      } else {
-        // ... existing error handling ...
-      }
-    } catch (error) {
-      // ... existing error handling ...
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <QuizContext.Provider
       value={{
