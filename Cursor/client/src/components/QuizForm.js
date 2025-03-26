@@ -119,6 +119,7 @@ const QuizForm = () => {
         additionalInstructions: formData.additionalInstructions,
         language: formData.language,
         numQuestions: formData.numQuestions,
+        quizTitle: formData.quizTitle || "Quiz",
       };
 
       // Send to backend for quiz generation
@@ -130,8 +131,14 @@ const QuizForm = () => {
         return;
       }
 
+      // Ensure the generated quiz has the title from the form data
+      const finalQuizData = {
+        ...generatedQuizData,
+        title: formData.quizTitle || "Quiz"
+      };
+
       // Update the state with the generated quiz
-      setGeneratedQuiz(generatedQuizData);
+      setGeneratedQuiz(finalQuizData);
     } catch (err) {
       console.error("Error generating quiz:", err);
       setError("Failed to generate quiz. Please try again later.");

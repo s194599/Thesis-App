@@ -33,6 +33,24 @@ body {
 }
 
 /* Quiz output styling */
+.quiz-output-title {
+  font-weight: 600;
+  color: #212529;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.quiz-output-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #0d6efd, #0d6efd80);
+  border-radius: 3px;
+}
+
 .quiz-questions .card {
   border-left: 4px solid #0d6efd;
   transition: transform 0.2s;
@@ -86,4 +104,30 @@ body {
   .card-body {
     padding: 1rem;
   }
+}
+
+/* Editable title styles */
+.editable-title {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+
+.editable-title:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.editable-title-hint {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 0.75rem;
+  color: #6c757d;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.editable-title:hover .editable-title-hint {
+  opacity: 1;
 }

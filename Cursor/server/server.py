@@ -6,6 +6,7 @@ import requests
 from werkzeug.utils import secure_filename
 import fitz  # PyMuPDF for PDF processing
 import logging
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -317,6 +318,7 @@ def generate_quiz():
             additional_instructions = data.get("additionalInstructions", "")
             language = data.get("language", "danish")
             num_questions = data.get("numQuestions", 5)  # Default to 5 if not provided
+            quiz_title = data.get("quizTitle", "Quiz")  # Get quiz title with default value
         else:
             # For backward compatibility with form data
             input_type = request.form.get("inputType", "topic")
@@ -328,6 +330,7 @@ def generate_quiz():
             num_questions = int(
                 request.form.get("numQuestions", 5)
             )  # Default to 5 if not provided
+            quiz_title = request.form.get("quizTitle", "Quiz")  # Get quiz title with default value
 
             # Handle document upload if present
             document = request.files.get("document")
@@ -369,12 +372,16 @@ def generate_quiz():
             if raw_quiz:
                 # Parse the raw quiz text into structured format
                 quiz = parse_quiz(raw_quiz, question_type)
+                
+                # Add the title from the request to the quiz data
+                quiz["title"] = quiz_title
+                
                 return jsonify(quiz)
 
         # Fallback to sample quiz if unable to generate one
         sample_quiz = {
             "id": "quiz123",
-            "title": "Sample Quiz",
+            "title": quiz_title,
             "description": f"A quiz about {content[:50] + '...' if len(content) > 50 else content}",
             "questions": [
                 {
@@ -538,6 +545,111 @@ def upload_files():
             
     except Exception as e:
         logger.error(f"Error in upload_files: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+# Add endpoint for saving quizzes
+@app.route("/api/save-quiz", methods=["POST"])
+def save_quiz():
+    try:
+        quiz_data = request.json
+        
+        if not quiz_data:
+            logger.error("No quiz data provided")
+            return jsonify({"success": False, "message": "No quiz data provided"}), 400
+            
+        # Create a quizzes directory if it doesn't exist
+        QUIZZES_FOLDER = "quizzes"
+        if not os.path.exists(QUIZZES_FOLDER):
+            os.makedirs(QUIZZES_FOLDER)
+            
+        # Generate a unique ID for the quiz if not present
+        if "id" not in quiz_data:
+            quiz_data["id"] = f"quiz_{int(time.time())}"
+            
+        # Add timestamp if not present
+        if "timestamp" not in quiz_data:
+            quiz_data["timestamp"] = time.time()
+            
+        # Load existing quizzes
+        quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
+        quizzes = []
+        
+        if os.path.exists(quizzes_file):
+            try:
+                with open(quizzes_file, "r") as f:
+                    quizzes = json.load(f)
+            except json.JSONDecodeError:
+                logger.error(f"Error reading quizzes file: invalid JSON")
+                quizzes = []
+                
+        # Check if quiz with same ID already exists
+        updated = False
+        for i, quiz in enumerate(quizzes):
+            if quiz.get("id") == quiz_data["id"]:
+                quizzes[i] = quiz_data
+                updated = True
+                break
+                
+        # Add quiz if it doesn't exist
+        if not updated:
+            quizzes.append(quiz_data)
+            
+        # Save quizzes back to file
+        with open(quizzes_file, "w") as f:
+            json.dump(quizzes, f, indent=2)
+            
+        return jsonify({
+            "success": True, 
+            "message": "Quiz saved successfully",
+            "quizId": quiz_data["id"]
+        })
+            
+    except Exception as e:
+        logger.error(f"Error saving quiz: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+# Add endpoint for getting all saved quizzes
+@app.route("/api/quizzes", methods=["GET"])
+def get_quizzes():
+    try:
+        QUIZZES_FOLDER = "quizzes"
+        quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
+        
+        if not os.path.exists(quizzes_file):
+            return jsonify([])
+            
+        with open(quizzes_file, "r") as f:
+            quizzes = json.load(f)
+            
+        return jsonify(quizzes)
+        
+    except Exception as e:
+        logger.error(f"Error getting quizzes: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+# Add endpoint for getting a specific quiz
+@app.route("/api/quizzes/<quiz_id>", methods=["GET"])
+def get_quiz(quiz_id):
+    try:
+        QUIZZES_FOLDER = "quizzes"
+        quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
+        
+        if not os.path.exists(quizzes_file):
+            return jsonify({"success": False, "message": "Quiz not found"}), 404
+            
+        with open(quizzes_file, "r") as f:
+            quizzes = json.load(f)
+            
+        quiz = next((q for q in quizzes if q.get("id") == quiz_id), None)
+        
+        if not quiz:
+            return jsonify({"success": False, "message": "Quiz not found"}), 404
+            
+        return jsonify(quiz)
+        
+    except Exception as e:
+        logger.error(f"Error getting quiz: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
 
 

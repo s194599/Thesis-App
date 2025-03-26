@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { cancelRequests } from "../services/api";
+import { saveQuiz as saveQuizApi } from "../services/api";
+import { toast } from "react-toastify";
 
 const QuizContext = createContext();
 
@@ -63,6 +65,7 @@ export const QuizProvider = ({ children }) => {
     language: "danish", // Output language
     numQuestions: 5, // Number of questions to generate (default: 5)
     useSampleQuiz: false, // Whether to use sample quiz instead of AI-generated quiz
+    quizTitle: "Quiz", // Title for the quiz (default: "Quiz")
   });
 
   // Loading state
@@ -82,6 +85,10 @@ export const QuizProvider = ({ children }) => {
 
   // Error state
   const [error, setError] = useState(null);
+
+  // States for quiz saving
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Handler to update form data
   const updateFormData = (field, value) => {
@@ -220,6 +227,7 @@ export const QuizProvider = ({ children }) => {
       language: "danish",
       numQuestions: 5,
       useSampleQuiz: false,
+      quizTitle: "Quiz",
     });
     setGeneratedQuiz(null);
     setEditingQuiz(null);
@@ -229,7 +237,12 @@ export const QuizProvider = ({ children }) => {
 
   // For demo purposes - initialize with sample quiz
   const loadSampleQuiz = () => {
-    setGeneratedQuiz(sampleQuiz);
+    // Create a copy of the sample quiz with the user's custom title
+    const customizedSampleQuiz = {
+      ...sampleQuiz,
+      title: formData.quizTitle || "Quiz"
+    };
+    setGeneratedQuiz(customizedSampleQuiz);
   };
 
   // Cancel quiz generation
@@ -239,6 +252,100 @@ export const QuizProvider = ({ children }) => {
     setLoading(false);
     setError(null);
     // We don't reset the form data or files to keep them available for another attempt
+  };
+
+  // Save the current quiz to backend
+  const saveQuizToBackend = async () => {
+    if (!generatedQuiz) {
+      setError("No quiz to save");
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveSuccess(false);
+    setError(null);
+
+    try {
+      // Copy the quiz and ensure it has a title
+      const quizToSave = {
+        ...generatedQuiz,
+        title: generatedQuiz.title || "Quiz",
+        timestamp: new Date().toISOString(),
+      };
+
+      // Call the API to save the quiz
+      const result = await saveQuizApi(quizToSave);
+      
+      // Update the quiz with the returned ID if needed
+      if (result.quizId && !generatedQuiz.id) {
+        setGeneratedQuiz({
+          ...generatedQuiz,
+          id: result.quizId
+        });
+      }
+      
+      setSaveSuccess(true);
+      
+      // Show success notification
+      if (toast) {
+        toast.success("Quiz saved successfully!");
+      } else {
+        alert("Quiz saved successfully!");
+      }
+      
+      return result;
+    } catch (err) {
+      console.error("Error saving quiz:", err);
+      setError("Failed to save quiz. Please try again.");
+      
+      // Show error notification
+      if (toast) {
+        toast.error("Failed to save quiz. Please try again.");
+      }
+      
+      return null;
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleGenerateQuiz = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      setGeneratedQuizStatus('loading');
+
+      // Ensure there's a valid model and input 
+      if (!formData.model) {
+        throw new Error("Please select an AI model");
+      }
+
+      // Build form data for API request
+      const quizRequestData = {
+        model: formData.model,
+        quizTitle: formData.quizTitle || "Quiz", // Include the quiz title
+        // ... existing code ...
+      };
+
+      // ... existing code with API call ...
+
+      // When API response comes back
+      if (data && data.questions) {
+        // Apply the title from form data to ensure consistency
+        const quizWithTitle = {
+          ...data,
+          title: formData.quizTitle || "Quiz"
+        };
+        setGeneratedQuiz(quizWithTitle);
+        setGeneratedQuizStatus('success');
+      } else {
+        // ... existing error handling ...
+      }
+    } catch (error) {
+      // ... existing error handling ...
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -267,6 +374,9 @@ export const QuizProvider = ({ children }) => {
         resetForm,
         loadSampleQuiz,
         cancelQuizGeneration,
+        saveQuizToBackend,
+        isSaving,
+        saveSuccess
       }}
     >
       {children}

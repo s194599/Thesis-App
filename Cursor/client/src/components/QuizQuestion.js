@@ -22,6 +22,12 @@ const QuizQuestion = ({ question, index }) => {
   const [correctAnswer, setCorrectAnswer] = useState(question.correctAnswer);
   const [explanation, setExplanation] = useState(question.explanation || '');
 
+  // Get letter representation for options
+  const getLetterForIndex = (optionIndex) => {
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    return optionIndex < letters.length ? letters[optionIndex] : `Option ${optionIndex + 1}`;
+  };
+
   // Save question text
   const saveQuestionText = () => {
     updateQuestion(question.id, 'question', questionText);
@@ -79,10 +85,19 @@ const QuizQuestion = ({ question, index }) => {
   };
 
   return (
-    <Card className="mb-3">
-      <Card.Header className="d-flex justify-content-between align-items-center">
-        <div>
-          <strong>Question {index + 1}</strong>
+    <div className="bg-white rounded shadow-sm mb-4 overflow-hidden">
+      {/* Question header with number */}
+      <div className="d-flex justify-content-between align-items-center py-2 px-3 bg-light border-bottom">
+        <div className="d-flex align-items-center">
+          <div className="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3" 
+               style={{ width: '32px', height: '32px', minWidth: '32px' }}>
+            <span className="text-white fw-bold">{index + 1}</span>
+          </div>
+          {!isEditingQuestion ? (
+            <div className="fw-normal" style={{ cursor: 'pointer' }} onClick={() => setIsEditingQuestion(true)}>
+              {question.question}
+            </div>
+          ) : null}
         </div>
         <Button 
           variant="outline-danger" 
@@ -91,11 +106,11 @@ const QuizQuestion = ({ question, index }) => {
         >
           <BsTrash /> Delete
         </Button>
-      </Card.Header>
+      </div>
       
-      <Card.Body>
-        {/* Question Text */}
-        {isEditingQuestion ? (
+      <div className="p-3">
+        {/* Question Text Editing */}
+        {isEditingQuestion && (
           <div className="mb-3">
             <Form.Control 
               as="textarea" 
@@ -125,29 +140,10 @@ const QuizQuestion = ({ question, index }) => {
               </Button>
             </div>
           </div>
-        ) : (
-          <Card.Title 
-            className="d-flex justify-content-between align-items-start"
-            onClick={() => setIsEditingQuestion(true)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div>{question.question}</div>
-            <Button 
-              variant="link" 
-              size="sm" 
-              className="text-muted p-0 ms-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsEditingQuestion(true);
-              }}
-            >
-              <BsPencil />
-            </Button>
-          </Card.Title>
         )}
         
         {/* Answer Options */}
-        <div className="mt-4">
+        <div className={`${isEditingQuestion ? 'mt-3' : 'mt-0'}`}>
           <div className="d-flex justify-content-between mb-2">
             <h6>Answer Options</h6>
             {!isEditingOptions && (
@@ -166,6 +162,9 @@ const QuizQuestion = ({ question, index }) => {
             <div>
               {options.map((option, optionIndex) => (
                 <InputGroup className="mb-2" key={optionIndex}>
+                  <InputGroup.Text className="bg-light">
+                    {getLetterForIndex(optionIndex)}
+                  </InputGroup.Text>
                   <Form.Control 
                     value={option}
                     onChange={(e) => handleOptionChange(optionIndex, e.target.value)}
@@ -223,33 +222,32 @@ const QuizQuestion = ({ question, index }) => {
             </div>
           ) : (
             <div>
-              {question.options.map((option, optionIndex) => (
-                <div 
-                  key={optionIndex} 
-                  className={`mb-2 p-2 border rounded ${
-                    option === question.correctAnswer ? 'border-success bg-light' : ''
-                  }`}
-                >
-                  <Form.Check
-                    type="radio"
-                    id={`q${index}-opt${optionIndex}`}
-                    name={`question-${index}`}
-                    label={option}
-                    checked={option === question.correctAnswer}
-                    readOnly
-                  />
-                  {option === question.correctAnswer && (
-                    <Badge bg="success" className="ms-2">Correct Answer</Badge>
-                  )}
-                </div>
-              ))}
+              {question.options.map((option, optionIndex) => {
+                const letter = getLetterForIndex(optionIndex);
+                const isCorrect = option === question.correctAnswer;
+                
+                return (
+                  <div 
+                    key={optionIndex}
+                    className={`d-flex align-items-center mb-2 py-2 px-3 rounded ${isCorrect ? 'bg-light' : ''}`}
+                  >
+                    <div 
+                      className={`rounded-circle d-flex justify-content-center align-items-center me-3 ${isCorrect ? 'bg-success' : 'bg-light border'}`}
+                      style={{ width: '28px', height: '28px', minWidth: '28px' }}
+                    >
+                      <span className={isCorrect ? 'text-white' : 'text-secondary'} style={{ fontSize: '14px' }}>{letter}</span>
+                    </div>
+                    <div>{option}</div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
         
-        {/* Explanation */}
+        {/* Explanation section */}
         <div className="mt-4">
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between mb-2">
             <h6>Explanation</h6>
             {!isEditingExplanation && (
               <Button 
@@ -270,6 +268,7 @@ const QuizQuestion = ({ question, index }) => {
                 rows={3}
                 value={explanation}
                 onChange={(e) => setExplanation(e.target.value)}
+                placeholder="Provide an explanation for the correct answer"
               />
               <div className="mt-2 d-flex justify-content-end">
                 <Button 
@@ -293,13 +292,15 @@ const QuizQuestion = ({ question, index }) => {
               </div>
             </div>
           ) : (
-            <p className="text-muted mb-0">
-              {question.explanation || 'No explanation provided.'}
-            </p>
+            <div className="bg-light p-3 rounded">
+              <p className="mb-0">
+                {explanation || 'No explanation provided.'}
+              </p>
+            </div>
           )}
         </div>
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 };
 

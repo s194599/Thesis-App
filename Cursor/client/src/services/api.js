@@ -165,3 +165,84 @@ export const fetchUrlContent = async (url) => {
     throw error;
   }
 };
+
+// Function to save a quiz to the backend
+export const saveQuiz = async (quizData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/save-quiz`, quizData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: 10000, // 10-second timeout
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      }
+    });
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to save quiz");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error saving quiz:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      console.error("Error response headers:", error.response.headers);
+    }
+    throw error;
+  }
+};
+
+// Function to get all saved quizzes
+export const getQuizzes = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/quizzes`, {
+      timeout: 10000, // 10-second timeout
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      }
+    });
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to get quizzes");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error getting quizzes:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      console.error("Error response headers:", error.response.headers);
+    }
+    throw error;
+  }
+};
+
+// Function to get a specific quiz
+export const getQuiz = async (quizId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/quizzes/${quizId}`, {
+      timeout: 10000, // 10-second timeout
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      }
+    });
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to get quiz");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error getting quiz:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      console.error("Error response headers:", error.response.headers);
+    }
+    throw error;
+  }
+};

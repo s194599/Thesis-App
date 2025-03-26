@@ -1,0 +1,146 @@
+[
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_5",
+    "questions": [
+      {
+        "correctAnswer": "England og Tyskland",
+        "explanation": "",
+        "id": "q1",
+        "options": [
+          "St\u00f8rre delen af Europa",
+          "England og Tyskland",
+          "Landene der taler romance sprog",
+          "Nordamerika"
+        ],
+        "question": "Hvilket af f\u00f8lgende lande var de st\u00e6rkebaser for Romantik-bev\u00e6gelsen?"
+      },
+      {
+        "correctAnswer": "William Wordsworth og Samuel Taylor Coleridge",
+        "explanation": "",
+        "id": "q2",
+        "options": [
+          "William Wordsworth og Samuel Taylor Coleridge",
+          "George Byron og Percy Bysshe Shelley",
+          "Lord Byron og Jane Austen",
+          "Sir Walter Scott og Goethe"
+        ],
+        "question": "Hvem skrev \"Lyrical Ballads\" f\u00f8rste gang i 1798?"
+      },
+      {
+        "correctAnswer": "1832",
+        "explanation": "",
+        "id": "q3",
+        "options": [
+          "1832",
+          "1840",
+          "1850",
+          "1860"
+        ],
+        "question": "Hvorn\u00e5r d\u00f8de b\u00e5de Sir Walter Scott og Goethe?"
+      },
+      {
+        "correctAnswer": "Et kritisk synspunkt mod den industrielle revolution",
+        "explanation": "",
+        "id": "q4",
+        "options": [
+          "En \u00f8get bevidsthed om naturens v\u00e6rdi",
+          "En fokus p\u00e5 individualitet og fantasi",
+          "En interesse for mytologi og parapsykologi",
+          "Et kritisk synspunkt mod den industrielle revolution"
+        ],
+        "question": "Romantik-bev\u00e6gelsen er en international artistisk og filosofisk bev\u00e6gelse, der har gjort det muligt for mennesker i vestlige kulturer at se sig selv og verden p\u00e5 en helt anden m\u00e5de. Hvilket af f\u00f8lgende ikke er et karakteristisk tr\u00e6k ved Romantik-bev\u00e6gelsen?"
+      },
+      {
+        "correctAnswer": "En international artistisk og filosofisk bev\u00e6gelse der redefinerede fundamentale tanker om hvordan mennesker i vestlige kulturer t\u00e6nker p\u00e5 sig selv og verden",
+        "explanation": "",
+        "id": "q5",
+        "options": [
+          "At v\u00e6re romantisk, som det popul\u00e6rt mener",
+          "En international artistisk og filosofisk bev\u00e6gelse der redefinerede fundamentale tanker om hvordan mennesker i vestlige kulturer t\u00e6nker p\u00e5 sig selv og verden",
+          "At elsker at l\u00e6se romantiske romaner",
+          "At v\u00e6re forfatter eller kunstner fra et romance-talende land"
+        ],
+        "question": "Hvad betyder Romantik if\u00f8lge definitionen?"
+      }
+    ],
+    "title": "Generated Quiz",
+    "timestamp": "2025-03-26T09:58:05.969Z"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_2",
+    "questions": [
+      {
+        "correctAnswer": "National Asset Project Vejledning 5.1",
+        "explanation": "",
+        "id": "q1",
+        "options": [
+          "National Asset Project Vejledning 5.1",
+          "National Asset Project Vejledning 3.0",
+          "National Asset Project Vejledning 5.0",
+          "National Asset Project Vejledning 2.0"
+        ],
+        "question": "Hvilket projekt er det der samler og analyserer \u00f8konomiske regnskaber fra danske virksomheder i perioden 2014-nu?"
+      },
+      {
+        "correctAnswer": "Vurdering af, hvordan virksomheder forvalter deres aktiver",
+        "explanation": "",
+        "id": "q2",
+        "options": [
+          "Vurdering af, hvordan virksomheder forvalter deres aktiver",
+          "Vurdering af, hvordan virksomheder forvalter deres udbetalinger",
+          "Vurdering af, hvordan virksomheder forvalter deres indbetalinger",
+          "Vurdering af, hvordan virksomheder forvalter deres l\u00f8ns\u00e6tninger"
+        ],
+        "question": "Hvad er projektets prim\u00e6re fokus?"
+      }
+    ],
+    "title": "Generated Quiz",
+    "timestamp": "2025-03-26T10:39:19.669Z"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_3",
+    "questions": [
+      {
+        "correctAnswer": "At e-l\u00e6ring ikke kan emote studerende som en l\u00e6rer g\u00f8r",
+        "explanation": "",
+        "id": "q1",
+        "options": [
+          "At e-l\u00e6ring ikke kan emote studerende som en l\u00e6rer g\u00f8r",
+          "At der kun bruges computers i e-l\u00e6ringen",
+          "At e-l\u00e6ringen er for dyrt",
+          "At e-l\u00e6ringen ikke er tilg\u00e6ngelig p\u00e5 mobilenhed"
+        ],
+        "question": "Hvilket af f\u00f8lgende er det prim\u00e6re problem med e-l\u00e6ring?"
+      },
+      {
+        "correctAnswer": "Brug pr\u00e6mier som penge eller point til at motivere l\u00e6rernes engagement",
+        "explanation": "",
+        "id": "q2",
+        "options": [
+          "G\u00f8r opgaverne mere roligt og frivillige",
+          "Brug pr\u00e6mier som penge eller point til at motivere l\u00e6rernes engagement",
+          "Brug billeder og lyd i de onlineundervisninger",
+          "Lade eleverne selv udvikle deres egne unders\u00f8gelser"
+        ],
+        "question": "Hvordan kan gamificering anvendes for at styrke e-l\u00e6rers engagemang?"
+      },
+      {
+        "correctAnswer": "Sri Watini",
+        "explanation": "",
+        "id": "q3",
+        "options": [
+          "Sri Watini",
+          "Widhy Setyowati",
+          "Universitas Panca Sakti Bekasi",
+          "STIE Bank BPD Jateng"
+        ],
+        "question": "Hvem er hovedforfatteren af artiklen \"Using Gamification To Increase E-Learning Engagement\"?"
+      }
+    ],
+    "title": "JBSITO",
+    "timestamp": "2025-03-26T10:47:55.957Z"
+  }
+]
