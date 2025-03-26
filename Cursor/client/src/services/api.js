@@ -10,7 +10,7 @@ let cancelTokenSource = null;
 export const createCancelToken = () => {
   // Cancel any existing requests
   if (cancelTokenSource) {
-    cancelTokenSource.cancel('Operation canceled by the user.');
+    cancelTokenSource.cancel("Operation canceled by the user.");
   }
   // Create a new token
   cancelTokenSource = axios.CancelToken.source();
@@ -20,7 +20,7 @@ export const createCancelToken = () => {
 // Function to cancel ongoing requests
 export const cancelRequests = () => {
   if (cancelTokenSource) {
-    cancelTokenSource.cancel('Operation canceled by the user.');
+    cancelTokenSource.cancel("Operation canceled by the user.");
     cancelTokenSource = null;
   }
 };
@@ -30,7 +30,7 @@ export const generateQuiz = async (quizData) => {
   try {
     // Create a new cancel token for this request
     const source = createCancelToken();
-    
+
     const response = await axios.post(
       `${API_BASE_URL}/generate-quiz`,
       quizData,
@@ -42,22 +42,22 @@ export const generateQuiz = async (quizData) => {
         validateStatus: function (status) {
           return status >= 200 && status < 500; // Don't reject if status is less than 500
         },
-        cancelToken: source.token
+        cancelToken: source.token,
       }
     );
 
     if (response.status >= 400) {
       throw new Error(response.data.message || "Failed to generate quiz");
     }
-
+    console.log("Quiz generated successfully:", response.data);
     return response.data;
   } catch (error) {
     if (axios.isCancel(error)) {
-      console.log('Request canceled:', error.message);
+      console.log("Request canceled:", error.message);
       // Return a specific object to indicate cancellation
       return { canceled: true };
     }
-    
+
     console.error("Error generating quiz:", error);
     if (error.response) {
       console.error("Error response data:", error.response.data);
@@ -88,7 +88,7 @@ export const uploadFiles = async (files) => {
         timeout: 300000, // 5-minute timeout
         validateStatus: function (status) {
           return status >= 200 && status < 500; // Don't reject if status is less than 500
-        }
+        },
       }
     );
 
@@ -121,7 +121,7 @@ export const uploadFile = async (file) => {
       timeout: 300000, // 5-minute timeout
       validateStatus: function (status) {
         return status >= 200 && status < 500; // Don't reject if status is less than 500
-      }
+      },
     });
 
     if (response.status >= 400) {
@@ -143,12 +143,16 @@ export const uploadFile = async (file) => {
 // Function to fetch quiz content from a URL
 export const fetchUrlContent = async (url) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/fetch-url`, { url }, {
-      timeout: 300000, // 5-minute timeout
-      validateStatus: function (status) {
-        return status >= 200 && status < 500; // Don't reject if status is less than 500
+    const response = await axios.post(
+      `${API_BASE_URL}/fetch-url`,
+      { url },
+      {
+        timeout: 300000, // 5-minute timeout
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Don't reject if status is less than 500
+        },
       }
-    });
+    );
 
     if (response.status >= 400) {
       throw new Error(response.data.message || "Failed to fetch URL content");
@@ -176,7 +180,7 @@ export const saveQuiz = async (quizData) => {
       timeout: 10000, // 10-second timeout
       validateStatus: function (status) {
         return status >= 200 && status < 500;
-      }
+      },
     });
 
     if (response.status >= 400) {
@@ -202,7 +206,7 @@ export const getQuizzes = async () => {
       timeout: 10000, // 10-second timeout
       validateStatus: function (status) {
         return status >= 200 && status < 500;
-      }
+      },
     });
 
     if (response.status >= 400) {
@@ -228,7 +232,7 @@ export const getQuiz = async (quizId) => {
       timeout: 10000, // 10-second timeout
       validateStatus: function (status) {
         return status >= 200 && status < 500;
-      }
+      },
     });
 
     if (response.status >= 400) {

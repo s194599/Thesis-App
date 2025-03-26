@@ -14,22 +14,24 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 # Configure CORS with specific origins
-CORS(app, 
-     resources={
-         r"/api/*": {
-             "origins": ["http://localhost:3000"],  # React development server
-             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-             "allow_headers": ["Content-Type", "Authorization"],
-             "supports_credentials": True
-         }
-     })
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": ["http://localhost:3000"],  # React development server
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True,
+        }
+    },
+)
 
 # Configure Flask app
-app.config['PERMANENT_SESSION_LIFETIME'] = 300  # 5 minutes
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300  # 5 minutes
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['TEMPLATES_AUTO_RELOAD'] = False  # Disable template auto-reload
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable file caching
+app.config["PERMANENT_SESSION_LIFETIME"] = 300  # 5 minutes
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 300  # 5 minutes
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
+app.config["TEMPLATES_AUTO_RELOAD"] = False  # Disable template auto-reload
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # Disable file caching
 
 UPLOAD_FOLDER = "uploads"
 if not os.path.exists(UPLOAD_FOLDER):
@@ -87,6 +89,7 @@ def generate_quiz_with_ollama(
         C) [Option 3]
         D) [Option 4]
         Correct answer: [A, B, C, or D]
+    
 
         And so on. IMPORTANT: 
         - Number the questions starting with 1.
@@ -147,7 +150,9 @@ def generate_quiz_with_ollama(
 
     try:
         # Add timeout to the Ollama API call
-        response = requests.post(OLLAMA_API, json=payload, timeout=300)  # 5-minute timeout
+        response = requests.post(
+            OLLAMA_API, json=payload, timeout=300
+        )  # 5-minute timeout
 
         if response.status_code == 200:
             raw_quiz = response.json().get("response", "No response received.")
@@ -173,7 +178,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
         raw_questions = []
         current_question = ""
 
-        # Process line by line
+        # Split up all questions line by line
         lines = raw_quiz.split("\n")
         for line in lines:
             line = line.strip()
@@ -198,10 +203,10 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
             # Initialize question object
             question = {
                 "id": f"q{i+1}",  # Start from q1 instead of q0
-                "question": "",
+                "questionText": "",
                 "options": [],
                 "correctAnswer": "",
-                "explanation": "",
+                # "explanation": "",
             }
 
             # Split the question into lines for processing
@@ -227,29 +232,10 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
             for line in lines[1:]:  # Skip the first line (question text)
                 line = line.strip()
 
-                # Check if it's an option line
-                if (
-                    line.startswith("A)")
-                    or line.startswith("B)")
-                    or line.startswith("C)")
-                    or line.startswith("D)")
-                    or line.startswith("A. ")
-                    or line.startswith("B. ")
-                    or line.startswith("C. ")
-                    or line.startswith("D. ")
-                ):
-                    option_letter = line[0]
-                    # Handle both A) and A. formats
-                    delimiter = line[1]
-                    option_text = (
-                        line[2:].strip() if delimiter == ")" else line[2:].strip()
-                    )
-                    options.append(option_text)
-
-                # Check if it's the correct answer line
-                elif "Correct answer:" in line:
-                    correct_answer_line = line
-                elif line.startswith("Correct answer"):  # Also handle without colon
+                # Check if it's an option line (A), B), A., B. etc)
+                if line and line[0] in "ABCD" and line[1] in ").":
+                    options.append(line[2:].strip())
+                elif "Correct answer" in line.lower():  # Case insensitive check
                     correct_answer_line = line
 
             # Add options to question
@@ -285,17 +271,17 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
                             options[3] if len(options) > 3 else ""
                         )
 
-            # Look for an explanation (if present)
-            for line in lines:
-                if "Explanation:" in line:
-                    question["explanation"] = line.split("Explanation:")[1].strip()
+            # # Look for an explanation (if present)
+            # for line in lines:
+            #     if "Explanation:" in line:
+            #         question["explanation"] = line.split("Explanation:")[1].strip()
 
             questions.append(question)
 
     # Create a quiz object
     quiz = {
         "id": f"quiz_{len(questions)}",
-        "title": "Generated Quiz",
+        "title": "Quiz",
         "description": "Quiz generated from your content",
         "questions": questions,
     }
@@ -499,7 +485,7 @@ def upload_files():
             filename = secure_filename(file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             logger.info(f"Saving file to: {filepath}")
-            
+
             try:
                 file.save(filepath)
                 uploaded_filenames.append(filename)
@@ -512,7 +498,9 @@ def upload_files():
             if filename.lower().endswith(".pdf"):
                 try:
                     content = extract_text_from_pdf(filepath)
-                    logger.info(f"Extracted {len(content)} characters from PDF: {filename}")
+                    logger.info(
+                        f"Extracted {len(content)} characters from PDF: {filename}"
+                    )
                     uploaded_contents.append(content)
                 except Exception as e:
                     logger.error(f"Error processing PDF {filename}: {str(e)}")
