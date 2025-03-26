@@ -142,5 +142,35 @@
     ],
     "title": "JBSITO",
     "timestamp": "2025-03-26T10:47:55.957Z"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_86726119",
+    "questions": [
+      {
+        "correctAnswer": "International artistic and philosophical movement that redefined people's self-perception and view of the world",
+        "id": "q1",
+        "options": [
+          "Love and romance",
+          "Artistic and philosophical movement",
+          "International artistic and philosophical movement that redefined people's self-perception and view of the world",
+          "Literary history strongholds in countries of romance languages"
+        ],
+        "question": "What is Romanticism primarily associated with?"
+      },
+      {
+        "correctAnswer": "First edition of Lyrical Ballads by Wordsworth and Coleridge in 1798",
+        "id": "q2",
+        "options": [
+          "Death of Sir Walter Scott and Goethe in 1832",
+          "First edition of Lyrical Ballads by Wordsworth and Coleridge in 1798",
+          "Composition of Hymns to the Night by Novalis in 1798",
+          "Literary history strongholds in countries of romance languages"
+        ],
+        "question": "Which of the following events marks the beginning of the Romantic period?"
+      }
+    ],
+    "title": "Quiz",
+    "timestamp": "2025-03-26T13:28:24.032Z"
   }
 ]
