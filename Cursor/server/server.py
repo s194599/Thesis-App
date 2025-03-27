@@ -429,10 +429,10 @@ def generate_quiz():
                     f"Successfully received raw quiz from Ollama (length: {len(raw_quiz)} characters)"
                 )
 
-                # Log the raw quiz with line numbers for easier debugging
-                logger.info("Raw quiz content with line numbers:")
-                for i, line in enumerate(raw_quiz.strip().split("\n")):
-                    logger.info(f"Line {i+1}: {line}")
+                # # Log the raw quiz with line numbers for easier debugging
+                # logger.info("Raw quiz content with line numbers:")
+                # for i, line in enumerate(raw_quiz.strip().split("\n")):
+                #     logger.info(f"Line {i+1}: {line}")
 
                 # Parse the raw quiz text into structured format
                 logger.info("Parsing raw quiz text into structured format")
@@ -536,31 +536,17 @@ def fetch_url_content():
 
 
 # Combined endpoint for uploading one or multiple files
-@app.route("/api/upload-file", methods=["POST"])
 @app.route("/api/upload-files", methods=["POST"])
 def upload_files():
     try:
-        # Log which route was used
-        endpoint = request.path
-        logger.info(f"Received upload request at {endpoint}")
+        logger.info("Received upload request for 1 or more files")
 
-        # Check if it's a single file or multiple files request
-        if endpoint == "/api/upload-file":
-            # Handle single file upload
-            if "file" not in request.files:
-                logger.error("No file part in request")
-                return jsonify({"success": False, "message": "No file part"}), 400
+        # Handle multiple files upload
+        if "files" not in request.files:
+            logger.error("No files part in request")
+            return jsonify({"success": False, "message": "No files part"}), 400
 
-            files = [request.files["file"]]
-            is_single_file = True
-        else:
-            # Handle multiple files upload
-            if "files" not in request.files:
-                logger.error("No files part in request")
-                return jsonify({"success": False, "message": "No files part"}), 400
-
-            files = request.files.getlist("files")
-            is_single_file = False
+        files = request.files.getlist("files")
 
         # Check if any files were selected
         if not files or all(file.filename == "" for file in files):
@@ -612,33 +598,19 @@ def upload_files():
         # Combine contents
         combined_content = "\n\n".join(uploaded_contents)
 
-        # Create response based on whether it was a single or multiple file upload
-        if is_single_file:
-            return jsonify(
-                {
-                    "success": True,
-                    "message": "File uploaded successfully",
-                    "filename": uploaded_filenames[0],
-                    "content": (
-                        combined_content[:1000] + "..."
-                        if len(combined_content) > 1000
-                        else combined_content
-                    ),
-                }
-            )
-        else:
-            return jsonify(
-                {
-                    "success": True,
-                    "message": "Files uploaded successfully",
-                    "filenames": uploaded_filenames,
-                    "content": (
-                        combined_content[:1000] + "..."
-                        if len(combined_content) > 1000
-                        else combined_content
-                    ),
-                }
-            )
+        # Return response for multiple file upload
+        return jsonify(
+            {
+                "success": True,
+                "message": "Files uploaded successfully",
+                "filenames": uploaded_filenames,
+                "content": (
+                    combined_content[:1000] + "..."
+                    if len(combined_content) > 1000
+                    else combined_content
+                ),
+            }
+        )
 
     except Exception as e:
         logger.error(f"Error in upload_files: {str(e)}")
