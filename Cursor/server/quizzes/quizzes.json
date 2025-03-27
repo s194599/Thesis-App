@@ -1,239 +1,54 @@
 [
   {
     "description": "Quiz generated from your content",
-    "id": "quiz_5",
     "questions": [
       {
-        "correctAnswer": "England og Tyskland",
-        "explanation": "",
+        "correctAnswer": "An international movement that redefined Western cultures' perspectives on themselves and their world",
         "id": "q1",
         "options": [
-          "St\u00f8rre delen af Europa",
-          "England og Tyskland",
-          "Landene der taler romance sprog",
-          "Nordamerika"
+          "An artistic and philosophical movement primarily about love",
+          "An international movement that redefined Western cultures' perspectives on themselves and their world",
+          "A literary phenomenon predominantly found in countries speaking romance languages",
+          "A cultural shift originating from Germany and England"
         ],
-        "question": "Hvilket af f\u00f8lgende lande var de st\u00e6rkebaser for Romantik-bev\u00e6gelsen?"
+        "question": "What is Romanticism?"
       },
       {
-        "correctAnswer": "William Wordsworth og Samuel Taylor Coleridge",
-        "explanation": "",
+        "correctAnswer": "The first edition of Lyrical Ballads by Wordsworth and Coleridge",
         "id": "q2",
         "options": [
-          "William Wordsworth og Samuel Taylor Coleridge",
-          "George Byron og Percy Bysshe Shelley",
-          "Lord Byron og Jane Austen",
-          "Sir Walter Scott og Goethe"
-        ],
-        "question": "Hvem skrev \"Lyrical Ballads\" f\u00f8rste gang i 1798?"
-      },
-      {
-        "correctAnswer": "1832",
-        "explanation": "",
-        "id": "q3",
-        "options": [
-          "1832",
-          "1840",
-          "1850",
-          "1860"
-        ],
-        "question": "Hvorn\u00e5r d\u00f8de b\u00e5de Sir Walter Scott og Goethe?"
-      },
-      {
-        "correctAnswer": "Et kritisk synspunkt mod den industrielle revolution",
-        "explanation": "",
-        "id": "q4",
-        "options": [
-          "En \u00f8get bevidsthed om naturens v\u00e6rdi",
-          "En fokus p\u00e5 individualitet og fantasi",
-          "En interesse for mytologi og parapsykologi",
-          "Et kritisk synspunkt mod den industrielle revolution"
-        ],
-        "question": "Romantik-bev\u00e6gelsen er en international artistisk og filosofisk bev\u00e6gelse, der har gjort det muligt for mennesker i vestlige kulturer at se sig selv og verden p\u00e5 en helt anden m\u00e5de. Hvilket af f\u00f8lgende ikke er et karakteristisk tr\u00e6k ved Romantik-bev\u00e6gelsen?"
-      },
-      {
-        "correctAnswer": "En international artistisk og filosofisk bev\u00e6gelse der redefinerede fundamentale tanker om hvordan mennesker i vestlige kulturer t\u00e6nker p\u00e5 sig selv og verden",
-        "explanation": "",
-        "id": "q5",
-        "options": [
-          "At v\u00e6re romantisk, som det popul\u00e6rt mener",
-          "En international artistisk og filosofisk bev\u00e6gelse der redefinerede fundamentale tanker om hvordan mennesker i vestlige kulturer t\u00e6nker p\u00e5 sig selv og verden",
-          "At elsker at l\u00e6se romantiske romaner",
-          "At v\u00e6re forfatter eller kunstner fra et romance-talende land"
-        ],
-        "question": "Hvad betyder Romantik if\u00f8lge definitionen?"
-      }
-    ],
-    "title": "Generated Quiz",
-    "timestamp": "2025-03-26T09:58:05.969Z"
-  },
-  {
-    "description": "Quiz generated from your content",
-    "id": "quiz_2",
-    "questions": [
-      {
-        "correctAnswer": "England og Tyskland",
-        "explanation": "",
-        "id": "q1",
-        "options": [
-          "Landene, der taler romanske sprog",
-          "England og Tyskland",
-          "Frankrig og Italien",
-          "Spanien og Portugal"
-        ],
-        "question": "Hvilke lande var de st\u00e6rkeste baser for det Romantiske Bev\u00e6gelse?"
-      },
-      {
-        "correctAnswer": "1798 til 1832",
-        "explanation": "",
-        "id": "q2",
-        "options": [
-          "1798 til 1832",
-          "Fra 1750 til 1800",
-          "Fr\u00e5 1800 til 1850",
-          "Fra 1850 til 1900"
-        ],
-        "question": "Hvilken periode regnes for den Romantiske bev\u00e6gelse?"
-      }
-    ],
-    "title": "Quiz 777",
-    "timestamp": "2025-03-26T12:05:19.844Z"
-  },
-  {
-    "description": "Quiz generated from your content",
-    "id": "quiz_3",
-    "questions": [
-      {
-        "correctAnswer": "At e-l\u00e6ring ikke kan emote studerende som en l\u00e6rer g\u00f8r",
-        "explanation": "",
-        "id": "q1",
-        "options": [
-          "At e-l\u00e6ring ikke kan emote studerende som en l\u00e6rer g\u00f8r",
-          "At der kun bruges computers i e-l\u00e6ringen",
-          "At e-l\u00e6ringen er for dyrt",
-          "At e-l\u00e6ringen ikke er tilg\u00e6ngelig p\u00e5 mobilenhed"
-        ],
-        "question": "Hvilket af f\u00f8lgende er det prim\u00e6re problem med e-l\u00e6ring?"
-      },
-      {
-        "correctAnswer": "Brug pr\u00e6mier som penge eller point til at motivere l\u00e6rernes engagement",
-        "explanation": "",
-        "id": "q2",
-        "options": [
-          "G\u00f8r opgaverne mere roligt og frivillige",
-          "Brug pr\u00e6mier som penge eller point til at motivere l\u00e6rernes engagement",
-          "Brug billeder og lyd i de onlineundervisninger",
-          "Lade eleverne selv udvikle deres egne unders\u00f8gelser"
-        ],
-        "question": "Hvordan kan gamificering anvendes for at styrke e-l\u00e6rers engagemang?"
-      },
-      {
-        "correctAnswer": "Sri Watini",
-        "explanation": "",
-        "id": "q3",
-        "options": [
-          "Sri Watini",
-          "Widhy Setyowati",
-          "Universitas Panca Sakti Bekasi",
-          "STIE Bank BPD Jateng"
-        ],
-        "question": "Hvem er hovedforfatteren af artiklen \"Using Gamification To Increase E-Learning Engagement\"?"
-      }
-    ],
-    "title": "JBSITO",
-    "timestamp": "2025-03-26T10:47:55.957Z"
-  },
-  {
-    "description": "Quiz generated from your content",
-    "id": "quiz_86726119",
-    "questions": [
-      {
-        "correctAnswer": "International artistic and philosophical movement that redefined people's self-perception and view of the world",
-        "id": "q1",
-        "options": [
-          "Love and romance",
-          "Artistic and philosophical movement",
-          "International artistic and philosophical movement that redefined people's self-perception and view of the world",
-          "Literary history strongholds in countries of romance languages"
-        ],
-        "question": "What is Romanticism primarily associated with?"
-      },
-      {
-        "correctAnswer": "First edition of Lyrical Ballads by Wordsworth and Coleridge in 1798",
-        "id": "q2",
-        "options": [
-          "Death of Sir Walter Scott and Goethe in 1832",
-          "First edition of Lyrical Ballads by Wordsworth and Coleridge in 1798",
-          "Composition of Hymns to the Night by Novalis in 1798",
-          "Literary history strongholds in countries of romance languages"
+          "The first edition of Lyrical Ballads by Wordsworth and Coleridge",
+          "The composition of Hymns to the Night by Novalis",
+          "The death of Sir Walter Scott and Goethe",
+          "The invention of the printing press"
         ],
         "question": "Which of the following events marks the beginning of the Romantic period?"
-      }
-    ],
-    "title": "Quiz",
-    "timestamp": "2025-03-26T13:28:24.032Z"
-  },
-  {
-    "description": "Quiz generated from your content",
-    "id": "quiz_4e834862",
-    "questions": [
-      {
-        "correctAnswer": "An international artistic and philosophical movement that began around 1798 and ended in 1832, with strongholds in England and Germany.",
-        "id": "q1",
-        "options": [
-          "An artistic and philosophical movement that originated from romance languages such as Spanish, Italian, or French.",
-          "An international artistic and philosophical movement that began around 1798 and ended in 1832, with strongholds in England and Germany.",
-          "A genre of literature characterized by love stories.",
-          "A period in history known for its peaceful and harmonious nature."
-        ],
-        "question": "Which of the following accurately describes Romanticism?"
       },
       {
-        "correctAnswer": "First edition of Lyrical Ballads by Wordsworth and Coleridge",
-        "id": "q2",
-        "options": [
-          "Hymns to the Night by Novalis",
-          "First edition of Lyrical Ballads by Wordsworth and Coleridge",
-          "The Divine Comedy by Dante Alighieri",
-          "Paradise Lost by John Milton"
-        ],
-        "question": "Which of the following works marked the beginning of the Romantic period?"
-      },
-      {
-        "correctAnswer": "1750 - 1800",
+        "correctAnswer": "Italy",
         "id": "q3",
         "options": [
-          "1798 - 1832",
-          "1800 - 1850",
-          "1750 - 1800",
-          "1900 - 1950"
-        ],
-        "question": "Which of the following is NOT a correct set of terminal dates for the Romantic period?"
-      },
-      {
-        "correctAnswer": "Goethe and Sir Walter Scott",
-        "id": "q4",
-        "options": [
-          "Goethe and Sir Walter Scott",
-          "Lord Byron and Percy Bysshe Shelley",
-          "John Keats and William Blake",
-          "William Wordsworth and Samuel Taylor Coleridge"
-        ],
-        "question": "Which of the following authors died in the year that marked the end of the Romantic period?"
-      },
-      {
-        "correctAnswer": "England",
-        "id": "q5",
-        "options": [
-          "Spain, Italy, or France",
           "England",
           "Germany",
-          "Russia"
+          "France",
+          "Italy"
         ],
-        "question": "Romanticism is most associated with which of the following countries?"
+        "question": "Which of these countries was NOT a stronghold of the Romantic Movement?"
+      },
+      {
+        "correctAnswer": "Because it was the year of the first edition of Lyrical Ballads by Wordsworth and Coleridge and of the composition of Hymns to the Night by Novalis",
+        "id": "q4",
+        "options": [
+          "Because it was the year when both Sir Walter Scott and Goethe died",
+          "Because it was the year of the first edition of Lyrical Ballads by Wordsworth and Coleridge and of the composition of Hymns to the Night by Novalis",
+          "Because it was the year that marked the end of Romanticism",
+          "Because it was the year of the invention of the printing press in Germany"
+        ],
+        "question": "Why is it significant that the Romantic period began in 1798?"
       }
     ],
-    "title": "Quiz",
-    "timestamp": "2025-03-27T10:44:09.351Z"
+    "title": "My Quiz",
+    "timestamp": "2025-03-27T14:22:51.106Z",
+    "id": "quiz_1743085371"
   }
 ]

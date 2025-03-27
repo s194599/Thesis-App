@@ -323,14 +323,13 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
 
     # Create a quiz object with unique ID
     quiz = {
-        "id": f"quiz_{uuid.uuid4().hex[:8]}",
         "title": "Quiz",
         "description": "Quiz generated from your content",
         "questions": questions,
     }
 
     logger.info(
-        f"Finished parsing quiz with {len(questions)} questions, ID: {quiz['id']}"
+        f"Finished parsing quiz with {len(questions)} questions"
     )
     return quiz
 
@@ -453,7 +452,6 @@ def generate_quiz():
         # Fallback to sample quiz if unable to generate one
         logger.info("Using fallback sample quiz")
         sample_quiz = {
-            "id": f"quiz_{uuid.uuid4().hex[:8]}",
             "title": quiz_title,
             "description": f"A quiz about {content[:50] + '...' if len(content) > 50 else content}",
             "questions": [
