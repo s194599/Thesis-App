@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { BsBraces } from 'react-icons/bs';
+import { BsBraces, BsBook } from 'react-icons/bs';
 
 const Header = () => {
   const location = useLocation();
@@ -39,6 +39,14 @@ const Header = () => {
                 className={`nav-link ${location.pathname === '/create-quiz' ? 'active' : ''}`}
               >
                 Create Quiz
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link 
+                to="/platform" 
+                className={`nav-link ${location.pathname === '/platform' ? 'active' : ''}`}
+              >
+                <BsBook className="me-1" /> Learning Platform
               </Link>
             </Nav.Item>
           </Nav>

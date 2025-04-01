@@ -2,13 +2,14 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import './styles/PlatformOverview.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
 import SavedQuizzes from './components/SavedQuizzes';
 import TakeQuiz from './components/TakeQuiz';
 import QuizForm from './components/QuizForm';
-import QuizOutput from './components/QuizOutput';
+import PlatformOverview from './components/PlatformOverview';
 import { useQuizContext } from './context/QuizContext';
 
 function App() {
@@ -16,22 +17,45 @@ function App() {
   
   return (
     <div className="App d-flex flex-column min-vh-100">
-      <Header />
-      <div className="flex-grow-1">
-        <Routes>
-          {/* Landing page (new home page) */}
-          <Route path="/" element={<LandingPage />} />
-          
-          {/* Saved quizzes page */}
-          <Route path="/saved-quizzes" element={<SavedQuizzes />} />
-          
-          {/* Take a quiz page */}
-          <Route path="/take-quiz/:quizId" element={<TakeQuiz />} />
-          
-          {/* Quiz creation page */}
-          <Route 
-            path="/create-quiz" 
-            element={
+      <Routes>
+        {/* Platform Overview - New Learning Platform */}
+        <Route path="/platform" element={<PlatformOverview />} />
+      
+        {/* Original Quiz Generator Routes */}
+        <Route path="/" element={
+          <>
+            <Header />
+            <div className="flex-grow-1">
+              <LandingPage />
+            </div>
+            <Footer />
+          </>
+        } />
+        
+        <Route path="/saved-quizzes" element={
+          <>
+            <Header />
+            <div className="flex-grow-1">
+              <SavedQuizzes />
+            </div>
+            <Footer />
+          </>
+        } />
+        
+        <Route path="/take-quiz/:quizId" element={
+          <>
+            <Header />
+            <div className="flex-grow-1">
+              <TakeQuiz />
+            </div>
+            <Footer />
+          </>
+        } />
+        
+        <Route path="/create-quiz" element={
+          <>
+            <Header />
+            <div className="flex-grow-1">
               <div className="container mt-4">
                 <div className="row justify-content-center">
                   <div className="col-lg-8">
@@ -48,14 +72,14 @@ function App() {
                   </div>
                 </div>
               </div>
-            } 
-          />
-          
-          {/* Redirect any unknown paths to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-      <Footer />
+            </div>
+            <Footer />
+          </>
+        } />
+        
+        {/* Redirect any unknown paths to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   );
 }

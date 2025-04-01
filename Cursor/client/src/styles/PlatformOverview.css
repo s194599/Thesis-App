@@ -1,0 +1,82 @@
+.platform-overview {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.sidebar-col {
+  height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+}
+
+.content-col {
+  min-height: 100vh;
+  padding-bottom: 80px; /* Space for the fixed bottom bar */
+}
+
+.module-sidebar {
+  height: 100%;
+}
+
+.module-list .list-group-item {
+  padding: 0.75rem 1rem;
+  transition: all 0.2s;
+}
+
+.module-list .list-group-item.active {
+  background-color: #f0f0f0;
+  color: #212529;
+  border-color: rgba(0, 0, 0, 0.125);
+  font-weight: 500;
+  border-left: 4px solid #0d6efd;
+}
+
+.module-list .list-group-item:hover:not(.active) {
+  background-color: #f8f9fa;
+}
+
+.activity-card {
+  transition: all 0.2s;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.activity-card.completed {
+  background-color: #f8f9fa;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Custom scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+} 

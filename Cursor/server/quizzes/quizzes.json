@@ -68,36 +68,34 @@
     "timestamp": "2025-03-26T09:58:05.969Z"
   },
   {
-    "description": "Quiz generated from your content",
+    "description": "WPDKAP\u00a8DKAP\u00c5WKDP\u00a8AWKD",
     "id": "quiz_2",
     "questions": [
       {
-        "correctAnswer": "England og Tyskland",
-        "explanation": "",
+        "correctAnswer": "International artistic and philosophical movement",
         "id": "q1",
         "options": [
-          "Landene, der taler romanske sprog",
-          "England og Tyskland",
-          "Frankrig og Italien",
-          "Spanien og Portugal"
+          "Love and romantic relationships",
+          "International artistic and philosophical movement",
+          "Popular literature in romance languages",
+          "None of the above"
         ],
-        "question": "Hvilke lande var de st\u00e6rkeste baser for det Romantiske Bev\u00e6gelse?"
+        "question": "What is Romanticism primarily associated with?"
       },
       {
-        "correctAnswer": "1798 til 1832",
-        "explanation": "",
+        "correctAnswer": "England and Germany",
         "id": "q2",
         "options": [
-          "1798 til 1832",
-          "Fra 1750 til 1800",
-          "Fr\u00e5 1800 til 1850",
-          "Fra 1850 til 1900"
+          "England and Germany",
+          "France and Italy",
+          "Spain and Portugal",
+          "Russia and Austria"
         ],
-        "question": "Hvilken periode regnes for den Romantiske bev\u00e6gelse?"
+        "question": "In what countries did the strongholds of the Romantic Movement lie?"
       }
     ],
-    "title": "Quiz 777",
-    "timestamp": "2025-03-26T12:05:19.844Z"
+    "title": "JBSITGO1",
+    "timestamp": "2025-04-01T09:05:34.757Z"
   },
   {
     "description": "Quiz generated from your content",
