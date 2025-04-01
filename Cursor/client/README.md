@@ -1,70 +1,63 @@
-# Getting Started with Create React App
+# Learning Platform Overview
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This module provides an interactive overview of learning modules and materials for students, with progress tracking and access to quizzes.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### 1. Module Navigation
+- Sidebar/timeline view of upcoming and past modules
+- Each module labeled by date and title
+- Selected module is visually highlighted
+- Progress indicators for each module
 
-### `npm start`
+### 2. Module Content View
+- Displays learning materials with appropriate icons:
+  - PDFs
+  - YouTube videos (with thumbnails)
+  - Word documents
+  - Interactive quizzes
+- Materials are clickable and open in new tabs
+- Completion status is tracked for each material
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 3. Progress Tracking
+- Progress bar per module
+- Shows percentage and number of completed activities
+- Global progress tracker at the bottom
+- State persisted via localStorage
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 4. Quiz Access
+- Dedicated quiz section with access to the quiz-taking interface
+- Seamless integration with existing quiz functionality
 
-### `npm test`
+## Implementation Details
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### State Management
+- Uses React Context API for state management (`PlatformContext`)
+- Stores modules, materials, and completion status
+- Persists state in localStorage for session continuity
 
-### `npm run build`
+### Components
+- `PlatformOverview`: Main container component
+- `ModuleSidebar`: Navigation sidebar with module list
+- `ModuleContent`: Displays selected module's materials
+- `OverallProgress`: Shows global progress across all modules
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Styling
+- Clean, minimal design using Bootstrap components
+- Custom CSS animations and hover effects
+- Fully responsive for different device sizes
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Usage
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The platform is integrated into the main application routing system. To access:
 
-### `npm run eject`
+1. Navigate to the root URL of the application
+2. Select a module from the sidebar to view its contents
+3. Click on materials to view/open them and track progress
+4. Access quizzes through the quiz links in the materials list
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Future Enhancements
+- Filtering modules by date or completion status
+- Search functionality for finding specific materials
+- User-specific profiles and progress tracking
+- Additional material types (e.g., assignments, discussions)

@@ -3,32 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
-import { QuizProvider } from './context/QuizContext';
-import QuizTakingProvider from './context/QuizTakingContext';
+import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <QuizProvider>
-        <QuizTakingProvider>
-          <App />
-          <ToastContainer 
-            position="bottom-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
-        </QuizTakingProvider>
-      </QuizProvider>
+      <App />
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </BrowserRouter>
   </React.StrictMode>
 );

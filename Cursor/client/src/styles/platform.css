@@ -1,0 +1,72 @@
+/* Platform Overview styles */
+
+/* Sidebar styles */
+.module-sidebar {
+  padding-bottom: 1rem;
+}
+
+.module-list .list-group-item {
+  transition: all 0.2s ease;
+}
+
+.module-list .list-group-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Content styles */
+.material-card {
+  transition: all 0.2s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.status-indicator {
+  transition: all 0.2s ease;
+}
+
+.status-indicator:hover {
+  transform: scale(1.2);
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+/* Video thumbnails */
+.video-thumbnail img {
+  transition: all 0.3s ease;
+}
+
+.video-thumbnail:hover img {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Progress bars */
+.progress {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.progress-bar {
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .sidebar-column, .content-column {
+    height: auto !important;
+    overflow-y: visible !important;
+  }
+  
+  .sidebar-column {
+    border-right: none !important;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+  }
+} 

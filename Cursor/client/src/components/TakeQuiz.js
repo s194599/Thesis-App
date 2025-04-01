@@ -4,10 +4,12 @@ import { Container, Card, Button, ProgressBar, Alert, Spinner, Badge } from 'rea
 import { BsArrowLeft, BsArrowRight, BsCheckCircleFill, BsXCircleFill, BsTrophyFill, BsHouseDoor } from 'react-icons/bs';
 import { getQuiz } from '../services/api';
 import confetti from 'canvas-confetti';
+import { usePlatformContext } from '../context/PlatformContext';
 
 const TakeQuiz = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
+  const { markMaterialCompleted, modules } = usePlatformContext();
   
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,6 +29,21 @@ const TakeQuiz = () => {
         setQuiz(data);
         // Initialize answers array with nulls for each question
         setAnswers(new Array(data.questions.length).fill(null));
+        // Mark this quiz as viewed/completed in the platform context
+        const moduleWithQuiz = modules.find(module => 
+          module.materials.some(material => 
+            material.type === 'quiz' && material.quizId === quizId
+          )
+        );
+
+        if (moduleWithQuiz) {
+          const material = moduleWithQuiz.materials.find(
+            m => m.type === 'quiz' && m.quizId === quizId
+          );
+          if (material) {
+            markMaterialCompleted(moduleWithQuiz.id, material.id);
+          }
+        }
       } catch (err) {
         console.error('Error fetching quiz:', err);
         setError('Failed to load quiz. Please try again later.');
