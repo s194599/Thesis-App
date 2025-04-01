@@ -2,28 +2,34 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import QuizProvider from './context/QuizContext';
+import { BrowserRouter } from 'react-router-dom';
+import { QuizProvider } from './context/QuizContext';
+import QuizTakingProvider from './context/QuizTakingContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <QuizProvider>
-      <App />
-      <ToastContainer 
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </QuizProvider>
+    <BrowserRouter>
+      <QuizProvider>
+        <QuizTakingProvider>
+          <App />
+          <ToastContainer 
+            position="bottom-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+        </QuizTakingProvider>
+      </QuizProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

@@ -714,16 +714,16 @@ def get_quizzes():
         quizzes_file = os.path.join(QUIZZES_FOLDER, "quizzes.json")
 
         if not os.path.exists(quizzes_file):
-            return jsonify([])
+            return jsonify({"quizzes": []})
 
         with open(quizzes_file, "r") as f:
             quizzes = json.load(f)
 
-        return jsonify(quizzes)
+        return jsonify({"quizzes": quizzes, "success": True})
 
     except Exception as e:
         logger.error(f"Error getting quizzes: {str(e)}")
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": str(e), "quizzes": []}), 500
 
 
 # Add endpoint for getting a specific quiz

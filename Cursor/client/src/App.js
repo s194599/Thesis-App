@@ -1,68 +1,61 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import LandingPage from './components/LandingPage';
+import SavedQuizzes from './components/SavedQuizzes';
+import TakeQuiz from './components/TakeQuiz';
 import QuizForm from './components/QuizForm';
+import QuizOutput from './components/QuizOutput';
 import { useQuizContext } from './context/QuizContext';
 
 function App() {
-  const { formData, updateFormData, generatedQuiz } = useQuizContext();
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  
-  const handleTitleClick = () => {
-    setIsEditingTitle(true);
-  };
-  
-  const handleTitleBlur = () => {
-    setIsEditingTitle(false);
-  };
-  
-  const handleTitleChange = (e) => {
-    updateFormData("quizTitle", e.target.value);
-  };
-  
-  const handleTitleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      setIsEditingTitle(false);
-    }
-  };
+  const { generatedQuiz } = useQuizContext();
   
   return (
-    <div className="App">
-      <div className="container mt-4">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            <div className="card shadow">
-              <div className="card-body">
-                {!generatedQuiz && (
-                  <>
-                    {isEditingTitle ? (
-                      <input
-                        type="text"
-                        className="form-control form-control-lg text-center mb-4"
-                        value={formData.quizTitle}
-                        onChange={handleTitleChange}
-                        onBlur={handleTitleBlur}
-                        onKeyDown={handleTitleKeyDown}
-                        autoFocus
-                        placeholder="Enter quiz title"
-                      />
-                    ) : (
-                      <h1 
-                        className="text-center mb-4 editable-title" 
-                        onClick={handleTitleClick}
-                      >
-                        {formData.quizTitle || "Click to add title"}
-                        <span className="editable-title-hint">Click to edit</span>
-                      </h1>
-                    )}
-                  </>
-                )}
-                <QuizForm />
+    <div className="App d-flex flex-column min-vh-100">
+      <Header />
+      <div className="flex-grow-1">
+        <Routes>
+          {/* Landing page (new home page) */}
+          <Route path="/" element={<LandingPage />} />
+          
+          {/* Saved quizzes page */}
+          <Route path="/saved-quizzes" element={<SavedQuizzes />} />
+          
+          {/* Take a quiz page */}
+          <Route path="/take-quiz/:quizId" element={<TakeQuiz />} />
+          
+          {/* Quiz creation page */}
+          <Route 
+            path="/create-quiz" 
+            element={
+              <div className="container mt-4">
+                <div className="row justify-content-center">
+                  <div className="col-lg-8">
+                    <div className="card shadow">
+                      <div className="card-body">
+                        {!generatedQuiz && (
+                          <h1 className="text-center mb-4 editable-title">
+                            Create Quiz
+                          </h1>
+                        )}
+                        <QuizForm />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            } 
+          />
+          
+          {/* Redirect any unknown paths to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
+      <Footer />
     </div>
   );
 }

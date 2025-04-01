@@ -10,6 +10,8 @@ import NumQuestionsSelector from "./NumQuestionsSelector";
 import LoadingSpinner from "./LoadingSpinner";
 import QuizOutput from "./QuizOutput";
 import { generateQuiz, uploadFiles, fetchUrlContent } from "../services/api";
+import { Link } from 'react-router-dom';
+import { BsArrowLeft } from 'react-icons/bs';
 
 const QuizForm = () => {
   const {
