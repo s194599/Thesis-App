@@ -85,7 +85,7 @@ export const uploadFiles = async (files) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        timeout: 300000, // 5-minute timeout
+        timeout: 60000, // 1-minute timeout
         validateStatus: function (status) {
           return status >= 200 && status < 500; // Don't reject if status is less than 500
         },
@@ -99,38 +99,6 @@ export const uploadFiles = async (files) => {
     return response.data;
   } catch (error) {
     console.error("Error uploading files:", error);
-    if (error.response) {
-      console.error("Error response data:", error.response.data);
-      console.error("Error response status:", error.response.status);
-      console.error("Error response headers:", error.response.headers);
-    }
-    throw error;
-  }
-};
-
-// Single file upload - uses the same backend endpoint
-export const uploadFile = async (file) => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await axios.post(`${API_BASE_URL}/upload-file`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      timeout: 300000, // 5-minute timeout
-      validateStatus: function (status) {
-        return status >= 200 && status < 500; // Don't reject if status is less than 500
-      },
-    });
-
-    if (response.status >= 400) {
-      throw new Error(response.data.message || "Failed to upload file");
-    }
-
-    return response.data;
-  } catch (error) {
-    console.error("Error uploading file:", error);
     if (error.response) {
       console.error("Error response data:", error.response.data);
       console.error("Error response status:", error.response.status);

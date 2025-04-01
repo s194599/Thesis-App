@@ -1,67 +1,50 @@
 [
   {
     "description": "Quiz generated from your content",
-    "id": "quiz_5",
     "questions": [
       {
-        "correctAnswer": "England og Tyskland",
-        "explanation": "",
+        "correctAnswer": "An international movement that redefined Western cultures' perspectives on themselves and their world",
         "id": "q1",
         "options": [
-          "St\u00f8rre delen af Europa",
-          "England og Tyskland",
-          "Landene der taler romance sprog",
-          "Nordamerika"
+          "An artistic and philosophical movement primarily about love",
+          "An international movement that redefined Western cultures' perspectives on themselves and their world",
+          "A literary phenomenon predominantly found in countries speaking romance languages",
+          "A cultural shift originating from Germany and England"
         ],
-        "question": "Hvilket af f\u00f8lgende lande var de st\u00e6rkebaser for Romantik-bev\u00e6gelsen?"
+        "question": "What is Romanticism?"
       },
       {
-        "correctAnswer": "William Wordsworth og Samuel Taylor Coleridge",
-        "explanation": "",
+        "correctAnswer": "The first edition of Lyrical Ballads by Wordsworth and Coleridge",
         "id": "q2",
         "options": [
-          "William Wordsworth og Samuel Taylor Coleridge",
-          "George Byron og Percy Bysshe Shelley",
-          "Lord Byron og Jane Austen",
-          "Sir Walter Scott og Goethe"
+          "The first edition of Lyrical Ballads by Wordsworth and Coleridge",
+          "The composition of Hymns to the Night by Novalis",
+          "The death of Sir Walter Scott and Goethe",
+          "The invention of the printing press"
         ],
-        "question": "Hvem skrev \"Lyrical Ballads\" f\u00f8rste gang i 1798?"
+        "question": "Which of the following events marks the beginning of the Romantic period?"
       },
       {
-        "correctAnswer": "1832",
-        "explanation": "",
+        "correctAnswer": "Italy",
         "id": "q3",
         "options": [
-          "1832",
-          "1840",
-          "1850",
-          "1860"
+          "England",
+          "Germany",
+          "France",
+          "Italy"
         ],
-        "question": "Hvorn\u00e5r d\u00f8de b\u00e5de Sir Walter Scott og Goethe?"
+        "question": "Which of these countries was NOT a stronghold of the Romantic Movement?"
       },
       {
-        "correctAnswer": "Et kritisk synspunkt mod den industrielle revolution",
-        "explanation": "",
+        "correctAnswer": "Because it was the year of the first edition of Lyrical Ballads by Wordsworth and Coleridge and of the composition of Hymns to the Night by Novalis",
         "id": "q4",
         "options": [
-          "En \u00f8get bevidsthed om naturens v\u00e6rdi",
-          "En fokus p\u00e5 individualitet og fantasi",
-          "En interesse for mytologi og parapsykologi",
-          "Et kritisk synspunkt mod den industrielle revolution"
+          "Because it was the year when both Sir Walter Scott and Goethe died",
+          "Because it was the year of the first edition of Lyrical Ballads by Wordsworth and Coleridge and of the composition of Hymns to the Night by Novalis",
+          "Because it was the year that marked the end of Romanticism",
+          "Because it was the year of the invention of the printing press in Germany"
         ],
-        "question": "Romantik-bev\u00e6gelsen er en international artistisk og filosofisk bev\u00e6gelse, der har gjort det muligt for mennesker i vestlige kulturer at se sig selv og verden p\u00e5 en helt anden m\u00e5de. Hvilket af f\u00f8lgende ikke er et karakteristisk tr\u00e6k ved Romantik-bev\u00e6gelsen?"
-      },
-      {
-        "correctAnswer": "En international artistisk og filosofisk bev\u00e6gelse der redefinerede fundamentale tanker om hvordan mennesker i vestlige kulturer t\u00e6nker p\u00e5 sig selv og verden",
-        "explanation": "",
-        "id": "q5",
-        "options": [
-          "At v\u00e6re romantisk, som det popul\u00e6rt mener",
-          "En international artistisk og filosofisk bev\u00e6gelse der redefinerede fundamentale tanker om hvordan mennesker i vestlige kulturer t\u00e6nker p\u00e5 sig selv og verden",
-          "At elsker at l\u00e6se romantiske romaner",
-          "At v\u00e6re forfatter eller kunstner fra et romance-talende land"
-        ],
-        "question": "Hvad betyder Romantik if\u00f8lge definitionen?"
+        "question": "Why is it significant that the Romantic period began in 1798?"
       }
     ],
     "title": "Generated Quiz",
