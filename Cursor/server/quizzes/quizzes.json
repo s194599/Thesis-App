@@ -170,5 +170,90 @@
     ],
     "title": "Quiz",
     "timestamp": "2025-03-26T13:28:24.032Z"
+  },
+  {
+    "description": "redigeret beksirqjpidwnj\u00e5q'wo",
+    "id": "quiz_7",
+    "questions": [
+      {
+        "correctAnswer": "National Asset Project Vejledning 3.0",
+        "id": "q1",
+        "options": [
+          "National Asset Project Vejledning 2.0",
+          "National Asset Project Vejledning 4.0",
+          "National Asset Project Vejledning 3.5",
+          "National Asset Project Vejledning 3.0"
+        ],
+        "question": "Hvilket projekt er det, der indsamler og analyserer \u00f8konomiske regnskaber fra danske virksomheder i perioden 2012-2023?"
+      },
+      {
+        "correctAnswer": "Indsamling og analyse af \u00f8konomiske regnskaber fra danske virksomheder",
+        "id": "q2",
+        "options": [
+          "Vurdering af, hvordan virksomheder forvalter deres kreditorer",
+          "Indsamling og analyse af \u00f8konomiske regnskaber fra danske virksomheder",
+          "Studie af de tekniske aspekter i danske virksomheder",
+          "Analyse af det sociale milj\u00f8 indenfor danske virksomheder"
+        ],
+        "question": "Hvad er prim\u00e6r fokus for dette projekt?"
+      },
+      {
+        "correctAnswer": "National Asset Project 2023",
+        "id": "q3",
+        "options": [
+          "National Asset Project 2024",
+          "National Asset Project 2021",
+          "National Asset Project 2022",
+          "National Asset Project 2023"
+        ],
+        "question": "Hvad er filerne, der indeholder data fra Virk.dk kaldet?"
+      },
+      {
+        "correctAnswer": "En opgave der tildeles hvert CVR-nummer for en bestemt periode",
+        "id": "q4",
+        "options": [
+          "En opgave der tildeles hvert CVR-nummer for en bestemt periode",
+          "Et registre med alle virksomhedernes data fra Virk.dk",
+          "En oversigt over vurderinger af virksomheders aktiver",
+          "En liste over ejere til alle virksomheder i Danmark"
+        ],
+        "question": "Hvad er det, der kaldes \"CVR-Permanent\"?"
+      },
+      {
+        "correctAnswer": "En liste over ejere til alle virksomheder i Danmark",
+        "id": "q5",
+        "options": [
+          "En oversigt over vurderinger af virksomheders aktiver",
+          "Et registre med alle virksomhedernes data fra Virk.dk",
+          "En liste over ejere til alle virksomheder i Danmark",
+          "En opgave der tildeles hvert CVR-nummer for en bestemt periode"
+        ],
+        "question": "Hvad er det, der kaldes \"Ejerregister\"?"
+      },
+      {
+        "correctAnswer": "Tableau",
+        "id": "q6",
+        "options": [
+          "Microsoft Excel",
+          "Tableau",
+          "PowerPoint",
+          "Word"
+        ],
+        "question": "Hvad er det, der bruges til at generere grafer og visuelle repr\u00e6sentationer af \u00f8konomiske regnskaberne?"
+      },
+      {
+        "correctAnswer": "National Asset Project 2023",
+        "id": "q7",
+        "options": [
+          "National Asset Project 2024",
+          "National Asset Project 2021",
+          "National Asset Project 2023",
+          "National Asset Project 2025"
+        ],
+        "question": "Hvor findes den nyeste version af alle filer under mappen National Asset Project?"
+      }
+    ],
+    "title": "Barba",
+    "timestamp": "2025-04-01T11:06:29.558Z"
   }
 ]

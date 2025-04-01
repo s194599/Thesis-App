@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 import json
@@ -7,6 +7,9 @@ from werkzeug.utils import secure_filename
 import fitz  # PyMuPDF for PDF processing
 import logging
 import time
+import random
+import string
+import re
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -18,10 +21,11 @@ CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": ["http://localhost:3000"],  # React development server
+            "origins": "*",  # Allow all origins for API routes
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "supports_credentials": True,
+            "expose_headers": ["Content-Disposition", "Content-Type"],
         }
     },
 )
@@ -33,10 +37,21 @@ app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 app.config["TEMPLATES_AUTO_RELOAD"] = False  # Disable template auto-reload
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # Disable file caching
 
-UPLOAD_FOLDER = "uploads"
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+QUIZ_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "quizzes")
 
+# Create directories if they don't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(QUIZ_FOLDER, exist_ok=True)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['QUIZ_FOLDER'] = QUIZ_FOLDER
+
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path, max_pages=10):
@@ -750,6 +765,164 @@ def get_quiz(quiz_id):
         logger.error(f"Error getting quiz: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
 
+
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    if file and allowed_file(file.filename):
+        try:
+            filename = secure_filename(file.filename)
+            # Add timestamp to filename to prevent duplicates
+            base_name, ext = os.path.splitext(filename)
+            timestamp = int(time.time())
+            unique_filename = f"{base_name}_{timestamp}{ext}"
+            
+            filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
+            file.save(filepath)
+            
+            # Log successful file save
+            logger.info(f"File saved successfully: {filepath}")
+            
+            # Determine file type based on extension
+            file_type = 'file'
+            if ext.lower() == '.pdf':
+                file_type = 'pdf'
+            elif ext.lower() in ['.doc', '.docx']:
+                file_type = 'word'
+            
+            # Return various URLs to access the file
+            return jsonify({
+                'url': f"/api/uploads/{unique_filename}",
+                'directUrl': f"/direct-file/{unique_filename}",
+                'serverUrl': f"http://localhost:5001/api/uploads/{unique_filename}",
+                'filename': unique_filename,
+                'type': file_type,
+                'success': True
+            })
+        except Exception as e:
+            logger.error(f"Error saving file: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
+    return jsonify({'error': 'File type not allowed'}), 400
+
+@app.route('/api/uploads/<path:filename>')
+def uploaded_file(filename):
+    # Log the request for debugging
+    logger.info(f"Request for file: {filename}")
+    logger.info(f"File path: {os.path.join(UPLOAD_FOLDER, filename)}")
+    
+    # Check if file exists
+    if not os.path.exists(os.path.join(UPLOAD_FOLDER, filename)):
+        logger.error(f"File not found: {filename}")
+        return jsonify({'error': 'File not found'}), 404
+    
+    # Get the file extension
+    _, ext = os.path.splitext(filename)
+    
+    try:
+        # Set appropriate content type based on file extension
+        if ext.lower() == '.pdf':
+            return send_from_directory(
+                UPLOAD_FOLDER, 
+                filename, 
+                mimetype='application/pdf',
+                as_attachment=False,
+                download_name=filename
+            )
+        elif ext.lower() in ['.doc', '.docx']:
+            mimetype = 'application/msword' if ext.lower() == '.doc' else 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            return send_from_directory(
+                UPLOAD_FOLDER, 
+                filename, 
+                mimetype=mimetype,
+                as_attachment=True,
+                download_name=filename
+            )
+        
+        # For other files, use standard handling
+        return send_from_directory(UPLOAD_FOLDER, filename)
+    except Exception as e:
+        logger.error(f"Error serving file {filename}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# Disable catch-all route for now to prevent interference with file serving
+# @app.route('/', defaults={'path': ''})
+# @app.route('/<path:path>')
+# def catch_all(path):
+#     # Special case for API routes
+#     if path.startswith('api/'):
+#         # Let Flask handle API routes
+#         return "API endpoint not found", 404
+#         
+#     # For all non-API routes, send the React app's index.html
+#     return send_from_directory('../client/build', 'index.html')
+
+# Additional CORS headers for file downloads
+@app.after_request
+def add_cors_headers(response):
+    # Add CORS headers for file downloads
+    if request.path.startswith('/api/uploads/'):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Expose-Headers', 'Content-Disposition, Content-Type')
+        response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        response.headers.add('Pragma', 'no-cache')
+        response.headers.add('Expires', '0')
+    return response
+
+# Add a debugging endpoint to list the uploads directory
+@app.route('/api/debug/uploads', methods=['GET'])
+def list_uploads():
+    try:
+        if not os.path.exists(UPLOAD_FOLDER):
+            return jsonify({"error": "Uploads folder does not exist"}), 404
+            
+        files = os.listdir(UPLOAD_FOLDER)
+        file_details = []
+        
+        for file in files:
+            file_path = os.path.join(UPLOAD_FOLDER, file)
+            if os.path.isfile(file_path):
+                file_details.append({
+                    "name": file,
+                    "size": os.path.getsize(file_path),
+                    "created": os.path.getctime(file_path),
+                    "modified": os.path.getmtime(file_path),
+                    "path": file_path,
+                    "url": f"/api/uploads/{file}"
+                })
+        
+        return jsonify({
+            "upload_folder": UPLOAD_FOLDER,
+            "files": file_details,
+            "count": len(file_details)
+        })
+    except Exception as e:
+        logger.error(f"Error listing uploads: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+# Add route for direct file access
+@app.route('/direct-file/<path:filename>')
+def direct_file_access(filename):
+    """
+    Provides direct file access without any routing interference
+    """
+    try:
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        if not os.path.exists(filepath):
+            logger.error(f"Direct file not found: {filename}")
+            return "File not found", 404
+            
+        # Let the OS determine the correct MIME type
+        return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=False)
+    except Exception as e:
+        logger.error(f"Error serving direct file {filename}: {str(e)}")
+        return str(e), 500
 
 if __name__ == "__main__":
     # Disable Flask's reloader to prevent file system monitoring issues

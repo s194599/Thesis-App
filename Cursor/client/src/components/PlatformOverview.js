@@ -96,6 +96,31 @@ const PlatformOverview = () => {
     // Navigate to the saved quizzes page
     navigate('/saved-quizzes');
   };
+  
+  // Function to update module activities (add, edit, delete)
+  const updateModuleActivities = (moduleId, updatedActivities) => {
+    if (!Array.isArray(modules)) return;
+    
+    setModules(modules.map(module => {
+      if (module && module.id === moduleId) {
+        return {
+          ...module,
+          activities: updatedActivities
+        };
+      }
+      return module;
+    }));
+  };
+  
+  // Make the function available globally for debugging and direct access
+  useEffect(() => {
+    window.updateModuleActivities = updateModuleActivities;
+    
+    return () => {
+      // Clean up when component unmounts
+      delete window.updateModuleActivities;
+    };
+  }, [modules]); // Re-create when modules change to maintain closure with current state
 
   const selectedModule = Array.isArray(modules) 
     ? modules.find(module => module && module.id === selectedModuleId) || modules[0]
@@ -117,6 +142,7 @@ const PlatformOverview = () => {
               module={selectedModule}
               onActivityCompletion={handleActivityCompletion}
               onQuizAccess={handleQuizAccess}
+              onUpdateActivities={updateModuleActivities} // Pass the function down
             />
           ) : (
             <div className="p-4 text-center">
