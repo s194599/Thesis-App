@@ -1,15 +1,15 @@
-import React from 'react';
-import { Form } from 'react-bootstrap';
-import { useQuizContext } from '../context/QuizContext';
+import React from "react";
+import { Form } from "react-bootstrap";
+import { useQuizContext } from "../../../context/QuizContext";
 
 const StudentLevelSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
   const studentLevels = [
-    { value: 'elementary', label: 'Elementary (1-5. klasse)' },
-    { value: 'middleSchool', label: 'Middle School (6-9. klasse)' },
-    { value: 'highSchool', label: 'High School (Gymnasium)' },
-    { value: 'university', label: 'University (Universitet)' }
+    { value: "elementary", label: "Elementary (1-5. klasse)" },
+    { value: "middleSchool", label: "Middle School (6-9. klasse)" },
+    { value: "highSchool", label: "High School (Gymnasium)" },
+    { value: "university", label: "University (Universitet)" },
   ];
 
   return (
@@ -18,9 +18,9 @@ const StudentLevelSelector = () => {
         <Form.Label className="fw-bold">Student Level (Optional)</Form.Label>
         <Form.Select
           value={formData.studentLevel}
-          onChange={(e) => updateFormData('studentLevel', e.target.value)}
+          onChange={(e) => updateFormData("studentLevel", e.target.value)}
         >
-          {studentLevels.map(level => (
+          {studentLevels.map((level) => (
             <option key={level.value} value={level.value}>
               {level.label}
             </option>

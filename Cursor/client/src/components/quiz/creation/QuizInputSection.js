@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { useQuizContext } from '../context/QuizContext';
+import { useQuizContext } from '../../../context/QuizContext';
 import FileUploader from './FileUploader';
 
 const QuizInputSection = () => {

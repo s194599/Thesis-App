@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
-import { BsArrowLeft, BsPlayFill, BsCalendar3 } from 'react-icons/bs';
-import { getQuizzes } from '../services/api';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  Card,
+  Button,
+  Container,
+  Row,
+  Col,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
+import { BsArrowLeft, BsPlayFill, BsCalendar3 } from "react-icons/bs";
+import { getQuizzes } from "../../../services/api";
 
 const SavedQuizzes = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -15,15 +23,19 @@ const SavedQuizzes = () => {
         setLoading(true);
         const data = await getQuizzes();
         // The API returns the quizzes directly as an array, sort them by timestamp (newest first)
-        const sortedQuizzes = Array.isArray(data) 
+        const sortedQuizzes = Array.isArray(data)
           ? data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-          : (data.quizzes ? data.quizzes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) : []);
-        
+          : data.quizzes
+          ? data.quizzes.sort(
+              (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+            )
+          : [];
+
         setQuizzes(sortedQuizzes);
         setError(null);
       } catch (err) {
-        console.error('Error fetching quizzes:', err);
-        setError('Failed to load saved quizzes. Please try again later.');
+        console.error("Error fetching quizzes:", err);
+        setError("Failed to load saved quizzes. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -33,12 +45,12 @@ const SavedQuizzes = () => {
   }, []);
 
   const formatDate = (dateString) => {
-    const options = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
@@ -76,21 +88,25 @@ const SavedQuizzes = () => {
             <Col key={quiz.id} md={6} lg={4} className="mb-4">
               <Card className="h-100 shadow-sm quiz-card">
                 <Card.Body>
-                  <Card.Title className="mb-1">{quiz.title || 'Untitled Quiz'}</Card.Title>
-                  
+                  <Card.Title className="mb-1">
+                    {quiz.title || "Untitled Quiz"}
+                  </Card.Title>
+
                   <div className="text-muted small mb-3">
-                    <BsCalendar3 className="me-1" /> 
-                    {quiz.timestamp ? formatDate(quiz.timestamp) : 'No date'}
+                    <BsCalendar3 className="me-1" />
+                    {quiz.timestamp ? formatDate(quiz.timestamp) : "No date"}
                   </div>
-                  
+
                   <Card.Text className="mb-2">
-                    {quiz.description || 'No description'}
+                    {quiz.description || "No description"}
                   </Card.Text>
-                  
+
                   <div className="small text-muted mb-3">
-                    {quiz.questions ? `${quiz.questions.length} questions` : '0 questions'}
+                    {quiz.questions
+                      ? `${quiz.questions.length} questions`
+                      : "0 questions"}
                   </div>
-                  
+
                   <div className="d-grid">
                     <Link to={`/take-quiz/${quiz.id}`}>
                       <Button variant="primary" className="w-100">
@@ -108,4 +124,4 @@ const SavedQuizzes = () => {
   );
 };
 
-export default SavedQuizzes; 
+export default SavedQuizzes;

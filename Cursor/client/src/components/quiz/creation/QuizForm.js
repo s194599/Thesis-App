@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
-import { useQuizContext } from "../context/QuizContext";
-import InputTypeSelector from "./InputTypeSelector";
-import QuizInputSection from "./QuizInputSection";
-import QuestionTypeSelector from "./QuestionTypeSelector";
-import StudentLevelSelector from "./StudentLevelSelector";
-import LanguageSelector from "./LanguageSelector";
-import NumQuestionsSelector from "./NumQuestionsSelector";
-import LoadingSpinner from "./LoadingSpinner";
-import QuizOutput from "./QuizOutput";
-import { generateQuiz, uploadFiles, fetchUrlContent } from "../services/api";
+import { useQuizContext } from "../../../context/QuizContext";
+import {
+  InputTypeSelector,
+  QuizInputSection,
+  QuestionTypeSelector,
+  StudentLevelSelector,
+  LanguageSelector,
+  NumQuestionsSelector,
+} from "./";
+import { LoadingSpinner } from "../../common";
+import { QuizOutput } from "../../quiz/display";
+import {
+  generateQuiz,
+  uploadFiles,
+  fetchUrlContent,
+} from "../../../services/api";
 import { Link } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 

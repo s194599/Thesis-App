@@ -1,13 +1,13 @@
-import React from 'react';
-import { Form } from 'react-bootstrap';
-import { useQuizContext } from '../context/QuizContext';
+import React from "react";
+import { Form } from "react-bootstrap";
+import { useQuizContext } from "../../../context/QuizContext";
 
 const LanguageSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
   const languages = [
-    { value: 'danish', label: 'Danish (Dansk)' },
-    { value: 'english', label: 'English' }
+    { value: "danish", label: "Danish (Dansk)" },
+    { value: "english", label: "English" },
   ];
 
   return (
@@ -15,7 +15,7 @@ const LanguageSelector = () => {
       <Form.Group>
         <Form.Label className="fw-bold">Output Language</Form.Label>
         <div className="d-flex gap-3">
-          {languages.map(lang => (
+          {languages.map((lang) => (
             <Form.Check
               key={lang.value}
               type="radio"
@@ -23,7 +23,7 @@ const LanguageSelector = () => {
               label={lang.label}
               value={lang.value}
               checked={formData.language === lang.value}
-              onChange={(e) => updateFormData('language', e.target.value)}
+              onChange={(e) => updateFormData("language", e.target.value)}
               className="mb-0"
             />
           ))}

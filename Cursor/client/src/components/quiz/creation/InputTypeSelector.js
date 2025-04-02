@@ -1,13 +1,18 @@
-import React from 'react';
-import { useQuizContext } from '../context/QuizContext';
-import { Form } from 'react-bootstrap';
-import { BsPencilSquare, BsFileText, BsGlobe, BsFileEarmarkPdf } from 'react-icons/bs';
+import React from "react";
+import { useQuizContext } from "../../../context/QuizContext";
+import { Form } from "react-bootstrap";
+import {
+  BsPencilSquare,
+  BsFileText,
+  BsGlobe,
+  BsFileEarmarkPdf,
+} from "react-icons/bs";
 
 const InputTypeSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
   const handleInputTypeChange = (e) => {
-    updateFormData('inputType', e.target.value);
+    updateFormData("inputType", e.target.value);
   };
 
   return (
@@ -16,10 +21,12 @@ const InputTypeSelector = () => {
         <Form.Label className="fw-bold">Input Type</Form.Label>
         <div className="d-flex flex-wrap gap-2">
           <div className="flex-grow-1">
-            <div 
-              className={`p-3 rounded border ${formData.inputType === 'topic' ? 'border-primary bg-light' : ''}`}
-              style={{ cursor: 'pointer' }}
-              onClick={() => updateFormData('inputType', 'topic')}
+            <div
+              className={`p-3 rounded border ${
+                formData.inputType === "topic" ? "border-primary bg-light" : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => updateFormData("inputType", "topic")}
             >
               <Form.Check
                 type="radio"
@@ -31,7 +38,7 @@ const InputTypeSelector = () => {
                   </div>
                 }
                 value="topic"
-                checked={formData.inputType === 'topic'}
+                checked={formData.inputType === "topic"}
                 onChange={handleInputTypeChange}
                 className="mb-0"
               />
@@ -39,10 +46,12 @@ const InputTypeSelector = () => {
           </div>
 
           <div className="flex-grow-1">
-            <div 
-              className={`p-3 rounded border ${formData.inputType === 'text' ? 'border-primary bg-light' : ''}`}
-              style={{ cursor: 'pointer' }}
-              onClick={() => updateFormData('inputType', 'text')}
+            <div
+              className={`p-3 rounded border ${
+                formData.inputType === "text" ? "border-primary bg-light" : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => updateFormData("inputType", "text")}
             >
               <Form.Check
                 type="radio"
@@ -54,7 +63,7 @@ const InputTypeSelector = () => {
                   </div>
                 }
                 value="text"
-                checked={formData.inputType === 'text'}
+                checked={formData.inputType === "text"}
                 onChange={handleInputTypeChange}
                 className="mb-0"
               />
@@ -62,10 +71,14 @@ const InputTypeSelector = () => {
           </div>
 
           <div className="flex-grow-1">
-            <div 
-              className={`p-3 rounded border ${formData.inputType === 'webpage' ? 'border-primary bg-light' : ''}`}
-              style={{ cursor: 'pointer' }}
-              onClick={() => updateFormData('inputType', 'webpage')}
+            <div
+              className={`p-3 rounded border ${
+                formData.inputType === "webpage"
+                  ? "border-primary bg-light"
+                  : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => updateFormData("inputType", "webpage")}
             >
               <Form.Check
                 type="radio"
@@ -77,7 +90,7 @@ const InputTypeSelector = () => {
                   </div>
                 }
                 value="webpage"
-                checked={formData.inputType === 'webpage'}
+                checked={formData.inputType === "webpage"}
                 onChange={handleInputTypeChange}
                 className="mb-0"
               />
@@ -85,10 +98,14 @@ const InputTypeSelector = () => {
           </div>
 
           <div className="flex-grow-1">
-            <div 
-              className={`p-3 rounded border ${formData.inputType === 'document' ? 'border-primary bg-light' : ''}`}
-              style={{ cursor: 'pointer' }}
-              onClick={() => updateFormData('inputType', 'document')}
+            <div
+              className={`p-3 rounded border ${
+                formData.inputType === "document"
+                  ? "border-primary bg-light"
+                  : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => updateFormData("inputType", "document")}
             >
               <Form.Check
                 type="radio"
@@ -100,7 +117,7 @@ const InputTypeSelector = () => {
                   </div>
                 }
                 value="document"
-                checked={formData.inputType === 'document'}
+                checked={formData.inputType === "document"}
                 onChange={handleInputTypeChange}
                 className="mb-0"
               />

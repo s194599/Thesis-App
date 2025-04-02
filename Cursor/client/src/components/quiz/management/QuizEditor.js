@@ -1,27 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Button, Form, Spinner, Dropdown, Alert } from 'react-bootstrap';
-import { BsArrowLeft, BsPlusCircle, BsTextLeft, BsRobot } from 'react-icons/bs';
-import { useQuizContext } from '../context/QuizContext';
-import QuizQuestion from './QuizQuestion';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Button,
+  Form,
+  Spinner,
+  Dropdown,
+  Alert,
+} from "react-bootstrap";
+import { BsArrowLeft, BsPlusCircle, BsTextLeft, BsRobot } from "react-icons/bs";
+import { useQuizContext } from "../../../context/QuizContext";
+import { QuizQuestion } from "../display";
 
 const QuizEditor = () => {
-  const { 
-    editingQuiz, 
-    isEditing, 
-    startEditing, 
-    saveQuiz, 
-    cancelEditing, 
-    addQuestionManually, 
-    generateQuestion, 
+  const {
+    editingQuiz,
+    isEditing,
+    startEditing,
+    saveQuiz,
+    cancelEditing,
+    addQuestionManually,
+    generateQuestion,
     generatingQuestion,
     error,
     generatedQuiz,
-    loadSampleQuiz
+    loadSampleQuiz,
   } = useQuizContext();
 
   // Local states for quiz title and description
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [isTitleEditing, setIsTitleEditing] = useState(false);
   const [isDescriptionEditing, setIsDescriptionEditing] = useState(false);
 
@@ -42,8 +49,8 @@ const QuizEditor = () => {
   // Update local state when editingQuiz changes
   useEffect(() => {
     if (editingQuiz) {
-      setTitle(editingQuiz.title || '');
-      setDescription(editingQuiz.description || '');
+      setTitle(editingQuiz.title || "");
+      setDescription(editingQuiz.description || "");
     }
   }, [editingQuiz]);
 
@@ -79,17 +86,14 @@ const QuizEditor = () => {
     <Container className="my-4">
       {/* Header with back and save buttons */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <Button 
-          variant="light" 
+        <Button
+          variant="light"
           className="d-flex align-items-center"
           onClick={cancelEditing}
         >
           <BsArrowLeft className="me-1" /> Back
         </Button>
-        <Button 
-          variant="success"
-          onClick={saveQuiz}
-        >
+        <Button variant="success" onClick={saveQuiz}>
           Save
         </Button>
       </div>
@@ -114,37 +118,33 @@ const QuizEditor = () => {
               autoFocus
             />
             <div className="mt-2 d-flex justify-content-end">
-              <Button 
-                variant="outline-secondary" 
-                size="sm" 
+              <Button
+                variant="outline-secondary"
+                size="sm"
                 className="me-2"
                 onClick={() => {
-                  setTitle(editingQuiz.title || '');
+                  setTitle(editingQuiz.title || "");
                   setIsTitleEditing(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button 
-                variant="outline-primary" 
-                size="sm"
-                onClick={saveTitle}
-              >
+              <Button variant="outline-primary" size="sm" onClick={saveTitle}>
                 Save
               </Button>
             </div>
           </div>
         ) : (
-          <h1 
-            className="display-6 mb-0" 
+          <h1
+            className="display-6 mb-0"
             onClick={() => setIsTitleEditing(true)}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           >
-            {title || 'Untitled Quiz'}
-            <Button 
-              variant="link" 
+            {title || "Untitled Quiz"}
+            <Button
+              variant="link"
               className="text-muted p-0 ms-2 align-baseline"
-              style={{ fontSize: '1rem' }}
+              style={{ fontSize: "1rem" }}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsTitleEditing(true);
@@ -168,19 +168,19 @@ const QuizEditor = () => {
               placeholder="Enter quiz description (optional)"
             />
             <div className="mt-2 d-flex justify-content-end">
-              <Button 
-                variant="outline-secondary" 
-                size="sm" 
+              <Button
+                variant="outline-secondary"
+                size="sm"
                 className="me-2"
                 onClick={() => {
-                  setDescription(editingQuiz.description || '');
+                  setDescription(editingQuiz.description || "");
                   setIsDescriptionEditing(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 size="sm"
                 onClick={saveDescription}
               >
@@ -189,16 +189,16 @@ const QuizEditor = () => {
             </div>
           </div>
         ) : (
-          <p 
-            className="text-muted" 
+          <p
+            className="text-muted"
             onClick={() => setIsDescriptionEditing(true)}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           >
-            {description || 'Add a description for this quiz'}
-            <Button 
-              variant="link" 
+            {description || "Add a description for this quiz"}
+            <Button
+              variant="link"
               className="text-muted p-0 ms-2 align-baseline"
-              style={{ fontSize: '0.875rem' }}
+              style={{ fontSize: "0.875rem" }}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsDescriptionEditing(true);
@@ -214,19 +214,15 @@ const QuizEditor = () => {
       <div className="quiz-questions mb-4">
         <h5 className="mb-3">Questions</h5>
         {editingQuiz.questions.map((question, index) => (
-          <QuizQuestion 
-            key={question.id} 
-            question={question} 
-            index={index} 
-          />
+          <QuizQuestion key={question.id} question={question} index={index} />
         ))}
       </div>
 
       {/* Add Question Button */}
       <div className="mt-4 mb-5">
         <Dropdown>
-          <Dropdown.Toggle 
-            variant="primary" 
+          <Dropdown.Toggle
+            variant="primary"
             id="add-question-dropdown"
             className="d-flex align-items-center"
           >
@@ -237,12 +233,12 @@ const QuizEditor = () => {
             <Dropdown.Item onClick={addQuestionManually}>
               <BsTextLeft className="me-2" /> Add Manually
             </Dropdown.Item>
-            <Dropdown.Item 
+            <Dropdown.Item
               onClick={generateQuestion}
               disabled={generatingQuestion}
             >
-              <BsRobot className="me-2" /> 
-              {generatingQuestion ? 'Generating...' : 'Generate with AI'}
+              <BsRobot className="me-2" />
+              {generatingQuestion ? "Generating..." : "Generate with AI"}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

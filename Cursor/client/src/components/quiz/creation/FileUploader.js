@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { useQuizContext } from "../context/QuizContext";
+import { useQuizContext } from "../../../context/QuizContext";
 import {
   BsUpload,
   BsFileEarmarkPdf,
@@ -15,19 +15,19 @@ const FileUploader = () => {
     (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         const currentFiles = formData.files || [];
-        
+
         const uniqueFiles = new Map();
-        
-        currentFiles.forEach(file => {
+
+        currentFiles.forEach((file) => {
           uniqueFiles.set(file.name + file.size, file);
         });
-        
-        acceptedFiles.forEach(file => {
+
+        acceptedFiles.forEach((file) => {
           uniqueFiles.set(file.name + file.size, file);
         });
-        
+
         const updatedFiles = Array.from(uniqueFiles.values());
-        
+
         updateFormData("files", updatedFiles);
       }
     },

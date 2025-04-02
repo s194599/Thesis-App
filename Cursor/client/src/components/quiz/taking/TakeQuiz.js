@@ -1,14 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Container, Card, Button, ProgressBar, Alert, Spinner, Badge } from 'react-bootstrap';
-import { BsArrowLeft, BsArrowRight, BsCheckCircleFill, BsXCircleFill, BsTrophyFill, BsHouseDoor } from 'react-icons/bs';
-import { getQuiz } from '../services/api';
-import confetti from 'canvas-confetti';
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import {
+  Container,
+  Card,
+  Button,
+  ProgressBar,
+  Alert,
+  Spinner,
+  Badge,
+} from "react-bootstrap";
+import {
+  BsArrowLeft,
+  BsArrowRight,
+  BsCheckCircleFill,
+  BsXCircleFill,
+  BsTrophyFill,
+  BsHouseDoor,
+} from "react-icons/bs";
+import { getQuiz } from "../../../services/api";
+import confetti from "canvas-confetti";
 
 const TakeQuiz = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
-  
+
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,8 +43,8 @@ const TakeQuiz = () => {
         // Initialize answers array with nulls for each question
         setAnswers(new Array(data.questions.length).fill(null));
       } catch (err) {
-        console.error('Error fetching quiz:', err);
-        setError('Failed to load quiz. Please try again later.');
+        console.error("Error fetching quiz:", err);
+        setError("Failed to load quiz. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -45,26 +60,26 @@ const TakeQuiz = () => {
 
   const handleCheckAnswer = () => {
     if (!selectedAnswer) return; // Require an answer to be selected
-    
+
     const currentQuestion = quiz.questions[currentQuestionIndex];
     const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-    
+
     // Update answers array with current selection
     const newAnswers = [...answers];
     newAnswers[currentQuestionIndex] = selectedAnswer;
     setAnswers(newAnswers);
-    
+
     // Update score if answer is correct
     if (isCorrect) {
-      setScore(prevScore => prevScore + 1);
+      setScore((prevScore) => prevScore + 1);
     }
-    
+
     setShowAnswer(true);
   };
 
   const handleNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
-    
+
     if (nextIndex < quiz.questions.length) {
       setCurrentQuestionIndex(nextIndex);
       setSelectedAnswer(null);
@@ -75,37 +90,39 @@ const TakeQuiz = () => {
       confetti({
         particleCount: 100,
         spread: 70,
-        origin: { y: 0.6 }
+        origin: { y: 0.6 },
       });
     }
   };
 
   const getAnswerButtonVariant = (option) => {
     if (!showAnswer) {
-      return selectedAnswer === option ? 'primary' : 'outline-secondary';
+      return selectedAnswer === option ? "primary" : "outline-secondary";
     }
-    
+
     const currentQuestion = quiz.questions[currentQuestionIndex];
-    
+
     if (option === currentQuestion.correctAnswer) {
-      return 'success';
+      return "success";
     }
-    
+
     if (option === selectedAnswer && option !== currentQuestion.correctAnswer) {
-      return 'danger';
+      return "danger";
     }
-    
-    return 'outline-secondary';
+
+    return "outline-secondary";
   };
 
   const renderQuestion = () => {
     const question = quiz.questions[currentQuestionIndex];
-    
+
     return (
       <Card className="shadow quiz-question-card">
         <Card.Header className="bg-primary text-white">
           <div className="d-flex justify-content-between align-items-center">
-            <h5 className="mb-0">Question {currentQuestionIndex + 1} of {quiz.questions.length}</h5>
+            <h5 className="mb-0">
+              Question {currentQuestionIndex + 1} of {quiz.questions.length}
+            </h5>
             <Badge bg="light" text="dark">
               Score: {score}/{currentQuestionIndex + (showAnswer ? 1 : 0)}
             </Badge>
@@ -113,7 +130,7 @@ const TakeQuiz = () => {
         </Card.Header>
         <Card.Body>
           <Card.Title className="mb-4">{question.question}</Card.Title>
-          
+
           <div className="d-grid gap-2 mb-4">
             {question.options.map((option, index) => (
               <Button
@@ -124,20 +141,28 @@ const TakeQuiz = () => {
                 disabled={showAnswer}
               >
                 {showAnswer && option === question.correctAnswer && (
-                  <BsCheckCircleFill className="position-absolute top-50 end-0 translate-middle-y me-3 text-success" size={20} />
+                  <BsCheckCircleFill
+                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-success"
+                    size={20}
+                  />
                 )}
-                {showAnswer && option === selectedAnswer && option !== question.correctAnswer && (
-                  <BsXCircleFill className="position-absolute top-50 end-0 translate-middle-y me-3 text-danger" size={20} />
-                )}
+                {showAnswer &&
+                  option === selectedAnswer &&
+                  option !== question.correctAnswer && (
+                    <BsXCircleFill
+                      className="position-absolute top-50 end-0 translate-middle-y me-3 text-danger"
+                      size={20}
+                    />
+                  )}
                 {option}
               </Button>
             ))}
           </div>
-          
+
           {!showAnswer ? (
-            <Button 
-              variant="primary" 
-              size="lg" 
+            <Button
+              variant="primary"
+              size="lg"
               className="w-100"
               onClick={handleCheckAnswer}
               disabled={!selectedAnswer}
@@ -151,17 +176,22 @@ const TakeQuiz = () => {
                   <strong>Explanation:</strong> {question.explanation}
                 </Alert>
               )}
-              
-              <Button 
-                variant="primary" 
-                size="lg" 
+
+              <Button
+                variant="primary"
+                size="lg"
                 className="w-100"
                 onClick={handleNextQuestion}
               >
-                {currentQuestionIndex < quiz.questions.length - 1 
-                  ? <>Next Question <BsArrowRight className="ms-2" /></>
-                  : <>Finish Quiz <BsTrophyFill className="ms-2" /></>
-                }
+                {currentQuestionIndex < quiz.questions.length - 1 ? (
+                  <>
+                    Next Question <BsArrowRight className="ms-2" />
+                  </>
+                ) : (
+                  <>
+                    Finish Quiz <BsTrophyFill className="ms-2" />
+                  </>
+                )}
               </Button>
             </div>
           )}
@@ -172,10 +202,10 @@ const TakeQuiz = () => {
 
   const renderResults = () => {
     const percentage = Math.round((score / quiz.questions.length) * 100);
-    
+
     let resultMessage = "Try again!";
     let resultVariant = "danger";
-    
+
     if (percentage >= 80) {
       resultMessage = "Excellent job!";
       resultVariant = "success";
@@ -189,7 +219,7 @@ const TakeQuiz = () => {
       resultMessage = "Keep practicing!";
       resultVariant = "warning";
     }
-    
+
     return (
       <Card className="shadow quiz-results-card">
         <Card.Header className="bg-primary text-white">
@@ -199,25 +229,27 @@ const TakeQuiz = () => {
           <div className="display-1 mb-3">
             <BsTrophyFill className="text-warning" />
           </div>
-          
-          <h2 className="mb-3">You scored {score} out of {quiz.questions.length}</h2>
-          
-          <ProgressBar 
-            variant={resultVariant} 
-            now={percentage} 
-            label={`${percentage}%`} 
-            className="mb-4" 
-            style={{height: '2rem'}}
+
+          <h2 className="mb-3">
+            You scored {score} out of {quiz.questions.length}
+          </h2>
+
+          <ProgressBar
+            variant={resultVariant}
+            now={percentage}
+            label={`${percentage}%`}
+            className="mb-4"
+            style={{ height: "2rem" }}
           />
-          
+
           <Alert variant={resultVariant} className="mb-4">
             <h4>{resultMessage}</h4>
           </Alert>
-          
+
           <div className="d-grid gap-3">
-            <Button 
-              variant="primary" 
-              size="lg" 
+            <Button
+              variant="primary"
+              size="lg"
               onClick={() => {
                 setCurrentQuestionIndex(0);
                 setSelectedAnswer(null);
@@ -229,16 +261,16 @@ const TakeQuiz = () => {
             >
               Try Again
             </Button>
-            
-            <Button 
-              variant="outline-secondary" 
-              size="lg" 
-              onClick={() => navigate('/saved-quizzes')}
+
+            <Button
+              variant="outline-secondary"
+              size="lg"
+              onClick={() => navigate("/saved-quizzes")}
             >
               <BsArrowLeft className="me-2" />
               Back to Quizzes
             </Button>
-            
+
             <Link to="/">
               <Button variant="outline-secondary" size="lg" className="w-100">
                 <BsHouseDoor className="me-2" />
@@ -253,7 +285,10 @@ const TakeQuiz = () => {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "60vh" }}
+      >
         <div className="text-center">
           <Spinner animation="border" variant="primary" className="mb-3" />
           <h5>Loading quiz...</h5>
@@ -270,9 +305,7 @@ const TakeQuiz = () => {
           <p>{error}</p>
           <div className="d-flex justify-content-end">
             <Link to="/saved-quizzes">
-              <Button variant="outline-danger">
-                Back to Quizzes
-              </Button>
+              <Button variant="outline-danger">Back to Quizzes</Button>
             </Link>
           </div>
         </Alert>
@@ -288,9 +321,7 @@ const TakeQuiz = () => {
           <p>The quiz you're looking for could not be found.</p>
           <div className="d-flex justify-content-end">
             <Link to="/saved-quizzes">
-              <Button variant="outline-warning">
-                Back to Quizzes
-              </Button>
+              <Button variant="outline-warning">Back to Quizzes</Button>
             </Link>
           </div>
         </Alert>
@@ -314,19 +345,19 @@ const TakeQuiz = () => {
             </Badge>
           )}
         </div>
-        
-        <h1 className="mb-2">{quiz.title || 'Untitled Quiz'}</h1>
+
+        <h1 className="mb-2">{quiz.title || "Untitled Quiz"}</h1>
         {quiz.description && <p className="text-muted">{quiz.description}</p>}
-        
+
         {!quizCompleted && (
-          <ProgressBar 
-            variant="primary" 
-            now={(currentQuestionIndex / quiz.questions.length) * 100} 
+          <ProgressBar
+            variant="primary"
+            now={(currentQuestionIndex / quiz.questions.length) * 100}
             className="mb-4"
           />
         )}
       </div>
-      
+
       {/* Quiz Content */}
       <div className="quiz-content">
         {quizCompleted ? renderResults() : renderQuestion()}
@@ -335,4 +366,4 @@ const TakeQuiz = () => {
   );
 };
 
-export default TakeQuiz; 
+export default TakeQuiz;
