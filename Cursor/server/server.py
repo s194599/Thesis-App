@@ -1143,7 +1143,7 @@ def delete_activity():
     Deletes an activity from the server-side storage
     """
     try:
-    data = request.json
+        data = request.json
         if not data or "id" not in data or "moduleId" not in data:
             return (
                 jsonify(

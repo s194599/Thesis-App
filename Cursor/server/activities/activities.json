@@ -105,14 +105,24 @@
     "moduleId": "module-1"
   },
   {
-    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
+    "completed": true,
     "description": "",
-    "type": "youtube",
-    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
     "file": null,
-    "completed": false,
-    "isNew": true,
     "id": "activity_1743604404997",
-    "moduleId": "module-1"
+    "isNew": true,
+    "moduleId": "module-1",
+    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM"
+  },
+  {
+    "completed": true,
+    "description": "",
+    "id": "activity_1743591471474",
+    "isNew": true,
+    "moduleId": "module-3",
+    "title": "2116.pdf",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/2116_1743591471.pdf"
   }
 ]
