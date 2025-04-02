@@ -10,8 +10,8 @@ import NumQuestionsSelector from "./NumQuestionsSelector";
 import LoadingSpinner from "./LoadingSpinner";
 import QuizOutput from "./QuizOutput";
 import { generateQuiz, uploadFiles, fetchUrlContent } from "../services/api";
-import { Link } from 'react-router-dom';
-import { BsArrowLeft } from 'react-icons/bs';
+import { Link } from "react-router-dom";
+import { BsArrowLeft } from "react-icons/bs";
 
 const QuizForm = () => {
   const {
@@ -26,21 +26,26 @@ const QuizForm = () => {
     loadSampleQuiz,
   } = useQuizContext();
 
-  // Local state for form validation
-  const [validated, setValidated] = useState(false);
-  
   // Effect to scroll to loading spinner when loading state changes to true
   useEffect(() => {
     if (loading) {
       // Small delay to ensure the loading spinner is rendered
       setTimeout(() => {
-        const loadingElement = document.getElementById("loading-spinner-section");
+        const loadingElement = document.getElementById(
+          "loading-spinner-section"
+        );
         if (loadingElement) {
-          loadingElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          loadingElement.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
         }
       }, 100);
     }
   }, [loading]);
+
+  // Local state for form validation
+  const [validated, setValidated] = useState(false);
 
   // Check if form is valid for submission
   const isFormValid = () => {
@@ -126,7 +131,7 @@ const QuizForm = () => {
 
       // Send to backend for quiz generation
       const generatedQuizData = await generateQuiz(quizRequestData);
-      
+
       // Check if the request was canceled
       if (generatedQuizData && generatedQuizData.canceled) {
         // Request was canceled, do nothing further
@@ -136,7 +141,7 @@ const QuizForm = () => {
       // Ensure the generated quiz has the title from the form data
       const finalQuizData = {
         ...generatedQuizData,
-        title: formData.quizTitle || "Quiz"
+        title: formData.quizTitle || "Quiz",
       };
 
       // Update the state with the generated quiz
