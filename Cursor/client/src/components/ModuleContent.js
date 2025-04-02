@@ -39,10 +39,41 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   useEffect(() => {
     if (module && Array.isArray(module.activities)) {
       setActivities(module.activities);
+      
+      // Also fetch any server-stored activities for this module
+      fetchServerStoredActivities(module.id);
     } else {
       setActivities([]);
     }
   }, [module]);
+  
+  // Fetch activities stored on the server for this module
+  const fetchServerStoredActivities = (moduleId) => {
+    fetch(`/api/module-activities/${moduleId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.activities) && data.activities.length > 0) {
+          console.log('Fetched server-stored activities:', data.activities);
+          
+          // Merge with existing activities, avoiding duplicates
+          const existingIds = new Set(activities.map(act => act.id));
+          const newActivities = data.activities.filter(act => !existingIds.has(act.id));
+          
+          if (newActivities.length > 0) {
+            const mergedActivities = [...activities, ...newActivities];
+            setActivities(mergedActivities);
+            
+            // Update parent component with merged activities
+            if (onUpdateActivities) {
+              onUpdateActivities(moduleId, mergedActivities);
+            }
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching server-stored activities:', error);
+      });
+  };
   
   if (!module) return <div className="p-4">No module selected</div>;
 
@@ -113,6 +144,17 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   const validateUrl = (url) => {
     if (!url) return false;
     
+    // Handle URLs from the local server uploads directory
+    if (url && typeof url === 'string') {
+      // Check if it's an upload URL reference from mockModules
+      if (url.startsWith('/documents/')) {
+        // Transform relative document path to server API path
+        const filename = url.split('/documents/')[1];
+        // Check if file exists in the uploads folder via the debug endpoint
+        return `http://localhost:5001/api/uploads/${filename}`;
+      }
+    }
+    
     // Check if URL already has http/https protocol
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return true; // URL is already valid with protocol
@@ -155,6 +197,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
     if (!activity) return;
     
     // Mark activity as completed regardless of type
+    // Only if it's not already completed
     if (!activity.completed && onActivityCompletion) {
       onActivityCompletion(module.id, activity.id);
     }
@@ -168,6 +211,40 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       if (activity.url) {
         // For PDF, validate and potentially fix the URL
         let pdfUrl = activity.url;
+        
+        // Handle document URLs from mockModules that start with /documents/
+        if (pdfUrl.startsWith('/documents/')) {
+          const filename = pdfUrl.split('/documents/')[1];
+          // Use the direct server API path to get the file from uploads
+          pdfUrl = `http://localhost:5001/api/uploads/${filename}`;
+          
+          // If the file doesn't exist with the exact name, try to find a matching file
+          // This is a fallback for when the exact filename doesn't match
+          fetch('http://localhost:5001/api/debug/uploads')
+            .then(response => response.json())
+            .then(data => {
+              const allFiles = data.files || [];
+              // Try to find a file with a similar name
+              const matchingFile = allFiles.find(file => 
+                file.name.toLowerCase().includes(filename.toLowerCase()));
+              
+              if (matchingFile) {
+                window.open(matchingFile.url.startsWith('http') 
+                  ? matchingFile.url 
+                  : `http://localhost:5001${matchingFile.url}`, '_blank');
+              } else {
+                // If no matching file found, try the original URL
+                window.open(pdfUrl, '_blank');
+              }
+            })
+            .catch(() => {
+              // If the API call fails, fall back to the constructed URL
+              window.open(pdfUrl, '_blank');
+            });
+          return; // Return early since we're handling the URL opening in the fetch callback
+        }
+        
+        // For other URLs, use the validateUrl function
         const validatedUrl = validateUrl(pdfUrl);
         
         if (typeof validatedUrl === 'string') {
@@ -229,12 +306,38 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   const handleDeleteActivity = (e, activityId) => {
     e.stopPropagation(); // Prevent triggering the card click
     if (window.confirm('Er du sikker på, at du vil slette denne aktivitet?')) {
+      // Find the activity to get its details before deleting
+      const activityToDelete = activities.find(activity => activity.id === activityId);
+      
       // Filter out the deleted activity
       const updatedActivities = activities.filter(activity => activity.id !== activityId);
       
       // Update the parent component
       if (onUpdateActivities) {
         onUpdateActivities(module.id, updatedActivities);
+      }
+      
+      // Also delete from server storage if it's a file activity
+      if (activityToDelete && 
+          (activityToDelete.type === 'pdf' || activityToDelete.type === 'word' || activityToDelete.type === 'file')) {
+        
+        fetch('/api/delete-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: activityId,
+            moduleId: module.id
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Activity deleted from server:', data);
+        })
+        .catch(error => {
+          console.error('Error deleting activity from server:', error);
+        });
       }
     }
   };
@@ -344,8 +447,25 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
           const fileActivity = {
             ...activityToSave,
             url: fileUrl,
-            type: data.type || activityToSave.type
+            type: data.type || activityToSave.type,
+            moduleId: module.id // Add moduleId to the activity data
           };
+          
+          // Store the activity on the server for persistence
+          fetch('/api/store-activity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(fileActivity),
+          })
+          .then(response => response.json())
+          .then(serverData => {
+            console.log('Activity stored on server:', serverData);
+          })
+          .catch(error => {
+            console.error('Error storing activity on server:', error);
+          });
           
           // Update activities
           let updatedActivities;
@@ -377,16 +497,40 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       });
     } else {
       // No file to upload, just update activities
+      // Add moduleId to the activity for server storage
+      const activityWithModule = {
+        ...activityToSave,
+        moduleId: module.id
+      };
+      
+      // Store activities that have URLs on the server
+      if (activityWithModule.url) {
+        fetch('/api/store-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(activityWithModule),
+        })
+        .then(response => response.json())
+        .then(serverData => {
+          console.log('Activity stored on server:', serverData);
+        })
+        .catch(error => {
+          console.error('Error storing activity on server:', error);
+        });
+      }
+      
       let updatedActivities;
       
       if (editActivityId) {
         // Update existing activity
         updatedActivities = activities.map(activity => 
-          activity.id === editActivityId ? activityToSave : activity
+          activity.id === editActivityId ? activityWithModule : activity
         );
       } else {
         // Add new activity
-        updatedActivities = [...activities, activityToSave];
+        updatedActivities = [...activities, activityWithModule];
       }
       
       // Update the parent component
