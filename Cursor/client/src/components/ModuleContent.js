@@ -144,17 +144,6 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   const validateUrl = (url) => {
     if (!url) return false;
     
-    // Handle URLs from the local server uploads directory
-    if (url && typeof url === 'string') {
-      // Check if it's an upload URL reference from mockModules
-      if (url.startsWith('/documents/')) {
-        // Transform relative document path to server API path
-        const filename = url.split('/documents/')[1];
-        // Check if file exists in the uploads folder via the debug endpoint
-        return `http://localhost:5001/api/uploads/${filename}`;
-      }
-    }
-    
     // Check if URL already has http/https protocol
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return true; // URL is already valid with protocol
@@ -212,39 +201,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
         // For PDF, validate and potentially fix the URL
         let pdfUrl = activity.url;
         
-        // Handle document URLs from mockModules that start with /documents/
-        if (pdfUrl.startsWith('/documents/')) {
-          const filename = pdfUrl.split('/documents/')[1];
-          // Use the direct server API path to get the file from uploads
-          pdfUrl = `http://localhost:5001/api/uploads/${filename}`;
-          
-          // If the file doesn't exist with the exact name, try to find a matching file
-          // This is a fallback for when the exact filename doesn't match
-          fetch('http://localhost:5001/api/debug/uploads')
-            .then(response => response.json())
-            .then(data => {
-              const allFiles = data.files || [];
-              // Try to find a file with a similar name
-              const matchingFile = allFiles.find(file => 
-                file.name.toLowerCase().includes(filename.toLowerCase()));
-              
-              if (matchingFile) {
-                window.open(matchingFile.url.startsWith('http') 
-                  ? matchingFile.url 
-                  : `http://localhost:5001${matchingFile.url}`, '_blank');
-              } else {
-                // If no matching file found, try the original URL
-                window.open(pdfUrl, '_blank');
-              }
-            })
-            .catch(() => {
-              // If the API call fails, fall back to the constructed URL
-              window.open(pdfUrl, '_blank');
-            });
-          return; // Return early since we're handling the URL opening in the fetch callback
-        }
-        
-        // For other URLs, use the validateUrl function
+        // For URLs, use the validateUrl function
         const validatedUrl = validateUrl(pdfUrl);
         
         if (typeof validatedUrl === 'string') {

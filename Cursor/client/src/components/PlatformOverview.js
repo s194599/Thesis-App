@@ -42,16 +42,6 @@ const PlatformOverview = () => {
     } else {
       setSelectedModuleId(initialModules[0]?.id || null);
     }
-    
-    // Ensure all mock PDFs are synced and available on the server
-    fetch('/api/sync-mock-pdfs')
-      .then(response => response.json())
-      .then(data => {
-        console.log('Synced mock PDFs:', data);
-      })
-      .catch(error => {
-        console.error('Error syncing mock PDFs:', error);
-      });
   }, []);
 
   // Save data to localStorage when it changes
