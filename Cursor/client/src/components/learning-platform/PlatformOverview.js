@@ -153,12 +153,20 @@ const PlatformOverview = () => {
   };
 
   // Function to update module activities (add, edit, delete)
-  const updateModuleActivities = (moduleId, updatedActivities) => {
+  const updateModuleActivities = (moduleId, updatedActivities, updatedModule = null) => {
     if (!Array.isArray(modules)) return;
 
     setModules(
       modules.map((module) => {
         if (module && module.id === moduleId) {
+          // If full updated module is provided, use it but preserve the activities
+          if (updatedModule) {
+            return {
+              ...updatedModule,
+              activities: updatedActivities || module.activities,
+            };
+          }
+          // Otherwise just update the activities
           return {
             ...module,
             activities: updatedActivities,
@@ -181,9 +189,15 @@ const PlatformOverview = () => {
 
   // Function to fetch server-stored activities for a module
   const fetchServerStoredActivities = (moduleId, currentModules) => {
+    // Use relative URL and let proxy configuration handle redirection
     fetch(`/api/module-activities/${moduleId}`)
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
         if (
           data.success &&
           Array.isArray(data.activities) &&
@@ -209,7 +223,7 @@ const PlatformOverview = () => {
                 });
 
                 // Process server activities
-                const mergedActivities = [...module.activities]; // Start with existing activities
+                const mergedActivities = [...module.activities];
 
                 data.activities.forEach((serverActivity) => {
                   const existingActivity = existingActivitiesMap.get(
@@ -250,11 +264,15 @@ const PlatformOverview = () => {
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
+        // More informative error logging
         console.error(
-          `Error fetching activities for module ${moduleId}:`,
-          error
+          `Error fetching activities for module ${moduleId}: ${error.message}`
         );
+        
+        // Don't display the proxy error to the user as it's confusing
+        // We'll silently fail here since activities will just be empty
+        // which is an acceptable fallback state
       });
   };
 

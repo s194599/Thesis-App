@@ -48,7 +48,7 @@ os.makedirs(QUIZ_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['QUIZ_FOLDER'] = QUIZ_FOLDER
 
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'}
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -768,6 +768,8 @@ def upload_file():
                 file_type = 'pdf'
             elif ext.lower() in ['.doc', '.docx']:
                 file_type = 'word'
+            elif ext.lower() in ['.jpg', '.jpeg', '.png']:
+                file_type = 'image'
             
             # Return various URLs to access the file
             return jsonify({
@@ -816,6 +818,20 @@ def uploaded_file(filename):
                 mimetype=mimetype,
                 as_attachment=True,
                 download_name=filename
+            )
+        elif ext.lower() in ['.jpg', '.jpeg']:
+            return send_from_directory(
+                UPLOAD_FOLDER,
+                filename,
+                mimetype='image/jpeg',
+                as_attachment=False
+            )
+        elif ext.lower() == '.png':
+            return send_from_directory(
+                UPLOAD_FOLDER,
+                filename,
+                mimetype='image/png',
+                as_attachment=False
             )
         
         # For other files, use standard handling
@@ -1064,6 +1080,34 @@ def delete_activity():
     except Exception as e:
         logger.error(f"Error deleting activity: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
+
+@app.route('/api/youtube-title', methods=['GET'])
+def get_youtube_title():
+    """
+    Endpoint to fetch YouTube video title
+    """
+    video_id = request.args.get('videoId')
+    if not video_id:
+        return jsonify({"error": "No video ID provided"}), 400
+    
+    try:
+        # Create YouTube oEmbed API URL
+        oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+        
+        # Make request to YouTube API
+        response = requests.get(oembed_url, timeout=5)
+        
+        if response.status_code == 200:
+            data = response.json()
+            title = data.get('title', f"YouTube Video ({video_id})")
+            return jsonify({"title": title, "success": True})
+        else:
+            logger.error(f"Error fetching YouTube title: {response.status_code}")
+            return jsonify({"title": f"YouTube Video ({video_id})", "success": False}), 200
+            
+    except Exception as e:
+        logger.error(f"Error in YouTube title endpoint: {str(e)}")
+        return jsonify({"title": f"YouTube Video ({video_id})", "success": False}), 200
 
 if __name__ == "__main__":
     # Remove automatic mock PDF sync on startup

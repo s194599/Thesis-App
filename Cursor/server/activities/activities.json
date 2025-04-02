@@ -1,7 +1,7 @@
 [
   {
     "completed": true,
-    "description": "",
+    "description": "bSKERIVEL SOJHBAPWIDH",
     "id": "activity_1743584134325",
     "isNew": true,
     "moduleId": "module-3",
@@ -18,5 +18,101 @@
     "title": "FSL_Oliver-Thevarajah.pdf",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/FSL_Oliver-Thevarajah_1743584513.pdf"
+  },
+  {
+    "title": "2116.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/2116_1743591471.pdf",
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1743591471474",
+    "moduleId": "module-7"
+  },
+  {
+    "completed": true,
+    "description": "",
+    "file": null,
+    "id": "activity_1743598229357",
+    "isNew": true,
+    "moduleId": "module-1",
+    "title": "sas 444",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=6cH-v3q4onk&ab_channel=PSG-ParisSaint-Germain"
+  },
+  {
+    "completed": true,
+    "description": "",
+    "file": null,
+    "id": "activity_1743599014103",
+    "isNew": true,
+    "moduleId": "module-1",
+    "title": "CLAIUDE 444",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=Y_Sk0nnJOuE&t=634s&ab_channel=ElleWang"
+  },
+  {
+    "title": "Project Plan.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Project_Plan_1743599023.pdf",
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1743599023462",
+    "moduleId": "module-1"
+  },
+  {
+    "title": "1693386057234.jpeg",
+    "description": "",
+    "type": "image",
+    "url": "http://localhost:5001/api/uploads/1693386057234_1743599771.jpeg",
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1743599771145",
+    "moduleId": "module-1"
+  },
+  {
+    "title": "Guesstimate: No. of flights taking off from an airport in a day",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=gh_fIUCGWAY&ab_channel=TheConsulting%26StrategyClub%2CIIMLucknow",
+    "file": null,
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1743603881319",
+    "moduleId": "module-1"
+  },
+  {
+    "completed": true,
+    "description": "",
+    "file": null,
+    "id": "activity_1743603963791",
+    "isNew": true,
+    "moduleId": "module-1",
+    "title": "YouTube Video (alDO-sGItuo)",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM"
+  },
+  {
+    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
+    "file": null,
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1743603979928",
+    "moduleId": "module-1"
+  },
+  {
+    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
+    "file": null,
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1743604404997",
+    "moduleId": "module-1"
   }
 ]
