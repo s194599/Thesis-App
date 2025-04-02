@@ -6,7 +6,9 @@ import {
   BsFileEarmarkPdf,
   BsFileEarmarkWord,
   BsFileEarmarkText,
+  BsFileEarmarkPlay,
 } from "react-icons/bs";
+import { Alert } from "react-bootstrap";
 
 const FileUploader = () => {
   const { formData, updateFormData } = useQuizContext();
@@ -42,6 +44,10 @@ const FileUploader = () => {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
       "text/plain": [".txt"],
+      "video/mp4": [".mp4"],
+      "video/quicktime": [".mov"],
+      "video/x-msvideo": [".avi"],
+      "video/webm": [".webm"],
     },
     multiple: true,
   });
@@ -52,6 +58,8 @@ const FileUploader = () => {
       return <BsFileEarmarkPdf size={24} className="text-danger" />;
     } else if (fileType.includes("word") || fileType.includes("doc")) {
       return <BsFileEarmarkWord size={24} className="text-primary" />;
+    } else if (fileType.includes("video")) {
+      return <BsFileEarmarkPlay size={24} className="text-success" />;
     } else {
       return <BsFileEarmarkText size={24} className="text-secondary" />;
     }
@@ -66,6 +74,10 @@ const FileUploader = () => {
   const totalFileSize = formData.files
     ? formData.files.reduce((acc, file) => acc + file.size, 0) / (1024 * 1024)
     : 0;
+
+  const hasVideoFiles =
+    formData.files &&
+    formData.files.some((file) => file.type.includes("video"));
 
   return (
     <div className="mb-3">
@@ -84,7 +96,8 @@ const FileUploader = () => {
             : "Drag and drop files here, or click to select files"}
         </p>
         <p className="text-muted small">
-          Accepted formats: PDF, DOC, DOCX, TXT (Max size: 10MB per file)
+          Accepted formats: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM (Max size:
+          50MB per file)
         </p>
       </div>
 
@@ -96,6 +109,27 @@ const FileUploader = () => {
               Total size: {totalFileSize.toFixed(2)} MB
             </span>
           </div>
+
+          {hasVideoFiles && (
+            <div className="mt-3">
+              <Alert variant="info">
+                <strong>Video Upload</strong>
+                <p>
+                  Video files will be transcribed automatically using AI speech
+                  recognition. This process requires FFmpeg to be installed on
+                  the server. If you encounter transcription errors, ask your
+                  administrator to install FFmpeg.
+                </p>
+                <ul>
+                  <li>Use videos with clear audio</li>
+                  <li>Shorter videos (under 10 minutes) work best</li>
+                  <li>
+                    Consider providing additional context in the topic field
+                  </li>
+                </ul>
+              </Alert>
+            </div>
+          )}
 
           <div className="border rounded">
             {formData.files.map((file, index) => (
