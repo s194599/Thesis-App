@@ -11,6 +11,8 @@ import time
 import random
 import string
 import re
+import whisper_timestamped as whisper
+import tempfile
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +36,7 @@ CORS(
 # Configure Flask app
 app.config["PERMANENT_SESSION_LIFETIME"] = 300  # 5 minutes
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 300  # 5 minutes
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50MB max file size
 app.config["TEMPLATES_AUTO_RELOAD"] = False  # Disable template auto-reload
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # Disable file caching
 
@@ -45,14 +47,15 @@ QUIZ_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "quizzes"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(QUIZ_FOLDER, exist_ok=True)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['QUIZ_FOLDER'] = QUIZ_FOLDER
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["QUIZ_FOLDER"] = QUIZ_FOLDER
 
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "txt", "mp4", "mov", "avi", "webm"}
+
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path, max_pages=10):
@@ -66,6 +69,55 @@ def extract_text_from_pdf(pdf_path, max_pages=10):
     except Exception as e:
         logger.error(f"Error extracting text from PDF: {str(e)}")
         raise
+
+
+# Function to transcribe video using Whisper-Timestamped
+def transcribe_video(video_path):
+    try:
+        logger.info(f"Starting transcription of video: {video_path}")
+
+        # First check if we can access the file
+        if not os.path.exists(video_path):
+            raise FileNotFoundError(f"Video file not found: {video_path}")
+
+        try:
+            # Load Whisper model - using 'base' for a balance of speed and accuracy
+            # Options: 'tiny', 'base', 'small', 'medium', 'large'
+            logger.info("Starting transcription with whisper-timestamped...")
+
+            # Transcribe the video - whisper-timestamped handles audio extraction automatically
+            result = whisper.transcribe(model="base", audio=video_path, language="en")
+
+            # Extract the text from segments
+            if "segments" in result:
+                segments = result["segments"]
+                transcription = " ".join([segment["text"] for segment in segments])
+
+                # Log some timing information
+                duration = result.get("duration", 0)
+                num_segments = len(segments)
+                logger.info(
+                    f"Transcription completed: {len(transcription)} characters, {num_segments} segments, {duration:.2f} seconds of audio"
+                )
+
+                logger.info(f"Transcription: {transcription}")
+
+                return transcription
+            else:
+                logger.warning("No segments found in transcription result")
+                return "No transcription segments were produced."
+        except FileNotFoundError as e:
+            if "ffmpeg" in str(e).lower() or "avconv" in str(e).lower():
+                logger.error(
+                    "FFmpeg not found. Please install FFmpeg to enable video transcription."
+                )
+                return "[VIDEO TRANSCRIPTION ERROR] FFmpeg not found. Please install FFmpeg to enable video transcription."
+            else:
+                raise
+
+    except Exception as e:
+        logger.error(f"Error transcribing video: {str(e)}")
+        return f"Error transcribing video: {str(e)}"
 
 
 # Function to generate quiz using Ollama's Mistral model
@@ -343,9 +395,7 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
         "questions": questions,
     }
 
-    logger.info(
-        f"Finished parsing quiz with {len(questions)} questions"
-    )
+    logger.info(f"Finished parsing quiz with {len(questions)} questions")
     return quiz
 
 
@@ -593,6 +643,30 @@ def upload_files():
                 except Exception as e:
                     logger.error(f"Error processing PDF {filename}: {str(e)}")
                     continue
+            # Handle video files
+            elif any(
+                filename.lower().endswith(ext)
+                for ext in [".mp4", ".mov", ".avi", ".webm"]
+            ):
+                try:
+                    logger.info(f"Starting video transcription for: {filename}")
+                    # Transcribe the video using Whisper
+                    transcription = transcribe_video(filepath)
+
+                    # Format the content with the filename and transcription
+                    content = (
+                        f"[TRANSCRIPTION FROM VIDEO: {filename}]\n\n{transcription}"
+                    )
+
+                    logger.info(
+                        f"Transcribed {len(transcription)} characters from video: {filename}"
+                    )
+                    uploaded_contents.append(content)
+                except Exception as e:
+                    logger.error(f"Error transcribing video {filename}: {str(e)}")
+                    # Fall back to just the filename if transcription fails
+                    content = f"[VIDEO FILE: {filename}] Transcription failed: {str(e)}"
+                    uploaded_contents.append(content)
             else:
                 content = f"Content from {filename}"
                 uploaded_contents.append(content)
@@ -739,15 +813,15 @@ def get_quiz(quiz_id):
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-@app.route('/api/upload', methods=['POST'])
+@app.route("/api/upload", methods=["POST"])
 def upload_file():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-    
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
     if file and allowed_file(file.filename):
         try:
             filename = secure_filename(file.filename)
@@ -755,74 +829,82 @@ def upload_file():
             base_name, ext = os.path.splitext(filename)
             timestamp = int(time.time())
             unique_filename = f"{base_name}_{timestamp}{ext}"
-            
+
             filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
             file.save(filepath)
-            
+
             # Log successful file save
             logger.info(f"File saved successfully: {filepath}")
-            
+
             # Determine file type based on extension
-            file_type = 'file'
-            if ext.lower() == '.pdf':
-                file_type = 'pdf'
-            elif ext.lower() in ['.doc', '.docx']:
-                file_type = 'word'
-            
+            file_type = "file"
+            if ext.lower() == ".pdf":
+                file_type = "pdf"
+            elif ext.lower() in [".doc", ".docx"]:
+                file_type = "word"
+
             # Return various URLs to access the file
-            return jsonify({
-                'url': f"/api/uploads/{unique_filename}",
-                'directUrl': f"/direct-file/{unique_filename}",
-                'serverUrl': f"http://localhost:5001/api/uploads/{unique_filename}",
-                'filename': unique_filename,
-                'type': file_type,
-                'success': True
-            })
+            return jsonify(
+                {
+                    "url": f"/api/uploads/{unique_filename}",
+                    "directUrl": f"/direct-file/{unique_filename}",
+                    "serverUrl": f"http://localhost:5001/api/uploads/{unique_filename}",
+                    "filename": unique_filename,
+                    "type": file_type,
+                    "success": True,
+                }
+            )
         except Exception as e:
             logger.error(f"Error saving file: {str(e)}")
-            return jsonify({'error': str(e)}), 500
-    
-    return jsonify({'error': 'File type not allowed'}), 400
+            return jsonify({"error": str(e)}), 500
 
-@app.route('/api/uploads/<path:filename>')
+    return jsonify({"error": "File type not allowed"}), 400
+
+
+@app.route("/api/uploads/<path:filename>")
 def uploaded_file(filename):
     # Log the request for debugging
     logger.info(f"Request for file: {filename}")
     logger.info(f"File path: {os.path.join(UPLOAD_FOLDER, filename)}")
-    
+
     # Check if file exists
     if not os.path.exists(os.path.join(UPLOAD_FOLDER, filename)):
         logger.error(f"File not found: {filename}")
-        return jsonify({'error': 'File not found'}), 404
-    
+        return jsonify({"error": "File not found"}), 404
+
     # Get the file extension
     _, ext = os.path.splitext(filename)
-    
+
     try:
         # Set appropriate content type based on file extension
-        if ext.lower() == '.pdf':
+        if ext.lower() == ".pdf":
             return send_from_directory(
-                UPLOAD_FOLDER, 
-                filename, 
-                mimetype='application/pdf',
+                UPLOAD_FOLDER,
+                filename,
+                mimetype="application/pdf",
                 as_attachment=False,
-                download_name=filename
+                download_name=filename,
             )
-        elif ext.lower() in ['.doc', '.docx']:
-            mimetype = 'application/msword' if ext.lower() == '.doc' else 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        elif ext.lower() in [".doc", ".docx"]:
+            mimetype = (
+                "application/msword"
+                if ext.lower() == ".doc"
+                else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
             return send_from_directory(
-                UPLOAD_FOLDER, 
-                filename, 
+                UPLOAD_FOLDER,
+                filename,
                 mimetype=mimetype,
                 as_attachment=True,
-                download_name=filename
+                download_name=filename,
             )
-        
+
         # For other files, use standard handling
         return send_from_directory(UPLOAD_FOLDER, filename)
     except Exception as e:
         logger.error(f"Error serving file {filename}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
+
 
 # Disable catch-all route for now to prevent interference with file serving
 # @app.route('/', defaults={'path': ''})
@@ -832,55 +914,66 @@ def uploaded_file(filename):
 #     if path.startswith('api/'):
 #         # Let Flask handle API routes
 #         return "API endpoint not found", 404
-#         
+#
 #     # For all non-API routes, send the React app's index.html
 #     return send_from_directory('../client/build', 'index.html')
+
 
 # Additional CORS headers for file downloads
 @app.after_request
 def add_cors_headers(response):
     # Add CORS headers for file downloads
-    if request.path.startswith('/api/uploads/'):
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Expose-Headers', 'Content-Disposition, Content-Type')
-        response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-        response.headers.add('Pragma', 'no-cache')
-        response.headers.add('Expires', '0')
+    if request.path.startswith("/api/uploads/"):
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add(
+            "Access-Control-Expose-Headers", "Content-Disposition, Content-Type"
+        )
+        response.headers.add(
+            "Cache-Control", "no-store, no-cache, must-revalidate, max-age=0"
+        )
+        response.headers.add("Pragma", "no-cache")
+        response.headers.add("Expires", "0")
     return response
 
+
 # Add a debugging endpoint to list the uploads directory
-@app.route('/api/debug/uploads', methods=['GET'])
+@app.route("/api/debug/uploads", methods=["GET"])
 def list_uploads():
     try:
         if not os.path.exists(UPLOAD_FOLDER):
             return jsonify({"error": "Uploads folder does not exist"}), 404
-            
+
         files = os.listdir(UPLOAD_FOLDER)
         file_details = []
-        
+
         for file in files:
             file_path = os.path.join(UPLOAD_FOLDER, file)
             if os.path.isfile(file_path):
-                file_details.append({
-                    "name": file,
-                    "size": os.path.getsize(file_path),
-                    "created": os.path.getctime(file_path),
-                    "modified": os.path.getmtime(file_path),
-                    "path": file_path,
-                    "url": f"/api/uploads/{file}"
-                })
-        
-        return jsonify({
-            "upload_folder": UPLOAD_FOLDER,
-            "files": file_details,
-            "count": len(file_details)
-        })
+                file_details.append(
+                    {
+                        "name": file,
+                        "size": os.path.getsize(file_path),
+                        "created": os.path.getctime(file_path),
+                        "modified": os.path.getmtime(file_path),
+                        "path": file_path,
+                        "url": f"/api/uploads/{file}",
+                    }
+                )
+
+        return jsonify(
+            {
+                "upload_folder": UPLOAD_FOLDER,
+                "files": file_details,
+                "count": len(file_details),
+            }
+        )
     except Exception as e:
         logger.error(f"Error listing uploads: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+
 # Add route for direct file access
-@app.route('/direct-file/<path:filename>')
+@app.route("/direct-file/<path:filename>")
 def direct_file_access(filename):
     """
     Provides direct file access without any routing interference
@@ -890,28 +983,32 @@ def direct_file_access(filename):
         if not os.path.exists(filepath):
             logger.error(f"Direct file not found: {filename}")
             return "File not found", 404
-            
+
         # Let the OS determine the correct MIME type
         return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=False)
     except Exception as e:
         logger.error(f"Error serving direct file {filename}: {str(e)}")
         return str(e), 500
 
+
 # Add a new route to sync mock PDFs from the client's mockModules data
-@app.route('/api/sync-mock-pdfs', methods=['GET'])
+@app.route("/api/sync-mock-pdfs", methods=["GET"])
 def sync_mock_pdfs():
     """
     This functionality has been disabled since mock files are no longer needed.
     The application will now only use files that users have uploaded.
     """
-    return jsonify({
-        "success": True,
-        "message": "Mock files synchronization is disabled. Only uploaded files will be used.",
-        "files": []
-    })
+    return jsonify(
+        {
+            "success": True,
+            "message": "Mock files synchronization is disabled. Only uploaded files will be used.",
+            "files": [],
+        }
+    )
+
 
 # Add a new endpoint to store activity references for uploaded files
-@app.route('/api/store-activity', methods=['POST'])
+@app.route("/api/store-activity", methods=["POST"])
 def store_activity():
     """
     Stores activity data including file references in the server
@@ -920,16 +1017,21 @@ def store_activity():
     try:
         activity_data = request.json
         if not activity_data:
-            return jsonify({"success": False, "message": "No activity data provided"}), 400
-            
+            return (
+                jsonify({"success": False, "message": "No activity data provided"}),
+                400,
+            )
+
         # Create activities directory if it doesn't exist
-        ACTIVITIES_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "activities")
+        ACTIVITIES_FOLDER = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "activities"
+        )
         os.makedirs(ACTIVITIES_FOLDER, exist_ok=True)
-        
+
         # Load existing activities
         activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
         activities = []
-        
+
         if os.path.exists(activities_file):
             try:
                 with open(activities_file, "r") as f:
@@ -937,133 +1039,155 @@ def store_activity():
             except json.JSONDecodeError:
                 logger.error("Error reading activities file: invalid JSON")
                 activities = []
-        
+
         # Add module ID if not present
         if "moduleId" not in activity_data:
             return jsonify({"success": False, "message": "Module ID is required"}), 400
-        
+
         # Ensure the completed field is included
         if "completed" not in activity_data:
             activity_data["completed"] = False
-        
+
         # Check if activity with same ID already exists
         existing_index = None
         for i, activity in enumerate(activities):
-            if (activity.get("id") == activity_data.get("id") and 
-                activity.get("moduleId") == activity_data.get("moduleId")):
+            if activity.get("id") == activity_data.get("id") and activity.get(
+                "moduleId"
+            ) == activity_data.get("moduleId"):
                 existing_index = i
                 break
-        
+
         # Update or add the activity
         if existing_index is not None:
             # If the existing activity is already completed and new one isn't,
             # preserve the completed state
-            if activities[existing_index].get("completed", False) and not activity_data.get("completed", False):
+            if activities[existing_index].get(
+                "completed", False
+            ) and not activity_data.get("completed", False):
                 activity_data["completed"] = True
-                
+
             activities[existing_index] = activity_data
         else:
             activities.append(activity_data)
-        
+
         # Save activities back to file
         with open(activities_file, "w") as f:
             json.dump(activities, f, indent=2)
-        
-        return jsonify({
-            "success": True,
-            "message": "Activity saved successfully",
-            "activityId": activity_data.get("id"),
-            "completed": activity_data.get("completed", False)
-        })
-        
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Activity saved successfully",
+                "activityId": activity_data.get("id"),
+                "completed": activity_data.get("completed", False),
+            }
+        )
+
     except Exception as e:
         logger.error(f"Error storing activity: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
 
+
 # Add a new endpoint to retrieve all stored activities for a module
-@app.route('/api/module-activities/<module_id>', methods=['GET'])
+@app.route("/api/module-activities/<module_id>", methods=["GET"])
 def get_module_activities(module_id):
     """
     Retrieves all activities for a specific module from the server
     """
     try:
-        ACTIVITIES_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "activities")
+        ACTIVITIES_FOLDER = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "activities"
+        )
         activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
-        
+
         if not os.path.exists(activities_file):
             return jsonify({"activities": [], "success": True})
-        
+
         with open(activities_file, "r") as f:
             all_activities = json.load(f)
-        
+
         # Filter activities by module ID
-        module_activities = [activity for activity in all_activities 
-                            if activity.get("moduleId") == module_id]
-        
-        return jsonify({
-            "success": True,
-            "activities": module_activities
-        })
-        
+        module_activities = [
+            activity
+            for activity in all_activities
+            if activity.get("moduleId") == module_id
+        ]
+
+        return jsonify({"success": True, "activities": module_activities})
+
     except Exception as e:
         logger.error(f"Error retrieving module activities: {str(e)}")
-        return jsonify({
-            "success": False,
-            "message": str(e),
-            "activities": []
-        }), 500
+        return jsonify({"success": False, "message": str(e), "activities": []}), 500
+
 
 # Add endpoint to delete an activity
-@app.route('/api/delete-activity', methods=['POST'])
+@app.route("/api/delete-activity", methods=["POST"])
 def delete_activity():
     """
     Deletes an activity from the server-side storage
     """
     try:
-        data = request.json
-        if not data or 'id' not in data or 'moduleId' not in data:
-            return jsonify({
-                "success": False, 
-                "message": "Activity ID and Module ID are required"
-            }), 400
-            
-        activity_id = data.get('id')
-        module_id = data.get('moduleId')
-        
+    data = request.json
+        if not data or "id" not in data or "moduleId" not in data:
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "message": "Activity ID and Module ID are required",
+                    }
+                ),
+                400,
+            )
+
+        activity_id = data.get("id")
+        module_id = data.get("moduleId")
+
         # Load existing activities
-        ACTIVITIES_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "activities")
+        ACTIVITIES_FOLDER = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "activities"
+        )
         activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
-        
+
         if not os.path.exists(activities_file):
             return jsonify({"success": True, "message": "No activities to delete"})
-            
+
         try:
             with open(activities_file, "r") as f:
                 activities = json.load(f)
-                
+
             # Filter out the activity to delete
             updated_activities = [
-                activity for activity in activities 
-                if not (activity.get('id') == activity_id and activity.get('moduleId') == module_id)
+                activity
+                for activity in activities
+                if not (
+                    activity.get("id") == activity_id
+                    and activity.get("moduleId") == module_id
+                )
             ]
-            
+
             # Save the updated list back to file
             with open(activities_file, "w") as f:
                 json.dump(updated_activities, f, indent=2)
-                
-            return jsonify({
-                "success": True,
-                "message": "Activity deleted successfully",
-                "deleted": len(activities) - len(updated_activities) > 0
-            })
-            
+
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "Activity deleted successfully",
+                    "deleted": len(activities) - len(updated_activities) > 0,
+                }
+            )
+
         except json.JSONDecodeError:
             logger.error("Error reading activities file: invalid JSON")
-            return jsonify({"success": False, "message": "Error reading activities file"}), 500
-            
+            return (
+                jsonify({"success": False, "message": "Error reading activities file"}),
+                500,
+            )
+
     except Exception as e:
         logger.error(f"Error deleting activity: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
+
 
 if __name__ == "__main__":
     # Remove automatic mock PDF sync on startup
