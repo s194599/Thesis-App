@@ -13,24 +13,45 @@ const PlatformOverview = () => {
   // Load data from localStorage or use mockData
   useEffect(() => {
     const savedModules = localStorage.getItem('learningModules');
+    let initialModules = [];
+    
     if (savedModules) {
       try {
-        setModules(JSON.parse(savedModules));
+        initialModules = JSON.parse(savedModules);
       } catch (error) {
         console.error("Error parsing saved modules:", error);
-        setModules(mockModules);
+        initialModules = mockModules;
       }
     } else {
-      setModules(mockModules);
+      initialModules = mockModules;
     }
+    
+    setModules(initialModules);
+    
+    // Fetch server-stored activities for each module
+    initialModules.forEach(module => {
+      if (module && module.id) {
+        fetchServerStoredActivities(module.id, initialModules);
+      }
+    });
     
     // Set default selected module
     const savedSelectedModuleId = localStorage.getItem('selectedModuleId');
     if (savedSelectedModuleId) {
       setSelectedModuleId(savedSelectedModuleId);
     } else {
-      setSelectedModuleId(mockModules[0]?.id || null);
+      setSelectedModuleId(initialModules[0]?.id || null);
     }
+    
+    // Ensure all mock PDFs are synced and available on the server
+    fetch('/api/sync-mock-pdfs')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Synced mock PDFs:', data);
+      })
+      .catch(error => {
+        console.error('Error syncing mock PDFs:', error);
+      });
   }, []);
 
   // Save data to localStorage when it changes
@@ -74,6 +95,22 @@ const PlatformOverview = () => {
   const handleActivityCompletion = (moduleId, activityId) => {
     if (!Array.isArray(modules)) return;
     
+    // Find the activity to update
+    const moduleIndex = modules.findIndex(module => module && module.id === moduleId);
+    if (moduleIndex === -1) return;
+    
+    const module = modules[moduleIndex];
+    const activityIndex = module.activities.findIndex(activity => activity && activity.id === activityId);
+    if (activityIndex === -1) return;
+    
+    // Create a copy of the activity with completed status
+    const updatedActivity = {
+      ...module.activities[activityIndex],
+      completed: true,
+      moduleId: moduleId  // Ensure moduleId is included
+    };
+    
+    // Update modules in state
     setModules(modules.map(module => {
       if (module && module.id === moduleId) {
         return {
@@ -81,7 +118,7 @@ const PlatformOverview = () => {
           activities: Array.isArray(module.activities) 
             ? module.activities.map(activity => {
                 if (activity && activity.id === activityId) {
-                  return { ...activity, completed: true };
+                  return updatedActivity;
                 }
                 return activity;
               })
@@ -90,6 +127,22 @@ const PlatformOverview = () => {
       }
       return module;
     }));
+    
+    // Store the updated activity with completed status on the server
+    fetch('/api/store-activity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedActivity),
+    })
+    .then(response => response.json())
+    .then(serverData => {
+      console.log('Activity completion status stored on server:', serverData);
+    })
+    .catch(error => {
+      console.error('Error storing activity completion status:', error);
+    });
   };
 
   const handleQuizAccess = () => {
@@ -121,6 +174,70 @@ const PlatformOverview = () => {
       delete window.updateModuleActivities;
     };
   }, [modules]); // Re-create when modules change to maintain closure with current state
+
+  // Function to fetch server-stored activities for a module
+  const fetchServerStoredActivities = (moduleId, currentModules) => {
+    fetch(`/api/module-activities/${moduleId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.activities) && data.activities.length > 0) {
+          console.log(`Fetched ${data.activities.length} server-stored activities for module ${moduleId}`);
+          
+          // Update the module with server-stored activities
+          setModules(prevModules => {
+            // Use the provided modules array or the current state
+            const modulesToUpdate = currentModules || prevModules;
+            
+            return modulesToUpdate.map(module => {
+              if (module.id === moduleId) {
+                // Create a map of existing activities by ID for easier comparison
+                const existingActivitiesMap = new Map();
+                module.activities.forEach(activity => {
+                  if (activity && activity.id) {
+                    existingActivitiesMap.set(activity.id, activity);
+                  }
+                });
+                
+                // Process server activities
+                const mergedActivities = [...module.activities]; // Start with existing activities
+                
+                data.activities.forEach(serverActivity => {
+                  const existingActivity = existingActivitiesMap.get(serverActivity.id);
+                  
+                  if (!existingActivity) {
+                    // If activity doesn't exist locally, add it
+                    mergedActivities.push(serverActivity);
+                  } else {
+                    // If it exists, update it but preserve any local state not on server
+                    // First, find the index in the merged activities array
+                    const index = mergedActivities.findIndex(a => a.id === serverActivity.id);
+                    if (index !== -1) {
+                      // Update with server data, prioritizing completed status
+                      mergedActivities[index] = {
+                        ...existingActivity,
+                        ...serverActivity,
+                        // Ensure the most "complete" state wins
+                        completed: serverActivity.completed || existingActivity.completed
+                      };
+                    }
+                  }
+                });
+                
+                // Return the updated module with merged activities
+                return {
+                  ...module,
+                  activities: mergedActivities
+                };
+              }
+              return module;
+            });
+          });
+        }
+      })
+      .catch(error => {
+        console.error(`Error fetching activities for module ${moduleId}:`, error);
+      });
+  };
 
   const selectedModule = Array.isArray(modules) 
     ? modules.find(module => module && module.id === selectedModuleId) || modules[0]
