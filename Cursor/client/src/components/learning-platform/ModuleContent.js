@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateActivities }) => {
+const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateActivities, onModuleUpdate }) => {
   const [activities, setActivities] = useState([]);
   const [activeTab, setActiveTab] = useState('indhold');
   const [showModal, setShowModal] = useState(false);
@@ -671,17 +671,18 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   };
   
   const handleSaveDescription = () => {
-    if (onUpdateActivities && module) {
-      // Create an updated module with the new description
-      const updatedModule = {
-        ...module,
-        description: moduleDescription
-      };
-      
-      // Update the module in the parent component
-      // We'll reuse the updateModuleActivities function which accepts moduleId and activities
-      // but we'll pass the entire module as a third parameter
-      onUpdateActivities(module.id, activities, updatedModule);
+    if (module) {
+      if (onModuleUpdate) {
+        // Use the dedicated module update function
+        onModuleUpdate(module.id, { description: moduleDescription });
+      } else if (onUpdateActivities) {
+        // Fall back to the legacy method if onModuleUpdate is not provided
+        const updatedModule = {
+          ...module,
+          description: moduleDescription
+        };
+        onUpdateActivities(module.id, activities, updatedModule);
+      }
       
       setEditingDescription(false);
     }
@@ -953,10 +954,15 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   
   // Function to save edited title
   const handleTitleSave = () => {
-    if (onUpdateActivities && module) {
-      // Use the updateActivities function to also update module properties
-      const updatedModule = { ...module, title: editedTitle };
-      onUpdateActivities(module.id, module.activities, updatedModule);
+    if (module) {
+      if (onModuleUpdate) {
+        // Use the dedicated module update function
+        onModuleUpdate(module.id, { title: editedTitle });
+      } else if (onUpdateActivities) {
+        // Fall back to the legacy method if onModuleUpdate is not provided
+        const updatedModule = { ...module, title: editedTitle };
+        onUpdateActivities(module.id, module.activities, updatedModule);
+      }
     }
     setEditingTitle(false);
   };
@@ -980,10 +986,15 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   
   // Function to save edited date
   const handleDateSave = () => {
-    if (onUpdateActivities && module) {
-      // Use the updateActivities function to also update module properties
-      const updatedModule = { ...module, date: editedDate };
-      onUpdateActivities(module.id, module.activities, updatedModule);
+    if (module) {
+      if (onModuleUpdate) {
+        // Use the dedicated module update function
+        onModuleUpdate(module.id, { date: editedDate });
+      } else if (onUpdateActivities) {
+        // Fall back to the legacy method if onModuleUpdate is not provided
+        const updatedModule = { ...module, date: editedDate };
+        onUpdateActivities(module.id, module.activities, updatedModule);
+      }
     }
     setEditingDate(false);
   };

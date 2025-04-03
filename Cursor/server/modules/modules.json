@@ -1,0 +1,44 @@
+[
+  {
+    "id": "module-1",
+    "title": "Introduktion til dansk grammatik 324234",
+    "date": "1. Februar 2023",
+    "description": "<p><strong>Gennemgang</strong> af grundl\u00e6ggende <s>grammatikregler</s> og \u00f8velser.</p>"
+  },
+  {
+    "id": "module-2",
+    "title": "L\u00e6seforst\u00e5else",
+    "date": "8. Februar 2023",
+    "description": "Fokus p\u00e5 l\u00e6sestrategier og tekstanalyse."
+  },
+  {
+    "id": "module-3",
+    "title": "Skriftlig fremstilling",
+    "date": "15. Februar 2023",
+    "description": "Opbygning af essays og andre skriftlige opgaver."
+  },
+  {
+    "id": "module-4",
+    "title": "Litteraturanalyse",
+    "date": "22. Februar 2023",
+    "description": "Metoder til analyse af forskellige litter\u00e6re v\u00e6rker."
+  },
+  {
+    "id": "module-5",
+    "title": "Mundtlig fremstilling",
+    "date": "1. Marts 2023",
+    "description": "Teknikker til pr\u00e6sentationer og diskussioner."
+  },
+  {
+    "id": "module-6",
+    "title": "Medieanalyse",
+    "date": "8. Marts 2023",
+    "description": "Kritisk analyse af forskellige medier og budskaber."
+  },
+  {
+    "id": "module-7",
+    "title": "Sproglig variation",
+    "date": "15. Marts 2023",
+    "description": "Dialekter, sociolekter og sproglige tendenser."
+  }
+]

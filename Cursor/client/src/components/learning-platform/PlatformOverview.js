@@ -1,56 +1,94 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, ProgressBar } from "react-bootstrap";
+import { Container, Row, Col, ProgressBar, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ModuleSidebar from "./ModuleSidebar";
 import ModuleContent from "./ModuleContent";
-import mockModules from "./data/mockModules";
+import { fetchModulesWithActivities, fetchModuleActivities, updateModule } from "../../services/moduleService";
 
 const PlatformOverview = () => {
   const navigate = useNavigate();
   const [modules, setModules] = useState([]);
   const [selectedModuleId, setSelectedModuleId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loadedModulesCount, setLoadedModulesCount] = useState(0);
+  const [totalModulesToLoad, setTotalModulesToLoad] = useState(0);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
-  // Load data from localStorage or use mockData
+  // Load data from server or localStorage
   useEffect(() => {
-    const savedModules = localStorage.getItem("learningModules");
-    let initialModules = [];
-
-    if (savedModules) {
+    const loadModules = async () => {
+      setLoading(true);
+      
       try {
-        initialModules = JSON.parse(savedModules);
+        // Try to load from localStorage first for immediate display
+        const savedModules = localStorage.getItem("learningModules");
+        let localModules = [];
+        
+        if (savedModules) {
+          try {
+            localModules = JSON.parse(savedModules);
+            // Use localStorage data for initial render
+            if (localModules.length > 0) {
+              setModules(localModules);
+              
+              // Set default selected module
+              const savedSelectedModuleId = localStorage.getItem("selectedModuleId");
+              if (savedSelectedModuleId) {
+                setSelectedModuleId(savedSelectedModuleId);
+              } else if (localModules.length > 0) {
+                setSelectedModuleId(localModules[0]?.id || null);
+              }
+            }
+          } catch (error) {
+            console.error("Error parsing saved modules:", error);
+          }
+        }
+        
+        // Then fetch from server (this will update the UI once complete)
+        const serverModules = await fetchModulesWithActivities();
+        
+        if (serverModules.length > 0) {
+          console.log(`Loaded ${serverModules.length} modules from server`);
+          setModules(serverModules);
+          setInitialLoadComplete(true);
+          
+          // Set selected module if not already set
+          if (!selectedModuleId && serverModules.length > 0) {
+            const savedSelectedModuleId = localStorage.getItem("selectedModuleId");
+            if (savedSelectedModuleId) {
+              setSelectedModuleId(savedSelectedModuleId);
+            } else {
+              setSelectedModuleId(serverModules[0]?.id || null);
+            }
+          }
+          
+          // No need to individually load activities, as they're included in the response
+          setLoading(false);
+        } else {
+          console.warn("No modules loaded from server");
+          setLoading(false);
+          setInitialLoadComplete(true);
+        }
       } catch (error) {
-        console.error("Error parsing saved modules:", error);
-        initialModules = mockModules;
+        console.error("Error loading modules:", error);
+        setLoading(false);
+        setInitialLoadComplete(true);
       }
-    } else {
-      initialModules = mockModules;
-    }
-
-    setModules(initialModules);
-
-    // Set default selected module
-    const savedSelectedModuleId = localStorage.getItem("selectedModuleId");
-    if (savedSelectedModuleId) {
-      setSelectedModuleId(savedSelectedModuleId);
-      // Fetch activities for the initially selected module
-      fetchServerStoredActivities(savedSelectedModuleId, initialModules);
-    } else if (initialModules.length > 0) {
-      setSelectedModuleId(initialModules[0]?.id || null);
-      // Fetch activities for the initially selected module
-      fetchServerStoredActivities(initialModules[0]?.id, initialModules);
-    }
+    };
+    
+    loadModules();
   }, []);
 
   // Save data to localStorage when it changes
   useEffect(() => {
-    if (modules && modules.length > 0) {
+    if (initialLoadComplete && modules && modules.length > 0) {
       localStorage.setItem("learningModules", JSON.stringify(modules));
     }
 
     if (selectedModuleId) {
       localStorage.setItem("selectedModuleId", selectedModuleId);
     }
-  }, [modules, selectedModuleId]);
+  }, [modules, selectedModuleId, initialLoadComplete]);
 
   // Calculate overall progress with null checks
   const totalActivities = Array.isArray(modules)
@@ -86,19 +124,96 @@ const PlatformOverview = () => {
     
     setSelectedModuleId(moduleId);
     
-    // Fetch server-stored activities for the newly selected module
-    // This ensures we get the latest activities from the server
-    // when switching modules
-    fetchServerStoredActivities(moduleId, modules);
+    // Refresh the module's activities to ensure we have the latest data
+    refreshModuleActivities(moduleId);
+  };
+
+  // Function to refresh a module's activities from the server
+  const refreshModuleActivities = async (moduleId) => {
+    if (!moduleId) return;
+    
+    try {
+      const moduleActivities = await fetchModuleActivities(moduleId);
+      
+      if (Array.isArray(moduleActivities)) {
+        console.log(`Refreshed ${moduleActivities.length} activities for module ${moduleId}`);
+        
+        // Update the module with the refreshed activities
+        setModules(prevModules => 
+          prevModules.map(module => {
+            if (module && module.id === moduleId) {
+              // Merge activities, preserving local state not on server
+              const existingActivitiesMap = new Map();
+              if (Array.isArray(module.activities)) {
+                module.activities.forEach(activity => {
+                  if (activity && activity.id) {
+                    existingActivitiesMap.set(activity.id, activity);
+                  }
+                });
+              }
+              
+              // Process server activities
+              const mergedActivities = [];
+              moduleActivities.forEach(serverActivity => {
+                if (!serverActivity || !serverActivity.id) return;
+                
+                const existingActivity = existingActivitiesMap.get(serverActivity.id);
+                
+                if (existingActivity) {
+                  // Update with server data, prioritizing completed status
+                  mergedActivities.push({
+                    ...existingActivity,
+                    ...serverActivity,
+                    completed: serverActivity.completed || existingActivity.completed,
+                  });
+                  
+                  // Remove from map to track what's been processed
+                  existingActivitiesMap.delete(serverActivity.id);
+                } else {
+                  // Add new activity from server
+                  mergedActivities.push(serverActivity);
+                }
+              });
+              
+              // Add any remaining local activities not on server
+              existingActivitiesMap.forEach(activity => {
+                mergedActivities.push(activity);
+              });
+              
+              return {
+                ...module,
+                activities: mergedActivities,
+              };
+            }
+            return module;
+          })
+        );
+      }
+    } catch (error) {
+      console.error(`Error refreshing activities for module ${moduleId}:`, error);
+    }
   };
 
   // Function to handle module updates (title, date)
-  const handleModuleUpdate = (moduleId, updatedModule) => {
-    setModules(prevModules => 
-      prevModules.map(module => 
-        module.id === moduleId ? { ...module, ...updatedModule } : module
-      )
-    );
+  const handleModuleUpdate = async (moduleId, updatedModuleData) => {
+    if (!moduleId || !updatedModuleData) return;
+    
+    try {
+      // Update the module on the server
+      const updatedModule = await updateModule(moduleId, updatedModuleData);
+      
+      // Update the local state
+      setModules(prevModules => 
+        prevModules.map(module => 
+          module.id === moduleId 
+            ? { ...module, ...updatedModule, activities: module.activities } 
+            : module
+        )
+      );
+    } catch (error) {
+      console.error("Error updating module:", error);
+      // Show an error notification or handle the error as needed
+    }
   };
 
   const handleActivityCompletion = (moduleId, activityId) => {
@@ -158,7 +273,7 @@ const PlatformOverview = () => {
           if (updatedModule) {
             return {
               ...updatedModule,
-              activities: updatedActivities || module.activities,
+              activities: updatedActivities,
             };
           }
           // Otherwise just update the activities
@@ -182,97 +297,6 @@ const PlatformOverview = () => {
     };
   }, [modules]); // Re-create when modules change to maintain closure with current state
 
-  // Function to fetch server-stored activities for a module
-  const fetchServerStoredActivities = (moduleId, currentModules) => {
-    if (!moduleId) return;
-    
-    // Use relative URL and let proxy configuration handle redirection
-    fetch(`/api/module-activities/${moduleId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (
-          data.success &&
-          Array.isArray(data.activities) &&
-          data.activities.length > 0
-        ) {
-          console.log(
-            `Fetched ${data.activities.length} server-stored activities for module ${moduleId}`
-          );
-
-          // Update the module with server-stored activities
-          setModules((prevModules) => {
-            // Use the provided modules array or the current state
-            const modulesToUpdate = currentModules || prevModules;
-
-            return modulesToUpdate.map((module) => {
-              if (module.id === moduleId) {
-                // Filter server activities to ensure they belong to this module
-                const moduleActivities = data.activities.filter(
-                  act => act.moduleId === moduleId
-                );
-                
-                // Create a map of existing activities by ID for easier comparison
-                const existingActivitiesMap = new Map();
-                if (Array.isArray(module.activities)) {
-                  module.activities.forEach((activity) => {
-                    if (activity && activity.id) {
-                      existingActivitiesMap.set(activity.id, activity);
-                    }
-                  });
-                }
-
-                // Create a new array to hold the merged activities
-                const mergedActivities = Array.isArray(module.activities) ? [...module.activities] : [];
-
-                // Process server activities
-                moduleActivities.forEach((serverActivity) => {
-                  const existingActivity = existingActivitiesMap.get(serverActivity.id);
-
-                  if (!existingActivity) {
-                    // If activity doesn't exist locally, add it
-                    mergedActivities.push(serverActivity);
-                  } else {
-                    // If it exists, update it but preserve any local state not on server
-                    const index = mergedActivities.findIndex(
-                      (a) => a.id === serverActivity.id
-                    );
-                    if (index !== -1) {
-                      // Update with server data, prioritizing completed status
-                      mergedActivities[index] = {
-                        ...existingActivity,
-                        ...serverActivity,
-                        // Ensure the most "complete" state wins
-                        completed:
-                          serverActivity.completed ||
-                          existingActivity.completed,
-                      };
-                    }
-                  }
-                });
-
-                // Return the updated module with merged activities
-                return {
-                  ...module,
-                  activities: mergedActivities,
-                };
-              }
-              return module;
-            });
-          });
-        }
-      })
-      .catch(error => {
-        console.error(
-          `Error fetching activities for module ${moduleId}: ${error.message}`
-        );
-      });
-  };
-
   const selectedModule = Array.isArray(modules)
     ? modules.find((module) => module && module.id === selectedModuleId) ||
       modules[0]
@@ -280,6 +304,14 @@ const PlatformOverview = () => {
 
   return (
     <Container fluid className="platform-overview p-0">
+      {loading && (
+        <div className="preloading-indicator">
+          <Spinner animation="border" variant="primary" size="sm" />
+          <span className="ms-2">
+            Loading modules and activities...
+          </span>
+        </div>
+      )}
       <Row className="g-0 min-vh-100">
         <Col md={3} className="sidebar-col bg-light border-end">
           <ModuleSidebar
@@ -294,7 +326,8 @@ const PlatformOverview = () => {
               module={selectedModule}
               onActivityCompletion={handleActivityCompletion}
               onQuizAccess={handleQuizAccess}
-              onUpdateActivities={updateModuleActivities} // Pass the function down
+              onUpdateActivities={updateModuleActivities}
+              onModuleUpdate={handleModuleUpdate}
             />
           ) : (
             <div className="p-4 text-center">

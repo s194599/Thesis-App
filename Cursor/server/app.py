@@ -16,6 +16,7 @@ from config.app_config import (
 from routes.file_routes import file_routes
 from routes.quiz_routes import quiz_routes
 from routes.activity_routes import activity_routes
+from routes.module_routes import module_routes
 
 # Create Flask app
 app = Flask(__name__)
@@ -45,6 +46,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.register_blueprint(file_routes, url_prefix="/api")
 app.register_blueprint(quiz_routes, url_prefix="/api")
 app.register_blueprint(activity_routes, url_prefix="/api")
+app.register_blueprint(module_routes, url_prefix="/api")
 
 
 # Additional CORS headers for file downloads

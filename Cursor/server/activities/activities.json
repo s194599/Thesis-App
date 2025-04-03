@@ -80,14 +80,14 @@
     "url": "/api/uploads/teacher-USM_1743673066.png"
   },
   {
-    "title": "Malene ZBC - Transcript Word (1).pdf",
+    "completed": true,
     "description": "",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/Malene_ZBC_-_Transcript_Word_1_1743674773.pdf",
-    "completed": false,
-    "isNew": true,
     "id": "activity_1743674773975",
-    "moduleId": "module-4"
+    "isNew": true,
+    "moduleId": "module-4",
+    "title": "Malene ZBC - Transcript Word (1).pdf",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Malene_ZBC_-_Transcript_Word_1_1743674773.pdf"
   },
   {
     "completed": true,
@@ -100,14 +100,44 @@
     "url": "http://localhost:5001/api/uploads/AI_gamification_1743679394.png"
   },
   {
-    "title": "Berserk Ambience Playlist (To Read The Manga)",
+    "title": "network security intro - slides.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/network_security_intro_-_slides_1743682000.pdf",
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1743682000577",
+    "moduleId": "module-5"
+  },
+  {
+    "title": "teacher-USssssM2.png",
+    "description": "",
+    "type": "image",
+    "url": "http://localhost:5001/api/uploads/teacher-USM2_1743682802.png",
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1743682802379",
+    "moduleId": "module-2"
+  },
+  {
+    "title": "UNord - Transcript-Word (1).pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/UNord_-_Transcript-Word_1_1743682990.pdf",
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1743682990342",
+    "moduleId": "module-4"
+  },
+  {
+    "title": "build a meme Python website (Flask Tutorial for Beginners)",
     "description": "",
     "type": "youtube",
-    "url": "https://www.youtube.com/watch?v=cjkFwlfol1o&t=3s",
+    "url": "https://www.youtube.com/watch?v=5aYpkLfkgRE&ab_channel=NetworkChuck",
     "file": null,
     "completed": false,
     "isNew": true,
-    "id": "activity_1743679585657",
-    "moduleId": "module-2"
+    "id": "activity_1743683011082",
+    "moduleId": "module-4"
   }
 ]

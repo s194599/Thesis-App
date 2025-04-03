@@ -525,3 +525,21 @@ body {
   justify-content: center;
   color: white;
 }
+
+/* Add styles for the preloading indicator */
+.preloading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050; /* Above most elements but below modals */
+  background-color: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+  text-align: center;
+  padding: 8px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(13, 110, 253, 0.2);
+}
