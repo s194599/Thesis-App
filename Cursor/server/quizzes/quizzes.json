@@ -282,5 +282,35 @@
     ],
     "timestamp": "2025-04-01T11:22:59.201Z",
     "id": "quiz_1743506579"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "September",
+        "id": "q1",
+        "options": [
+          "August",
+          "September",
+          "December",
+          "June"
+        ],
+        "question": "In which month did World War II begin in Europe?"
+      },
+      {
+        "correctAnswer": "Poland",
+        "id": "q2",
+        "options": [
+          "Poland",
+          "France",
+          "Russia",
+          "Japan"
+        ],
+        "question": "Which country was invaded by Germany under Adolf Hitler in the beginning of World War II?"
+      }
+    ],
+    "title": "Quiz",
+    "timestamp": "2025-04-03T08:28:02.888Z",
+    "id": "quiz_1743668882"
   }
 ]
