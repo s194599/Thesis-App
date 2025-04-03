@@ -57,13 +57,28 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   // Initialize activities from module when it changes
   useEffect(() => {
     if (module && Array.isArray(module.activities)) {
+      // Just use the activities directly from the module prop
       setActivities(module.activities);
       setModuleDescription(module.description || '');
       setEditedTitle(module.title || '');
       setEditedDate(module.date || '');
       
-      // Also fetch any server-stored activities for this module
-      fetchServerStoredActivities(module.id);
+      // Reset other module-specific states
+      setShowModal(false);
+      setShowAddModal(false);
+      setShowFileUploadModal(false);
+      setShowUrlModal(false);
+      setShowActivityTypeModal(false);
+      setShowPdfModal(false);
+      setEditActivityId(null);
+      setNewActivity({
+        title: '',
+        description: '',
+        type: 'text',
+        url: '',
+        file: null,
+        content: ''
+      });
     } else {
       setActivities([]);
       setModuleDescription('');
@@ -71,40 +86,6 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       setEditedDate('');
     }
   }, [module]);
-  
-  // Fetch activities stored on the server for this module
-  const fetchServerStoredActivities = (moduleId) => {
-    fetch(`/api/module-activities/${moduleId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success && Array.isArray(data.activities) && data.activities.length > 0) {
-          console.log('Fetched server-stored activities:', data.activities);
-          
-          // Merge with existing activities, avoiding duplicates
-          const existingIds = new Set(activities.map(act => act.id));
-          const newActivities = data.activities.filter(act => !existingIds.has(act.id));
-          
-          if (newActivities.length > 0) {
-            const mergedActivities = [...activities, ...newActivities];
-            setActivities(mergedActivities);
-            
-            // Update parent component with merged activities
-            if (onUpdateActivities) {
-              onUpdateActivities(moduleId, mergedActivities);
-            }
-          }
-        }
-      })
-      .catch(error => {
-        console.error(`Error fetching server-stored activities: ${error.message}`);
-        // Silently fail - just won't have server-stored activities
-      });
-  };
   
   if (!module) return <div className="p-4">No module selected</div>;
 
@@ -379,11 +360,14 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       // Find the activity to get its details before deleting
       const activityToDelete = activities.find(activity => activity.id === activityId);
       
-      // Filter out the deleted activity
+      // Filter out the deleted activity from local state
       const updatedActivities = activities.filter(activity => activity.id !== activityId);
       
-      // Update the parent component
-      if (onUpdateActivities) {
+      // Update local state first for immediate UI feedback
+      setActivities(updatedActivities);
+      
+      // Update the parent component to persist the change
+      if (onUpdateActivities && module) {
         onUpdateActivities(module.id, updatedActivities);
       }
       
@@ -564,7 +548,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
             ...activityToSave,
             url: fileUrl,
             type: data.type || activityToSave.type,
-            moduleId: module.id // Add moduleId to the activity data
+            moduleId: module.id // Ensure moduleId is set correctly
           };
           
           // Store the activity on the server for persistence
@@ -600,12 +584,25 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
             updatedActivities = [...activities, fileActivity];
           }
           
+          // Update local state first for immediate UI feedback
+          setActivities(updatedActivities);
+          
           // Update the parent component
-          if (onUpdateActivities) {
+          if (onUpdateActivities && module) {
             onUpdateActivities(module.id, updatedActivities);
           }
           
           setShowAddModal(false);
+          // Reset newActivity state
+          setNewActivity({
+            title: '',
+            description: '',
+            type: 'text',
+            url: '',
+            file: null,
+            content: ''
+          });
+          setEditActivityId(null);
         } else {
           // Handle error
           console.error('Error uploading file:', data.error);
@@ -621,7 +618,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       // Add moduleId to the activity for server storage
       const activityWithModule = {
         ...activityToSave,
-        moduleId: module.id
+        moduleId: module.id // Ensure moduleId is set correctly
       };
       
       // Store activities that have URLs on the server
@@ -654,12 +651,25 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
         updatedActivities = [...activities, activityWithModule];
       }
       
+      // Update local state first for immediate UI feedback
+      setActivities(updatedActivities);
+      
       // Update the parent component
-      if (onUpdateActivities) {
+      if (onUpdateActivities && module) {
         onUpdateActivities(module.id, updatedActivities);
       }
       
       setShowAddModal(false);
+      // Reset newActivity state
+      setNewActivity({
+        title: '',
+        description: '',
+        type: 'text',
+        url: '',
+        file: null,
+        content: ''
+      });
+      setEditActivityId(null);
     }
   };
   
@@ -757,7 +767,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
           ...activityToSave,
           url: fileUrl,
           type: data.type || activityToSave.type,
-          moduleId: module.id // Add moduleId to the activity data
+          moduleId: module.id // Ensure moduleId is set correctly
         };
         
         // Store the activity on the server for persistence
@@ -793,12 +803,25 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
           updatedActivities = [...activities, fileActivity];
         }
         
+        // Update local state first for immediate UI feedback
+        setActivities(updatedActivities);
+        
         // Update the parent component
-        if (onUpdateActivities) {
+        if (onUpdateActivities && module) {
           onUpdateActivities(module.id, updatedActivities);
         }
         
         setShowFileUploadModal(false);
+        // Reset newActivity state
+        setNewActivity({
+          title: '',
+          description: '',
+          type: 'text',
+          url: '',
+          file: null,
+          content: ''
+        });
+        setEditActivityId(null);
       } else {
         // Handle error
         console.error('Error uploading file:', data.error);
@@ -837,12 +860,14 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
     const activityWithModule = {
       ...newActivity,
       id: activityId,
-      moduleId: module.id
+      moduleId: module.id // Ensure moduleId is set correctly
     };
     
     // Determine activity type based on URL
     if (newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be')) {
       activityWithModule.type = 'youtube';
+    } else if (newActivity.url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      activityWithModule.type = 'image';
     } else {
       activityWithModule.type = 'link';
     }
@@ -880,12 +905,25 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       updatedActivities = [...activities, activityWithModule];
     }
     
+    // Update local state first for immediate UI feedback
+    setActivities(updatedActivities);
+    
     // Update the parent component
-    if (onUpdateActivities) {
+    if (onUpdateActivities && module) {
       onUpdateActivities(module.id, updatedActivities);
     }
     
     setShowUrlModal(false);
+    // Reset newActivity state
+    setNewActivity({
+      title: '',
+      description: '',
+      type: 'text',
+      url: '',
+      file: null,
+      content: ''
+    });
+    setEditActivityId(null);
   };
 
   const handleImageClick = (e, imageUrl, title) => {
