@@ -88,5 +88,26 @@
     "isNew": true,
     "id": "activity_1743674773975",
     "moduleId": "module-4"
+  },
+  {
+    "completed": true,
+    "description": "",
+    "id": "activity_1743679394761",
+    "isNew": true,
+    "moduleId": "module-1",
+    "title": "AI gaiojiojmifikkcation.png",
+    "type": "image",
+    "url": "http://localhost:5001/api/uploads/AI_gamification_1743679394.png"
+  },
+  {
+    "title": "Berserk Ambience Playlist (To Read The Manga)",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=cjkFwlfol1o&t=3s",
+    "file": null,
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1743679585657",
+    "moduleId": "module-2"
   }
 ]
