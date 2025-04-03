@@ -30,33 +30,63 @@
     "url": "http://localhost:5001/api/uploads/2116_1743591471.pdf"
   },
   {
-    "title": "Anvendelse-af-digitale-undervisningsmaterialer-AU-rapport-2013 (1).pdf",
+    "completed": true,
     "description": "",
-    "type": "pdf",
-    "url": "/api/uploads/Anvendelse-af-digitale-undervisningsmaterialer-AU-rapport-2013_1_1743669796.pdf",
-    "completed": false,
-    "isNew": true,
     "id": "activity_1743669796635",
-    "moduleId": "module-2"
+    "isNew": true,
+    "moduleId": "module-2",
+    "title": "Anvendelse-af-digitale-undervisningsmaterialer-AU-rapport-2013 (1).pdf",
+    "type": "pdf",
+    "url": "/api/uploads/Anvendelse-af-digitale-undervisningsmaterialer-AU-rapport-2013_1_1743669796.pdf"
   },
   {
-    "title": "Project Plan.pdf",
+    "completed": true,
     "description": "",
-    "type": "pdf",
-    "url": "/api/uploads/Project_Plan_1743670342.pdf",
-    "completed": false,
-    "isNew": true,
     "id": "activity_1743670342497",
-    "moduleId": "module-1"
+    "isNew": true,
+    "moduleId": "module-1",
+    "title": "Project Plan.pdf",
+    "type": "pdf",
+    "url": "/api/uploads/Project_Plan_1743670342.pdf"
   },
   {
+    "completed": true,
+    "description": "",
+    "id": "activity_1743672239248",
+    "isNew": true,
+    "moduleId": "module-2",
     "title": "afgoerelse (5).pdf",
+    "type": "pdf",
+    "url": "/api/uploads/afgoerelse_5_1743672239.pdf"
+  },
+  {
+    "title": "DKTS_2024___Professionals___Snapshot (1).pdf",
     "description": "",
     "type": "pdf",
-    "url": "/api/uploads/afgoerelse_5_1743672239.pdf",
+    "url": "/api/uploads/DKTS_2024___Professionals___Snapshot_1_1743672934.pdf",
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1743672934933",
+    "moduleId": "module-5"
+  },
+  {
+    "completed": true,
+    "description": "",
+    "id": "activity_1743673066847",
+    "isNew": true,
+    "moduleId": "module-5",
+    "title": "teacher-UeeeSffM.png",
+    "type": "image",
+    "url": "/api/uploads/teacher-USM_1743673066.png"
+  },
+  {
+    "title": "Malene ZBC - Transcript Word (1).pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Malene_ZBC_-_Transcript_Word_1_1743674773.pdf",
     "completed": false,
     "isNew": true,
-    "id": "activity_1743672239248",
-    "moduleId": "module-2"
+    "id": "activity_1743674773975",
+    "moduleId": "module-4"
   }
 ]

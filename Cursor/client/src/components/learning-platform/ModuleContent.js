@@ -262,15 +262,28 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       navigate(`/take-quiz/${activity.id}`);
     } else if (activity.type === 'pdf') {
       if (activity.url) {
-        // For PDF, validate and potentially fix the URL
+        // For PDF, handle the URL properly to prevent redirect issues
         let pdfUrl = activity.url;
         
-        // If it's a relative URL, use it directly (proxy will handle it)
+        // If it's not already a full URL, add the server prefix
         if (!pdfUrl.startsWith('http')) {
-          window.open(pdfUrl, '_blank');
+          pdfUrl = `http://localhost:5001${pdfUrl.startsWith('/') ? '' : '/'}${pdfUrl}`;
+        }
+        
+        // Open in a new tab with special attributes to prevent redirect
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.opener = null; // Remove reference to opener
+          newWindow.location.href = pdfUrl;
         } else {
-          // For external URLs, open directly
-          window.open(pdfUrl, '_blank');
+          // If popup is blocked, try a direct link with attributes
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         }
       } else {
         console.error('No URL provided for PDF activity:', activity);
@@ -290,7 +303,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       }
       
       console.log(`Opening ${activity.type} URL:`, linkUrl);
-      window.open(linkUrl, '_blank');
+      window.open(linkUrl, '_blank', 'noopener,noreferrer');
     } else {
       // Default: just mark as completed, don't show detail view
       console.log('Activity clicked:', activity.title);
@@ -519,28 +532,12 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       })
       .then(data => {
         if (data.success) {
-          // Use the appropriate URL based on file type
-          let fileUrl;
+          // Always use the full server URL for all file types to avoid routing issues
+          let fileUrl = data.serverUrl;
           
-          // For PDFs, use the direct server URL to avoid routing issues
-          if (data.type === 'pdf') {
-            // Make sure we're using the correct URL format from the response
-            fileUrl = data.serverUrl;
-            
-            // Ensure the URL is correctly formatted
-            if (!fileUrl.startsWith('http')) {
-              fileUrl = `http://localhost:5001${fileUrl}`;
-            }
-            
-            console.log('Using direct server URL for PDF:', fileUrl);
-          } else {
-            // For other file types, use the relative API URL
-            fileUrl = data.url;
-            
-            // Make sure the URL is correctly formatted with server port
-            if (!fileUrl.startsWith('http')) {
-              fileUrl = `http://localhost:5001${fileUrl.startsWith('/') ? '' : '/'}${fileUrl}`;
-            }
+          // Make sure serverUrl exists, otherwise construct it from the url
+          if (!fileUrl) {
+            fileUrl = `http://localhost:5001${data.url.startsWith('/') ? '' : '/'}${data.url}`;
           }
           
           // Add the URL to the activity
@@ -759,8 +756,13 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
     })
     .then(data => {
       if (data.success) {
-        // Use the appropriate URL based on file type
-        let fileUrl = data.url;
+        // Always use the full server URL for all file types to avoid routing issues
+        let fileUrl = data.serverUrl;
+        
+        // Make sure serverUrl exists, otherwise construct it from the url
+        if (!fileUrl) {
+          fileUrl = `http://localhost:5001${data.url.startsWith('/') ? '' : '/'}${data.url}`;
+        }
         
         // Add the URL to the activity
         const fileActivity = {
@@ -929,8 +931,13 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   const handleImageClick = (e, imageUrl, title) => {
     e.stopPropagation(); // Prevent triggering the card click
     if (imageUrl) {
-      // Use the URL directly, whether it's absolute or relative
-      const fullImageUrl = imageUrl;
+      // Ensure we have the full URL for the image
+      let fullImageUrl = imageUrl;
+      
+      // If it's not already a full URL, add the server prefix
+      if (!fullImageUrl.startsWith('http')) {
+        fullImageUrl = `http://localhost:5001${fullImageUrl.startsWith('/') ? '' : '/'}${fullImageUrl}`;
+      }
       
       setSelectedImageUrl(fullImageUrl);
       setSelectedImageTitle(title || 'Image');
@@ -1623,7 +1630,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
                         <img 
                           src={activity.url.startsWith('http') 
                             ? activity.url 
-                            : activity.url
+                            : `http://localhost:5001${activity.url.startsWith('/') ? '' : '/'}${activity.url}`
                           } 
                           alt={activity.title}
                           className="activity-inline-image"
