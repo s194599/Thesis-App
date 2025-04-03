@@ -11,7 +11,11 @@ import {
 } from "./";
 import { LoadingSpinner } from "../../common";
 import { QuizOutput } from "../../quiz/display";
-import { generateQuiz, uploadFiles } from "../../../services/api";
+import {
+  generateQuiz,
+  uploadFiles,
+  fetchUrlContent,
+} from "../../../services/api";
 import { Link } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
@@ -56,6 +60,8 @@ const QuizForm = () => {
         return formData.topic.trim() !== "";
       case "text":
         return formData.text.trim() !== "";
+      case "webpage":
+        return formData.url.trim() !== "";
       case "document":
         return formData.files && formData.files.length > 0;
       default:
@@ -97,6 +103,19 @@ const QuizForm = () => {
 
         case "text":
           contentToProcess = formData.text;
+          break;
+
+        case "webpage":
+          // Fetch webpage content from the backend
+          try {
+            const urlData = await fetchUrlContent(formData.url);
+            contentToProcess = urlData.content;
+            console.log("contentToProcess", contentToProcess);
+          } catch (urlError) {
+            throw new Error(
+              `Failed to fetch webpage content: ${urlError.message}`
+            );
+          }
           break;
 
         case "document":

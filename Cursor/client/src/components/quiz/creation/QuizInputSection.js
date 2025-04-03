@@ -42,6 +42,22 @@ const QuizInputSection = () => {
           </Form.Group>
         );
 
+      case "webpage":
+        return (
+          <Form.Group className="mb-3">
+            <Form.Label>Enter URL</Form.Label>
+            <Form.Control
+              type="url"
+              placeholder="https://example.com/article"
+              value={formData.url}
+              onChange={(e) => updateFormData("url", e.target.value)}
+            />
+            <Form.Text className="text-muted">
+              Enter a webpage URL to extract content for quiz generation.
+            </Form.Text>
+          </Form.Group>
+        );
+
       case "document":
         return (
           <Form.Group className="mb-3">

@@ -1,7 +1,12 @@
 import React from "react";
 import { useQuizContext } from "../../../context/QuizContext";
 import { Form } from "react-bootstrap";
-import { BsPencilSquare, BsFileText, BsFileEarmarkPdf } from "react-icons/bs";
+import {
+  BsPencilSquare,
+  BsFileText,
+  BsGlobe,
+  BsFileEarmarkPdf,
+} from "react-icons/bs";
 
 const InputTypeSelector = () => {
   const { formData, updateFormData } = useQuizContext();
@@ -59,6 +64,33 @@ const InputTypeSelector = () => {
                 }
                 value="text"
                 checked={formData.inputType === "text"}
+                onChange={handleInputTypeChange}
+                className="mb-0"
+              />
+            </div>
+          </div>
+
+          <div className="flex-grow-1">
+            <div
+              className={`p-3 rounded border ${
+                formData.inputType === "webpage"
+                  ? "border-primary bg-light"
+                  : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => updateFormData("inputType", "webpage")}
+            >
+              <Form.Check
+                type="radio"
+                id="input-webpage"
+                label={
+                  <div className="d-flex align-items-center">
+                    <BsGlobe className="me-2" />
+                    <span>Webpage</span>
+                  </div>
+                }
+                value="webpage"
+                checked={formData.inputType === "webpage"}
                 onChange={handleInputTypeChange}
                 className="mb-0"
               />

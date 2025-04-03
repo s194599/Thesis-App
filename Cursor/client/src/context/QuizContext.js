@@ -54,9 +54,10 @@ const sampleQuiz = {
 export const QuizProvider = ({ children }) => {
   // Main form state
   const [formData, setFormData] = useState({
-    inputType: "topic", // topic, text, document
+    inputType: "topic", // topic, text, webpage, document
     topic: "", // Used when inputType is 'topic'
     text: "", // Used when inputType is 'text'
+    url: "", // Used when inputType is 'webpage'
     files: null, // Used when inputType is 'document' - now supports multiple files
     questionType: "multipleChoice", // multipleChoice, trueFalse, shortAnswer
     studentLevel: "highSchool", // studentLevel (optional)
@@ -218,6 +219,7 @@ export const QuizProvider = ({ children }) => {
       inputType: "topic",
       topic: "",
       text: "",
+      url: "",
       files: null,
       questionType: "multipleChoice",
       studentLevel: "highSchool",

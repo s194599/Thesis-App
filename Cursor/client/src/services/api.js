@@ -126,6 +126,36 @@ export const uploadFiles = async (files) => {
   }
 };
 
+// Function to fetch quiz content from a URL
+export const fetchUrlContent = async (url) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/fetch-url`,
+      { url },
+      {
+        timeout: 300000, // 5-minute timeout
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Don't reject if status is less than 500
+        },
+      }
+    );
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to fetch URL content");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching URL content:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      console.error("Error response headers:", error.response.headers);
+    }
+    throw error;
+  }
+};
+
 // Function to save a quiz to the backend
 export const saveQuiz = async (quizData) => {
   try {
