@@ -54,10 +54,9 @@ const sampleQuiz = {
 export const QuizProvider = ({ children }) => {
   // Main form state
   const [formData, setFormData] = useState({
-    inputType: "topic", // topic, text, webpage, document
+    inputType: "topic", // topic, text, document
     topic: "", // Used when inputType is 'topic'
     text: "", // Used when inputType is 'text'
-    url: "", // Used when inputType is 'webpage'
     files: null, // Used when inputType is 'document' - now supports multiple files
     questionType: "multipleChoice", // multipleChoice, trueFalse, shortAnswer
     studentLevel: "highSchool", // studentLevel (optional)
@@ -219,7 +218,6 @@ export const QuizProvider = ({ children }) => {
       inputType: "topic",
       topic: "",
       text: "",
-      url: "",
       files: null,
       questionType: "multipleChoice",
       studentLevel: "highSchool",
@@ -240,7 +238,7 @@ export const QuizProvider = ({ children }) => {
     // Create a copy of the sample quiz with the user's custom title
     const customizedSampleQuiz = {
       ...sampleQuiz,
-      title: formData.quizTitle || "Quiz"
+      title: formData.quizTitle || "Quiz",
     };
     setGeneratedQuiz(customizedSampleQuiz);
   };
@@ -275,34 +273,34 @@ export const QuizProvider = ({ children }) => {
 
       // Call the API to save the quiz
       const result = await saveQuizApi(quizToSave);
-      
+
       // Update the quiz with the returned ID if needed
       if (result.quizId && !generatedQuiz.id) {
         setGeneratedQuiz({
           ...generatedQuiz,
-          id: result.quizId
+          id: result.quizId,
         });
       }
-      
+
       setSaveSuccess(true);
-      
+
       // Show success notification
       if (toast) {
         toast.success("Quiz saved successfully!");
       } else {
         alert("Quiz saved successfully!");
       }
-      
+
       return result;
     } catch (err) {
       console.error("Error saving quiz:", err);
       setError("Failed to save quiz. Please try again.");
-      
+
       // Show error notification
       if (toast) {
         toast.error("Failed to save quiz. Please try again.");
       }
-      
+
       return null;
     } finally {
       setIsSaving(false);
@@ -337,7 +335,7 @@ export const QuizProvider = ({ children }) => {
         cancelQuizGeneration,
         saveQuizToBackend,
         isSaving,
-        saveSuccess
+        saveSuccess,
       }}
     >
       {children}

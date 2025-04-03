@@ -227,50 +227,6 @@ def direct_file_access(filename):
         return str(e), 500
 
 
-@file_routes.route("/fetch-url", methods=["POST"])
-def fetch_url_content():
-    """
-    Fetch content from a URL
-    """
-    try:
-        import requests
-
-        data = request.json
-        url = data.get("url", "")
-
-        if not url:
-            return jsonify({"success": False, "message": "No URL provided"}), 400
-
-        # Basic URL validation
-        if not (url.startswith("http://") or url.startswith("https://")):
-            url = "https://" + url
-
-        # Fetch the webpage content (simplified - in production use a more robust solution)
-        try:
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-
-            # Return just the text content
-            return jsonify(
-                {
-                    "success": True,
-                    "content": response.text[:5000],  # Limit size for demo
-                    "url": url,
-                }
-            )
-
-        except requests.exceptions.RequestException as e:
-            return (
-                jsonify(
-                    {"success": False, "message": f"Failed to fetch URL: {str(e)}"}
-                ),
-                500,
-            )
-
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
-
-
 # Add a debugging endpoint to list the uploads directory
 @file_routes.route("/debug/uploads", methods=["GET"])
 def list_uploads():
