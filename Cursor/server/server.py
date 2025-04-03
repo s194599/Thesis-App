@@ -50,7 +50,19 @@ os.makedirs(QUIZ_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["QUIZ_FOLDER"] = QUIZ_FOLDER
 
-ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "txt", "mp4", "mov", "avi", "webm", 'png', 'jpeg', 'jpg'}
+ALLOWED_EXTENSIONS = {
+    "pdf",
+    "doc",
+    "docx",
+    "txt",
+    "mp4",
+    "mov",
+    "avi",
+    "webm",
+    "png",
+    "jpeg",
+    "jpg",
+}
 
 
 def allowed_file(filename):
@@ -100,8 +112,6 @@ def transcribe_video(video_path):
                     f"Transcription completed: {len(transcription)} characters, {num_segments} segments, {duration:.2f} seconds of audio"
                 )
 
-                logger.info(f"Transcription: {transcription}")
-
                 return transcription
             else:
                 logger.warning("No segments found in transcription result")
@@ -117,7 +127,7 @@ def transcribe_video(video_path):
 
     except Exception as e:
         logger.error(f"Error transcribing video: {str(e)}")
-        return f"Error transcribing video: {str(e)}"
+        return f"[VIDEO TRANSCRIPTION ERROR] {str(e)}"
 
 
 # Function to generate quiz using Ollama's Mistral model
@@ -604,104 +614,89 @@ def upload_files():
     try:
         logger.info("Received upload request for 1 or more files")
 
-        # Handle multiple files upload
+        # Check if 'files' key is present in the request
         if "files" not in request.files:
-            logger.error("No files part in request")
-            return jsonify({"success": False, "message": "No files part"}), 400
+            return jsonify({"error": "No files provided"}), 400
 
         files = request.files.getlist("files")
 
-        # Check if any files were selected
+        # Check if any files were actually selected
         if not files or all(file.filename == "" for file in files):
-            logger.error("No files selected")
-            return jsonify({"success": False, "message": "No files selected"}), 400
+            return jsonify({"error": "No files selected"}), 400
 
-        uploaded_contents = []
-        uploaded_filenames = []
+        file_info = []
 
         for file in files:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-            logger.info(f"Saving file to: {filepath}")
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                logger.info(f"Saving file to: {file_path}")
+                file.save(file_path)
 
-            try:
-                file.save(filepath)
-                uploaded_filenames.append(filename)
-            except Exception as e:
-                logger.error(f"Error saving file {filename}: {str(e)}")
-                continue
+                # Process file based on its type
+                file_extension = (
+                    filename.rsplit(".", 1)[1].lower() if "." in filename else ""
+                )
+                content = ""
 
-            # Extract content if it's a PDF
-            content = ""
-            if filename.lower().endswith(".pdf"):
-                try:
-                    content = extract_text_from_pdf(filepath)
-                    logger.info(
-                        f"Extracted {len(content)} characters from PDF: {filename}"
-                    )
-                    uploaded_contents.append(content)
-                except Exception as e:
-                    logger.error(f"Error processing PDF {filename}: {str(e)}")
-                    continue
-            # Handle video files
-            elif any(
-                filename.lower().endswith(ext)
-                for ext in [".mp4", ".mov", ".avi", ".webm"]
-            ):
-                try:
+                if file_extension in ["mp4", "mov", "avi", "webm"]:
+                    # This is a video file, transcribe it
                     logger.info(f"Starting video transcription for: {filename}")
-                    # Transcribe the video using Whisper
-                    transcription = transcribe_video(filepath)
-
-                    # Format the content with the filename and transcription
-                    content = (
-                        f"[TRANSCRIPTION FROM VIDEO: {filename}]\n\n{transcription}"
-                    )
-
+                    content = transcribe_video(file_path)
                     logger.info(
-                        f"Transcribed {len(transcription)} characters from video: {filename}"
+                        f"Transcribed {len(content)} characters from video: {filename}"
                     )
-                    uploaded_contents.append(content)
-                except Exception as e:
-                    logger.error(f"Error transcribing video {filename}: {str(e)}")
-                    # Fall back to just the filename if transcription fails
-                    content = f"[VIDEO FILE: {filename}] Transcription failed: {str(e)}"
-                    uploaded_contents.append(content)
-            else:
-                content = f"Content from {filename}"
-                uploaded_contents.append(content)
 
-        if not uploaded_contents:
-            return (
-                jsonify(
+                    # Check if transcription failed and contains an error message
+                    if content.startswith("[VIDEO TRANSCRIPTION ERROR]"):
+                        return (
+                            jsonify(
+                                {
+                                    "error": "Video transcription failed",
+                                    "message": content,
+                                    "filename": filename,
+                                }
+                            ),
+                            400,
+                        )
+                elif file_extension == "pdf":
+                    # Process PDF
+                    content = extract_text_from_pdf(file_path)
+                elif file_extension in ["doc", "docx"]:
+                    # For simplicity, assuming .doc/.docx files are handled elsewhere or by a library
+                    content = "Document content (processing not shown in this example)"
+                else:
+                    # For text files, read directly
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        content = f.read()
+
+                file_info.append(
                     {
-                        "success": False,
-                        "message": "No files were successfully processed",
+                        "filename": filename,
+                        "path": file_path,
+                        "content": (
+                            content[:200] + "..." if len(content) > 200 else content
+                        ),
                     }
-                ),
-                400,
-            )
+                )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "error": f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
+                        }
+                    ),
+                    400,
+                )
 
-        # Combine contents
-        combined_content = "\n\n".join(uploaded_contents)
-
-        # Return response for multiple file upload
-        return jsonify(
-            {
-                "success": True,
-                "message": "Files uploaded successfully",
-                "filenames": uploaded_filenames,
-                "content": (
-                    combined_content[:1000] + "..."
-                    if len(combined_content) > 1000
-                    else combined_content
-                ),
-            }
+        return (
+            jsonify({"message": "Files uploaded successfully", "files": file_info}),
+            200,
         )
 
     except Exception as e:
         logger.error(f"Error in upload_files: {str(e)}")
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 
 # Add endpoint for saving quizzes
@@ -837,14 +832,14 @@ def upload_file():
             logger.info(f"File saved successfully: {filepath}")
 
             # Determine file type based on extension
-            file_type = 'file'
-            if ext.lower() == '.pdf':
-                file_type = 'pdf'
-            elif ext.lower() in ['.doc', '.docx']:
-                file_type = 'word'
-            elif ext.lower() in ['.jpg', '.jpeg', '.png']:
-                file_type = 'image'
-            
+            file_type = "file"
+            if ext.lower() == ".pdf":
+                file_type = "pdf"
+            elif ext.lower() in [".doc", ".docx"]:
+                file_type = "word"
+            elif ext.lower() in [".jpg", ".jpeg", ".png"]:
+                file_type = "image"
+
             # Return various URLs to access the file
             return jsonify(
                 {
@@ -900,21 +895,15 @@ def uploaded_file(filename):
                 as_attachment=True,
                 download_name=filename,
             )
-        elif ext.lower() in ['.jpg', '.jpeg']:
+        elif ext.lower() in [".jpg", ".jpeg"]:
             return send_from_directory(
-                UPLOAD_FOLDER,
-                filename,
-                mimetype='image/jpeg',
-                as_attachment=False
+                UPLOAD_FOLDER, filename, mimetype="image/jpeg", as_attachment=False
             )
-        elif ext.lower() == '.png':
+        elif ext.lower() == ".png":
             return send_from_directory(
-                UPLOAD_FOLDER,
-                filename,
-                mimetype='image/png',
-                as_attachment=False
+                UPLOAD_FOLDER, filename, mimetype="image/png", as_attachment=False
             )
-        
+
         # For other files, use standard handling
         return send_from_directory(UPLOAD_FOLDER, filename)
     except Exception as e:
@@ -1204,33 +1193,38 @@ def delete_activity():
         logger.error(f"Error deleting activity: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
 
-@app.route('/api/youtube-title', methods=['GET'])
+
+@app.route("/api/youtube-title", methods=["GET"])
 def get_youtube_title():
     """
     Endpoint to fetch YouTube video title
     """
-    video_id = request.args.get('videoId')
+    video_id = request.args.get("videoId")
     if not video_id:
         return jsonify({"error": "No video ID provided"}), 400
-    
+
     try:
         # Create YouTube oEmbed API URL
         oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
-        
+
         # Make request to YouTube API
         response = requests.get(oembed_url, timeout=5)
-        
+
         if response.status_code == 200:
             data = response.json()
-            title = data.get('title', f"YouTube Video ({video_id})")
+            title = data.get("title", f"YouTube Video ({video_id})")
             return jsonify({"title": title, "success": True})
         else:
             logger.error(f"Error fetching YouTube title: {response.status_code}")
-            return jsonify({"title": f"YouTube Video ({video_id})", "success": False}), 200
-            
+            return (
+                jsonify({"title": f"YouTube Video ({video_id})", "success": False}),
+                200,
+            )
+
     except Exception as e:
         logger.error(f"Error in YouTube title endpoint: {str(e)}")
         return jsonify({"title": f"YouTube Video ({video_id})", "success": False}), 200
+
 
 if __name__ == "__main__":
     # Remove automatic mock PDF sync on startup

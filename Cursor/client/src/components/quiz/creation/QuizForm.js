@@ -107,20 +107,50 @@ const QuizForm = () => {
 
         case "webpage":
           // Fetch webpage content from the backend
-          const urlData = await fetchUrlContent(formData.url);
-          contentToProcess = urlData.content;
+          try {
+            const urlData = await fetchUrlContent(formData.url);
+            contentToProcess = urlData.content;
+          } catch (urlError) {
+            throw new Error(
+              `Failed to fetch webpage content: ${urlError.message}`
+            );
+          }
           break;
 
         case "document":
           // Upload files to the backend
           if (formData.files && formData.files.length > 0) {
-            const filesData = await uploadFiles(formData.files);
-            contentToProcess = filesData.combinedContent || filesData.content;
+            try {
+              const filesData = await uploadFiles(formData.files);
+              contentToProcess = filesData.combinedContent || "";
+              if (!contentToProcess) {
+                throw new Error(
+                  "No content was extracted from the uploaded files."
+                );
+              }
+            } catch (fileError) {
+              // Check if this is a transcription error
+              if (fileError.message.includes("Video transcription failed")) {
+                throw new Error(
+                  `${fileError.message}. Please check that your video file is valid and try again.`
+                );
+              }
+              throw new Error(
+                `Failed to process uploaded files: ${fileError.message}`
+              );
+            }
           }
           break;
 
         default:
           throw new Error("Invalid input type");
+      }
+
+      // Check if we have content to process
+      if (!contentToProcess || contentToProcess.trim() === "") {
+        throw new Error(
+          "No content was extracted for quiz generation. Please try again with different input."
+        );
       }
 
       // Prepare data for quiz generation
@@ -154,7 +184,9 @@ const QuizForm = () => {
       setGeneratedQuiz(finalQuizData);
     } catch (err) {
       console.error("Error generating quiz:", err);
-      setError("Failed to generate quiz. Please try again later.");
+      setError(
+        err.message || "Failed to generate quiz. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
