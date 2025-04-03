@@ -227,6 +227,138 @@ def direct_file_access(filename):
         return str(e), 500
 
 
+@file_routes.route("/fetch-url", methods=["POST"])
+def fetch_url_content():
+    """
+    Fetch content from a URL
+    """
+    try:
+        # Check if requests library is available
+        try:
+            import requests
+            from bs4 import BeautifulSoup
+        except ImportError as e:
+            logger.error(f"Missing required library: {str(e)}")
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "message": f"Server missing required library: {str(e)}. Please install with pip install requests beautifulsoup4",
+                    }
+                ),
+                500,
+            )
+
+        # Get URL from request
+        data = request.json
+        if not data:
+            logger.error("No JSON data in request")
+            return jsonify({"success": False, "message": "No data provided"}), 400
+
+        url = data.get("url", "")
+        logger.info(f"Received URL fetch request for: {url}")
+
+        if not url:
+            return jsonify({"success": False, "message": "No URL provided"}), 400
+
+        # Basic URL validation
+        if not (url.startswith("http://") or url.startswith("https://")):
+            url = "https://" + url
+            logger.info(f"Added https:// prefix to URL: {url}")
+
+        # Add user agent to avoid being blocked
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        # Fetch the webpage content
+        try:
+            logger.info(f"Sending GET request to: {url}")
+            response = requests.get(url, headers=headers, timeout=15)
+
+            # Log response details
+            logger.info(f"Response status code: {response.status_code}")
+            logger.info(f"Response encoding: {response.encoding}")
+            logger.info(
+                f"Response content type: {response.headers.get('Content-Type', 'unknown')}"
+            )
+
+            # Raise an HTTP error if the status isn't successful
+            response.raise_for_status()
+
+            # Parse HTML content
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # Remove script and style elements
+            for script in soup(["script", "style"]):
+                script.extract()
+
+            # Extract text
+            text = soup.get_text()
+
+            # Clean up text: break into lines and remove leading/trailing spaces
+            lines = (line.strip() for line in text.splitlines())
+            # Break multi-headlines into a line each
+            chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+            # Remove blank lines
+            text = "\n".join(chunk for chunk in chunks if chunk)
+
+            # Limit content size
+            max_chars = 100000  # 100K characters should be plenty
+            if len(text) > max_chars:
+                logger.warning(
+                    f"Truncating large content from {len(text)} to {max_chars} characters"
+                )
+                text = text[:max_chars] + "\n[Content truncated due to size]"
+
+            # Get meta title and description if available
+            title = soup.title.string if soup.title else "Unknown Title"
+
+            meta_desc = soup.find("meta", attrs={"name": "description"})
+            description = meta_desc.get("content", "") if meta_desc else ""
+
+            # Create content with metadata
+            formatted_content = f"Title: {title}\nURL: {url}\n\n{text}"
+
+            logger.info(f"Successfully extracted {len(text)} characters from {url}")
+
+            # Return the content
+            return jsonify(
+                {
+                    "success": True,
+                    "content": formatted_content,
+                    "url": url,
+                    "title": title,
+                    "description": description,
+                    "contentLength": len(text),
+                }
+            )
+
+        except requests.exceptions.RequestException as e:
+            error_msg = f"Failed to fetch URL: {str(e)}"
+            logger.error(error_msg)
+
+            # Provide more specific error messages for common issues
+            if isinstance(e, requests.exceptions.ConnectionError):
+                error_msg = f"Could not connect to the website '{url}'. Please check the URL and try again."
+            elif isinstance(e, requests.exceptions.Timeout):
+                error_msg = f"The request to '{url}' timed out. The website may be slow or unavailable."
+            elif isinstance(e, requests.exceptions.TooManyRedirects):
+                error_msg = f"Too many redirects for '{url}'. The URL may be incorrect."
+            elif isinstance(e, requests.exceptions.HTTPError):
+                status_code = (
+                    e.response.status_code if hasattr(e, "response") else "unknown"
+                )
+                error_msg = f"HTTP Error {status_code} when accessing '{url}'. The page may not exist or you may not have permission to access it."
+
+            return jsonify({"success": False, "message": error_msg}), 500
+
+    except Exception as e:
+        error_msg = f"Unexpected error fetching URL: {str(e)}"
+        logger.error(error_msg, exc_info=True)  # Log the full stack trace
+        return jsonify({"success": False, "message": error_msg}), 500
+
+
 # Add a debugging endpoint to list the uploads directory
 @file_routes.route("/debug/uploads", methods=["GET"])
 def list_uploads():
