@@ -93,10 +93,28 @@ export const uploadFiles = async (files) => {
     );
 
     if (response.status >= 400) {
-      throw new Error(response.data.message || "Failed to upload files");
+      // Check if this is a video transcription error
+      if (response.data.error === "Video transcription failed") {
+        throw new Error(`Video transcription failed: ${response.data.message}`);
+      }
+      throw new Error(
+        response.data.error || response.data.message || "Failed to upload files"
+      );
     }
 
-    return response.data;
+    // Process the response - convert to a format expected by the QuizForm
+    let combinedContent = "";
+    if (response.data.files && response.data.files.length > 0) {
+      // Extract full content from each file and combine
+      combinedContent = response.data.files
+        .map((file) => file.content)
+        .join("\n\n");
+    }
+
+    return {
+      ...response.data,
+      combinedContent,
+    };
   } catch (error) {
     console.error("Error uploading files:", error);
     if (error.response) {
