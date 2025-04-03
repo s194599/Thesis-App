@@ -88,6 +88,18 @@ const PlatformOverview = () => {
     setSelectedModuleId(moduleId);
   };
 
+  // Function to handle module updates (title, date)
+  const handleModuleUpdate = (moduleId, updatedModule) => {
+    setModules(prevModules => 
+      prevModules.map(module => 
+        module.id === moduleId ? { ...module, ...updatedModule } : module
+      )
+    );
+    
+    // If there's a specific function for server-side storage, it would be called here
+    // For now, it will be saved in localStorage via the useEffect
+  };
+
   const handleActivityCompletion = (moduleId, activityId) => {
     if (!Array.isArray(modules)) return;
 
@@ -307,24 +319,24 @@ const PlatformOverview = () => {
               </p>
             </div>
           )}
-
-          {/* Overall Progress */}
-          <div className="fixed-bottom bg-white border-top py-2 px-3">
-            <div className="d-flex justify-content-between align-items-center mb-1">
-              <small className="text-muted">
-                {overallProgress}% - {completedActivities} ud af{" "}
-                {totalActivities} moduler gennemført
-              </small>
-              <small className="text-muted">Total Fremgang</small>
-            </div>
-            <ProgressBar
-              now={overallProgress}
-              variant="primary"
-              style={{ height: "8px" }}
-            />
-          </div>
         </Col>
       </Row>
+
+      {/* Overall Progress - Moved outside the column structure */}
+      <div className="fixed-bottom bg-white border-top py-2 px-3">
+        <div className="d-flex justify-content-between align-items-center mb-1">
+          <small className="text-muted">
+            {overallProgress}% - {completedActivities} ud af{" "}
+            {totalActivities} moduler gennemført
+          </small>
+          <small className="text-muted">Total Fremgang</small>
+        </div>
+        <ProgressBar
+          now={overallProgress}
+          variant="primary"
+          style={{ height: "8px" }}
+        />
+      </div>
     </Container>
   );
 };

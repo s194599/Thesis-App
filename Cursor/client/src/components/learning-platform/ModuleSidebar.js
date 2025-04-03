@@ -57,16 +57,22 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect }) => {
                 onClick={() => onModuleSelect && onModuleSelect(module.id)}
                 className="d-flex justify-content-between align-items-center border-start-0 border-end-0"
               >
-                <div>
-                  <div className="text-nowrap">{module.date || 'No date'}</div>
-                  {module.subtitle && <small className="text-muted d-block">{module.subtitle}</small>}
+                <div className="d-flex flex-column w-100">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <div className="text-nowrap">{module.date || 'No date'}</div>
+                    
+                    {allCompleted ? (
+                      <BsCheckCircleFill className="text-success" />
+                    ) : (
+                      <BsCircleFill className={completedActivities > 0 ? "text-warning" : "text-secondary"} style={{ opacity: 0.5 }} />
+                    )}
+                  </div>
+                  
+                  <div>
+                    <span className="text-truncate">{module.title}</span>
+                    {module.subtitle && <small className="text-muted d-block">{module.subtitle}</small>}
+                  </div>
                 </div>
-                
-                {allCompleted ? (
-                  <BsCheckCircleFill className="text-success" />
-                ) : (
-                  <BsCircleFill className={completedActivities > 0 ? "text-warning" : "text-secondary"} style={{ opacity: 0.5 }} />
-                )}
               </ListGroup.Item>
             );
           })

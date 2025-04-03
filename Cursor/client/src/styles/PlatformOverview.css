@@ -8,6 +8,7 @@
   overflow-y: auto;
   position: sticky;
   top: 0;
+  padding-bottom: 60px; /* Add padding at the bottom to account for the progress bar height */
 }
 
 .content-col {
@@ -17,6 +18,11 @@
 
 .module-sidebar {
   height: 100%;
+}
+
+.module-list {
+  overflow-y: auto;
+  padding-bottom: 10px; /* Extra padding at the bottom of the list */
 }
 
 .module-list .list-group-item {
@@ -34,6 +40,31 @@
 
 .module-list .list-group-item:hover:not(.active) {
   background-color: #f8f9fa;
+}
+
+/* Edit icon styling */
+.edit-icon {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.list-group-item:hover .edit-icon,
+.module-header:hover .edit-icon,
+.d-flex:hover .edit-icon {
+  opacity: 0.8;
+}
+
+.list-group-item .edit-icon:hover,
+.module-header .edit-icon:hover,
+.d-flex .edit-icon:hover {
+  opacity: 1;
+  color: #0d6efd !important;
+}
+
+/* Edit field styling */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 .activity-card {

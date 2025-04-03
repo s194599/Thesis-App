@@ -14,7 +14,8 @@ import {
   BsLink45Deg,
   BsQuestionCircle,
   BsPencilSquare,
-  BsImage
+  BsImage,
+  BsCheck
 } from 'react-icons/bs';
 import ModuleTabs from './ModuleTabs';
 import { useNavigate } from 'react-router-dom';
@@ -47,6 +48,10 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   const [dragActive, setDragActive] = useState(false);
   const [editingDescription, setEditingDescription] = useState(false);
   const [moduleDescription, setModuleDescription] = useState('');
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editingDate, setEditingDate] = useState(false);
+  const [editedDate, setEditedDate] = useState('');
   const navigate = useNavigate();
   
   // Initialize activities from module when it changes
@@ -54,12 +59,16 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
     if (module && Array.isArray(module.activities)) {
       setActivities(module.activities);
       setModuleDescription(module.description || '');
+      setEditedTitle(module.title || '');
+      setEditedDate(module.date || '');
       
       // Also fetch any server-stored activities for this module
       fetchServerStoredActivities(module.id);
     } else {
       setActivities([]);
       setModuleDescription('');
+      setEditedTitle('');
+      setEditedDate('');
     }
   }, [module]);
   
@@ -378,10 +387,8 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
         onUpdateActivities(module.id, updatedActivities);
       }
       
-      // Also delete from server storage if it's a file activity
-      if (activityToDelete && 
-          (activityToDelete.type === 'pdf' || activityToDelete.type === 'word' || activityToDelete.type === 'file')) {
-        
+      // Delete from server storage for all activity types
+      if (activityToDelete) {
         fetch('/api/delete-activity', {
           method: 'POST',
           headers: {
@@ -893,13 +900,123 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
     }
   };
 
+  // Function to handle title edit mode
+  const handleTitleEdit = () => {
+    setEditingTitle(true);
+    setEditedTitle(module.title || '');
+  };
+  
+  // Function to save edited title
+  const handleTitleSave = () => {
+    if (onUpdateActivities && module) {
+      // Use the updateActivities function to also update module properties
+      const updatedModule = { ...module, title: editedTitle };
+      onUpdateActivities(module.id, module.activities, updatedModule);
+    }
+    setEditingTitle(false);
+  };
+  
+  // Function to handle key press in title input
+  const handleTitleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleTitleSave();
+    } else if (e.key === 'Escape' || e.key === 'Esc') {
+      setEditingTitle(false);
+      setEditedTitle(module.title || '');
+    }
+  };
+
+  // Function to handle date edit mode
+  const handleDateEdit = (e) => {
+    e.stopPropagation();
+    setEditingDate(true);
+    setEditedDate(module.date || '');
+  };
+  
+  // Function to save edited date
+  const handleDateSave = () => {
+    if (onUpdateActivities && module) {
+      // Use the updateActivities function to also update module properties
+      const updatedModule = { ...module, date: editedDate };
+      onUpdateActivities(module.id, module.activities, updatedModule);
+    }
+    setEditingDate(false);
+  };
+  
+  // Function to handle key press in date input
+  const handleDateKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleDateSave();
+    } else if (e.key === 'Escape' || e.key === 'Esc') {
+      setEditingDate(false);
+      setEditedDate(module.date || '');
+    }
+  };
+
   return (
     <div className="module-content p-4">
       <header className="mb-4">
         <div className="d-flex align-items-center mb-3">
           <div>
-            <small className="text-muted d-block">{module.date || 'No date'}</small>
-            <h1 className="h3 mb-0">{module.title || 'Unnamed Module'}</h1>
+            {editingDate ? (
+              <div className="d-flex align-items-center mb-1">
+                <Form.Control
+                  size="sm"
+                  type="text"
+                  value={editedDate}
+                  onChange={(e) => setEditedDate(e.target.value)}
+                  onKeyDown={handleDateKeyPress}
+                  autoFocus
+                  style={{ width: '100px' }}
+                />
+                <BsCheck 
+                  className="text-success ms-1 clickable" 
+                  size={16}
+                  onClick={handleDateSave}
+                  style={{ cursor: 'pointer' }}
+                />
+              </div>
+            ) : (
+              <div className="d-flex align-items-center">
+                <small className="text-muted d-block">{module.date || 'Ingen dato'}</small>
+                <BsPencil 
+                  size={12} 
+                  className="ms-2 text-muted edit-icon"
+                  onClick={handleDateEdit}
+                  style={{ cursor: 'pointer' }}
+                />
+              </div>
+            )}
+            
+            {editingTitle ? (
+              <div className="d-flex align-items-center">
+                <Form.Control
+                  size="lg"
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onKeyDown={handleTitleKeyPress}
+                  autoFocus
+                  style={{ minWidth: '300px' }}
+                />
+                <BsCheck 
+                  className="text-success ms-2 clickable" 
+                  size={24}
+                  onClick={handleTitleSave}
+                  style={{ cursor: 'pointer' }}
+                />
+              </div>
+            ) : (
+              <div className="d-flex align-items-center">
+                <h1 className="h3 mb-0">{module.title || 'Unnamed Module'}</h1>
+                <BsPencil 
+                  size={16} 
+                  className="ms-3 text-muted edit-icon"
+                  onClick={handleTitleEdit}
+                  style={{ cursor: 'pointer' }}
+                />
+              </div>
+            )}
           </div>
         </div>
         
@@ -960,8 +1077,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
           </div>
         )}
         
-        <ModuleTabs 
-          moduleId={module.id}
+        <ModuleTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
