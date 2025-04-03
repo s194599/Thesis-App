@@ -28,19 +28,16 @@ const PlatformOverview = () => {
 
     setModules(initialModules);
 
-    // Fetch server-stored activities for each module
-    initialModules.forEach((module) => {
-      if (module && module.id) {
-        fetchServerStoredActivities(module.id, initialModules);
-      }
-    });
-
     // Set default selected module
     const savedSelectedModuleId = localStorage.getItem("selectedModuleId");
     if (savedSelectedModuleId) {
       setSelectedModuleId(savedSelectedModuleId);
-    } else {
+      // Fetch activities for the initially selected module
+      fetchServerStoredActivities(savedSelectedModuleId, initialModules);
+    } else if (initialModules.length > 0) {
       setSelectedModuleId(initialModules[0]?.id || null);
+      // Fetch activities for the initially selected module
+      fetchServerStoredActivities(initialModules[0]?.id, initialModules);
     }
   }, []);
 
@@ -85,7 +82,14 @@ const PlatformOverview = () => {
       : 0;
 
   const handleModuleSelect = (moduleId) => {
+    if (moduleId === selectedModuleId) return; // Do nothing if selecting the same module
+    
     setSelectedModuleId(moduleId);
+    
+    // Fetch server-stored activities for the newly selected module
+    // This ensures we get the latest activities from the server
+    // when switching modules
+    fetchServerStoredActivities(moduleId, modules);
   };
 
   // Function to handle module updates (title, date)
@@ -95,68 +99,47 @@ const PlatformOverview = () => {
         module.id === moduleId ? { ...module, ...updatedModule } : module
       )
     );
-    
-    // If there's a specific function for server-side storage, it would be called here
-    // For now, it will be saved in localStorage via the useEffect
   };
 
   const handleActivityCompletion = (moduleId, activityId) => {
-    if (!Array.isArray(modules)) return;
-
-    // Find the activity to update
-    const moduleIndex = modules.findIndex(
-      (module) => module && module.id === moduleId
-    );
-    if (moduleIndex === -1) return;
-
-    const module = modules[moduleIndex];
-    const activityIndex = module.activities.findIndex(
-      (activity) => activity && activity.id === activityId
-    );
-    if (activityIndex === -1) return;
-
-    // Create a copy of the activity with completed status
-    const updatedActivity = {
-      ...module.activities[activityIndex],
-      completed: true,
-      moduleId: moduleId, // Ensure moduleId is included
-    };
-
-    // Update modules in state
-    setModules(
-      modules.map((module) => {
-        if (module && module.id === moduleId) {
+    setModules((prevModules) =>
+      prevModules.map((module) => {
+        if (module.id === moduleId) {
           return {
             ...module,
-            activities: Array.isArray(module.activities)
-              ? module.activities.map((activity) => {
-                  if (activity && activity.id === activityId) {
-                    return updatedActivity;
-                  }
-                  return activity;
+            activities: module.activities.map((activity) => {
+              if (activity.id === activityId) {
+                const updatedActivity = {
+                  ...activity,
+                  completed: true,
+                  moduleId: moduleId, // Ensure moduleId is included
+                };
+                
+                // Store the updated activity with completed status on the server
+                fetch("/api/store-activity", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(updatedActivity),
                 })
-              : [],
+                  .then((response) => response.json())
+                  .then((serverData) => {
+                    console.log("Activity completion status stored on server:", serverData);
+                  })
+                  .catch((error) => {
+                    console.error("Error storing activity completion status:", error);
+                  });
+                
+                return updatedActivity;
+              }
+              return activity;
+            }),
           };
         }
         return module;
       })
     );
-
-    // Store the updated activity with completed status on the server
-    fetch("/api/store-activity", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedActivity),
-    })
-      .then((response) => response.json())
-      .then((serverData) => {
-        console.log("Activity completion status stored on server:", serverData);
-      })
-      .catch((error) => {
-        console.error("Error storing activity completion status:", error);
-      });
   };
 
   const handleQuizAccess = () => {
@@ -201,6 +184,8 @@ const PlatformOverview = () => {
 
   // Function to fetch server-stored activities for a module
   const fetchServerStoredActivities = (moduleId, currentModules) => {
+    if (!moduleId) return;
+    
     // Use relative URL and let proxy configuration handle redirection
     fetch(`/api/module-activities/${moduleId}`)
       .then(response => {
@@ -226,28 +211,33 @@ const PlatformOverview = () => {
 
             return modulesToUpdate.map((module) => {
               if (module.id === moduleId) {
+                // Filter server activities to ensure they belong to this module
+                const moduleActivities = data.activities.filter(
+                  act => act.moduleId === moduleId
+                );
+                
                 // Create a map of existing activities by ID for easier comparison
                 const existingActivitiesMap = new Map();
-                module.activities.forEach((activity) => {
-                  if (activity && activity.id) {
-                    existingActivitiesMap.set(activity.id, activity);
-                  }
-                });
+                if (Array.isArray(module.activities)) {
+                  module.activities.forEach((activity) => {
+                    if (activity && activity.id) {
+                      existingActivitiesMap.set(activity.id, activity);
+                    }
+                  });
+                }
+
+                // Create a new array to hold the merged activities
+                const mergedActivities = Array.isArray(module.activities) ? [...module.activities] : [];
 
                 // Process server activities
-                const mergedActivities = [...module.activities];
-
-                data.activities.forEach((serverActivity) => {
-                  const existingActivity = existingActivitiesMap.get(
-                    serverActivity.id
-                  );
+                moduleActivities.forEach((serverActivity) => {
+                  const existingActivity = existingActivitiesMap.get(serverActivity.id);
 
                   if (!existingActivity) {
                     // If activity doesn't exist locally, add it
                     mergedActivities.push(serverActivity);
                   } else {
                     // If it exists, update it but preserve any local state not on server
-                    // First, find the index in the merged activities array
                     const index = mergedActivities.findIndex(
                       (a) => a.id === serverActivity.id
                     );
@@ -277,14 +267,9 @@ const PlatformOverview = () => {
         }
       })
       .catch(error => {
-        // More informative error logging
         console.error(
           `Error fetching activities for module ${moduleId}: ${error.message}`
         );
-        
-        // Don't display the proxy error to the user as it's confusing
-        // We'll silently fail here since activities will just be empty
-        // which is an acceptable fallback state
       });
   };
 
