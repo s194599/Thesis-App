@@ -414,5 +414,76 @@
     "title": "Quiz",
     "timestamp": "2025-04-07T09:02:40.851Z",
     "id": "quiz_1744016560"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "A focus on nature and the natural world",
+        "id": "q1",
+        "options": [
+          "An emphasis on love and romantic relationships",
+          "A focus on nature and the natural world",
+          "A preoccupation with science and reason",
+          "An obsession with wealth and material possessions"
+        ],
+        "question": "What best describes Romanticism, contrary to its popular perception?"
+      },
+      {
+        "correctAnswer": "Natural landscapes and scenery",
+        "id": "q2",
+        "options": [
+          "Natural landscapes and scenery",
+          "Wealth and material possessions",
+          "Abstract geometric patterns",
+          "Realistic portrayals of urban life"
+        ],
+        "question": "Which of the following is a typical subject matter in Romantic art?"
+      }
+    ],
+    "title": "Romantikken Quiz",
+    "timestamp": "2025-04-07T11:20:29.235Z",
+    "id": "quiz_1744024829"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "The development of modern ideologies",
+        "id": "q1",
+        "options": [
+          "Love stories and romantic relationships",
+          "The development of modern ideologies",
+          "A focus on scientific discoveries",
+          "The Industrial Revolution"
+        ],
+        "question": "What is Romanticism primarily associated with?"
+      },
+      {
+        "correctAnswer": "Idealized love and romance",
+        "id": "q2",
+        "options": [
+          "Emotionally charged and dramatic expressions",
+          "A focus on the natural world and its beauty",
+          "Exotic locales and adventures",
+          "Idealized love and romance"
+        ],
+        "question": "Which one of the following is NOT a characteristic often found in Romantic art or literature?"
+      },
+      {
+        "correctAnswer": "The Romantic Period (19th century)",
+        "id": "q3",
+        "options": [
+          "The Renaissance (14th to 17th centuries)",
+          "The Age of Enlightenment (18th century)",
+          "The Romantic Period (19th century)",
+          "The Gothic Revival (12th to 16th centuries)"
+        ],
+        "question": "The term \"Romanticism\" is most closely related to which time period?"
+      }
+    ],
+    "title": "Quiz",
+    "timestamp": "2025-04-07T11:44:34.245Z",
+    "id": "quiz_1744026274"
   }
 ]

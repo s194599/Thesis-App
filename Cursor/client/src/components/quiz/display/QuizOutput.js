@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Card, Button, Form, Spinner } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
-import { BsPencilSquare, BsCheckCircle, BsTypeH1, BsPlus } from "react-icons/bs";
+import {
+  BsPencilSquare,
+  BsCheckCircle,
+  BsTypeH1,
+  BsPlus,
+} from "react-icons/bs";
 import { QuizEditor } from "../management";
 import { useNavigate } from "react-router-dom";
 
@@ -117,7 +122,7 @@ const QuizOutput = () => {
         {question.explanation && (
           <div className="bg-light p-3 border-top">
             <p className="mb-0">
-              <strong>Explanation</strong>
+              <strong>Forklaring</strong>
             </p>
             <p className="mb-0 text-secondary">{question.explanation}</p>
           </div>
@@ -137,42 +142,42 @@ const QuizOutput = () => {
     try {
       // Save the quiz first
       const savedQuiz = await saveQuizToBackend();
-      
+
       if (savedQuiz) {
-        const quizDocuments = localStorage.getItem('quizDocuments');
+        const quizDocuments = localStorage.getItem("quizDocuments");
         if (quizDocuments) {
           const { moduleId } = JSON.parse(quizDocuments);
-          
+
           // Create a new activity for the module
-          const response = await fetch('/api/store-activity', {
-            method: 'POST',
+          const response = await fetch("/api/store-activity", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               moduleId: moduleId,
               title: generatedQuiz.title,
-              type: 'quiz',
+              type: "quiz",
               quizId: savedQuiz.quizId,
-              completed: false
+              completed: false,
             }),
           });
-          
+
           if (response.ok) {
             // Clear the stored documents
-            localStorage.removeItem('quizDocuments');
+            localStorage.removeItem("quizDocuments");
             // Navigate back to the module
-            navigate('/platform');
+            navigate("/platform");
           } else {
-            throw new Error('Failed to add quiz to module');
+            throw new Error("Failed to add quiz to module");
           }
         } else {
           // If no module ID found, just redirect to platform
-          navigate('/platform');
+          navigate("/platform");
         }
       }
     } catch (error) {
-      console.error('Error adding quiz to module:', error);
+      console.error("Error adding quiz to module:", error);
       // You may want to show an error message to the user here
     } finally {
       setIsAddingToModule(false);
@@ -192,7 +197,7 @@ const QuizOutput = () => {
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
               autoFocus
-              placeholder="Enter quiz title"
+              placeholder="Indtast quiz titel"
               style={{ width: "100%" }}
             />
           ) : (
@@ -200,8 +205,8 @@ const QuizOutput = () => {
               className="mb-0 editable-title quiz-output-title"
               onClick={handleTitleClick}
             >
-              {generatedQuiz.title || "Click to add title"}
-              <span className="editable-title-hint">Click to edit</span>
+              {generatedQuiz.title || "Klik for at tilføje titel"}
+              <span className="editable-title-hint">Klik for at redigere</span>
             </h2>
           )}
 
@@ -217,10 +222,10 @@ const QuizOutput = () => {
             className="me-md-2 mb-2 mb-md-0"
             onClick={startEditing}
           >
-            <BsPencilSquare className="me-1" /> Edit Quiz
+            <BsPencilSquare className="me-1" /> Rediger Quiz
           </Button>
           <Button variant="outline-secondary" size="sm" onClick={resetForm}>
-            Create New Quiz
+            Opret Ny Quiz
           </Button>
         </div>
       </div>
@@ -228,7 +233,7 @@ const QuizOutput = () => {
       <div className="quiz-questions">{renderQuizQuestions()}</div>
 
       <div className="mt-4 d-flex justify-content-end gap-2">
-        <Button variant="outline-secondary">Download as PDF</Button>
+        <Button variant="outline-secondary">Download som PDF</Button>
         <Button
           variant="outline-success"
           onClick={handleSaveQuiz}
@@ -244,15 +249,14 @@ const QuizOutput = () => {
                 aria-hidden="true"
                 className="me-2"
               />
-              Saving...
+              Gemmer...
             </>
           ) : saveSuccess ? (
             <>
-              <BsCheckCircle className="me-2" />
-              Saved
+              <BsCheckCircle className="me-1" /> Gemt
             </>
           ) : (
-            "Save Quiz"
+            "Gem Quiz"
           )}
         </Button>
         <Button

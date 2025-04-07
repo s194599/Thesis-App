@@ -6,16 +6,16 @@ const StudentLevelSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
   const studentLevels = [
-    { value: "elementary", label: "Elementary (1-5. klasse)" },
-    { value: "middleSchool", label: "Middle School (6-9. klasse)" },
-    { value: "highSchool", label: "High School (Gymnasium)" },
-    { value: "university", label: "University (Universitet)" },
+    { value: "elementary", label: "Folkeskole (1-5. klasse)" },
+    { value: "middleSchool", label: "Folkeskole (6-9. klasse)" },
+    { value: "highSchool", label: "Gymnasium" },
+    { value: "university", label: "Universitet" },
   ];
 
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Student Level (Optional)</Form.Label>
+        <Form.Label className="fw-bold">Niveau (Valgfrit)</Form.Label>
         <Form.Select
           value={formData.studentLevel}
           onChange={(e) => updateFormData("studentLevel", e.target.value)}
@@ -27,7 +27,7 @@ const StudentLevelSelector = () => {
           ))}
         </Form.Select>
         <Form.Text className="text-muted">
-          Select the educational level for which the quiz is intended.
+          Vælg det uddannelsesniveau, som quizzen er beregnet til.
         </Form.Text>
       </Form.Group>
     </div>

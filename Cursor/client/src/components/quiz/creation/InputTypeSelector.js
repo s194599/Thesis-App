@@ -18,7 +18,7 @@ const InputTypeSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Input Type</Form.Label>
+        <Form.Label className="fw-bold">Indtastningstype</Form.Label>
         <div className="d-flex flex-wrap gap-2">
           <div className="flex-grow-1">
             <div
@@ -36,7 +36,7 @@ const InputTypeSelector = () => {
                 label={
                   <div className="d-flex align-items-center">
                     <BsFileEarmarkPdf className="me-2" />
-                    <span>Document</span>
+                    <span>Dokument</span>
                   </div>
                 }
                 value="document"
@@ -61,7 +61,7 @@ const InputTypeSelector = () => {
                 label={
                   <div className="d-flex align-items-center">
                     <BsPencilSquare className="me-2" />
-                    <span>Topic</span>
+                    <span>Emne</span>
                   </div>
                 }
                 value="topic"
@@ -86,7 +86,7 @@ const InputTypeSelector = () => {
                 label={
                   <div className="d-flex align-items-center">
                     <BsFileText className="me-2" />
-                    <span>Text</span>
+                    <span>Tekst</span>
                   </div>
                 }
                 value="text"
@@ -113,7 +113,7 @@ const InputTypeSelector = () => {
                 label={
                   <div className="d-flex align-items-center">
                     <BsGlobe className="me-2" />
-                    <span>Webpage</span>
+                    <span>Hjemmeside</span>
                   </div>
                 }
                 value="webpage"
