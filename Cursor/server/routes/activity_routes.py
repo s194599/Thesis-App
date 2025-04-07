@@ -35,6 +35,53 @@ def store_activity():
         activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
         activities = load_json_file(activities_file, [])
 
+        # Special handling for quiz activities to prevent duplication across modules
+        if activity_data.get("type") == "quiz" and activity_data.get("quizId"):
+            quiz_id = activity_data.get("quizId")
+            module_id = activity_data.get("moduleId")
+            
+            # Check if this quiz already exists in any module
+            existing_quiz_indices = []
+            for i, activity in enumerate(activities):
+                if (activity.get("type") == "quiz" and 
+                    activity.get("quizId") == quiz_id):
+                    existing_quiz_indices.append(i)
+                    
+            # If quiz exists in other modules, log a warning but continue
+            if existing_quiz_indices:
+                for idx in existing_quiz_indices:
+                    existing_module = activities[idx].get("moduleId")
+                    if existing_module != module_id:
+                        logger.warning(
+                            f"Quiz {quiz_id} already exists in module {existing_module}, "
+                            f"now being added to module {module_id} as well."
+                        )
+                        
+                # If quiz already exists in THIS module, update it instead of adding again
+                for idx in existing_quiz_indices:
+                    if activities[idx].get("moduleId") == module_id:
+                        # Preserve completed state if already completed
+                        if activities[idx].get("completed", False) and not activity_data.get("completed", False):
+                            activity_data["completed"] = True
+                            
+                        activities[idx] = activity_data
+                        
+                        # Save activities back to file
+                        if save_json_file(activities_file, activities):
+                            return jsonify(
+                                {
+                                    "success": True,
+                                    "message": "Quiz activity updated successfully",
+                                    "activityId": activity_data.get("id"),
+                                    "completed": activity_data.get("completed", False),
+                                }
+                            )
+                        else:
+                            return (
+                                jsonify({"success": False, "message": "Failed to save activity data"}),
+                                500,
+                            )
+
         # Check if activity with same ID already exists
         existing_index = None
         for i, activity in enumerate(activities):
@@ -237,11 +284,15 @@ def complete_activity():
     """
     try:
         data = request.json
-        if not data or "activityId" not in data or "moduleId" not in data:
-            return jsonify({"success": False, "message": "Activity ID and Module ID are required"}), 400
+        if not data or "moduleId" not in data:
+            return jsonify({"success": False, "message": "Module ID is required"}), 400
             
-        activity_id = data.get("activityId")
         module_id = data.get("moduleId")
+        activity_id = data.get("activityId")
+        quiz_id = data.get("quizId")  # Allow finding by quizId as well
+        
+        if not activity_id and not quiz_id:
+            return jsonify({"success": False, "message": "Either Activity ID or Quiz ID is required"}), 400
         
         # Load existing activities
         activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
@@ -250,7 +301,8 @@ def complete_activity():
         # Find the activity to mark as completed
         activity_found = False
         for activity in activities:
-            if activity.get("id") == activity_id and activity.get("moduleId") == module_id:
+            # Match by regular activity ID
+            if activity_id and activity.get("id") == activity_id and activity.get("moduleId") == module_id:
                 activity["completed"] = True
                 
                 # Add quiz score if provided
@@ -258,18 +310,38 @@ def complete_activity():
                     activity["quizScore"] = data.get("quizScore")
                     
                 activity_found = True
+                logger.info(f"Activity marked as completed by ID: {activity_id}")
+                break
+                
+            # Special handling for quiz activities that might not have an ID
+            elif quiz_id and activity.get("type") == "quiz" and activity.get("quizId") == quiz_id and activity.get("moduleId") == module_id:
+                activity["completed"] = True
+                
+                # Ensure the activity has an ID field
+                if "id" not in activity:
+                    activity["id"] = f"activity_quiz_{quiz_id}"
+                    logger.info(f"Added ID to quiz activity: {activity['id']}")
+                
+                # Add quiz score if provided
+                if "quizScore" in data:
+                    activity["quizScore"] = data.get("quizScore")
+                
+                activity_found = True
+                logger.info(f"Quiz activity marked as completed by quizId: {quiz_id}")
                 break
         
         if not activity_found:
-            return jsonify({"success": False, "message": "Activity not found"}), 404
+            error_msg = f"Activity not found with ID: {activity_id} or quizId: {quiz_id} in module: {module_id}"
+            logger.warning(error_msg)
+            return jsonify({"success": False, "message": error_msg}), 404
         
         # Save the updated activities
         if save_json_file(activities_file, activities):
             return jsonify({
                 "success": True, 
                 "message": "Activity marked as completed",
-                "activityId": activity_id,
-                "moduleId": module_id
+                "moduleId": module_id,
+                "activityId": activity_id or f"activity_quiz_{quiz_id}"
             })
         else:
             return jsonify({"success": False, "message": "Failed to save activities file"}), 500

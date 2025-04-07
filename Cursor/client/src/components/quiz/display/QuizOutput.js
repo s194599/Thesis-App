@@ -161,6 +161,9 @@ const QuizOutput = () => {
       const quizDocuments = localStorage.getItem("quizDocuments");
       if (quizDocuments) {
         const { moduleId } = JSON.parse(quizDocuments);
+        
+        // Generate a unique ID for this activity instance
+        const activityId = `activity_quiz_${savedQuiz.quizId}_${moduleId}_${Date.now()}`;
 
         // Create a new activity for the module
         const response = await fetch("/api/store-activity", {
@@ -170,14 +173,19 @@ const QuizOutput = () => {
           },
           body: JSON.stringify({
             moduleId: moduleId,
+            id: activityId, // Use our generated unique ID
             title: generatedQuiz.title,
             type: "quiz",
             quizId: savedQuiz.quizId,
             completed: false,
+            // Mark this activity as belonging specifically to this module
+            // to prevent showing in other modules
+            moduleSpecific: true
           }),
         });
 
         if (response.ok) {
+          console.log(`Added quiz ${savedQuiz.quizId} to module ${moduleId} with activity ID ${activityId}`);
           // Clear the stored documents
           localStorage.removeItem("quizDocuments");
           // Navigate back to the module

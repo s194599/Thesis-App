@@ -18,5 +18,14 @@
     "isNew": true,
     "id": "activity_1744016353464",
     "moduleId": "module-3"
+  },
+  {
+    "moduleId": "module-3",
+    "title": "Romantikken 2-Q",
+    "type": "quiz",
+    "quizId": "quiz_1744030473",
+    "completed": true,
+    "id": "activity_quiz_quiz_1744030473",
+    "quizScore": 50
   }
 ]

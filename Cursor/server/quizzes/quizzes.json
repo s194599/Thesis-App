@@ -1,3 +1,33 @@
 [
-  
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_1744030473",
+    "questions": [
+      {
+        "correctAnswer": "Love",
+        "id": "q1",
+        "options": [
+          "Love",
+          "Nature",
+          "Politics",
+          "Science"
+        ],
+        "question": "What does the literary and artistic movement known as Romanticism have very little to do with?"
+      },
+      {
+        "correctAnswer": "Idealized and often central to the work",
+        "id": "q2",
+        "options": [
+          "Rarely, if ever",
+          "Frequently, but not its idealization",
+          "Idealized and often central to the work",
+          "Portrayed only in a negative light"
+        ],
+        "question": "Which of the following best describes how love is depicted in Romantic art?"
+      }
+    ],
+    "timestamp": "2025-04-07T13:19:48.907Z",
+    "title": "Romantikken 2-Q",
+    "quizId": "quiz_1744030473"
+  }
 ]

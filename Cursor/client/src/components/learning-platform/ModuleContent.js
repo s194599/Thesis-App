@@ -70,44 +70,67 @@ const ModuleContent = ({
       // Create a deep copy to avoid reference issues
       const moduleCopy = JSON.parse(JSON.stringify(module.activities));
       
-      // Count and log quizzes for debugging
-      const quizzes = moduleCopy.filter(a => a && a.type === 'quiz');
-      console.log(`Setting ${moduleCopy.length} activities for module ${module.id}, including ${quizzes.length} quizzes`);
+      // Track quizzes by quizId to prevent duplicates
+      const quizMap = new Map();
       
-      // If we have existing activities in state, check if we need to merge quiz data
-      if (activities.length > 0) {
-        const existingQuizzes = activities.filter(a => a && a.type === 'quiz');
+      // Normalize quiz activities to ensure they have proper fields
+      // and filter out any duplicates
+      const normalizedActivities = moduleCopy.filter(activity => {
+        // Skip if null or undefined
+        if (!activity) return false;
         
-        if (existingQuizzes.length > 0 && (existingQuizzes.length !== quizzes.length)) {
-          console.log(`Found mismatch: ${existingQuizzes.length} quizzes in state vs ${quizzes.length} in new data`);
+        // If this is a quiz activity, manage it specially to avoid duplicates
+        if (activity.type === 'quiz') {
+          // Ensure quiz activity has necessary fields
+          if (!activity.id && activity.quizId) {
+            activity.id = `activity_quiz_${activity.quizId}`;
+          }
           
-          // Map to quickly find existing quizzes by ID
-          const existingQuizMap = new Map();
-          existingQuizzes.forEach(quiz => {
-            if (quiz && quiz.id) {
-              existingQuizMap.set(quiz.id, quiz);
+          // Add isNew field if missing (for consistency with other activities)
+          if (activity.isNew === undefined) {
+            activity.isNew = false;
+          }
+          
+          // Skip if we already have this quiz in this module
+          if (activity.quizId && quizMap.has(activity.quizId)) {
+            // If the existing quiz isn't marked completed but this one is, 
+            // update the tracked quiz to be completed
+            const existingQuiz = quizMap.get(activity.quizId);
+            if (!existingQuiz.completed && activity.completed) {
+              existingQuiz.completed = true;
             }
-          });
+            // Skip this duplicate
+            return false;
+          }
           
-          // Check if there are quizzes in state that aren't in the new data
-          const missingQuizzes = [];
-          existingQuizMap.forEach((quiz, id) => {
-            if (!moduleCopy.some(a => a.id === id)) {
-              console.log(`Found quiz only in state (missing in new data): ${quiz.title}`);
-              missingQuizzes.push(quiz);
-            }
-          });
-          
-          // Add any missing quizzes to the module copy
-          if (missingQuizzes.length > 0) {
-            moduleCopy.push(...missingQuizzes);
-            console.log(`Added ${missingQuizzes.length} missing quizzes to the module data`);
+          // Track this quiz by quizId to avoid duplicates
+          if (activity.quizId) {
+            quizMap.set(activity.quizId, activity);
           }
         }
-      }
+        
+        // Verify this activity belongs to the current module
+        if (activity.moduleId && activity.moduleId !== module.id) {
+          // Skip activities from other modules that were accidentally included
+          return false;
+        }
+        
+        // Include this activity
+        return true;
+      }).map(activity => {
+        // Make sure moduleId is set correctly for each activity
+        return {
+          ...activity,
+          moduleId: module.id
+        };
+      });
       
-      // Set the activities state with the merged data
-      setActivities(moduleCopy);
+      // Count and log quizzes for debugging
+      const quizzes = normalizedActivities.filter(a => a && a.type === 'quiz');
+      console.log(`Setting ${normalizedActivities.length} activities for module ${module.id}, including ${quizzes.length} quizzes`);
+      
+      // Set the activities state with the normalized data
+      setActivities(normalizedActivities);
       setModuleDescription(module.description || '');
       setEditedTitle(module.title || '');
       setEditedDate(module.date || '');

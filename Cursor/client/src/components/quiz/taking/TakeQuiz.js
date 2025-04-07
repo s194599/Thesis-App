@@ -100,22 +100,36 @@ const TakeQuiz = () => {
   useEffect(() => {
     // Mark activity as completed when quiz is finished
     const markActivityCompleted = async () => {
-      if (quizCompleted && activityId && moduleId && !alreadyMarkedComplete) {
+      if (quizCompleted && moduleId && !alreadyMarkedComplete && quiz) {
         try {
+          console.log(`Marking quiz ${quizId} as completed for module ${moduleId} with activityId ${activityId || 'N/A'}`);
+          
+          const requestData = {
+            moduleId: moduleId,
+            quizScore: Math.round((score / randomizedQuestions.length) * 100),
+            quizId: quizId // Always include quizId for better identification
+          };
+          
+          // Include activityId if available
+          if (activityId) {
+            requestData.activityId = activityId;
+          }
+          
           const response = await fetch("/api/complete-activity", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              activityId: activityId,
-              moduleId: moduleId,
-              quizScore: Math.round((score / randomizedQuestions.length) * 100),
-            }),
+            body: JSON.stringify(requestData),
           });
 
+          const responseData = await response.json();
+          
           if (response.ok) {
+            console.log("Quiz marked as completed successfully:", responseData);
             setAlreadyMarkedComplete(true);
+          } else {
+            console.error("Failed to mark quiz as completed:", responseData.message);
           }
         } catch (error) {
           console.error("Error marking quiz as completed:", error);
@@ -128,9 +142,11 @@ const TakeQuiz = () => {
     quizCompleted,
     activityId,
     moduleId,
+    quizId,
     alreadyMarkedComplete,
     score,
     randomizedQuestions,
+    quiz
   ]);
 
   const handleAnswerSelect = (answer) => {
