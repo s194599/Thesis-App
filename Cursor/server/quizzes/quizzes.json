@@ -375,6 +375,7 @@
   },
   {
     "description": "Quiz generated from your content",
+    "id": "quiz_1744016560",
     "questions": [
       {
         "correctAnswer": "The celebration of reason and rationality",
@@ -399,20 +400,103 @@
         "question": "How is the popular notion of \"romantic\" different from Romanticism in art?"
       },
       {
+        "correctAnswer": "Store genetic information",
+        "explanation": "DNA (deoxyribonucleic acid) stores genetic information in the form of genes.",
         "id": "q1744016554103",
-        "question": "AI Generated Question: What is the main function of DNA?",
         "options": [
           "Store genetic information",
           "Produce energy",
           "Break down nutrients",
           "Transport oxygen"
         ],
-        "correctAnswer": "Store genetic information",
-        "explanation": "DNA (deoxyribonucleic acid) stores genetic information in the form of genes."
+        "question": "AI Generated Question: What is the main function of DNA?"
+      },
+      {
+        "correctAnswer": "Option 1",
+        "explanation": "Add explanation here",
+        "id": "q1744024148317",
+        "options": [
+          "Option 1",
+          "Option 2",
+          "Option 3",
+          "Option 4"
+        ],
+        "question": "New Questioeereee eeee"
+      },
+      {
+        "correctAnswer": "Option 1",
+        "explanation": "Add explanation here",
+        "id": "q1744024571859",
+        "options": [
+          "Option 1",
+          "Option 2",
+          "Option 3",
+          "Option 4"
+        ],
+        "question": "sssssNew Question"
       }
     ],
-    "title": "Quiz",
-    "timestamp": "2025-04-07T09:02:40.851Z",
-    "id": "quiz_1744016560"
+    "timestamp": "2025-04-07T11:17:54.398Z",
+    "title": "QJB QUIZ"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_1744025096",
+    "questions": [
+      {
+        "correctAnswer": "En bev\u00e6gelse, der mest er forbundet med det popul\u00e6re som er betegnet som \"romantisk,\" men hvor k\u00e6rlighed aldrig er tema i Romantiske v\u00e6rker",
+        "id": "q1",
+        "options": [
+          "En bev\u00e6gelse, der mest er forbundet med det popul\u00e6re som er betegnet som \"romantisk\"",
+          "Et fokus p\u00e5 k\u00e6rlighed i konstarter",
+          "En bev\u00e6gelse, der ofte handler om elskov i v\u00e6rker",
+          "En bev\u00e6gelse, der mest er forbundet med det popul\u00e6re som er betegnet som \"romantisk,\" men hvor k\u00e6rlighed aldrig er tema i Romantiske v\u00e6rker"
+        ],
+        "question": "Hvilket af f\u00f8lgende beskriver Romantikken pr\u00e6cist?"
+      },
+      {
+        "correctAnswer": "En bev\u00e6gelse, der mest er forbundet med det popul\u00e6re som er betegnet som \"romantisk\"",
+        "id": "q2",
+        "options": [
+          "En bev\u00e6gelse, der mest er forbundet med det popul\u00e6re som er betegnet som \"romantisk\"",
+          "Et fokus p\u00e5 k\u00e6rlighed i konstarter",
+          "En bev\u00e6gelse, der ofte handler om elskov i v\u00e6rker",
+          "En bev\u00e6gelse, der mest er forbundet med det popul\u00e6re som er betegnet som \"romantisk\" men hvor k\u00e6rlighed aldrig er tema i Romantiske v\u00e6rker, og derimod er en ikonografi, fokuseret p\u00e5 naturen, idealisme, emotioner og fantasi"
+        ],
+        "question": "Hvilket af f\u00f8lgende kan sige om Romantikken?"
+      }
+    ],
+    "timestamp": "2025-04-07T11:25:19.142Z",
+    "title": "NAVN \u00c6NDREERP\u00c5 WPDIK"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_1744025310",
+    "questions": [
+      {
+        "correctAnswer": "The Authors and/or other copyright owners",
+        "id": "q1",
+        "options": [
+          "The Public",
+          "The Website Owner",
+          "The Authors and/or other copyright owners",
+          "The General Public"
+        ],
+        "question": "Who retains the rights for publications made accessible in the public portal?"
+      },
+      {
+        "correctAnswer": "Agreeing to respect the copyright and moral rights of the authors",
+        "id": "q2",
+        "options": [
+          "Signing an agreement to transfer all rights to the website owner",
+          "Paying a fee for each publication accessed",
+          "Agreeing to respect the copyright and moral rights of the authors",
+          "Sharing all personal information with the website owner"
+        ],
+        "question": "What is a condition of accessing publications in the public portal?"
+      }
+    ],
+    "timestamp": "2025-04-07T11:28:57.290Z",
+    "title": "LO Thesis"
   }
 ]

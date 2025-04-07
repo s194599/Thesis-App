@@ -13,7 +13,10 @@ const PlatformOverview = () => {
   const [loadedModulesCount, setLoadedModulesCount] = useState(0);
   const [totalModulesToLoad, setTotalModulesToLoad] = useState(0);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const [userRole, setUserRole] = useState('teacher'); // 'teacher' or 'student'
+  const [userRole, setUserRole] = useState(() => {
+    const savedRole = localStorage.getItem("userRole");
+    return savedRole || 'teacher'; // Default to teacher if no saved role
+  });
 
   // Load data from server or localStorage
   useEffect(() => {
@@ -21,15 +24,15 @@ const PlatformOverview = () => {
       setLoading(true);
       
       try {
-        // Try to load from localStorage first for immediate display
-        const savedModules = localStorage.getItem("learningModules");
-        let localModules = [];
-        
-        // Also try to load saved user role
+        // Load user role from localStorage first
         const savedUserRole = localStorage.getItem("userRole");
         if (savedUserRole) {
           setUserRole(savedUserRole);
         }
+        
+        // Try to load from localStorage first for immediate display while server data is loading
+        const savedModules = localStorage.getItem("learningModules");
+        let localModules = [];
         
         if (savedModules) {
           try {
@@ -56,6 +59,7 @@ const PlatformOverview = () => {
         
         if (serverModules.length > 0) {
           console.log(`Loaded ${serverModules.length} modules from server`);
+          // Always update with server data, which will have the latest activity completion status
           setModules(serverModules);
           setInitialLoadComplete(true);
           
@@ -69,7 +73,6 @@ const PlatformOverview = () => {
             }
           }
           
-          // No need to individually load activities, as they're included in the response
           setLoading(false);
         } else {
           console.warn("No modules loaded from server");
@@ -100,9 +103,25 @@ const PlatformOverview = () => {
     localStorage.setItem("userRole", userRole);
   }, [modules, selectedModuleId, initialLoadComplete, userRole]);
 
+  // Function to refresh all data from the server
+  const refreshData = async () => {
+    try {
+      const serverModules = await fetchModulesWithActivities();
+      if (serverModules.length > 0) {
+        setModules(serverModules);
+      }
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+  };
+
   // Handle role toggle
   const handleRoleToggle = (role) => {
     setUserRole(role);
+    localStorage.setItem("userRole", role); // Immediately save to ensure it's stored
+    
+    // Refresh data when switching roles to ensure we have the latest status
+    refreshData();
   };
 
   // Calculate overall progress with null checks
@@ -231,7 +250,8 @@ const PlatformOverview = () => {
     }
   };
 
-  const handleActivityCompletion = (moduleId, activityId) => {
+  const handleActivityCompletion = async (moduleId, activityId) => {
+    // First update the UI optimistically for a responsive feel
     setModules((prevModules) =>
       prevModules.map((module) => {
         if (module.id === moduleId) {
@@ -239,29 +259,10 @@ const PlatformOverview = () => {
             ...module,
             activities: module.activities.map((activity) => {
               if (activity.id === activityId) {
-                const updatedActivity = {
+                return {
                   ...activity,
                   completed: true,
-                  moduleId: moduleId, // Ensure moduleId is included
                 };
-                
-                // Store the updated activity with completed status on the server
-                fetch("/api/store-activity", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(updatedActivity),
-                })
-                  .then((response) => response.json())
-                  .then((serverData) => {
-                    console.log("Activity completion status stored on server:", serverData);
-                  })
-                  .catch((error) => {
-                    console.error("Error storing activity completion status:", error);
-                  });
-                
-                return updatedActivity;
               }
               return activity;
             }),
@@ -270,6 +271,30 @@ const PlatformOverview = () => {
         return module;
       })
     );
+    
+    // Then update on the server
+    try {
+      const response = await fetch("/api/complete-activity", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activityId: activityId,
+          moduleId: moduleId
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error("Failed to mark activity as completed:", data.message);
+      } else {
+        console.log("Activity marked as completed:", data);
+      }
+    } catch (error) {
+      console.error("Error marking activity as completed:", error);
+    }
   };
 
   const handleQuizAccess = () => {

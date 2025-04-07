@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./styles/PlatformOverview.css";
@@ -9,6 +9,9 @@ import { TakeQuiz } from "./components/quiz/taking";
 import { QuizForm } from "./components/quiz/creation";
 import { PlatformOverview } from "./components/learning-platform";
 import { useQuizContext } from "./context/QuizContext";
+import { QuizOutput } from "./components/quiz/display";
+import { Container, Alert, Button, Spinner } from "react-bootstrap";
+import { getQuiz } from "./services/api";
 
 function App() {
   const { generatedQuiz } = useQuizContext();
@@ -65,6 +68,19 @@ function App() {
           }
         />
 
+        {/* Route for quiz preview */}
+        <Route
+          path="/quiz/preview/:quizId"
+          element={
+            <>
+              <Header />
+              <div className="flex-grow-1">
+                <QuizPreview />
+              </div>
+            </>
+          }
+        />
+
         {/* Alias for backwards compatibility */}
         <Route
           path="/take-quiz/:quizId"
@@ -74,5 +90,82 @@ function App() {
     </div>
   );
 }
+
+// Quiz Preview component to display and manage quizzes for teachers
+const QuizPreview = () => {
+  const { quizId } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [quiz, setQuiz] = useState(null);
+  const [error, setError] = useState(null);
+  const { setGeneratedQuiz } = useQuizContext();
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        setLoading(true);
+        const data = await getQuiz(quizId);
+        setQuiz(data);
+        setGeneratedQuiz(data); // Set the quiz in context for the QuizOutput component
+      } catch (err) {
+        console.error("Error fetching quiz:", err);
+        setError("Failed to load quiz. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuiz();
+  }, [quizId, setGeneratedQuiz]);
+
+  if (loading) {
+    return (
+      <Container className="mt-4 text-center">
+        <Spinner animation="border" variant="primary" />
+        <p>Loading quiz...</p>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="mt-4">
+        <Alert variant="danger">
+          <Alert.Heading>Error</Alert.Heading>
+          <p>{error}</p>
+          <Button variant="outline-primary" onClick={() => navigate("/platform")}>
+            Back to Platform
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
+
+  if (!quiz) {
+    return (
+      <Container className="mt-4">
+        <Alert variant="warning">
+          <Alert.Heading>Quiz Not Found</Alert.Heading>
+          <p>The quiz you're looking for does not exist or has been deleted.</p>
+          <Button variant="outline-primary" onClick={() => navigate("/platform")}>
+            Back to Platform
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container className="mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>Quiz Preview</h2>
+        <Button variant="outline-primary" onClick={() => navigate("/platform")}>
+          Back to Platform
+        </Button>
+      </div>
+      <QuizOutput />
+    </Container>
+  );
+};
 
 export default App;

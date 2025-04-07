@@ -7,7 +7,7 @@ import {
   Dropdown,
   Alert,
 } from "react-bootstrap";
-import { BsArrowLeft, BsPlusCircle, BsTextLeft, BsRobot } from "react-icons/bs";
+import { BsArrowLeft, BsPlusCircle, BsTextLeft, BsRobot, BsCheckCircle } from "react-icons/bs";
 import { useQuizContext } from "../../../context/QuizContext";
 import { QuizQuestion } from "../display";
 
@@ -24,6 +24,8 @@ const QuizEditor = () => {
     error,
     generatedQuiz,
     loadSampleQuiz,
+    isSaving,
+    saveSuccess
   } = useQuizContext();
 
   // Local states for quiz title and description
@@ -70,6 +72,13 @@ const QuizEditor = () => {
     }
   };
 
+  // Handle save button click
+  const handleSaveClick = async () => {
+    if (editingQuiz) {
+      await saveQuiz();
+    }
+  };
+
   // If not editing yet, show loading
   if (!isEditing || !editingQuiz) {
     return (
@@ -90,11 +99,35 @@ const QuizEditor = () => {
           variant="light"
           className="d-flex align-items-center"
           onClick={cancelEditing}
+          disabled={isSaving}
         >
           <BsArrowLeft className="me-1" /> Back
         </Button>
-        <Button variant="success" onClick={saveQuiz}>
-          Save
+        <Button 
+          variant="success" 
+          onClick={handleSaveClick} 
+          disabled={isSaving}
+        >
+          {isSaving ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="me-2"
+              />
+              Saving...
+            </>
+          ) : saveSuccess ? (
+            <>
+              <BsCheckCircle className="me-2" />
+              Saved
+            </>
+          ) : (
+            "Save"
+          )}
         </Button>
       </div>
 
@@ -225,6 +258,7 @@ const QuizEditor = () => {
             variant="primary"
             id="add-question-dropdown"
             className="d-flex align-items-center"
+            disabled={isSaving}
           >
             <BsPlusCircle className="me-2" /> Add Question
           </Dropdown.Toggle>

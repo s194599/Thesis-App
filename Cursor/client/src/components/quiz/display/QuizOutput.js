@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Button, Form, Spinner } from "react-bootstrap";
+import { Card, Button, Form, Spinner, Modal } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
 import { BsPencilSquare, BsCheckCircle, BsTypeH1, BsPlus } from "react-icons/bs";
 import { QuizEditor } from "../management";
@@ -21,6 +21,7 @@ const QuizOutput = () => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
   const [isAddingToModule, setIsAddingToModule] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // If in editing mode, show the QuizEditor component
   if (isEditing) {
@@ -135,41 +136,53 @@ const QuizOutput = () => {
   const handleSaveAndAddToModule = async () => {
     setIsAddingToModule(true);
     try {
-      // Save the quiz first
-      const savedQuiz = await saveQuizToBackend();
+      // Check if the quiz is already saved
+      const isSavedQuiz = !!generatedQuiz.quizId || !!generatedQuiz.id;
+      let savedQuiz = null;
       
-      if (savedQuiz) {
-        const quizDocuments = localStorage.getItem('quizDocuments');
-        if (quizDocuments) {
-          const { moduleId } = JSON.parse(quizDocuments);
-          
-          // Create a new activity for the module
-          const response = await fetch('/api/store-activity', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              moduleId: moduleId,
-              title: generatedQuiz.title,
-              type: 'quiz',
-              quizId: savedQuiz.quizId,
-              completed: false
-            }),
-          });
-          
-          if (response.ok) {
-            // Clear the stored documents
-            localStorage.removeItem('quizDocuments');
-            // Navigate back to the module
-            navigate('/platform');
-          } else {
-            throw new Error('Failed to add quiz to module');
-          }
-        } else {
-          // If no module ID found, just redirect to platform
-          navigate('/platform');
+      if (!isSavedQuiz) {
+        // Save the quiz first if not already saved
+        savedQuiz = await saveQuizToBackend();
+        if (!savedQuiz) {
+          throw new Error('Failed to save quiz');
         }
+      } else {
+        // Quiz is already saved
+        savedQuiz = {
+          quizId: generatedQuiz.quizId || generatedQuiz.id
+        };
+      }
+      
+      const quizDocuments = localStorage.getItem('quizDocuments');
+      if (quizDocuments) {
+        const { moduleId } = JSON.parse(quizDocuments);
+        
+        // Create a new activity for the module
+        const response = await fetch('/api/store-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            moduleId: moduleId,
+            title: generatedQuiz.title,
+            type: 'quiz',
+            quizId: savedQuiz.quizId,
+            completed: false
+          }),
+        });
+        
+        if (response.ok) {
+          // Clear the stored documents
+          localStorage.removeItem('quizDocuments');
+          // Navigate back to the module
+          navigate('/platform');
+        } else {
+          throw new Error('Failed to add quiz to module');
+        }
+      } else {
+        // If no module ID found, just redirect to platform
+        navigate('/platform');
       }
     } catch (error) {
       console.error('Error adding quiz to module:', error);
@@ -178,6 +191,30 @@ const QuizOutput = () => {
       setIsAddingToModule(false);
     }
   };
+
+  // Handle deleting a quiz
+  const handleDeleteQuiz = async () => {
+    try {
+      const response = await fetch(`/api/quizzes/${generatedQuiz.quizId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        // Navigate back to platform after successful deletion
+        navigate('/platform');
+      } else {
+        console.error('Error deleting quiz:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error deleting quiz:', error);
+    }
+  };
+
+  // Update buttons based on quiz already being saved
+  const isSavedQuiz = !!generatedQuiz.quizId || !!generatedQuiz.id;
+  
+  // Check if we're coming from a module (for adding to module)
+  const isFromModule = !!localStorage.getItem('quizDocuments');
 
   return (
     <div className="mt-4 p-4 bg-light">
@@ -228,58 +265,118 @@ const QuizOutput = () => {
       <div className="quiz-questions">{renderQuizQuestions()}</div>
 
       <div className="mt-4 d-flex justify-content-end gap-2">
+        {/* Check if quiz is being viewed from a saved state (has quizId) */}
+        {isSavedQuiz && (
+          <Button 
+            variant="outline-danger" 
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            Delete Quiz
+          </Button>
+        )}
+        
         <Button variant="outline-secondary">Download as PDF</Button>
-        <Button
-          variant="outline-success"
-          onClick={handleSaveQuiz}
-          disabled={isSaving || isAddingToModule}
-        >
-          {isSaving ? (
-            <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-                className="me-2"
-              />
-              Saving...
-            </>
-          ) : saveSuccess ? (
-            <>
-              <BsCheckCircle className="me-2" />
-              Saved
-            </>
-          ) : (
-            "Save Quiz"
-          )}
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleSaveAndAddToModule}
-          disabled={isSaving || isAddingToModule}
-        >
-          {isAddingToModule ? (
-            <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-                className="me-2"
-              />
-              Adding to Module...
-            </>
-          ) : (
-            <>
-              <BsPlus className="me-2" />
-              Save & Add to Module
-            </>
-          )}
-        </Button>
+        
+        {/* Streamlined save buttons logic */}
+        {isFromModule ? (
+          // When coming from a module, just show a single button
+          <Button
+            variant="primary"
+            onClick={isSavedQuiz ? handleSaveAndAddToModule : handleSaveQuiz}
+            disabled={isSaving || isAddingToModule}
+          >
+            {isSaving ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Saving...
+              </>
+            ) : isAddingToModule ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Adding to Module...
+              </>
+            ) : saveSuccess && !isSavedQuiz ? (
+              // Show Add to Module after saving
+              <>
+                <BsPlus className="me-2" />
+                Add to Module
+              </>
+            ) : (
+              // Initial state or when adding a new quiz
+              <>
+                {isSavedQuiz ? (
+                  <>
+                    <BsPlus className="me-2" />
+                    Add to Module
+                  </>
+                ) : (
+                  "Save Quiz"
+                )}
+              </>
+            )}
+          </Button>
+        ) : (
+          // When not coming from a module, just show Save Quiz
+          <Button
+            variant="primary"
+            onClick={handleSaveQuiz}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Saving...
+              </>
+            ) : saveSuccess ? (
+              <>
+                <BsCheckCircle className="me-2" />
+                Saved
+              </>
+            ) : (
+              "Save Quiz"
+            )}
+          </Button>
+        )}
       </div>
+      
+      {/* Delete confirmation modal */}
+      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Quiz</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this quiz? This action cannot be undone.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteQuiz}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -263,7 +263,8 @@ const ModuleContent = ({
         navigate(`/quiz/take/${activity.quizId}?activityId=${activity.id}&moduleId=${module.id}`);
         return;
       }
-      // Handle other activity types for students
+      
+      // Mark activity as completed for students
       if (!activity.completed) {
         try {
           const response = await fetch('/api/complete-activity', {
@@ -283,6 +284,11 @@ const ModuleContent = ({
               a.id === activity.id ? { ...a, completed: true } : a
             );
             setActivities(updatedActivities);
+            
+            // Also notify parent component to update its state
+            if (onActivityCompletion) {
+              onActivityCompletion(module.id, activity.id);
+            }
           }
         } catch (error) {
           console.error('Error marking activity as completed:', error);
@@ -311,8 +317,8 @@ const ModuleContent = ({
       case 'quiz':
         if (userRole === 'teacher') {
           if (activity.quizId) {
-            // For existing quizzes, navigate to the quiz edit page
-            navigate(`/quiz/edit/${activity.quizId}`);
+            // For existing quizzes, navigate to the quiz preview window
+            navigate(`/quiz/preview/${activity.quizId}`);
           } else {
             // For generating a new quiz
             // Store the current module's documents for quiz generation

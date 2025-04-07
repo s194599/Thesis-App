@@ -115,7 +115,7 @@
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=5aYpkLfkgRE&ab_channel=NetworkChuck",
     "file": null,
-    "completed": false,
+    "completed": true,
     "isNew": true,
     "id": "activity_1743683011082",
     "moduleId": "module-4"
@@ -125,7 +125,7 @@
     "description": "",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Learning_Objectives_for_Masters_theses_1_1744011208.pdf",
-    "completed": false,
+    "completed": true,
     "isNew": true,
     "id": "activity_1744011208201",
     "moduleId": "module-6"
@@ -143,9 +143,9 @@
   },
   {
     "moduleId": "module-3",
-    "title": "Quiz",
+    "title": "NAVN \u00c6NDREERP\u00c5 WPDIK",
     "type": "quiz",
-    "quizId": "quiz_1744016560",
+    "quizId": "quiz_1744025096",
     "completed": false
   },
   {
@@ -164,5 +164,22 @@
     "type": "quiz",
     "quizId": "quiz_1744016373",
     "completed": false
+  },
+  {
+    "moduleId": "module-6",
+    "title": "LO Thesis",
+    "type": "quiz",
+    "quizId": "quiz_1744025310",
+    "completed": false
+  },
+  {
+    "title": "Intro-to-Romanticism.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744025985.pdf",
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1744025985606",
+    "moduleId": "module-6"
   }
 ]

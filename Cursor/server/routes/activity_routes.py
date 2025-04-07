@@ -190,3 +190,90 @@ def get_youtube_title():
     except Exception as e:
         logger.error(f"Error in YouTube title endpoint: {str(e)}")
         return jsonify({"title": f"YouTube Video ({video_id})", "success": False}), 200
+
+
+@activity_routes.route("/update-quiz-activity-title", methods=["POST"])
+def update_quiz_activity_title():
+    """
+    Updates the title of activities that reference a specific quiz
+    """
+    try:
+        data = request.json
+        quiz_id = data.get("quizId")
+        new_title = data.get("newTitle")
+        
+        if not quiz_id or not new_title:
+            return jsonify({"success": False, "message": "Quiz ID and new title are required"}), 400
+            
+        # Load all activities
+        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        all_activities = load_json_file(activities_file, [])
+        
+        # Update activities that reference this quiz
+        updated = False
+        for activity in all_activities:
+            if activity.get("type") == "quiz" and activity.get("quizId") == quiz_id:
+                activity["title"] = new_title
+                updated = True
+        
+        # Save the updated activities
+        if updated:
+            if save_json_file(activities_file, all_activities):
+                return jsonify({"success": True, "message": "Activity titles updated successfully"})
+            else:
+                return jsonify({"success": False, "message": "Failed to save activities file"}), 500
+        else:
+            return jsonify({"success": True, "message": "No activities found with the specified quiz ID"})
+            
+    except Exception as e:
+        logger.error(f"Error updating quiz activity titles: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@activity_routes.route("/complete-activity", methods=["POST"])
+def complete_activity():
+    """
+    Marks an activity as completed
+    """
+    try:
+        data = request.json
+        if not data or "activityId" not in data or "moduleId" not in data:
+            return jsonify({"success": False, "message": "Activity ID and Module ID are required"}), 400
+            
+        activity_id = data.get("activityId")
+        module_id = data.get("moduleId")
+        
+        # Load existing activities
+        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities = load_json_file(activities_file, [])
+        
+        # Find the activity to mark as completed
+        activity_found = False
+        for activity in activities:
+            if activity.get("id") == activity_id and activity.get("moduleId") == module_id:
+                activity["completed"] = True
+                
+                # Add quiz score if provided
+                if "quizScore" in data:
+                    activity["quizScore"] = data.get("quizScore")
+                    
+                activity_found = True
+                break
+        
+        if not activity_found:
+            return jsonify({"success": False, "message": "Activity not found"}), 404
+        
+        # Save the updated activities
+        if save_json_file(activities_file, activities):
+            return jsonify({
+                "success": True, 
+                "message": "Activity marked as completed",
+                "activityId": activity_id,
+                "moduleId": module_id
+            })
+        else:
+            return jsonify({"success": False, "message": "Failed to save activities file"}), 500
+            
+    except Exception as e:
+        logger.error(f"Error completing activity: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500

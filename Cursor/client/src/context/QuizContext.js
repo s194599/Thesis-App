@@ -201,10 +201,81 @@ export const QuizProvider = ({ children }) => {
   };
 
   // Save the edited quiz
-  const saveQuiz = () => {
-    setGeneratedQuiz(editingQuiz);
-    setIsEditing(false);
-    // Here you would typically send the quiz to your backend
+  const saveQuiz = async () => {
+    try {
+      setIsSaving(true);
+      setError(null);
+
+      // First, update the generated quiz with edited content
+      const quizToSave = {
+        ...editingQuiz,
+        timestamp: new Date().toISOString(),
+      };
+
+      // Check if we're updating an existing quiz
+      const isUpdate = !!editingQuiz.quizId || !!editingQuiz.id;
+      const quizId = editingQuiz.quizId || editingQuiz.id;
+      const titleChanged = isUpdate && (editingQuiz.title !== generatedQuiz.title);
+
+      // Save to backend
+      const result = await saveQuizApi(quizToSave);
+
+      // Update the quiz with the returned ID if needed
+      if (result.quizId) {
+        quizToSave.id = result.quizId;
+        quizToSave.quizId = result.quizId;
+      }
+
+      // Update the current quiz
+      setGeneratedQuiz(quizToSave);
+      
+      // If the title was changed and we have a quiz ID, update the activity title
+      if (titleChanged && quizId) {
+        try {
+          // Update the activity title in any module that contains this quiz
+          await fetch('/api/update-quiz-activity-title', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              quizId: quizId,
+              newTitle: editingQuiz.title
+            }),
+          });
+        } catch (error) {
+          console.error("Error updating activity title:", error);
+          // Don't fail the whole save operation if this fails
+        }
+      }
+      
+      // Exit edit mode
+      setIsEditing(false);
+      setEditingQuiz(null);
+      
+      // Show success notification
+      setSaveSuccess(true);
+      if (toast) {
+        toast.success("Quiz saved successfully!");
+      }
+
+      return result;
+    } catch (err) {
+      console.error("Error saving quiz:", err);
+      setError("Failed to save quiz. Please try again.");
+      
+      if (toast) {
+        toast.error("Failed to save quiz. Please try again.");
+      }
+      
+      return null;
+    } finally {
+      setIsSaving(false);
+      // Reset save success after a delay
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 2000);
+    }
   };
 
   // Cancel editing
@@ -266,31 +337,84 @@ export const QuizProvider = ({ children }) => {
     setError(null);
 
     try {
+      // Check if quiz already has an ID (updating existing quiz)
+      const isUpdate = !!generatedQuiz.quizId || !!generatedQuiz.id;
+      const quizId = generatedQuiz.quizId || generatedQuiz.id;
+      
+      // Track if title has changed (for updating activity titles)
+      let titleChanged = false;
+      
       // Copy the quiz and ensure it has a title
       const quizToSave = {
         ...generatedQuiz,
         title: generatedQuiz.title || "Quiz",
         timestamp: new Date().toISOString(),
       };
+      
+      // If updating, make sure the ID is set correctly
+      if (isUpdate) {
+        quizToSave.id = quizId;
+        
+        // Check if we need to update the quiz title in any activities
+        // by comparing with any previously known title (if available)
+        const quizzesFile = localStorage.getItem('savedQuizzesTitles');
+        if (quizzesFile) {
+          const savedTitles = JSON.parse(quizzesFile);
+          if (savedTitles[quizId] && savedTitles[quizId] !== quizToSave.title) {
+            titleChanged = true;
+          }
+        }
+      }
 
       // Call the API to save the quiz
       const result = await saveQuizApi(quizToSave);
 
       // Update the quiz with the returned ID if needed
-      if (result.quizId && !generatedQuiz.id) {
+      if (result.quizId && !isUpdate) {
         setGeneratedQuiz({
           ...generatedQuiz,
           id: result.quizId,
+          quizId: result.quizId
         });
+        
+        // Store new quiz title
+        const savedTitles = JSON.parse(localStorage.getItem('savedQuizzesTitles') || '{}');
+        savedTitles[result.quizId] = quizToSave.title;
+        localStorage.setItem('savedQuizzesTitles', JSON.stringify(savedTitles));
+      }
+      
+      // If the title changed and we have a quiz ID, update the activity title
+      if ((titleChanged || isUpdate) && quizId) {
+        try {
+          // Update the activity title in any module that contains this quiz
+          await fetch('/api/update-quiz-activity-title', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              quizId: quizId,
+              newTitle: quizToSave.title
+            }),
+          });
+          
+          // Update saved title in localStorage
+          const savedTitles = JSON.parse(localStorage.getItem('savedQuizzesTitles') || '{}');
+          savedTitles[quizId] = quizToSave.title;
+          localStorage.setItem('savedQuizzesTitles', JSON.stringify(savedTitles));
+        } catch (error) {
+          console.error("Error updating activity title:", error);
+          // Don't fail the whole save operation if this fails
+        }
       }
 
       setSaveSuccess(true);
 
       // Show success notification
       if (toast) {
-        toast.success("Quiz saved successfully!");
+        toast.success(isUpdate ? "Quiz updated successfully!" : "Quiz saved successfully!");
       } else {
-        alert("Quiz saved successfully!");
+        alert(isUpdate ? "Quiz updated successfully!" : "Quiz saved successfully!");
       }
 
       return result;
@@ -306,6 +430,10 @@ export const QuizProvider = ({ children }) => {
       return null;
     } finally {
       setIsSaving(false);
+      // Reset success indicator after a delay
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 2000);
     }
   };
 
