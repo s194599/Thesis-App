@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, ProgressBar, Spinner } from "react-bootstrap";
+import { Container, Row, Col, ProgressBar, Spinner, ButtonGroup, ToggleButton, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ModuleSidebar from "./ModuleSidebar";
 import ModuleContent from "./ModuleContent";
@@ -13,6 +13,7 @@ const PlatformOverview = () => {
   const [loadedModulesCount, setLoadedModulesCount] = useState(0);
   const [totalModulesToLoad, setTotalModulesToLoad] = useState(0);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [userRole, setUserRole] = useState('teacher'); // 'teacher' or 'student'
 
   // Load data from server or localStorage
   useEffect(() => {
@@ -23,6 +24,12 @@ const PlatformOverview = () => {
         // Try to load from localStorage first for immediate display
         const savedModules = localStorage.getItem("learningModules");
         let localModules = [];
+        
+        // Also try to load saved user role
+        const savedUserRole = localStorage.getItem("userRole");
+        if (savedUserRole) {
+          setUserRole(savedUserRole);
+        }
         
         if (savedModules) {
           try {
@@ -88,7 +95,15 @@ const PlatformOverview = () => {
     if (selectedModuleId) {
       localStorage.setItem("selectedModuleId", selectedModuleId);
     }
-  }, [modules, selectedModuleId, initialLoadComplete]);
+    
+    // Save user role when it changes
+    localStorage.setItem("userRole", userRole);
+  }, [modules, selectedModuleId, initialLoadComplete, userRole]);
+
+  // Handle role toggle
+  const handleRoleToggle = (role) => {
+    setUserRole(role);
+  };
 
   // Calculate overall progress with null checks
   const totalActivities = Array.isArray(modules)
@@ -304,6 +319,37 @@ const PlatformOverview = () => {
 
   return (
     <Container fluid className="platform-overview p-0">
+      {/* Role toggle switch with label */}
+      <div className="role-toggle-container position-fixed end-0 top-0 m-3 z-3">
+        <div className="d-flex align-items-center bg-light p-2 rounded shadow-sm">
+          <span className="me-2 fw-bold small text-secondary">Vælg rolle:</span>
+          <ButtonGroup>
+            <ToggleButton
+              id="role-toggle-student"
+              type="radio"
+              variant={userRole === 'student' ? 'primary' : 'outline-primary'}
+              name="radio"
+              value="student"
+              checked={userRole === 'student'}
+              onChange={(e) => handleRoleToggle(e.currentTarget.value)}
+            >
+              Elev
+            </ToggleButton>
+            <ToggleButton
+              id="role-toggle-teacher"
+              type="radio"
+              variant={userRole === 'teacher' ? 'primary' : 'outline-primary'}
+              name="radio"
+              value="teacher"
+              checked={userRole === 'teacher'}
+              onChange={(e) => handleRoleToggle(e.currentTarget.value)}
+            >
+              Lærer
+            </ToggleButton>
+          </ButtonGroup>
+        </div>
+      </div>
+      
       {loading && (
         <div className="preloading-indicator">
           <Spinner animation="border" variant="primary" size="sm" />
@@ -318,6 +364,7 @@ const PlatformOverview = () => {
             modules={modules || []}
             selectedModuleId={selectedModuleId}
             onModuleSelect={handleModuleSelect}
+            userRole={userRole}
           />
         </Col>
         <Col md={9} className="content-col">
@@ -328,6 +375,7 @@ const PlatformOverview = () => {
               onQuizAccess={handleQuizAccess}
               onUpdateActivities={updateModuleActivities}
               onModuleUpdate={handleModuleUpdate}
+              userRole={userRole}
             />
           ) : (
             <div className="p-4 text-center">
@@ -340,21 +388,23 @@ const PlatformOverview = () => {
         </Col>
       </Row>
 
-      {/* Overall Progress - Moved outside the column structure */}
-      <div className="fixed-bottom bg-white border-top py-2 px-3">
-        <div className="d-flex justify-content-between align-items-center mb-1">
-          <small className="text-muted">
-            {overallProgress}% - {completedActivities} ud af{" "}
-            {totalActivities} moduler gennemført
-          </small>
-          <small className="text-muted">Total Fremgang</small>
+      {/* Overall Progress - Only visible in student mode */}
+      {userRole === 'student' && (
+        <div className="fixed-bottom bg-white border-top py-2 px-3">
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <small className="text-muted">
+              {overallProgress}% - {completedActivities} ud af{" "}
+              {totalActivities} moduler gennemført
+            </small>
+            <small className="text-muted">Total Fremgang</small>
+          </div>
+          <ProgressBar
+            now={overallProgress}
+            variant="primary"
+            style={{ height: "8px" }}
+          />
         </div>
-        <ProgressBar
-          now={overallProgress}
-          variant="primary"
-          style={{ height: "8px" }}
-        />
-      </div>
+      )}
     </Container>
   );
 };

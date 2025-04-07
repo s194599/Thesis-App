@@ -2,7 +2,7 @@ import React from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { BsCheckCircleFill, BsCircleFill } from 'react-icons/bs';
 
-const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect }) => {
+const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRole = 'teacher' }) => {
   // Ensure modules is always an array
   const safeModules = Array.isArray(modules) ? modules : [];
   
@@ -31,7 +31,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect }) => {
         </div>
         <div>
           <h2 className="h5 mb-0">Dansk 2.A</h2>
-          <small className="text-muted">Deltagere</small>
+          <small className="text-muted">{userRole === 'teacher' ? 'Lærer' : 'Elev'} visning</small>
         </div>
       </div>
       
@@ -61,16 +61,25 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect }) => {
                   <div className="d-flex justify-content-between align-items-center mb-1">
                     <div className="text-nowrap">{module.date || 'No date'}</div>
                     
-                    {allCompleted ? (
-                      <BsCheckCircleFill className="text-success" />
-                    ) : (
-                      <BsCircleFill className={completedActivities > 0 ? "text-warning" : "text-secondary"} style={{ opacity: 0.5 }} />
+                    {userRole === 'student' && (
+                      allCompleted ? (
+                        <BsCheckCircleFill className="text-success" />
+                      ) : (
+                        <BsCircleFill className={completedActivities > 0 ? "text-warning" : "text-secondary"} style={{ opacity: 0.5 }} />
+                      )
                     )}
                   </div>
                   
                   <div>
                     <span className="text-truncate">{module.title}</span>
                     {module.subtitle && <small className="text-muted d-block">{module.subtitle}</small>}
+                    
+                    {/* Add progress indicator for students */}
+                    {userRole === 'student' && totalActivities > 0 && (
+                      <small className="text-muted d-block">
+                        {completedActivities} af {totalActivities} aktiviteter gennemført
+                      </small>
+                    )}
                   </div>
                 </div>
               </ListGroup.Item>

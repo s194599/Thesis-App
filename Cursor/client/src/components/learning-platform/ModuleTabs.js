@@ -2,8 +2,9 @@ import React from 'react';
 import { Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-const ModuleTabs = ({ moduleId, activeTab = 'indhold', onTabChange }) => {
+const ModuleTabs = ({ moduleId, activeTab = 'indhold', onTabChange, userRole = 'teacher' }) => {
   const navigate = useNavigate();
+  const isTeacher = userRole === 'teacher';
   
   const handleQuizTabClick = () => {
     // Navigate to the saved quizzes page when Quiz tab is clicked

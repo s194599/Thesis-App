@@ -100,34 +100,24 @@
     "url": "http://localhost:5001/api/uploads/AI_gamification_1743679394.png"
   },
   {
-    "title": "network security intro - slides.pdf",
-    "description": "",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/network_security_intro_-_slides_1743682000.pdf",
-    "completed": false,
-    "isNew": true,
-    "id": "activity_1743682000577",
-    "moduleId": "module-5"
-  },
-  {
-    "title": "teacher-USssssM2.png",
-    "description": "",
-    "type": "image",
-    "url": "http://localhost:5001/api/uploads/teacher-USM2_1743682802.png",
     "completed": true,
+    "description": "",
+    "id": "activity_1743682000577",
     "isNew": true,
-    "id": "activity_1743682802379",
-    "moduleId": "module-2"
+    "moduleId": "module-5",
+    "title": "network security intro - slides.pdf",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/network_security_intro_-_slides_1743682000.pdf"
   },
   {
-    "title": "UNord - Transcript-Word (1).pdf",
+    "completed": true,
     "description": "",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/UNord_-_Transcript-Word_1_1743682990.pdf",
-    "completed": false,
-    "isNew": true,
     "id": "activity_1743682990342",
-    "moduleId": "module-4"
+    "isNew": true,
+    "moduleId": "module-4",
+    "title": "UNord - Transcript-Word (1).pdf",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/UNord_-_Transcript-Word_1_1743682990.pdf"
   },
   {
     "title": "build a meme Python website (Flask Tutorial for Beginners)",
@@ -139,5 +129,15 @@
     "isNew": true,
     "id": "activity_1743683011082",
     "moduleId": "module-4"
+  },
+  {
+    "title": "Learning Objectives for Master's theses (1).pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Learning_Objectives_for_Masters_theses_1_1744011208.pdf",
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1744011208201",
+    "moduleId": "module-6"
   }
 ]

@@ -22,7 +22,17 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateActivities, onModuleUpdate }) => {
+const ModuleContent = ({ 
+  module, 
+  onActivityCompletion, 
+  onQuizAccess, 
+  onUpdateActivities,
+  onModuleUpdate,
+  userRole = 'teacher' // Default to teacher role if not provided
+}) => {
+  // Check if in teacher mode (can edit)
+  const isTeacherMode = userRole === 'teacher';
+  
   const [activities, setActivities] = useState([]);
   const [activeTab, setActiveTab] = useState('indhold');
   const [showModal, setShowModal] = useState(false);
@@ -249,9 +259,8 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
   const handleActivityClick = (activity) => {
     if (!activity) return;
     
-    // Mark activity as completed regardless of type
-    // Only if it's not already completed
-    if (!activity.completed && onActivityCompletion) {
+    // Mark activity as completed only in student mode
+    if (userRole === 'student' && !activity.completed && onActivityCompletion) {
       onActivityCompletion(module.id, activity.id);
     }
     
@@ -291,7 +300,6 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       }
     } else if (activity.type === 'image') {
       // For images, we don't do anything on click since they're shown inline
-      // Just mark as completed by the handler at the top of this function
       console.log('Image activity clicked, already displayed inline');
     } else if ((activity.type === 'link' || activity.type === 'youtube') && activity.url) {
       // For external links and YouTube videos, open in a new tab
@@ -1014,7 +1022,7 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
       <header className="mb-4">
         <div className="d-flex align-items-center mb-3">
           <div>
-            {editingDate ? (
+            {editingDate && isTeacherMode ? (
               <div className="d-flex align-items-center mb-1">
                 <Form.Control
                   size="sm"
@@ -1035,16 +1043,18 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
             ) : (
               <div className="d-flex align-items-center">
                 <small className="text-muted d-block">{module.date || 'Ingen dato'}</small>
-                <BsPencil 
-                  size={12} 
-                  className="ms-2 text-muted edit-icon"
-                  onClick={handleDateEdit}
-                  style={{ cursor: 'pointer' }}
-                />
+                {isTeacherMode && (
+                  <BsPencil 
+                    size={12} 
+                    className="ms-2 text-muted edit-icon"
+                    onClick={handleDateEdit}
+                    style={{ cursor: 'pointer' }}
+                  />
+                )}
               </div>
             )}
             
-            {editingTitle ? (
+            {editingTitle && isTeacherMode ? (
               <div className="d-flex align-items-center">
                 <Form.Control
                   size="lg"
@@ -1065,19 +1075,21 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
             ) : (
               <div className="d-flex align-items-center">
                 <h1 className="h3 mb-0">{module.title || 'Unnamed Module'}</h1>
-                <BsPencil 
-                  size={16} 
-                  className="ms-3 text-muted edit-icon"
-                  onClick={handleTitleEdit}
-                  style={{ cursor: 'pointer' }}
-                />
+                {isTeacherMode && (
+                  <BsPencil 
+                    size={16} 
+                    className="ms-3 text-muted edit-icon"
+                    onClick={handleTitleEdit}
+                    style={{ cursor: 'pointer' }}
+                  />
+                )}
               </div>
             )}
           </div>
         </div>
         
         {/* Rich text editor for module description */}
-        {editingDescription ? (
+        {editingDescription && isTeacherMode ? (
           <div className="mb-3">
             <ReactQuill 
               value={moduleDescription} 
@@ -1121,30 +1133,41 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
                 dangerouslySetInnerHTML={{ __html: moduleDescription }}
               />
             ) : (
-              <p className="text-muted font-italic">Ingen beskrivelse. Klik for at tilføje.</p>
+              <p className="text-muted font-italic">
+                {isTeacherMode ? 'Ingen beskrivelse. Klik for at tilføje.' : 'Ingen beskrivelse.'}
+              </p>
             )}
-            <Button 
-              variant="link" 
-              className="position-absolute top-0 end-0 p-0 text-muted"
-              onClick={() => setEditingDescription(true)}
-            >
-              <BsPencilSquare />
-            </Button>
+            {isTeacherMode && (
+              <Button 
+                variant="link" 
+                className="position-absolute top-0 end-0 p-0 text-muted"
+                onClick={() => setEditingDescription(true)}
+              >
+                <BsPencilSquare />
+              </Button>
+            )}
           </div>
         )}
         
         <ModuleTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
+          userRole={userRole}
         />
         
-        <div className="d-flex justify-content-between align-items-center mb-2 mt-4">
-          <div className="text-muted small">
-            {progressPercentage}% - {completedActivities} ud af {totalActivities} aktiviteter gennemført
+        {userRole === 'student' && (
+          <div className="d-flex justify-content-between align-items-center mb-2 mt-4">
+            <div className="text-muted small">
+              {progressPercentage}% - {completedActivities} ud af {totalActivities} aktiviteter gennemført
+            </div>
+            
+            <ProgressBar now={progressPercentage} variant="primary" style={{ height: '8px' }} className="w-100 mt-2" />
           </div>
-          
-          {/* Add Activity Button */}
-          {activeTab === 'indhold' && (
+        )}
+        
+        {/* Add Activity Button - Only visible in teacher mode */}
+        {activeTab === 'indhold' && isTeacherMode && (
+          <div className="d-flex justify-content-end my-3">
             <Button 
               variant="outline-primary" 
               size="sm" 
@@ -1153,359 +1176,480 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
             >
               <BsPlus className="me-1" /> Tilføj aktivitet
             </Button>
-          )}
-        </div>
-        <ProgressBar now={progressPercentage} variant="primary" style={{ height: '8px' }} />
+          </div>
+        )}
       </header>
       
-      {/* Activity Type Selection Modal */}
-      <Modal show={showActivityTypeModal} onHide={() => setShowActivityTypeModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Vælg aktivitetstype</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="d-flex flex-column gap-3">
-            <Button 
-              variant="outline-primary" 
-              className="p-3 d-flex align-items-center"
-              onClick={() => handleActivityTypeSelect('file')}
-            >
-              <BsFileEarmark className="me-3 fs-4" />
-              <div className="text-start">
-                <h5 className="mb-1">Upload fil</h5>
-                <small className="text-muted">Upload et PDF eller Word dokument</small>
-              </div>
-            </Button>
-            
-            <Button 
-              variant="outline-primary" 
-              className="p-3 d-flex align-items-center"
-              onClick={() => handleActivityTypeSelect('link')}
-            >
-              <BsLink45Deg className="me-3 fs-4" />
-              <div className="text-start">
-                <h5 className="mb-1">Upload link (URL)</h5>
-                <small className="text-muted">Tilføj et link til en ekstern webside eller video</small>
-              </div>
-            </Button>
-            
-            <Button 
-              variant="outline-primary" 
-              className="p-3 d-flex align-items-center"
-              onClick={() => handleActivityTypeSelect('quiz')}
-            >
-              <BsQuestionCircle className="me-3 fs-4" />
-              <div className="text-start">
-                <h5 className="mb-1">Generer quiz</h5>
-                <small className="text-muted">Opret en interaktiv quiz (kommer snart)</small>
-              </div>
-            </Button>
-          </div>
-        </Modal.Body>
-      </Modal>
-      
-      {/* File Upload Modal */}
-      <Modal show={showFileUploadModal} onHide={() => setShowFileUploadModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Upload fil</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Titel</Form.Label>
-              <Form.Control 
-                type="text" 
-                name="title"
-                value={newActivity.title} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv en titel for aktiviteten"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Beskrivelse</Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={2}
-                name="description"
-                value={newActivity.description} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv en beskrivelse (valgfrit)"
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Fil</Form.Label>
-              <div 
-                className={`file-upload-container ${dragActive ? 'active-drag' : ''}`}
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-              >
-                <label className="file-input-label w-100">
-                  <div className="mb-2">
-                    <BsFileEarmark size={24} className="mb-2" />
-                    <div className="fw-bold">Upload fil</div>
-                  </div>
-                  <div className="text-muted small mb-2">
-                    Slip filer her, eller klik for at vælge
-                  </div>
-                  <Form.Control 
-                    type="file" 
-                    name="file"
-                    onChange={handleModalInputChange}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    className="file-input-hidden"
-                  />
-                </label>
-              </div>
-              <div className="text-muted small mt-1 text-center">
-                Accepterede filtyper: PDF, Word dokumenter, billeder
-              </div>
+      {activeTab === 'indhold' && (
+        <div className="activities-container">
+          {activities.length > 0 ? (
+            activities.map(activity => {
+              if (!activity) return null;
               
-              {newActivity.file && (
-                <div className="activity-url-preview mt-2">
-                  <div className="d-flex align-items-center">
-                    {getIconForType(detectFileType(newActivity.file.name))}
-                    <span className="ms-2 text-truncate">{newActivity.file.name}</span>
-                  </div>
-                  <div className="text-muted small">
-                    Størrelse: {Math.round(newActivity.file.size / 1024)} KB
-                  </div>
-                </div>
-              )}
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowFileUploadModal(false)}>
-            Annuller
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleSaveFileActivity}
-            disabled={!newActivity.title || !newActivity.file}
-          >
-            {editActivityId ? 'Gem ændringer' : 'Tilføj aktivitet'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      
-      {/* URL Input Modal */}
-      <Modal show={showUrlModal} onHide={() => setShowUrlModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Tilføj link (URL)</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Titel</Form.Label>
-              <Form.Control 
-                type="text" 
-                name="title"
-                value={newActivity.title} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv en titel for aktiviteten"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Beskrivelse</Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={2}
-                name="description"
-                value={newActivity.description} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv en beskrivelse (valgfrit)"
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>URL</Form.Label>
-              <Form.Control 
-                type="url" 
-                name="url"
-                value={newActivity.url} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv URL til webside eller YouTube video"
-                required
-              />
-              
-              {newActivity.url && (
-                <div className="activity-url-preview mt-2">
-                  <div className="d-flex align-items-center">
-                    {newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be') 
-                      ? <BsYoutube className="text-danger" size={20} />
-                      : <BsLink45Deg className="text-primary" size={20} />
-                    }
-                    <span className="ms-2 text-truncate">{newActivity.url}</span>
-                  </div>
-                  <div className="text-muted small">
-                    Type: {newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be') 
-                      ? 'YouTube video' 
-                      : 'Webside link'}
-                  </div>
-                </div>
-              )}
-              
-              {newActivity.url && (newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be')) && (
-                <div className="mt-3">
-                  <div className="small fw-bold mb-1">Video forhåndsvisning:</div>
-                  <div className="ratio ratio-16x9">
-                    <iframe
-                      src={getYoutubeEmbedUrl(newActivity.url)}
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-              )}
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowUrlModal(false)}>
-            Annuller
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleSaveUrlActivity}
-            disabled={!newActivity.title || !newActivity.url}
-          >
-            {editActivityId ? 'Gem ændringer' : 'Tilføj aktivitet'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      
-      {/* Edit Activity Modal - Keep this for editing existing activities */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Rediger aktivitet</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Titel</Form.Label>
-              <Form.Control 
-                type="text" 
-                name="title"
-                value={newActivity.title} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv en titel for aktiviteten"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Beskrivelse</Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={2}
-                name="description"
-                value={newActivity.description} 
-                onChange={handleModalInputChange}
-                placeholder="Angiv en beskrivelse (valgfrit)"
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>URL eller Fil</Form.Label>
-              <div className="d-flex flex-column gap-2">
-                <Form.Control 
-                  type="url" 
-                  name="url"
-                  value={newActivity.url} 
-                  onChange={handleModalInputChange}
-                  placeholder="Angiv URL til YouTube video, quiz eller anden ressource"
-                />
-                <div className="text-center text-muted small py-1">- eller -</div>
-                <div 
-                  className={`file-upload-container ${dragActive ? 'active-drag' : ''}`}
-                  onDragEnter={handleDrag}
-                  onDragOver={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDrop={handleDrop}
+              return (
+                <Card 
+                  key={activity.id || Math.random().toString()} 
+                  className={`mb-3 activity-card ${userRole === 'student' && activity.completed ? 'completed' : ''}`}
+                  onClick={() => handleActivityClick(activity)}
+                  style={{ cursor: 'pointer' }}
                 >
-                  <label className="file-input-label w-100">
-                    <div className="mb-2">
-                      <BsFileEarmark size={24} className="mb-2" />
-                      <div className="fw-bold">Upload fil</div>
+                  <Card.Body className="p-3">
+                    <div className="d-flex align-items-center">
+                      <div className="activity-icon me-3">
+                        {getIconForType(activity.type, activity.url)}
+                      </div>
+                      
+                      <div className="activity-content flex-grow-1">
+                        <div className="d-flex justify-content-between align-items-start">
+                          <div>
+                            <h5 className="mb-1">{activity.title || 'Unnamed Activity'}</h5>
+                            {activity.description && (
+                              <div className="text-muted small">{activity.description}</div>
+                            )}
+                            {activity.type === 'youtube' && activity.url && (
+                              <div className="d-flex align-items-center">
+                                <div className="text-muted small text-truncate" style={{ maxWidth: '500px' }}>
+                                  {extractYoutubeVideoId(activity.url) ? 'YouTube Video' : activity.url}
+                                </div>
+                                <small className="ms-2 text-primary">Klik for at åbne</small>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="d-flex align-items-center">
+                            {/* Edit and Delete buttons - Only visible in teacher mode */}
+                            {isTeacherMode && (
+                              <div className="edit-delete-buttons d-flex me-2">
+                                <Button
+                                  variant="link"
+                                  className="p-0 me-2 text-secondary"
+                                  onClick={(e) => handleEditActivity(e, activity)}
+                                  style={{ fontSize: '1rem' }}
+                                >
+                                  <BsPencil />
+                                </Button>
+                                <Button
+                                  variant="link"
+                                  className="p-0 text-danger"
+                                  onClick={(e) => handleDeleteActivity(e, activity.id)}
+                                  style={{ fontSize: '1rem' }}
+                                >
+                                  <BsX />
+                                </Button>
+                              </div>
+                            )}
+                            
+                            {/* Completion Status - Only visible in student mode */}
+                            {userRole === 'student' && (
+                              <div className="ms-2">
+                                {activity.completed ? (
+                                  <BsCheckCircleFill className="text-success" />
+                                ) : (
+                                  <BsCircleFill className="text-secondary" style={{ opacity: 0.3 }} />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-muted small mb-2">
-                      Slip filer her, eller klik for at vælge
-                    </div>
-                    <Form.Control 
-                      type="file" 
-                      name="file"
-                      onChange={handleModalInputChange}
-                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                      className="file-input-hidden"
-                    />
-                  </label>
-                </div>
-                <div className="text-muted small mt-1 text-center">
-                  Accepterede filtyper: PDF, Word dokumenter, billeder
-                </div>
-              </div>
-              {newActivity.url && (
-                <div className="activity-url-preview mt-2">
-                  <div className="d-flex align-items-center">
-                    {getIconForType(newActivity.type)}
-                    <span className="ms-2 text-truncate">{newActivity.url}</span>
-                  </div>
-                  <div className="text-muted small">
-                    Detekteret type: {newActivity.type.toUpperCase()}
-                  </div>
-                </div>
-              )}
-              {newActivity.file && (
-                <div className="activity-url-preview mt-2">
-                  <div className="d-flex align-items-center">
-                    {getIconForType(detectFileType(newActivity.file.name))}
-                    <span className="ms-2 text-truncate">{newActivity.file.name}</span>
-                  </div>
-                  <div className="text-muted small">
-                    Størrelse: {Math.round(newActivity.file.size / 1024)} KB
-                  </div>
-                </div>
-              )}
-              {newActivity.url && newActivity.type === 'youtube' && (
-                <div className="mt-3">
-                  <div className="small fw-bold mb-1">Video forhåndsvisning:</div>
-                  <div className="ratio ratio-16x9">
-                    <iframe
-                      src={getYoutubeEmbedUrl(newActivity.url)}
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-              )}
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
-            Annuller
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleSaveActivity}
-            disabled={!newActivity.title || (!newActivity.url && !newActivity.file)}
-          >
-            Gem ændringer
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                    
+                    {activity.type === 'image' && activity.url && (
+                      <div className="mt-3 activity-image-container">
+                        <img 
+                          src={activity.url.startsWith('http') 
+                            ? activity.url 
+                            : `http://localhost:5001${activity.url.startsWith('/') ? '' : '/'}${activity.url}`
+                          } 
+                          alt={activity.title}
+                          className="activity-inline-image"
+                          onClick={(e) => handleImageClick(e, activity.url, activity.title)}
+                        />
+                      </div>
+                    )}
+                    
+                    {activity.isNew && (
+                      <Badge bg="danger" className="position-absolute top-0 end-0 m-2">
+                        Ny
+                      </Badge>
+                    )}
+                  </Card.Body>
+                </Card>
+              );
+            })
+          ) : (
+            <div className="text-center p-4">
+              <p className="text-muted">
+                {isTeacherMode 
+                  ? 'Der er ingen aktiviteter tilføjet til dette modul endnu. Klik på "Tilføj aktivitet" for at komme i gang.'
+                  : 'Der er ingen aktiviteter tilføjet til dette modul endnu.'
+                }
+              </p>
+            </div>
+          )}
+        </div>
+      )}
       
+      {activeTab === 'forum' && (
+        <div className="forum-placeholder p-4 text-center bg-light rounded">
+          <p className="mb-0 text-muted">Forum indhold vil blive vist her</p>
+        </div>
+      )}
+      
+      {/* Only render modals if in teacher mode */}
+      {isTeacherMode && (
+        <>
+          {/* Activity Type Selection Modal */}
+          <Modal show={showActivityTypeModal} onHide={() => setShowActivityTypeModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Vælg aktivitetstype</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="d-flex flex-column gap-3">
+                <Button 
+                  variant="outline-primary" 
+                  className="p-3 d-flex align-items-center"
+                  onClick={() => handleActivityTypeSelect('file')}
+                >
+                  <BsFileEarmark className="me-3 fs-4" />
+                  <div className="text-start">
+                    <h5 className="mb-1">Upload fil</h5>
+                    <small className="text-muted">Upload et PDF eller Word dokument</small>
+                  </div>
+                </Button>
+                
+                <Button 
+                  variant="outline-primary" 
+                  className="p-3 d-flex align-items-center"
+                  onClick={() => handleActivityTypeSelect('link')}
+                >
+                  <BsLink45Deg className="me-3 fs-4" />
+                  <div className="text-start">
+                    <h5 className="mb-1">Upload link (URL)</h5>
+                    <small className="text-muted">Tilføj et link til en ekstern webside eller video</small>
+                  </div>
+                </Button>
+                
+                <Button 
+                  variant="outline-primary" 
+                  className="p-3 d-flex align-items-center"
+                  onClick={() => handleActivityTypeSelect('quiz')}
+                >
+                  <BsQuestionCircle className="me-3 fs-4" />
+                  <div className="text-start">
+                    <h5 className="mb-1">Generer quiz</h5>
+                    <small className="text-muted">Opret en interaktiv quiz (kommer snart)</small>
+                  </div>
+                </Button>
+              </div>
+            </Modal.Body>
+          </Modal>
+          
+          {/* File Upload Modal */}
+          <Modal show={showFileUploadModal} onHide={() => setShowFileUploadModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Upload fil</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Titel</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    name="title"
+                    value={newActivity.title} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en titel for aktiviteten"
+                    required
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Beskrivelse</Form.Label>
+                  <Form.Control 
+                    as="textarea" 
+                    rows={2}
+                    name="description"
+                    value={newActivity.description} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en beskrivelse (valgfrit)"
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Fil</Form.Label>
+                  <div 
+                    className={`file-upload-container ${dragActive ? 'active-drag' : ''}`}
+                    onDragEnter={handleDrag}
+                    onDragOver={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDrop={handleDrop}
+                  >
+                    <label className="file-input-label w-100">
+                      <div className="mb-2">
+                        <BsFileEarmark size={24} className="mb-2" />
+                        <div className="fw-bold">Upload fil</div>
+                      </div>
+                      <div className="text-muted small mb-2">
+                        Slip filer her, eller klik for at vælge
+                      </div>
+                      <Form.Control 
+                        type="file" 
+                        name="file"
+                        onChange={handleModalInputChange}
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        className="file-input-hidden"
+                      />
+                    </label>
+                  </div>
+                  <div className="text-muted small mt-1 text-center">
+                    Accepterede filtyper: PDF, Word dokumenter, billeder
+                  </div>
+                  
+                  {newActivity.file && (
+                    <div className="activity-url-preview mt-2">
+                      <div className="d-flex align-items-center">
+                        {getIconForType(detectFileType(newActivity.file.name))}
+                        <span className="ms-2 text-truncate">{newActivity.file.name}</span>
+                      </div>
+                      <div className="text-muted small">
+                        Størrelse: {Math.round(newActivity.file.size / 1024)} KB
+                      </div>
+                    </div>
+                  )}
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowFileUploadModal(false)}>
+                Annuller
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={handleSaveFileActivity}
+                disabled={!newActivity.title || !newActivity.file}
+              >
+                {editActivityId ? 'Gem ændringer' : 'Tilføj aktivitet'}
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          
+          {/* URL Input Modal */}
+          <Modal show={showUrlModal} onHide={() => setShowUrlModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Tilføj link (URL)</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Titel</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    name="title"
+                    value={newActivity.title} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en titel for aktiviteten"
+                    required
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Beskrivelse</Form.Label>
+                  <Form.Control 
+                    as="textarea" 
+                    rows={2}
+                    name="description"
+                    value={newActivity.description} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en beskrivelse (valgfrit)"
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>URL</Form.Label>
+                  <Form.Control 
+                    type="url" 
+                    name="url"
+                    value={newActivity.url} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv URL til webside eller YouTube video"
+                    required
+                  />
+                  
+                  {newActivity.url && (
+                    <div className="activity-url-preview mt-2">
+                      <div className="d-flex align-items-center">
+                        {newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be') 
+                          ? <BsYoutube className="text-danger" size={20} />
+                          : <BsLink45Deg className="text-primary" size={20} />
+                        }
+                        <span className="ms-2 text-truncate">{newActivity.url}</span>
+                      </div>
+                      <div className="text-muted small">
+                        Type: {newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be') 
+                          ? 'YouTube video' 
+                          : 'Webside link'}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {newActivity.url && (newActivity.url.includes('youtube.com') || newActivity.url.includes('youtu.be')) && (
+                    <div className="mt-3">
+                      <div className="small fw-bold mb-1">Video forhåndsvisning:</div>
+                      <div className="ratio ratio-16x9">
+                        <iframe
+                          src={getYoutubeEmbedUrl(newActivity.url)}
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  )}
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowUrlModal(false)}>
+                Annuller
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={handleSaveUrlActivity}
+                disabled={!newActivity.title || !newActivity.url}
+              >
+                {editActivityId ? 'Gem ændringer' : 'Tilføj aktivitet'}
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          
+          {/* Edit Activity Modal */}
+          <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Rediger aktivitet</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Titel</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    name="title"
+                    value={newActivity.title} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en titel for aktiviteten"
+                    required
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Beskrivelse</Form.Label>
+                  <Form.Control 
+                    as="textarea" 
+                    rows={2}
+                    name="description"
+                    value={newActivity.description} 
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en beskrivelse (valgfrit)"
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>URL eller Fil</Form.Label>
+                  <div className="d-flex flex-column gap-2">
+                    <Form.Control 
+                      type="url" 
+                      name="url"
+                      value={newActivity.url} 
+                      onChange={handleModalInputChange}
+                      placeholder="Angiv URL til YouTube video, quiz eller anden ressource"
+                    />
+                    <div className="text-center text-muted small py-1">- eller -</div>
+                    <div 
+                      className={`file-upload-container ${dragActive ? 'active-drag' : ''}`}
+                      onDragEnter={handleDrag}
+                      onDragOver={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDrop={handleDrop}
+                    >
+                      <label className="file-input-label w-100">
+                        <div className="mb-2">
+                          <BsFileEarmark size={24} className="mb-2" />
+                          <div className="fw-bold">Upload fil</div>
+                        </div>
+                        <div className="text-muted small mb-2">
+                          Slip filer her, eller klik for at vælge
+                        </div>
+                        <Form.Control 
+                          type="file" 
+                          name="file"
+                          onChange={handleModalInputChange}
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          className="file-input-hidden"
+                        />
+                      </label>
+                    </div>
+                    <div className="text-muted small mt-1 text-center">
+                      Accepterede filtyper: PDF, Word dokumenter, billeder
+                    </div>
+                  </div>
+                  {newActivity.url && (
+                    <div className="activity-url-preview mt-2">
+                      <div className="d-flex align-items-center">
+                        {getIconForType(newActivity.type)}
+                        <span className="ms-2 text-truncate">{newActivity.url}</span>
+                      </div>
+                      <div className="text-muted small">
+                        Detekteret type: {newActivity.type.toUpperCase()}
+                      </div>
+                    </div>
+                  )}
+                  {newActivity.file && (
+                    <div className="activity-url-preview mt-2">
+                      <div className="d-flex align-items-center">
+                        {getIconForType(detectFileType(newActivity.file.name))}
+                        <span className="ms-2 text-truncate">{newActivity.file.name}</span>
+                      </div>
+                      <div className="text-muted small">
+                        Størrelse: {Math.round(newActivity.file.size / 1024)} KB
+                      </div>
+                    </div>
+                  )}
+                  {newActivity.url && newActivity.type === 'youtube' && (
+                    <div className="mt-3">
+                      <div className="small fw-bold mb-1">Video forhåndsvisning:</div>
+                      <div className="ratio ratio-16x9">
+                        <iframe
+                          src={getYoutubeEmbedUrl(newActivity.url)}
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  )}
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+                Annuller
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={handleSaveActivity}
+                disabled={!newActivity.title || (!newActivity.url && !newActivity.file)}
+              >
+                Gem ændringer
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      )}
+      
+      {/* These modals are always available as they're for viewing content, not editing */}
       {/* PDF Viewer Modal */}
       <Modal 
         show={showPdfModal} 
@@ -1565,113 +1709,6 @@ const ModuleContent = ({ module, onActivityCompletion, onQuizAccess, onUpdateAct
           />
         </Modal.Body>
       </Modal>
-      
-      {activeTab === 'indhold' && (
-        <div className="activities-container">
-          {activities.length > 0 ? (
-            activities.map(activity => {
-              if (!activity) return null;
-              
-              return (
-                <Card 
-                  key={activity.id || Math.random().toString()} 
-                  className={`mb-3 activity-card ${activity.completed ? 'completed' : ''}`}
-                  onClick={() => handleActivityClick(activity)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <Card.Body className="p-3">
-                    <div className="d-flex align-items-center">
-                      <div className="activity-icon me-3">
-                        {getIconForType(activity.type, activity.url)}
-                      </div>
-                      
-                      <div className="activity-content flex-grow-1">
-                        <div className="d-flex justify-content-between align-items-start">
-                          <div>
-                            <h5 className="mb-1">{activity.title || 'Unnamed Activity'}</h5>
-                            {activity.description && (
-                              <div className="text-muted small">{activity.description}</div>
-                            )}
-                            {activity.type === 'youtube' && activity.url && (
-                              <div className="d-flex align-items-center">
-                                <div className="text-muted small text-truncate" style={{ maxWidth: '500px' }}>
-                                  {extractYoutubeVideoId(activity.url) ? 'YouTube Video' : activity.url}
-                                </div>
-                                <small className="ms-2 text-primary">Klik for at åbne</small>
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="d-flex align-items-center">
-                            {/* Edit and Delete buttons */}
-                            <div className="edit-delete-buttons d-flex me-2">
-                              <Button
-                                variant="link"
-                                className="p-0 me-2 text-secondary"
-                                onClick={(e) => handleEditActivity(e, activity)}
-                                style={{ fontSize: '1rem' }}
-                              >
-                                <BsPencil />
-                              </Button>
-                              <Button
-                                variant="link"
-                                className="p-0 text-danger"
-                                onClick={(e) => handleDeleteActivity(e, activity.id)}
-                                style={{ fontSize: '1rem' }}
-                              >
-                                <BsX />
-                              </Button>
-                            </div>
-                            
-                            {/* Completion Status */}
-                            <div className="ms-2">
-                              {activity.completed ? (
-                                <BsCheckCircleFill className="text-success" />
-                              ) : (
-                                <BsCircleFill className="text-secondary" style={{ opacity: 0.3 }} />
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {activity.type === 'image' && activity.url && (
-                      <div className="mt-3 activity-image-container">
-                        <img 
-                          src={activity.url.startsWith('http') 
-                            ? activity.url 
-                            : `http://localhost:5001${activity.url.startsWith('/') ? '' : '/'}${activity.url}`
-                          } 
-                          alt={activity.title}
-                          className="activity-inline-image"
-                          onClick={(e) => handleImageClick(e, activity.url, activity.title)}
-                        />
-                      </div>
-                    )}
-                    
-                    {activity.isNew && (
-                      <Badge bg="danger" className="position-absolute top-0 end-0 m-2">
-                        Ny
-                      </Badge>
-                    )}
-                  </Card.Body>
-                </Card>
-              );
-            })
-          ) : (
-            <div className="text-center p-4">
-              <p className="text-muted">No activities found for this module.</p>
-            </div>
-          )}
-        </div>
-      )}
-      
-      {activeTab === 'forum' && (
-        <div className="forum-placeholder p-4 text-center bg-light rounded">
-          <p className="mb-0 text-muted">Forum indhold vil blive vist her</p>
-        </div>
-      )}
     </div>
   );
 };
