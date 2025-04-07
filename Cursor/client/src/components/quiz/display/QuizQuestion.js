@@ -23,7 +23,7 @@ const QuizQuestion = ({ question, index }) => {
     const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
     return optionIndex < letters.length
       ? letters[optionIndex]
-      : `Option ${optionIndex + 1}`;
+      : `Mulighed ${optionIndex + 1}`;
   };
 
   // Save question text
@@ -65,7 +65,7 @@ const QuizQuestion = ({ question, index }) => {
 
   // Handle adding an option
   const addOption = () => {
-    const newOptions = [...options, `Option ${options.length + 1}`];
+    const newOptions = [...options, `Mulighed ${options.length + 1}`];
     setOptions(newOptions);
   };
 
@@ -108,7 +108,7 @@ const QuizQuestion = ({ question, index }) => {
           size="sm"
           onClick={() => deleteQuestion(question.id)}
         >
-          <BsTrash /> Delete
+          <BsTrash /> Slet
         </Button>
       </div>
 
@@ -133,14 +133,14 @@ const QuizQuestion = ({ question, index }) => {
                   setIsEditingQuestion(false);
                 }}
               >
-                <BsX /> Cancel
+                <BsX /> Annuller
               </Button>
               <Button
                 variant="outline-primary"
                 size="sm"
                 onClick={saveQuestionText}
               >
-                <BsCheck /> Save
+                <BsCheck /> Gem
               </Button>
             </div>
           </div>
@@ -149,7 +149,7 @@ const QuizQuestion = ({ question, index }) => {
         {/* Answer Options */}
         <div className={`${isEditingQuestion ? "mt-3" : "mt-0"}`}>
           <div className="d-flex justify-content-between mb-2">
-            <h6>Answer Options</h6>
+            <h6>Svar Muligheder</h6>
             {!isEditingOptions && (
               <Button
                 variant="link"
@@ -157,7 +157,7 @@ const QuizQuestion = ({ question, index }) => {
                 className="p-0"
                 onClick={() => setIsEditingOptions(true)}
               >
-                <BsPencil /> Edit Options
+                <BsPencil /> Rediger Muligheder
               </Button>
             )}
           </div>
@@ -181,7 +181,7 @@ const QuizQuestion = ({ question, index }) => {
                       name={`correct-answer-${question.id}`}
                       checked={option === correctAnswer}
                       onChange={() => setCorrectAnswer(option)}
-                      label="Correct"
+                      label="Korrekt"
                     />
                   </InputGroup.Text>
                   <Button
@@ -200,7 +200,7 @@ const QuizQuestion = ({ question, index }) => {
                   size="sm"
                   onClick={addOption}
                 >
-                  + Add Option
+                  + Tilføj Mulighed
                 </Button>
 
                 <div>
@@ -214,14 +214,14 @@ const QuizQuestion = ({ question, index }) => {
                       setIsEditingOptions(false);
                     }}
                   >
-                    <BsX /> Cancel
+                    <BsX /> Annuller
                   </Button>
                   <Button
                     variant="outline-primary"
                     size="sm"
                     onClick={saveOptions}
                   >
-                    <BsCheck /> Save
+                    <BsCheck /> Gem
                   </Button>
                 </div>
               </div>
@@ -267,7 +267,7 @@ const QuizQuestion = ({ question, index }) => {
         {/* Explanation section */}
         <div className="mt-4">
           <div className="d-flex justify-content-between mb-2">
-            <h6>Explanation</h6>
+            <h6>Forklaring</h6>
             {!isEditingExplanation && (
               <Button
                 variant="link"
@@ -275,7 +275,7 @@ const QuizQuestion = ({ question, index }) => {
                 className="p-0"
                 onClick={() => setIsEditingExplanation(true)}
               >
-                <BsPencil /> Edit
+                <BsPencil /> Rediger
               </Button>
             )}
           </div>
@@ -299,14 +299,14 @@ const QuizQuestion = ({ question, index }) => {
                     setIsEditingExplanation(false);
                   }}
                 >
-                  <BsX /> Cancel
+                  <BsX /> Annuller
                 </Button>
                 <Button
                   variant="outline-primary"
                   size="sm"
                   onClick={saveExplanation}
                 >
-                  <BsCheck /> Save
+                  <BsCheck /> Gem
                 </Button>
               </div>
             </div>

@@ -11,7 +11,7 @@ const NumQuestionsSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Number of Questions</Form.Label>
+        <Form.Label className="fw-bold">Antal Spørgsmål</Form.Label>
         <Form.Select
           value={formData.numQuestions}
           onChange={(e) =>
@@ -20,12 +20,12 @@ const NumQuestionsSelector = () => {
         >
           {questionOptions.map((num) => (
             <option key={num} value={num}>
-              {num} {num === 1 ? "question" : "questions"}
+              {num} {num === 1 ? "spørgsmål" : "spørgsmål"}
             </option>
           ))}
         </Form.Select>
         <Form.Text className="text-muted">
-          Select how many quiz questions to generate.
+          Vælg hvor mange quizspørgsmål der skal genereres.
         </Form.Text>
       </Form.Group>
     </div>

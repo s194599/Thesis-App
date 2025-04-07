@@ -11,20 +11,20 @@ const QuestionTypeSelector = () => {
       value: "multipleChoice",
       label: "Multiple Choice",
       icon: <BsListCheck />,
-      description: "Questions with multiple options and one correct answer",
+      description: "Spørgsmål med flere muligheder og ét korrekt svar",
     },
     {
       value: "trueFalse",
-      label: "True/False",
+      label: "Sand/Falsk",
       icon: <BsToggleOn />,
-      description: "Questions with true or false answers",
+      description: "Spørgsmål med sand eller falsk svar",
       disabled: true,
     },
     {
       value: "shortAnswer",
-      label: "Short Answer",
+      label: "Kort Svar",
       icon: <BsTextLeft />,
-      description: "Questions requiring brief text responses",
+      description: "Spørgsmål der kræver korte tekstsvar",
       disabled: true,
     },
   ];
@@ -32,7 +32,7 @@ const QuestionTypeSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Question Type</Form.Label>
+        <Form.Label className="fw-bold">Spørgsmålstype</Form.Label>
         <div className="d-flex flex-wrap gap-2">
           {questionTypes.map((type) => (
             <div key={type.value} className="flex-grow-1">
@@ -80,7 +80,7 @@ const QuestionTypeSelector = () => {
           ))}
         </div>
         <Form.Text className="text-muted">
-          Note: For the MVP, only Multiple Choice questions are available.
+          Bemærk: I MVP'en er kun multiple choice tilgængelige.
         </Form.Text>
       </Form.Group>
     </div>

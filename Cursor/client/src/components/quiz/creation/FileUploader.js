@@ -92,41 +92,36 @@ const FileUploader = () => {
         <BsUpload size={32} className="mb-2 text-primary" />
         <p className="mb-1">
           {isDragActive
-            ? "Drop the files here..."
-            : "Drag and drop files here, or click to select files"}
+            ? "Slip filerne her..."
+            : "Træk og slip filer her, eller klik for at vælge filer"}
         </p>
         <p className="text-muted small">
-          Accepted formats: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM (Max size:
-          50MB per file)
+          Accepterede formater: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM
+          (Maksimal størrelse: 50MB per fil)
         </p>
       </div>
 
       {formData.files && formData.files.length > 0 && (
         <div className="mt-3">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h6 className="mb-0">Selected Files ({formData.files.length})</h6>
+            <h6 className="mb-0">Valgte Filer ({formData.files.length})</h6>
             <span className="text-muted small">
-              Total size: {totalFileSize.toFixed(2)} MB
+              Samlet størrelse: {totalFileSize.toFixed(2)} MB
             </span>
           </div>
 
           {hasVideoFiles && (
             <div className="mt-3">
               <Alert variant="info">
-                <strong>Video Upload</strong>
-                <p>
-                  Video files will be transcribed automatically using AI speech
-                  recognition. This process requires FFmpeg to be installed on
-                  the server. If you encounter transcription errors, ask your
-                  administrator to install FFmpeg.
-                </p>
-                <ul>
-                  <li>Use videos with clear audio</li>
-                  <li>Shorter videos (under 10 minutes) work best</li>
-                  <li>
-                    Consider providing additional context in the topic field
-                  </li>
-                </ul>
+                <strong>Bemærk:</strong> Videoer vil blive transskriberet
+                automatisk ved hjælp af AI-talegenkendelse. Dette kræver at
+                FFmpeg er installeret på serveren. Hvis du oplever
+                transskriptionsfejl, bed din administrator om at installere
+                FFmpeg.
+                <br />
+                <strong>Tips:</strong> Brug videoer med tydelig lyd, hold
+                videoerne under 10 minutter for bedste resultater, og overvej at
+                tilføje yderligere kontekst i emnefeltet.
               </Alert>
             </div>
           )}
@@ -156,7 +151,7 @@ const FileUploader = () => {
                     removeFile(index);
                   }}
                 >
-                  Remove
+                  Fjern
                 </button>
               </div>
             ))}

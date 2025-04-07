@@ -84,9 +84,9 @@ const QuizEditor = () => {
     return (
       <div className="text-center my-5">
         <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Indlæser...</span>
         </Spinner>
-        <p className="mt-2">Loading quiz for editing...</p>
+        <p className="mt-2">Indlæser quiz til redigering...</p>
       </div>
     );
   }
@@ -101,7 +101,7 @@ const QuizEditor = () => {
           onClick={cancelEditing}
           disabled={isSaving}
         >
-          <BsArrowLeft className="me-1" /> Back
+          <BsArrowLeft className="me-1" /> Tilbage
         </Button>
         <Button 
           variant="success" 
@@ -146,7 +146,7 @@ const QuizEditor = () => {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter quiz title"
+              placeholder="Indtast quiz titel"
               className="form-control-lg"
               autoFocus
             />
@@ -160,10 +160,10 @@ const QuizEditor = () => {
                   setIsTitleEditing(false);
                 }}
               >
-                Cancel
+                Annuller
               </Button>
               <Button variant="outline-primary" size="sm" onClick={saveTitle}>
-                Save
+                Gem
               </Button>
             </div>
           </div>
@@ -173,7 +173,7 @@ const QuizEditor = () => {
             onClick={() => setIsTitleEditing(true)}
             style={{ cursor: "pointer" }}
           >
-            {title || "Untitled Quiz"}
+            {title || "Unavngiven Quiz"}
             <Button
               variant="link"
               className="text-muted p-0 ms-2 align-baseline"
@@ -198,7 +198,7 @@ const QuizEditor = () => {
               rows={2}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter quiz description (optional)"
+              placeholder="Indtast quiz beskrivelse (valgfrit)"
             />
             <div className="mt-2 d-flex justify-content-end">
               <Button
@@ -210,14 +210,14 @@ const QuizEditor = () => {
                   setIsDescriptionEditing(false);
                 }}
               >
-                Cancel
+                Annuller
               </Button>
               <Button
                 variant="outline-primary"
                 size="sm"
                 onClick={saveDescription}
               >
-                Save
+                Gem
               </Button>
             </div>
           </div>
@@ -227,7 +227,7 @@ const QuizEditor = () => {
             onClick={() => setIsDescriptionEditing(true)}
             style={{ cursor: "pointer" }}
           >
-            {description || "Add a description for this quiz"}
+            {description || "Tilføj en beskrivelse til denne quiz"}
             <Button
               variant="link"
               className="text-muted p-0 ms-2 align-baseline"
@@ -245,7 +245,7 @@ const QuizEditor = () => {
 
       {/* Questions */}
       <div className="quiz-questions mb-4">
-        <h5 className="mb-3">Questions</h5>
+        <h5 className="mb-3">Spørgsmål</h5>
         {editingQuiz.questions.map((question, index) => (
           <QuizQuestion key={question.id} question={question} index={index} />
         ))}
@@ -260,19 +260,19 @@ const QuizEditor = () => {
             className="d-flex align-items-center"
             disabled={isSaving}
           >
-            <BsPlusCircle className="me-2" /> Add Question
+            <BsPlusCircle className="me-2" /> Tilføj Spørgsmål
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
             <Dropdown.Item onClick={addQuestionManually}>
-              <BsTextLeft className="me-2" /> Add Manually
+              <BsTextLeft className="me-2" /> Tilføj Manuelt
             </Dropdown.Item>
             <Dropdown.Item
               onClick={generateQuestion}
               disabled={generatingQuestion}
             >
               <BsRobot className="me-2" />
-              {generatingQuestion ? "Generating..." : "Generate with AI"}
+              {generatingQuestion ? "Genererer..." : "Generer med AI"}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -280,7 +280,7 @@ const QuizEditor = () => {
         {generatingQuestion && (
           <div className="mt-3 d-flex align-items-center text-muted">
             <Spinner animation="border" size="sm" className="me-2" />
-            Generating new question with AI...
+            Genererer nyt spørgsmål med AI...
           </div>
         )}
       </div>

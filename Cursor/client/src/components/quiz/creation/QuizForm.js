@@ -32,34 +32,39 @@ const QuizForm = () => {
     generatedQuiz,
     updateFormData,
     loadSampleQuiz,
-    saveQuizToBackend
+    saveQuizToBackend,
   } = useQuizContext();
 
   // Effect to load pre-attached documents from module
   useEffect(() => {
-    const quizDocuments = localStorage.getItem('quizDocuments');
+    const quizDocuments = localStorage.getItem("quizDocuments");
     if (quizDocuments) {
       try {
         const { moduleId, documents } = JSON.parse(quizDocuments);
         if (documents && documents.length > 0) {
           // Set input type to document
-          updateFormData('inputType', 'document');
-          
+          updateFormData("inputType", "document");
+
           // Convert document URLs to File objects
-          Promise.all(documents.map(async doc => {
-            const response = await fetch(doc.url);
-            const blob = await response.blob();
-            return new File([blob], doc.title, { type: doc.type === 'pdf' ? 'application/pdf' : 'application/msword' });
-          }))
-          .then(files => {
-            updateFormData('files', files);
-          })
-          .catch(error => {
-            console.error('Error loading module documents:', error);
-          });
+          Promise.all(
+            documents.map(async (doc) => {
+              const response = await fetch(doc.url);
+              const blob = await response.blob();
+              return new File([blob], doc.title, {
+                type:
+                  doc.type === "pdf" ? "application/pdf" : "application/msword",
+              });
+            })
+          )
+            .then((files) => {
+              updateFormData("files", files);
+            })
+            .catch((error) => {
+              console.error("Error loading module documents:", error);
+            });
         }
       } catch (error) {
-        console.error('Error parsing quiz documents:', error);
+        console.error("Error parsing quiz documents:", error);
       }
     }
   }, []);
@@ -108,7 +113,7 @@ const QuizForm = () => {
     setValidated(true);
 
     if (!isFormValid()) {
-      setError("Please fill in all required fields.");
+      setError("Udfyld venligst alle påkrævede felter.");
       return;
     }
 
@@ -174,7 +179,7 @@ const QuizForm = () => {
       // Check if we have content to process
       if (!contentToProcess || contentToProcess.trim() === "") {
         throw new Error(
-          "No content was extracted for quiz generation. Please try again with different input."
+          "Der blev ikke udtrukket noget indhold til quizgenerering. Prøv venligst igen med andet input."
         );
       }
 
@@ -209,7 +214,7 @@ const QuizForm = () => {
     } catch (err) {
       console.error("Error generating quiz:", err);
       setError(
-        err.message || "Failed to generate quiz. Please try again later."
+        err.message || "Kunne ikke generere quiz. Prøv venligst igen senere."
       );
     } finally {
       setLoading(false);
@@ -223,7 +228,7 @@ const QuizForm = () => {
           <div className="card shadow">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="h3 mb-0">Create Quiz</h1>
+                {/* <h1 className="h3 mb-0">Opret Quiz</h1> */}
                 <Button
                   variant="outline-secondary"
                   size="sm"
@@ -231,7 +236,7 @@ const QuizForm = () => {
                   to="/platform"
                   className="d-flex align-items-center"
                 >
-                  <BsArrowLeft className="me-1" /> Back to Module
+                  <BsArrowLeft className="me-1" /> Tilbage til Modul
                 </Button>
               </div>
 
@@ -242,12 +247,15 @@ const QuizForm = () => {
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                   {/* Quiz Title */}
                   <Form.Group className="mb-4">
-                    <Form.Label className="fw-bold">Quiz Title</Form.Label>
+                    <Form.Label className="fw-bold">Quiz Titel</Form.Label>
                     <Form.Control
                       type="text"
                       value={formData.quizTitle}
-                      onChange={(e) => updateFormData("quizTitle", e.target.value)}
-                      placeholder="Enter a title for your quiz"
+                      onChange={(e) =>
+                        updateFormData("quizTitle", e.target.value)
+                      }
+                      placeholder="Indtast en titel til din quiz"
+                      className="form-control-lg"
                     />
                   </Form.Group>
 
@@ -288,15 +296,18 @@ const QuizForm = () => {
                   <div className="mb-4">
                     <Form.Group>
                       <Form.Label className="fw-bold">
-                        Additional Instructions (Optional)
+                        Yderligere Instruktioner (Valgfrit)
                       </Form.Label>
                       <Form.Control
                         as="textarea"
                         rows={3}
-                        placeholder="Enter any special instructions for quiz generation (e.g., 'Focus on comprehension', 'Include application-based questions')"
+                        placeholder="Indtast eventuelle særlige instruktioner til quizgenerering (f.eks., 'Fokus på forståelse', 'Inkluder anvendelsesbaserede spørgsmål')"
                         value={formData.additionalInstructions}
                         onChange={(e) =>
-                          updateFormData("additionalInstructions", e.target.value)
+                          updateFormData(
+                            "additionalInstructions",
+                            e.target.value
+                          )
                         }
                       />
                     </Form.Group>
@@ -307,7 +318,7 @@ const QuizForm = () => {
                     <Form.Check
                       type="switch"
                       id="sample-quiz-toggle"
-                      label="Use sample quiz (bypass AI generation)"
+                      label="Brug eksempelquiz (spring AI-generering over)"
                       checked={formData.useSampleQuiz}
                       onChange={(e) =>
                         updateFormData("useSampleQuiz", e.target.checked)
@@ -315,8 +326,8 @@ const QuizForm = () => {
                       className="mb-2"
                     />
                     <Form.Text className="text-muted">
-                      Toggle this option to quickly test with a sample quiz instead of
-                      using the AI model.
+                      Aktiver denne mulighed for hurtigt at teste med en
+                      eksempelquiz i stedet for at bruge AI-modellen.
                     </Form.Text>
                   </div>
 
@@ -329,8 +340,8 @@ const QuizForm = () => {
                       disabled={loading || !isFormValid()}
                     >
                       {formData.useSampleQuiz
-                        ? "Generate Sample Quiz"
-                        : "Generate Quiz"}
+                        ? "Generer Eksempelquiz"
+                        : "Generer Quiz"}
                     </Button>
                   </div>
 

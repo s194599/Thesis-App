@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Card, Button, Form, Spinner, Modal } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
-import { BsPencilSquare, BsCheckCircle, BsTypeH1, BsPlus } from "react-icons/bs";
+import {
+  BsPencilSquare,
+  BsCheckCircle,
+  BsTypeH1,
+  BsPlus,
+} from "react-icons/bs";
 import { QuizEditor } from "../management";
 import { useNavigate } from "react-router-dom";
 
@@ -118,7 +123,7 @@ const QuizOutput = () => {
         {question.explanation && (
           <div className="bg-light p-3 border-top">
             <p className="mb-0">
-              <strong>Explanation</strong>
+              <strong>Forklaring</strong>
             </p>
             <p className="mb-0 text-secondary">{question.explanation}</p>
           </div>
@@ -139,53 +144,53 @@ const QuizOutput = () => {
       // Check if the quiz is already saved
       const isSavedQuiz = !!generatedQuiz.quizId || !!generatedQuiz.id;
       let savedQuiz = null;
-      
+
       if (!isSavedQuiz) {
         // Save the quiz first if not already saved
         savedQuiz = await saveQuizToBackend();
         if (!savedQuiz) {
-          throw new Error('Failed to save quiz');
+          throw new Error("Failed to save quiz");
         }
       } else {
         // Quiz is already saved
         savedQuiz = {
-          quizId: generatedQuiz.quizId || generatedQuiz.id
+          quizId: generatedQuiz.quizId || generatedQuiz.id,
         };
       }
-      
-      const quizDocuments = localStorage.getItem('quizDocuments');
+
+      const quizDocuments = localStorage.getItem("quizDocuments");
       if (quizDocuments) {
         const { moduleId } = JSON.parse(quizDocuments);
-        
+
         // Create a new activity for the module
-        const response = await fetch('/api/store-activity', {
-          method: 'POST',
+        const response = await fetch("/api/store-activity", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             moduleId: moduleId,
             title: generatedQuiz.title,
-            type: 'quiz',
+            type: "quiz",
             quizId: savedQuiz.quizId,
-            completed: false
+            completed: false,
           }),
         });
-        
+
         if (response.ok) {
           // Clear the stored documents
-          localStorage.removeItem('quizDocuments');
+          localStorage.removeItem("quizDocuments");
           // Navigate back to the module
-          navigate('/platform');
+          navigate("/platform");
         } else {
-          throw new Error('Failed to add quiz to module');
+          throw new Error("Failed to add quiz to module");
         }
       } else {
         // If no module ID found, just redirect to platform
-        navigate('/platform');
+        navigate("/platform");
       }
     } catch (error) {
-      console.error('Error adding quiz to module:', error);
+      console.error("Error adding quiz to module:", error);
       // You may want to show an error message to the user here
     } finally {
       setIsAddingToModule(false);
@@ -196,25 +201,25 @@ const QuizOutput = () => {
   const handleDeleteQuiz = async () => {
     try {
       const response = await fetch(`/api/quizzes/${generatedQuiz.quizId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
-      
+
       if (response.ok) {
         // Navigate back to platform after successful deletion
-        navigate('/platform');
+        navigate("/platform");
       } else {
-        console.error('Error deleting quiz:', await response.text());
+        console.error("Error deleting quiz:", await response.text());
       }
     } catch (error) {
-      console.error('Error deleting quiz:', error);
+      console.error("Error deleting quiz:", error);
     }
   };
 
   // Update buttons based on quiz already being saved
   const isSavedQuiz = !!generatedQuiz.quizId || !!generatedQuiz.id;
-  
+
   // Check if we're coming from a module (for adding to module)
-  const isFromModule = !!localStorage.getItem('quizDocuments');
+  const isFromModule = !!localStorage.getItem("quizDocuments");
 
   return (
     <div className="mt-4 p-4 bg-light">
@@ -229,7 +234,7 @@ const QuizOutput = () => {
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
               autoFocus
-              placeholder="Enter quiz title"
+              placeholder="Indtast quiz titel"
               style={{ width: "100%" }}
             />
           ) : (
@@ -237,8 +242,8 @@ const QuizOutput = () => {
               className="mb-0 editable-title quiz-output-title"
               onClick={handleTitleClick}
             >
-              {generatedQuiz.title || "Click to add title"}
-              <span className="editable-title-hint">Click to edit</span>
+              {generatedQuiz.title || "Klik for at tilføje titel"}
+              <span className="editable-title-hint">Klik for at redigere</span>
             </h2>
           )}
 
@@ -254,10 +259,10 @@ const QuizOutput = () => {
             className="me-md-2 mb-2 mb-md-0"
             onClick={startEditing}
           >
-            <BsPencilSquare className="me-1" /> Edit Quiz
+            <BsPencilSquare className="me-1" /> Rediger Quiz
           </Button>
           <Button variant="outline-secondary" size="sm" onClick={resetForm}>
-            Create New Quiz
+            Opret Ny Quiz
           </Button>
         </div>
       </div>
@@ -267,16 +272,16 @@ const QuizOutput = () => {
       <div className="mt-4 d-flex justify-content-end gap-2">
         {/* Check if quiz is being viewed from a saved state (has quizId) */}
         {isSavedQuiz && (
-          <Button 
-            variant="outline-danger" 
+          <Button
+            variant="outline-danger"
             onClick={() => setShowDeleteConfirm(true)}
           >
-            Delete Quiz
+            Slet Quiz
           </Button>
         )}
-        
-        <Button variant="outline-secondary">Download as PDF</Button>
-        
+
+        <Button variant="outline-secondary">Download som PDF</Button>
+
         {/* Streamlined save buttons logic */}
         {isFromModule ? (
           // When coming from a module, just show a single button
@@ -295,7 +300,7 @@ const QuizOutput = () => {
                   aria-hidden="true"
                   className="me-2"
                 />
-                Saving...
+                Gemmer...
               </>
             ) : isAddingToModule ? (
               <>
@@ -307,13 +312,13 @@ const QuizOutput = () => {
                   aria-hidden="true"
                   className="me-2"
                 />
-                Adding to Module...
+                Tilføjer til Modul...
               </>
             ) : saveSuccess && !isSavedQuiz ? (
               // Show Add to Module after saving
               <>
                 <BsPlus className="me-2" />
-                Add to Module
+                Tilføj til Modul
               </>
             ) : (
               // Initial state or when adding a new quiz
@@ -321,10 +326,10 @@ const QuizOutput = () => {
                 {isSavedQuiz ? (
                   <>
                     <BsPlus className="me-2" />
-                    Add to Module
+                    Tilføj til Modul
                   </>
                 ) : (
-                  "Save Quiz"
+                  "Gem Quiz"
                 )}
               </>
             )}
@@ -359,17 +364,24 @@ const QuizOutput = () => {
           </Button>
         )}
       </div>
-      
+
       {/* Delete confirmation modal */}
-      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)}>
+      <Modal
+        show={showDeleteConfirm}
+        onHide={() => setShowDeleteConfirm(false)}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Delete Quiz</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete this quiz? This action cannot be undone.
+          Are you sure you want to delete this quiz? This action cannot be
+          undone.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteConfirm(false)}
+          >
             Cancel
           </Button>
           <Button variant="danger" onClick={handleDeleteQuiz}>

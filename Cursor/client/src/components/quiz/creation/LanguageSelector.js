@@ -6,14 +6,14 @@ const LanguageSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
   const languages = [
-    { value: "danish", label: "Danish (Dansk)" },
-    { value: "english", label: "English" },
+    { value: "danish", label: "Dansk" },
+    { value: "english", label: "Engelsk" },
   ];
 
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Output Language</Form.Label>
+        <Form.Label className="fw-bold">Output Sprog</Form.Label>
         <div className="d-flex gap-3">
           {languages.map((lang) => (
             <Form.Check
@@ -29,7 +29,7 @@ const LanguageSelector = () => {
           ))}
         </div>
         <Form.Text className="text-muted">
-          Select the language in which the quiz questions should be generated.
+          Vælg det sprog, som quizspørgsmålene skal genereres på.
         </Form.Text>
       </Form.Group>
     </div>
