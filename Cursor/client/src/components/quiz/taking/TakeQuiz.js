@@ -33,6 +33,9 @@ const TakeQuiz = () => {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [activityId, setActivityId] = useState(null);
+  const [moduleId, setModuleId] = useState(null);
+  const [alreadyMarkedComplete, setAlreadyMarkedComplete] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -42,6 +45,14 @@ const TakeQuiz = () => {
         setQuiz(data);
         // Initialize answers array with nulls for each question
         setAnswers(new Array(data.questions.length).fill(null));
+        
+        // Get activity and module info from URL search params to mark as completed later
+        const urlParams = new URLSearchParams(window.location.search);
+        const actId = urlParams.get('activityId');
+        const modId = urlParams.get('moduleId');
+        
+        if (actId) setActivityId(actId);
+        if (modId) setModuleId(modId);
       } catch (err) {
         console.error("Error fetching quiz:", err);
         setError("Failed to load quiz. Please try again later.");
@@ -52,6 +63,35 @@ const TakeQuiz = () => {
 
     fetchQuiz();
   }, [quizId]);
+
+  useEffect(() => {
+    // Mark activity as completed when quiz is finished
+    const markActivityCompleted = async () => {
+      if (quizCompleted && activityId && moduleId && !alreadyMarkedComplete) {
+        try {
+          const response = await fetch('/api/complete-activity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activityId: activityId,
+              moduleId: moduleId,
+              quizScore: Math.round((score / quiz.questions.length) * 100)
+            }),
+          });
+          
+          if (response.ok) {
+            setAlreadyMarkedComplete(true);
+          }
+        } catch (error) {
+          console.error('Error marking quiz as completed:', error);
+        }
+      }
+    };
+    
+    markActivityCompleted();
+  }, [quizCompleted, activityId, moduleId, alreadyMarkedComplete, score, quiz]);
 
   const handleAnswerSelect = (answer) => {
     if (showAnswer) return; // Prevent changing answer after submission
@@ -265,18 +305,11 @@ const TakeQuiz = () => {
             <Button
               variant="outline-secondary"
               size="lg"
-              onClick={() => navigate("/saved-quizzes")}
+              onClick={() => navigate("/platform")}
             >
               <BsArrowLeft className="me-2" />
-              Back to Quizzes
+              Back to Learning Platform
             </Button>
-
-            <Link to="/">
-              <Button variant="outline-secondary" size="lg" className="w-100">
-                <BsHouseDoor className="me-2" />
-                Return to Home
-              </Button>
-            </Link>
           </div>
         </Card.Body>
       </Card>
@@ -304,9 +337,12 @@ const TakeQuiz = () => {
           <Alert.Heading>Error</Alert.Heading>
           <p>{error}</p>
           <div className="d-flex justify-content-end">
-            <Link to="/saved-quizzes">
-              <Button variant="outline-danger">Back to Quizzes</Button>
-            </Link>
+            <Button 
+              variant="outline-danger"
+              onClick={() => navigate("/platform")}
+            >
+              Back to Learning Platform
+            </Button>
           </div>
         </Alert>
       </Container>
@@ -320,9 +356,12 @@ const TakeQuiz = () => {
           <Alert.Heading>Quiz Not Found</Alert.Heading>
           <p>The quiz you're looking for could not be found.</p>
           <div className="d-flex justify-content-end">
-            <Link to="/saved-quizzes">
-              <Button variant="outline-warning">Back to Quizzes</Button>
-            </Link>
+            <Button 
+              variant="outline-warning"
+              onClick={() => navigate("/platform")}
+            >
+              Back to Learning Platform
+            </Button>
           </div>
         </Alert>
       </Container>
@@ -334,11 +373,13 @@ const TakeQuiz = () => {
       {/* Quiz Header */}
       <div className="mb-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <Link to="/saved-quizzes">
-            <Button variant="link" className="text-decoration-none ps-0">
-              <BsArrowLeft className="me-2" /> Back to Quizzes
-            </Button>
-          </Link>
+          <Button 
+            variant="link" 
+            className="text-decoration-none ps-0"
+            onClick={() => navigate("/platform")}
+          >
+            <BsArrowLeft className="me-2" /> Back to Learning Platform
+          </Button>
           {!quizCompleted && (
             <Badge bg="primary" className="fs-6 px-3 py-2">
               {currentQuestionIndex + 1} / {quiz.questions.length}

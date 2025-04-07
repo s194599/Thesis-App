@@ -312,5 +312,107 @@
     "title": "Quiz",
     "timestamp": "2025-04-03T08:28:02.888Z",
     "id": "quiz_1743668882"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Landscapes and nature",
+        "id": "q1",
+        "options": [
+          "Love and romantic relationships",
+          "Landscapes and nature",
+          "Supernatural and fantasy elements",
+          "Politics and social issues"
+        ],
+        "question": "What is Romanticism primarily about, according to the given content?"
+      },
+      {
+        "correctAnswer": "Politics and social issues",
+        "id": "q2",
+        "options": [
+          "Politics and social issues",
+          "Landscapes and nature",
+          "Love and romantic relationships",
+          "Supernatural and fantasy elements"
+        ],
+        "question": "If Romantic art occasionally features love as a subject, what is it NOT primarily about?"
+      }
+    ],
+    "title": "Quiz",
+    "id": "quiz_1744015042",
+    "timestamp": "2025-04-07T08:37:22.669Z"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "An artistic, literary, or musical movement that started in Europe towards the end of the 18th century.",
+        "id": "q1",
+        "options": [
+          "A period characterized by love and romance.",
+          "An artistic, literary, or musical movement that started in Europe towards the end of the 18th century.",
+          "A style focused on practicality and simplicity.",
+          "An era known for its scientific advancements."
+        ],
+        "question": "What best describes Romanticism?"
+      },
+      {
+        "correctAnswer": "As a way to express deep emotions and passions.",
+        "id": "q2",
+        "options": [
+          "To reflect the true essence of Romanticism.",
+          "Because it is the opposite of what Romanticism stands for.",
+          "As a way to express deep emotions and passions.",
+          "Due to its popularity during this period."
+        ],
+        "question": "Why might love be a subject in Romantic art?"
+      }
+    ],
+    "title": "Quiz",
+    "timestamp": "2025-04-07T08:59:33.447Z",
+    "id": "quiz_1744016373"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "The celebration of reason and rationality",
+        "id": "q1",
+        "options": [
+          "A period focusing on love and romance",
+          "An era that emphasizes nature and emotion",
+          "The celebration of reason and rationality",
+          "An art movement characterized by realism"
+        ],
+        "question": "What best describes Romanticism?"
+      },
+      {
+        "correctAnswer": "Popular romantic refers to love, while Artistic romantic focuses on nature and emotion",
+        "id": "q2",
+        "options": [
+          "They are essentially the same thing",
+          "Popular romantic refers to love, while Artistic romantic focuses on nature and emotion",
+          "Popular romantic is about emotion, while Artistic romantic is about realism",
+          "Popular romantic is about nature, while Artistic romantic is about reason and rationality"
+        ],
+        "question": "How is the popular notion of \"romantic\" different from Romanticism in art?"
+      },
+      {
+        "id": "q1744016554103",
+        "question": "AI Generated Question: What is the main function of DNA?",
+        "options": [
+          "Store genetic information",
+          "Produce energy",
+          "Break down nutrients",
+          "Transport oxygen"
+        ],
+        "correctAnswer": "Store genetic information",
+        "explanation": "DNA (deoxyribonucleic acid) stores genetic information in the form of genes."
+      }
+    ],
+    "title": "Quiz",
+    "timestamp": "2025-04-07T09:02:40.851Z",
+    "id": "quiz_1744016560"
   }
 ]

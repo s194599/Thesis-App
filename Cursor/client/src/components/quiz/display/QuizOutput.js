@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Card, Button, Form, Spinner } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
-import { BsPencilSquare, BsCheckCircle, BsTypeH1 } from "react-icons/bs";
+import { BsPencilSquare, BsCheckCircle, BsTypeH1, BsPlus } from "react-icons/bs";
 import { QuizEditor } from "../management";
+import { useNavigate } from "react-router-dom";
 
 const QuizOutput = () => {
+  const navigate = useNavigate();
   const {
     generatedQuiz,
     resetForm,
@@ -18,6 +20,7 @@ const QuizOutput = () => {
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
+  const [isAddingToModule, setIsAddingToModule] = useState(false);
 
   // If in editing mode, show the QuizEditor component
   if (isEditing) {
@@ -128,6 +131,54 @@ const QuizOutput = () => {
     await saveQuizToBackend();
   };
 
+  // Handle the save and add to module action
+  const handleSaveAndAddToModule = async () => {
+    setIsAddingToModule(true);
+    try {
+      // Save the quiz first
+      const savedQuiz = await saveQuizToBackend();
+      
+      if (savedQuiz) {
+        const quizDocuments = localStorage.getItem('quizDocuments');
+        if (quizDocuments) {
+          const { moduleId } = JSON.parse(quizDocuments);
+          
+          // Create a new activity for the module
+          const response = await fetch('/api/store-activity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              moduleId: moduleId,
+              title: generatedQuiz.title,
+              type: 'quiz',
+              quizId: savedQuiz.quizId,
+              completed: false
+            }),
+          });
+          
+          if (response.ok) {
+            // Clear the stored documents
+            localStorage.removeItem('quizDocuments');
+            // Navigate back to the module
+            navigate('/platform');
+          } else {
+            throw new Error('Failed to add quiz to module');
+          }
+        } else {
+          // If no module ID found, just redirect to platform
+          navigate('/platform');
+        }
+      }
+    } catch (error) {
+      console.error('Error adding quiz to module:', error);
+      // You may want to show an error message to the user here
+    } finally {
+      setIsAddingToModule(false);
+    }
+  };
+
   return (
     <div className="mt-4 p-4 bg-light">
       <div className="d-flex justify-content-between align-items-start mb-4">
@@ -181,7 +232,7 @@ const QuizOutput = () => {
         <Button
           variant="outline-success"
           onClick={handleSaveQuiz}
-          disabled={isSaving}
+          disabled={isSaving || isAddingToModule}
         >
           {isSaving ? (
             <>
@@ -202,6 +253,30 @@ const QuizOutput = () => {
             </>
           ) : (
             "Save Quiz"
+          )}
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSaveAndAddToModule}
+          disabled={isSaving || isAddingToModule}
+        >
+          {isAddingToModule ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="me-2"
+              />
+              Adding to Module...
+            </>
+          ) : (
+            <>
+              <BsPlus className="me-2" />
+              Save & Add to Module
+            </>
           )}
         </Button>
       </div>

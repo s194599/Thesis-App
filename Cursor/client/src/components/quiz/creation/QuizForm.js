@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
+import { useNavigate } from "react-router-dom";
 import {
   InputTypeSelector,
   QuizInputSection,
@@ -20,6 +21,7 @@ import { Link } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
 const QuizForm = () => {
+  const navigate = useNavigate();
   const {
     formData,
     loading,
@@ -30,12 +32,41 @@ const QuizForm = () => {
     generatedQuiz,
     updateFormData,
     loadSampleQuiz,
+    saveQuizToBackend
   } = useQuizContext();
+
+  // Effect to load pre-attached documents from module
+  useEffect(() => {
+    const quizDocuments = localStorage.getItem('quizDocuments');
+    if (quizDocuments) {
+      try {
+        const { moduleId, documents } = JSON.parse(quizDocuments);
+        if (documents && documents.length > 0) {
+          // Set input type to document
+          updateFormData('inputType', 'document');
+          
+          // Convert document URLs to File objects
+          Promise.all(documents.map(async doc => {
+            const response = await fetch(doc.url);
+            const blob = await response.blob();
+            return new File([blob], doc.title, { type: doc.type === 'pdf' ? 'application/pdf' : 'application/msword' });
+          }))
+          .then(files => {
+            updateFormData('files', files);
+          })
+          .catch(error => {
+            console.error('Error loading module documents:', error);
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing quiz documents:', error);
+      }
+    }
+  }, []);
 
   // Effect to scroll to loading spinner when loading state changes to true
   useEffect(() => {
     if (loading) {
-      // Small delay to ensure the loading spinner is rendered
       setTimeout(() => {
         const loadingElement = document.getElementById(
           "loading-spinner-section"
@@ -110,7 +141,6 @@ const QuizForm = () => {
           try {
             const urlData = await fetchUrlContent(formData.url);
             contentToProcess = urlData.content;
-            console.log("contentToProcess", contentToProcess);
           } catch (urlError) {
             throw new Error(
               `Failed to fetch webpage content: ${urlError.message}`
@@ -130,12 +160,6 @@ const QuizForm = () => {
                 );
               }
             } catch (fileError) {
-              // Check if this is a transcription error
-              if (fileError.message.includes("Video transcription failed")) {
-                throw new Error(
-                  `${fileError.message}. Please check that your video file is valid and try again.`
-                );
-              }
               throw new Error(
                 `Failed to process uploaded files: ${fileError.message}`
               );
@@ -171,7 +195,6 @@ const QuizForm = () => {
 
       // Check if the request was canceled
       if (generatedQuizData && generatedQuizData.canceled) {
-        // Request was canceled, do nothing further
         return;
       }
 
@@ -194,99 +217,131 @@ const QuizForm = () => {
   };
 
   return (
-    <div>
-      {/* Show quiz output if generated, otherwise show form */}
-      {generatedQuiz ? (
-        <QuizOutput />
-      ) : (
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          {/* Display error message if any */}
-          {error && (
-            <Alert variant="danger" className="mb-4">
-              {error}
-            </Alert>
-          )}
+    <div className="container mt-4">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
+          <div className="card shadow">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="h3 mb-0">Create Quiz</h1>
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  as={Link}
+                  to="/platform"
+                  className="d-flex align-items-center"
+                >
+                  <BsArrowLeft className="me-1" /> Back to Module
+                </Button>
+              </div>
 
-          {/* Input type selection */}
-          <InputTypeSelector />
+              {/* Show quiz output if generated, otherwise show form */}
+              {generatedQuiz ? (
+                <QuizOutput />
+              ) : (
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                  {/* Quiz Title */}
+                  <Form.Group className="mb-4">
+                    <Form.Label className="fw-bold">Quiz Title</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={formData.quizTitle}
+                      onChange={(e) => updateFormData("quizTitle", e.target.value)}
+                      placeholder="Enter a title for your quiz"
+                    />
+                  </Form.Group>
 
-          {/* Quiz input section (changes based on selected input type) */}
-          <QuizInputSection />
+                  {/* Display error message if any */}
+                  {error && (
+                    <Alert variant="danger" className="mb-4">
+                      {error}
+                    </Alert>
+                  )}
 
-          {/* Question type selection */}
-          <QuestionTypeSelector />
+                  {/* Input type selection */}
+                  <InputTypeSelector />
 
-          <hr className="my-4" />
+                  {/* Quiz input section (changes based on selected input type) */}
+                  <QuizInputSection />
 
-          <div className="row">
-            <div className="col-md-4">
-              {/* Student level selection */}
-              <StudentLevelSelector />
+                  {/* Question type selection */}
+                  <QuestionTypeSelector />
+
+                  <hr className="my-4" />
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      {/* Student level selection */}
+                      <StudentLevelSelector />
+                    </div>
+                    <div className="col-md-4">
+                      {/* Number of questions selection */}
+                      <NumQuestionsSelector />
+                    </div>
+                    <div className="col-md-4">
+                      {/* Language selection */}
+                      <LanguageSelector />
+                    </div>
+                  </div>
+
+                  {/* Additional instructions */}
+                  <div className="mb-4">
+                    <Form.Group>
+                      <Form.Label className="fw-bold">
+                        Additional Instructions (Optional)
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        placeholder="Enter any special instructions for quiz generation (e.g., 'Focus on comprehension', 'Include application-based questions')"
+                        value={formData.additionalInstructions}
+                        onChange={(e) =>
+                          updateFormData("additionalInstructions", e.target.value)
+                        }
+                      />
+                    </Form.Group>
+                  </div>
+
+                  {/* Sample Quiz Toggle */}
+                  <div className="mb-4">
+                    <Form.Check
+                      type="switch"
+                      id="sample-quiz-toggle"
+                      label="Use sample quiz (bypass AI generation)"
+                      checked={formData.useSampleQuiz}
+                      onChange={(e) =>
+                        updateFormData("useSampleQuiz", e.target.checked)
+                      }
+                      className="mb-2"
+                    />
+                    <Form.Text className="text-muted">
+                      Toggle this option to quickly test with a sample quiz instead of
+                      using the AI model.
+                    </Form.Text>
+                  </div>
+
+                  {/* Submit button */}
+                  <div className="d-grid gap-2 mt-4">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      type="submit"
+                      disabled={loading || !isFormValid()}
+                    >
+                      {formData.useSampleQuiz
+                        ? "Generate Sample Quiz"
+                        : "Generate Quiz"}
+                    </Button>
+                  </div>
+
+                  {/* Loading spinner */}
+                  <LoadingSpinner loading={loading} />
+                </Form>
+              )}
             </div>
-            <div className="col-md-4">
-              {/* Number of questions selection */}
-              <NumQuestionsSelector />
-            </div>
-            <div className="col-md-4">
-              {/* Language selection */}
-              <LanguageSelector />
-            </div>
           </div>
-
-          {/* Additional instructions */}
-          <div className="mb-4">
-            <Form.Group>
-              <Form.Label className="fw-bold">
-                Additional Instructions (Optional)
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                placeholder="Enter any special instructions for quiz generation (e.g., 'Focus on comprehension', 'Include application-based questions')"
-                value={formData.additionalInstructions}
-                onChange={(e) =>
-                  updateFormData("additionalInstructions", e.target.value)
-                }
-              />
-            </Form.Group>
-          </div>
-
-          {/* Sample Quiz Toggle */}
-          <div className="mb-4">
-            <Form.Check
-              type="switch"
-              id="sample-quiz-toggle"
-              label="Use sample quiz (bypass AI generation)"
-              checked={formData.useSampleQuiz}
-              onChange={(e) =>
-                updateFormData("useSampleQuiz", e.target.checked)
-              }
-              className="mb-2"
-            />
-            <Form.Text className="text-muted">
-              Toggle this option to quickly test with a sample quiz instead of
-              using the AI model.
-            </Form.Text>
-          </div>
-
-          {/* Submit button */}
-          <div className="d-grid gap-2 mt-4">
-            <Button
-              variant="primary"
-              size="lg"
-              type="submit"
-              disabled={loading || !isFormValid()}
-            >
-              {formData.useSampleQuiz
-                ? "Generate Sample Quiz"
-                : "Generate Quiz"}
-            </Button>
-          </div>
-
-          {/* Loading spinner */}
-          <LoadingSpinner loading={loading} />
-        </Form>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

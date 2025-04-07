@@ -22,16 +22,6 @@
   {
     "completed": true,
     "description": "",
-    "id": "activity_1743591471474",
-    "isNew": true,
-    "moduleId": "module-3",
-    "title": "2116.pdf",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/2116_1743591471.pdf"
-  },
-  {
-    "completed": true,
-    "description": "",
     "id": "activity_1743669796635",
     "isNew": true,
     "moduleId": "module-2",
@@ -139,5 +129,40 @@
     "isNew": true,
     "id": "activity_1744011208201",
     "moduleId": "module-6"
+  },
+  {
+    "title": "build a meme Python website (Flask Tutorial for Beginners)",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
+    "file": null,
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1744013630421",
+    "moduleId": "module-2"
+  },
+  {
+    "moduleId": "module-3",
+    "title": "Quiz",
+    "type": "quiz",
+    "quizId": "quiz_1744016560",
+    "completed": false
+  },
+  {
+    "title": "Intro-to-Romanticism.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744016353.pdf",
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1744016353464",
+    "moduleId": "module-3"
+  },
+  {
+    "moduleId": "module-4",
+    "title": "Quiz",
+    "type": "quiz",
+    "quizId": "quiz_1744016373",
+    "completed": false
   }
 ]
