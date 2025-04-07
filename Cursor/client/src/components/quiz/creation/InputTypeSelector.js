@@ -23,6 +23,33 @@ const InputTypeSelector = () => {
           <div className="flex-grow-1">
             <div
               className={`p-3 rounded border ${
+                formData.inputType === "document"
+                  ? "border-primary bg-light"
+                  : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => updateFormData("inputType", "document")}
+            >
+              <Form.Check
+                type="radio"
+                id="input-document"
+                label={
+                  <div className="d-flex align-items-center">
+                    <BsFileEarmarkPdf className="me-2" />
+                    <span>Document</span>
+                  </div>
+                }
+                value="document"
+                checked={formData.inputType === "document"}
+                onChange={handleInputTypeChange}
+                className="mb-0"
+              />
+            </div>
+          </div>
+
+          <div className="flex-grow-1">
+            <div
+              className={`p-3 rounded border ${
                 formData.inputType === "topic" ? "border-primary bg-light" : ""
               }`}
               style={{ cursor: "pointer" }}
@@ -91,33 +118,6 @@ const InputTypeSelector = () => {
                 }
                 value="webpage"
                 checked={formData.inputType === "webpage"}
-                onChange={handleInputTypeChange}
-                className="mb-0"
-              />
-            </div>
-          </div>
-
-          <div className="flex-grow-1">
-            <div
-              className={`p-3 rounded border ${
-                formData.inputType === "document"
-                  ? "border-primary bg-light"
-                  : ""
-              }`}
-              style={{ cursor: "pointer" }}
-              onClick={() => updateFormData("inputType", "document")}
-            >
-              <Form.Check
-                type="radio"
-                id="input-document"
-                label={
-                  <div className="d-flex align-items-center">
-                    <BsFileEarmarkPdf className="me-2" />
-                    <span>Document</span>
-                  </div>
-                }
-                value="document"
-                checked={formData.inputType === "document"}
                 onChange={handleInputTypeChange}
                 className="mb-0"
               />
