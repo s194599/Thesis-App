@@ -67,8 +67,47 @@ const ModuleContent = ({
   // Initialize activities from module when it changes
   useEffect(() => {
     if (module && Array.isArray(module.activities)) {
-      // Just use the activities directly from the module prop
-      setActivities(module.activities);
+      // Create a deep copy to avoid reference issues
+      const moduleCopy = JSON.parse(JSON.stringify(module.activities));
+      
+      // Count and log quizzes for debugging
+      const quizzes = moduleCopy.filter(a => a && a.type === 'quiz');
+      console.log(`Setting ${moduleCopy.length} activities for module ${module.id}, including ${quizzes.length} quizzes`);
+      
+      // If we have existing activities in state, check if we need to merge quiz data
+      if (activities.length > 0) {
+        const existingQuizzes = activities.filter(a => a && a.type === 'quiz');
+        
+        if (existingQuizzes.length > 0 && (existingQuizzes.length !== quizzes.length)) {
+          console.log(`Found mismatch: ${existingQuizzes.length} quizzes in state vs ${quizzes.length} in new data`);
+          
+          // Map to quickly find existing quizzes by ID
+          const existingQuizMap = new Map();
+          existingQuizzes.forEach(quiz => {
+            if (quiz && quiz.id) {
+              existingQuizMap.set(quiz.id, quiz);
+            }
+          });
+          
+          // Check if there are quizzes in state that aren't in the new data
+          const missingQuizzes = [];
+          existingQuizMap.forEach((quiz, id) => {
+            if (!moduleCopy.some(a => a.id === id)) {
+              console.log(`Found quiz only in state (missing in new data): ${quiz.title}`);
+              missingQuizzes.push(quiz);
+            }
+          });
+          
+          // Add any missing quizzes to the module copy
+          if (missingQuizzes.length > 0) {
+            moduleCopy.push(...missingQuizzes);
+            console.log(`Added ${missingQuizzes.length} missing quizzes to the module data`);
+          }
+        }
+      }
+      
+      // Set the activities state with the merged data
+      setActivities(moduleCopy);
       setModuleDescription(module.description || '');
       setEditedTitle(module.title || '');
       setEditedDate(module.date || '');
@@ -95,7 +134,7 @@ const ModuleContent = ({
       setEditedTitle('');
       setEditedDate('');
     }
-  }, [module]);
+  }, [module, userRole]); // Add userRole dependency to ensure re-render when role changes
   
   if (!module) return <div className="p-4">No module selected</div>;
 
@@ -316,12 +355,11 @@ const ModuleContent = ({
         break;
       case 'quiz':
         if (userRole === 'teacher') {
+          // For teachers, always navigate to the preview page if there's a quizId
           if (activity.quizId) {
-            // For existing quizzes, navigate to the quiz preview window
             navigate(`/quiz/preview/${activity.quizId}`);
-          } else {
-            // For generating a new quiz
-            // Store the current module's documents for quiz generation
+    } else {
+            // For generating a new quiz when no quizId exists
             const documents = activities.filter(a => 
               a.type === 'pdf' || a.type === 'word' || a.type === 'doc'
             );
@@ -329,10 +367,10 @@ const ModuleContent = ({
               moduleId: module.id,
               documents
             }));
-            // Navigate to quiz creation
             navigate('/quiz/create');
           }
         }
+        // Note: Student navigation to quiz is handled at the top of this function
         break;
       default:
         console.log('Opening activity:', activity.title);
