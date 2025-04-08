@@ -456,19 +456,33 @@ const ModuleContent = ({
   const handleEditActivity = (e, activity) => {
     e.stopPropagation(); // Prevent triggering the card click
     setEditActivityId(activity.id);
-    setNewActivity({
-      ...activity,
-      file: null // Don't pass the file object when editing
-    });
     
-    // Open the appropriate modal based on activity type
+    // For PDF activities, only set the title and description
     if (activity.type === 'pdf' || activity.type === 'word' || activity.type === 'file') {
-      setShowFileUploadModal(true);
+      setNewActivity({
+        title: activity.title,
+        description: activity.description || '',
+        type: activity.type,
+        url: activity.url,
+        file: null // Don't pass the file object when editing
+      });
+      setShowAddModal(true);
     } else if (activity.type === 'youtube' || activity.type === 'link') {
+      setNewActivity({
+        ...activity,
+        file: null // Don't pass the file object when editing
+      });
       setShowUrlModal(true);
+    } else if (activity.type === 'quiz') {
+      // For quizzes, navigate to the quiz editing page
+      navigate(`/quiz/preview/${activity.quizId}`);
     } else {
       // For other types or legacy activities, use the general edit modal
-    setShowAddModal(true);
+      setNewActivity({
+        ...activity,
+        file: null // Don't pass the file object when editing
+      });
+      setShowAddModal(true);
     }
   };
   
@@ -1363,12 +1377,6 @@ const ModuleContent = ({
                           onClick={(e) => handleImageClick(e, activity.url, activity.title)}
                         />
                       </div>
-                    )}
-                    
-                    {activity.isNew && (
-                      <Badge bg="danger" className="position-absolute top-0 end-0 m-2">
-                        Ny
-                      </Badge>
                     )}
                   </Card.Body>
                 </Card>
