@@ -7,7 +7,13 @@ import {
   Dropdown,
   Alert,
 } from "react-bootstrap";
-import { BsArrowLeft, BsPlusCircle, BsTextLeft, BsRobot, BsCheckCircle } from "react-icons/bs";
+import {
+  BsArrowLeft,
+  BsPlusCircle,
+  BsTextLeft,
+  BsRobot,
+  BsCheckCircle,
+} from "react-icons/bs";
 import { useQuizContext } from "../../../context/QuizContext";
 import { QuizQuestion } from "../display";
 
@@ -25,14 +31,14 @@ const QuizEditor = () => {
     generatedQuiz,
     loadSampleQuiz,
     isSaving,
-    saveSuccess
+    saveSuccess,
   } = useQuizContext();
 
   // Local states for quiz title and description
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  // const [description, setDescription] = useState("");
   const [isTitleEditing, setIsTitleEditing] = useState(false);
-  const [isDescriptionEditing, setIsDescriptionEditing] = useState(false);
+  // const [isDescriptionEditing, setIsDescriptionEditing] = useState(false);
 
   // If there's no quiz data and not editing, load the sample quiz
   useEffect(() => {
@@ -49,12 +55,12 @@ const QuizEditor = () => {
   }, [isEditing, generatedQuiz, startEditing]);
 
   // Update local state when editingQuiz changes
-  useEffect(() => {
-    if (editingQuiz) {
-      setTitle(editingQuiz.title || "");
-      setDescription(editingQuiz.description || "");
-    }
-  }, [editingQuiz]);
+  // useEffect(() => {
+  //   if (editingQuiz) {
+  //     setTitle(editingQuiz.title || "");
+  //     setDescription(editingQuiz.description || "");
+  //   }
+  // }, [editingQuiz]);
 
   // Save title changes
   const saveTitle = () => {
@@ -64,13 +70,13 @@ const QuizEditor = () => {
     }
   };
 
-  // Save description changes
-  const saveDescription = () => {
-    if (editingQuiz) {
-      editingQuiz.description = description;
-      setIsDescriptionEditing(false);
-    }
-  };
+  // // Save description changes
+  // const saveDescription = () => {
+  //   if (editingQuiz) {
+  //     editingQuiz.description = description;
+  //     setIsDescriptionEditing(false);
+  //   }
+  // };
 
   // Handle save button click
   const handleSaveClick = async () => {
@@ -103,11 +109,7 @@ const QuizEditor = () => {
         >
           <BsArrowLeft className="me-1" /> Tilbage
         </Button>
-        <Button 
-          variant="success" 
-          onClick={handleSaveClick} 
-          disabled={isSaving}
-        >
+        <Button variant="success" onClick={handleSaveClick} disabled={isSaving}>
           {isSaving ? (
             <>
               <Spinner
@@ -189,7 +191,7 @@ const QuizEditor = () => {
         )}
       </div>
 
-      {/* Quiz Description */}
+      {/* Quiz Description
       <div className="mb-4">
         {isDescriptionEditing ? (
           <div>
@@ -241,11 +243,11 @@ const QuizEditor = () => {
             </Button>
           </p>
         )}
-      </div>
+      </div> */}
 
       {/* Questions */}
       <div className="quiz-questions mb-4">
-        <h5 className="mb-3">Spørgsmål</h5>
+        {/* <h5 className="mb-3">Spørgsmål</h5> */}
         {editingQuiz.questions.map((question, index) => (
           <QuizQuestion key={question.id} question={question} index={index} />
         ))}
