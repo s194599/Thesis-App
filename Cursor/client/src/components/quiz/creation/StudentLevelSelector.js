@@ -6,10 +6,9 @@ const StudentLevelSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
   const studentLevels = [
-    { value: "elementary", label: "Folkeskole (1-5. klasse)" },
-    { value: "middleSchool", label: "Folkeskole (6-9. klasse)" },
-    { value: "highSchool", label: "Gymnasium" },
-    { value: "university", label: "Universitet" },
+    { value: "1", label: "1.g" },
+    { value: "2", label: "2.g" },
+    { value: "3", label: "3.g" },
   ];
 
   return (
