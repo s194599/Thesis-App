@@ -102,19 +102,23 @@ const TakeQuiz = () => {
     const markActivityCompleted = async () => {
       if (quizCompleted && moduleId && !alreadyMarkedComplete && quiz) {
         try {
-          console.log(`Marking quiz ${quizId} as completed for module ${moduleId} with activityId ${activityId || 'N/A'}`);
-          
+          console.log(
+            `Marking quiz ${quizId} as completed for module ${moduleId} with activityId ${
+              activityId || "N/A"
+            }`
+          );
+
           const requestData = {
             moduleId: moduleId,
             quizScore: Math.round((score / randomizedQuestions.length) * 100),
-            quizId: quizId // Always include quizId for better identification
+            quizId: quizId, // Always include quizId for better identification
           };
-          
+
           // Include activityId if available
           if (activityId) {
             requestData.activityId = activityId;
           }
-          
+
           const response = await fetch("/api/complete-activity", {
             method: "POST",
             headers: {
@@ -124,12 +128,15 @@ const TakeQuiz = () => {
           });
 
           const responseData = await response.json();
-          
+
           if (response.ok) {
             console.log("Quiz marked as completed successfully:", responseData);
             setAlreadyMarkedComplete(true);
           } else {
-            console.error("Failed to mark quiz as completed:", responseData.message);
+            console.error(
+              "Failed to mark quiz as completed:",
+              responseData.message
+            );
           }
         } catch (error) {
           console.error("Error marking quiz as completed:", error);
@@ -146,7 +153,7 @@ const TakeQuiz = () => {
     alreadyMarkedComplete,
     score,
     randomizedQuestions,
-    quiz
+    quiz,
   ]);
 
   const handleAnswerSelect = (answer) => {
@@ -281,12 +288,6 @@ const TakeQuiz = () => {
             </Button>
           ) : (
             <div>
-              {currentQuestion.explanation && (
-                <Alert variant="info" className="mb-3">
-                  <strong>Forklaring:</strong> {currentQuestion.explanation}
-                </Alert>
-              )}
-
               <Button
                 variant="primary"
                 size="lg"
@@ -458,7 +459,7 @@ const TakeQuiz = () => {
         </div>
 
         <h1 className="mb-2">{quiz.title || "Untitled Quiz"}</h1>
-        {quiz.description && <p className="text-muted">{quiz.description}</p>}
+        {/* {quiz.description && <p className="text-muted">{quiz.description}</p>} */}
 
         {!quizCompleted && (
           <ProgressBar

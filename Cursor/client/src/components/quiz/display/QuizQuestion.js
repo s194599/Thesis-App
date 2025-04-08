@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Form, Button, InputGroup, Badge } from "react-bootstrap";
-import { BsPencil, BsTrash, BsCheck, BsX } from "react-icons/bs";
+import { BsPencil, BsTrash, BsCheck, BsX, BsPlus } from "react-icons/bs";
 import { useQuizContext } from "../../../context/QuizContext";
 
-const QuizQuestion = ({ question, index }) => {
+const QuizQuestion = ({ question, index, onDelete }) => {
   const { updateQuestion, updateOption, updateCorrectAnswer, deleteQuestion } =
     useQuizContext();
 
@@ -17,6 +17,12 @@ const QuizQuestion = ({ question, index }) => {
   const [options, setOptions] = useState([...question.options]);
   const [correctAnswer, setCorrectAnswer] = useState(question.correctAnswer);
   const [explanation, setExplanation] = useState(question.explanation || "");
+
+  useEffect(() => {
+    setQuestionText(question.question);
+    setOptions(question.options);
+    setCorrectAnswer(question.correctAnswer);
+  }, [question]);
 
   // Get letter representation for options
   const getLetterForIndex = (optionIndex) => {
@@ -82,244 +88,136 @@ const QuizQuestion = ({ question, index }) => {
     }
   };
 
-  return (
-    <div className="bg-white rounded shadow-sm mb-4 overflow-hidden">
-      {/* Question header with number */}
-      <div className="d-flex justify-content-between align-items-center py-2 px-3 bg-light border-bottom">
-        <div className="d-flex align-items-center">
-          <div
-            className="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3"
-            style={{ width: "32px", height: "32px", minWidth: "32px" }}
-          >
-            <span className="text-white fw-bold">{index + 1}</span>
-          </div>
-          {!isEditingQuestion ? (
-            <div
-              className="fw-normal"
-              style={{ cursor: "pointer" }}
-              onClick={() => setIsEditingQuestion(true)}
-            >
-              {question.question}
-            </div>
-          ) : null}
-        </div>
-        <Button
-          variant="outline-danger"
-          size="sm"
-          onClick={() => deleteQuestion(question.id)}
-        >
-          <BsTrash /> Slet
-        </Button>
-      </div>
+  const handleSave = () => {
+    updateQuestion(question.id, {
+      question: questionText,
+      options: options,
+      correctAnswer: correctAnswer,
+    });
+    setIsEditingQuestion(false);
+  };
 
-      <div className="p-3">
-        {/* Question Text Editing */}
-        {isEditingQuestion && (
-          <div className="mb-3">
-            <Form.Control
-              as="textarea"
-              rows={2}
-              value={questionText}
-              onChange={(e) => setQuestionText(e.target.value)}
-              autoFocus
-            />
-            <div className="mt-2 d-flex justify-content-end">
-              <Button
-                variant="outline-secondary"
-                size="sm"
-                className="me-2"
-                onClick={() => {
-                  setQuestionText(question.question);
-                  setIsEditingQuestion(false);
-                }}
-              >
-                <BsX /> Annuller
-              </Button>
+  const handleCancel = () => {
+    setQuestionText(question.question);
+    setOptions(question.options);
+    setCorrectAnswer(question.correctAnswer);
+    setIsEditingQuestion(false);
+  };
+
+  return (
+    <Card className="mb-4">
+      <Card.Body>
+        <div className="d-flex justify-content-between align-items-start mb-3">
+          <h5 className="mb-0">Spørgsmål {index + 1}</h5>
+          <div>
+            {!isEditingQuestion ? (
               <Button
                 variant="outline-primary"
                 size="sm"
-                onClick={saveQuestionText}
+                className="me-2"
+                onClick={() => setIsEditingQuestion(true)}
               >
-                <BsCheck /> Gem
+                Rediger
               </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Answer Options */}
-        <div className={`${isEditingQuestion ? "mt-3" : "mt-0"}`}>
-          <div className="d-flex justify-content-between mb-2">
-            <h6>Svar Muligheder</h6>
-            {!isEditingOptions && (
-              <Button
-                variant="link"
-                size="sm"
-                className="p-0"
-                onClick={() => setIsEditingOptions(true)}
-              >
-                <BsPencil /> Rediger Muligheder
-              </Button>
-            )}
-          </div>
-
-          {isEditingOptions ? (
-            <div>
-              {options.map((option, optionIndex) => (
-                <InputGroup className="mb-2" key={optionIndex}>
-                  <InputGroup.Text className="bg-light">
-                    {getLetterForIndex(optionIndex)}
-                  </InputGroup.Text>
-                  <Form.Control
-                    value={option}
-                    onChange={(e) =>
-                      handleOptionChange(optionIndex, e.target.value)
-                    }
-                  />
-                  <InputGroup.Text className="bg-white">
-                    <Form.Check
-                      type="radio"
-                      name={`correct-answer-${question.id}`}
-                      checked={option === correctAnswer}
-                      onChange={() => setCorrectAnswer(option)}
-                      label="Korrekt"
-                    />
-                  </InputGroup.Text>
-                  <Button
-                    variant="outline-danger"
-                    onClick={() => removeOption(optionIndex)}
-                    disabled={options.length <= 2}
-                  >
-                    <BsTrash />
-                  </Button>
-                </InputGroup>
-              ))}
-
-              <div className="mt-2 d-flex justify-content-between">
-                <Button
-                  variant="outline-secondary"
-                  size="sm"
-                  onClick={addOption}
-                >
-                  + Tilføj Mulighed
-                </Button>
-
-                <div>
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => {
-                      setOptions([...question.options]);
-                      setCorrectAnswer(question.correctAnswer);
-                      setIsEditingOptions(false);
-                    }}
-                  >
-                    <BsX /> Annuller
-                  </Button>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={saveOptions}
-                  >
-                    <BsCheck /> Gem
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div>
-              {question.options.map((option, optionIndex) => {
-                const letter = getLetterForIndex(optionIndex);
-                const isCorrect = option === question.correctAnswer;
-
-                return (
-                  <div
-                    key={optionIndex}
-                    className={`d-flex align-items-center mb-2 py-2 px-3 rounded ${
-                      isCorrect ? "bg-light" : ""
-                    }`}
-                  >
-                    <div
-                      className={`rounded-circle d-flex justify-content-center align-items-center me-3 ${
-                        isCorrect ? "bg-success" : "bg-light border"
-                      }`}
-                      style={{
-                        width: "28px",
-                        height: "28px",
-                        minWidth: "28px",
-                      }}
-                    >
-                      <span
-                        className={isCorrect ? "text-white" : "text-secondary"}
-                        style={{ fontSize: "14px" }}
-                      >
-                        {letter}
-                      </span>
-                    </div>
-                    <div>{option}</div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Explanation section */}
-        <div className="mt-4">
-          <div className="d-flex justify-content-between mb-2">
-            <h6>Forklaring</h6>
-            {!isEditingExplanation && (
-              <Button
-                variant="link"
-                size="sm"
-                className="p-0"
-                onClick={() => setIsEditingExplanation(true)}
-              >
-                <BsPencil /> Rediger
-              </Button>
-            )}
-          </div>
-
-          {isEditingExplanation ? (
-            <div>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={explanation}
-                onChange={(e) => setExplanation(e.target.value)}
-                placeholder="Provide an explanation for the correct answer"
-              />
-              <div className="mt-2 d-flex justify-content-end">
+            ) : (
+              <div>
                 <Button
                   variant="outline-secondary"
                   size="sm"
                   className="me-2"
-                  onClick={() => {
-                    setExplanation(question.explanation || "");
-                    setIsEditingExplanation(false);
-                  }}
+                  onClick={handleCancel}
                 >
                   <BsX /> Annuller
                 </Button>
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={saveExplanation}
+                  onClick={handleSave}
                 >
                   <BsCheck /> Gem
                 </Button>
               </div>
-            </div>
-          ) : (
-            <div className="bg-light p-3 rounded">
-              <p className="mb-0">
-                {explanation || "No explanation provided."}
-              </p>
-            </div>
-          )}
+            )}
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => deleteQuestion(question.id)}
+            >
+              <BsTrash />
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+
+        {isEditingQuestion ? (
+          <div>
+            <Form.Group className="mb-3">
+              <Form.Label>Spørgsmålstekst</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                value={questionText}
+                onChange={(e) => setQuestionText(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Svar muligheder</Form.Label>
+              {options.map((option, index) => (
+                <div key={index} className="d-flex align-items-center mb-2">
+                  <Form.Check
+                    type="radio"
+                    name="correctAnswer"
+                    id={`option-${index}`}
+                    checked={correctAnswer === option}
+                    onChange={() => setCorrectAnswer(option)}
+                    className="me-2"
+                  />
+                  <Form.Control
+                    type="text"
+                    value={option}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                    className="me-2"
+                  />
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => removeOption(index)}
+                  >
+                    <BsX />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="outline-primary"
+                size="sm"
+                onClick={addOption}
+                className="mt-2"
+              >
+                <BsPlus /> Tilføj mulighed
+              </Button>
+            </Form.Group>
+          </div>
+        ) : (
+          <div>
+            <p className="mb-3">{questionText}</p>
+            <div className="d-grid gap-2">
+              {options.map((option, index) => (
+                <Button
+                  key={index}
+                  variant={
+                    correctAnswer === option ? "success" : "outline-secondary"
+                  }
+                  className="text-start"
+                  disabled
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card.Body>
+    </Card>
   );
 };
 
