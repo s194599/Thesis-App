@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,7 +18,7 @@ import {
   fetchUrlContent,
 } from "../../../services/api";
 import { Link } from "react-router-dom";
-import { BsArrowLeft } from "react-icons/bs";
+import { BsArrowLeft, BsTrophyFill } from "react-icons/bs";
 
 const QuizForm = () => {
   const navigate = useNavigate();
@@ -34,6 +34,28 @@ const QuizForm = () => {
     loadSampleQuiz,
     saveQuizToBackend,
   } = useQuizContext();
+
+  // Reset form state when component mounts
+  useEffect(() => {
+    // Reset all form fields to their initial values
+    updateFormData("quizTitle", "");
+    updateFormData("inputType", "topic");
+    updateFormData("topic", "");
+    updateFormData("text", "");
+    updateFormData("url", "");
+    updateFormData("files", null);
+    updateFormData("questionType", "multipleChoice");
+    updateFormData("studentLevel", "");
+    updateFormData("numQuestions", 5);
+    updateFormData("language", "danish");
+    updateFormData("additionalInstructions", "");
+    updateFormData("useSampleQuiz", false);
+
+    // Reset other state
+    setGeneratedQuiz(null);
+    setLoading(false);
+    setError(null);
+  }, []);
 
   // Effect to load pre-attached documents from module
   useEffect(() => {
