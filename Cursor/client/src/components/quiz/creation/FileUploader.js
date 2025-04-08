@@ -104,7 +104,9 @@ const FileUploader = () => {
       {formData.files && formData.files.length > 0 && (
         <div className="mt-3">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h6 className="mb-0">Valgte Filer ({formData.files.length})</h6>
+            <h6 className="mb-0 fw-bold">
+              Valgte Filer ({formData.files.length})
+            </h6>
             <span className="text-muted small">
               Samlet størrelse: {totalFileSize.toFixed(2)} MB
             </span>

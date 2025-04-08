@@ -62,12 +62,12 @@ const QuizInputSection = () => {
       case "document":
         return (
           <Form.Group className="mb-3">
-            <Form.Label>Upload Dokument</Form.Label>
+            <Form.Label className="fw-bold">Upload Dokumenter</Form.Label>
             <FileUploader />
-            <Form.Text className="text-muted">
+            {/* <Form.Text className="text-muted">
               Upload et dokument (PDF, DOC, DOCX, TXT) for at generere
               quizspørgsmål.
-            </Form.Text>
+            </Form.Text> */}
           </Form.Group>
         );
 
@@ -78,7 +78,7 @@ const QuizInputSection = () => {
 
   return (
     <div className="mb-4">
-      <h5>Quiz Indtastning</h5>
+      {/* <h5>Quiz Indtastning</h5> */}
       {renderInputSection()}
     </div>
   );
