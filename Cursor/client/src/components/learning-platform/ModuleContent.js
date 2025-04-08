@@ -478,11 +478,11 @@ const ModuleContent = ({
       navigate(`/quiz/preview/${activity.quizId}`);
     } else {
       // For other types or legacy activities, use the general edit modal
-      setNewActivity({
-        ...activity,
-        file: null // Don't pass the file object when editing
-      });
-      setShowAddModal(true);
+    setNewActivity({
+      ...activity,
+      file: null // Don't pass the file object when editing
+    });
+    setShowAddModal(true);
     }
   };
   

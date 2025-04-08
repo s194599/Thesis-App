@@ -44,11 +44,11 @@ const PlatformOverview = () => {
         }
 
         // Try to load from localStorage first for immediate display while server data is loading
-        const savedModules = localStorage.getItem("learningModules");
+    const savedModules = localStorage.getItem("learningModules");
         let localModules = [];
 
-        if (savedModules) {
-          try {
+    if (savedModules) {
+      try {
             localModules = JSON.parse(savedModules);
             // Use localStorage data for initial render
             if (localModules.length > 0) {
@@ -78,8 +78,8 @@ const PlatformOverview = () => {
                 setSelectedModuleId(localModules[0]?.id || null);
               }
             }
-          } catch (error) {
-            console.error("Error parsing saved modules:", error);
+      } catch (error) {
+        console.error("Error parsing saved modules:", error);
           }
         }
 
@@ -236,9 +236,9 @@ const PlatformOverview = () => {
           if (!selectedModuleId && modulesWithUpdatedActivities.length > 0) {
             const savedSelectedModuleId =
               localStorage.getItem("selectedModuleId");
-            if (savedSelectedModuleId) {
-              setSelectedModuleId(savedSelectedModuleId);
-            } else {
+    if (savedSelectedModuleId) {
+      setSelectedModuleId(savedSelectedModuleId);
+    } else {
               setSelectedModuleId(modulesWithUpdatedActivities[0]?.id || null);
             }
           }
@@ -616,8 +616,8 @@ const PlatformOverview = () => {
                   ...activity,
                   completed: true,
                 };
-              }
-              return activity;
+                  }
+                  return activity;
             }),
           };
         }
@@ -628,10 +628,10 @@ const PlatformOverview = () => {
     // Then update on the server
     try {
       const response = await fetch("/api/complete-activity", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
         body: JSON.stringify({
           activityId: activityId,
           moduleId: moduleId,
@@ -787,20 +787,20 @@ const PlatformOverview = () => {
 
       {/* Overall Progress - Only visible in student mode */}
       {userRole === "student" && (
-        <div className="fixed-bottom bg-white border-top py-2 px-3">
-          <div className="d-flex justify-content-between align-items-center mb-1">
-            <small className="text-muted">
+          <div className="fixed-bottom bg-white border-top py-2 px-3">
+            <div className="d-flex justify-content-between align-items-center mb-1">
+              <small className="text-muted">
               {overallProgress}% - {completedActivities} ud af {totalActivities}{" "}
               moduler gennemført
-            </small>
-            <small className="text-muted">Total Fremgang</small>
+              </small>
+              <small className="text-muted">Total Fremgang</small>
+            </div>
+            <ProgressBar
+              now={overallProgress}
+              variant="primary"
+              style={{ height: "8px" }}
+            />
           </div>
-          <ProgressBar
-            now={overallProgress}
-            variant="primary"
-            style={{ height: "8px" }}
-          />
-        </div>
       )}
     </Container>
   );

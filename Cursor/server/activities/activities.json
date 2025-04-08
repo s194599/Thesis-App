@@ -1,41 +1,22 @@
 [
   {
-    "completed": true,
-    "description": "",
-    "id": "activity_1743673066847",
-    "isNew": true,
-    "moduleId": "module-5",
-    "title": "teacher-USM.png",
-    "type": "image",
-    "url": "/api/uploads/teacher-USM_1743673066.png"
-  },
-  {
-    "title": "Intro-to-Romanticism.pdf",
-    "description": "L\u00e6s kapitel 4",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744016353.pdf",
-    "id": "activity_1744016353464",
-    "moduleId": "module-3",
-    "completed": true
-  },
-  {
-    "moduleId": "module-3",
-    "title": "Romantikken 2-Q",
-    "type": "quiz",
-    "quizId": "quiz_1744030473",
-    "completed": true,
-    "id": "activity_quiz_quiz_1744030473",
-    "quizScore": 100
-  },
-  {
     "title": "\ud83d\udcd5\ud83d\udc9aROMANTIKKEN - da forfatterne ble sett p\u00e5 som genier (LITTERATURHISTORIEN 5 av 15)",
-    "description": "Se fra 2. minut",
+    "description": "",
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=760P94LaNGs&ab_channel=S%C3%B8lvbergetbibliotekogkulturhus",
     "file": null,
     "completed": false,
     "isNew": true,
-    "id": "activity_1744098748165",
+    "id": "activity_1744102687303",
     "moduleId": "module-3"
+  },
+  {
+    "title": "Intro-to-Romanticism.pdf",
+    "description": "L\u00e6s kapitel 5",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744108455.pdf",
+    "id": "activity_1744108455542",
+    "moduleId": "module-3",
+    "completed": false
   }
 ]
