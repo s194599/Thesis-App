@@ -1,11 +1,94 @@
-import React from 'react';
-import { ListGroup } from 'react-bootstrap';
-import { BsCheckCircleFill, BsCircleFill } from 'react-icons/bs';
+import React, { useState, useEffect } from 'react';
+import { ListGroup, Card, Button, Modal, Form, Tab, Tabs, Image } from 'react-bootstrap';
+import { BsCheckCircleFill, BsCircleFill, BsPencil, BsUpload, BsImage } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
+import '../../styles/ModuleSidebar.css';
 
-const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRole = 'teacher' }) => {
+const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRole = 'teacher', onModuleUpdate }) => {
+  const navigate = useNavigate();
+  const [showIconModal, setShowIconModal] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  const [iconFile, setIconFile] = useState(null);
+  const [iconPreview, setIconPreview] = useState(null);
+  const [activeTab, setActiveTab] = useState('upload');
+
   // Ensure modules is always an array
   const safeModules = Array.isArray(modules) ? modules : [];
   
+  // Predefined icons gallery
+  const predefinedIcons = [
+    { name: 'Book', url: 'https://cdn-icons-png.flaticon.com/512/2232/2232688.png' },
+    { name: 'Graduation', url: 'https://cdn-icons-png.flaticon.com/512/2232/2232685.png' },
+    { name: 'Science', url: 'https://cdn-icons-png.flaticon.com/512/2232/2232681.png' },
+    { name: 'Math', url: 'https://cdn-icons-png.flaticon.com/512/2232/2232683.png' },
+    { name: 'Language', url: 'https://cdn-icons-png.flaticon.com/512/2232/2232687.png' },
+    { name: 'History', url: 'https://cdn-icons-png.flaticon.com/512/2232/2232682.png' }
+  ];
+
+  // Load saved icon from localStorage on component mount
+  useEffect(() => {
+    const savedIcon = localStorage.getItem('courseIcon');
+    if (savedIcon) {
+      setSelectedIcon(savedIcon);
+    }
+  }, []);
+
+  const handleIconFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setIconFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setIconPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleIconSelect = (iconUrl) => {
+    setSelectedIcon(iconUrl);
+    setIconPreview(null);
+    setIconFile(null);
+  };
+
+  const handleSaveIcon = async () => {
+    try {
+      let iconUrl = selectedIcon;
+
+      // If a file was uploaded, handle the upload
+      if (iconFile) {
+        const formData = new FormData();
+        formData.append('icon', iconFile);
+
+        const response = await fetch('/api/upload-icon', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload icon');
+        }
+
+        const data = await response.json();
+        iconUrl = data.url;
+      }
+
+      // Save the icon URL to localStorage
+      localStorage.setItem('courseIcon', iconUrl);
+      setSelectedIcon(iconUrl);
+
+      // Update the module if we're in a specific module context
+      if (selectedModuleId && onModuleUpdate) {
+        onModuleUpdate(selectedModuleId, { icon: iconUrl });
+      }
+
+      setShowIconModal(false);
+    } catch (error) {
+      console.error('Error saving icon:', error);
+      alert('Failed to save icon. Please try again.');
+    }
+  };
+
   return (
     <div className="module-sidebar p-3">
       <div className="d-flex align-items-center mb-3">
@@ -19,19 +102,29 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
       
       <div className="course-header d-flex align-items-center mb-4">
         <div className="course-icon me-3">
-          <img 
-            src="/abc-icon.svg" 
-            alt="Course Icon" 
-            style={{ width: '40px', height: '40px' }}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'https://via.placeholder.com/40?text=ABC';
-            }}
-          />
+          <div className="course-icon-wrapper">
+            <img 
+              src={selectedIcon || '/abc-icon.svg'} 
+              alt="Course Icon" 
+              style={{ width: '40px', height: '40px' }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/40?text=ABC';
+              }}
+            />
+            {userRole === 'teacher' && (
+              <div 
+                className="course-icon-edit"
+                onClick={() => setShowIconModal(true)}
+              >
+                <BsPencil size={14} />
+              </div>
+            )}
+          </div>
         </div>
         <div>
-          <h2 className="h5 mb-0">Dansk 2.A</h2>
-          <small className="text-muted">{userRole === 'teacher' ? 'Lærer' : 'Elev'} visning</small>
+          <h5 className="mb-0">Dansk 2.A</h5>
+          <small className="text-muted">Klasseliste</small>
         </div>
       </div>
       
@@ -91,6 +184,61 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
           </div>
         )}
       </ListGroup>
+
+      {/* Icon Selection Modal */}
+      <Modal show={showIconModal} onHide={() => setShowIconModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Customize Course Icon</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(k) => setActiveTab(k)}
+            className="mb-3"
+          >
+            <Tab eventKey="upload" title="Upload">
+              <Form.Group className="mb-3">
+                <Form.Label>Upload Custom Icon</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  onChange={handleIconFileChange}
+                />
+                {iconPreview && (
+                  <div className="mt-3">
+                    <Image src={iconPreview} thumbnail style={{ maxWidth: '100px' }} />
+                  </div>
+                )}
+              </Form.Group>
+            </Tab>
+            <Tab eventKey="gallery" title="Gallery">
+              <div className="d-flex flex-wrap gap-2 mt-3">
+                {predefinedIcons.map((icon, index) => (
+                  <div
+                    key={index}
+                    className={`icon-preview ${selectedIcon === icon.url ? 'selected' : ''}`}
+                    onClick={() => handleIconSelect(icon.url)}
+                  >
+                    <img
+                      src={icon.url}
+                      alt={icon.name}
+                      style={{ width: '40px', height: '40px' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Tab>
+          </Tabs>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowIconModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSaveIcon}>
+            Save Icon
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 [
   {
     "id": "module-1",
-    "title": "Introduktion til dansk grammatik 324234",
+    "title": "Introduktion til dansk grammatik",
     "date": "1. Februar 2023",
     "description": "<p><strong>Gennemgang</strong> af grundl\u00e6ggende <s>grammatikregler</s> og \u00f8velser.</p>"
   },
@@ -37,7 +37,7 @@
   },
   {
     "id": "module-7",
-    "title": "Sproglig variation rrrf",
+    "title": "Sproglig variation",
     "date": "15. Marts 2023",
     "description": "Dialekter, sociolekter og sproglige tendenser."
   }
