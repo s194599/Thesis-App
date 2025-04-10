@@ -3,7 +3,7 @@ import os
 import time
 import json
 
-from config.app_config import QUIZ_FOLDER, logger
+from config.app_config import DATABASE_FOLDER, logger
 from services.quiz_generation import generate_quiz_with_ollama
 from services.quiz_parsing import parse_quiz
 from utils.file_helpers import load_json_file, save_json_file
@@ -163,8 +163,8 @@ def save_quiz():
             return jsonify({"success": False, "message": "No quiz data provided"}), 400
 
         # Create a quizzes directory if it doesn't exist
-        if not os.path.exists(QUIZ_FOLDER):
-            os.makedirs(QUIZ_FOLDER)
+        if not os.path.exists(DATABASE_FOLDER):
+            os.makedirs(DATABASE_FOLDER)
 
         # Generate a unique ID for the quiz if not present
         if "id" not in quiz_data:
@@ -175,7 +175,7 @@ def save_quiz():
             quiz_data["timestamp"] = time.time()
 
         # Load existing quizzes
-        quizzes_file = os.path.join(QUIZ_FOLDER, "quizzes.json")
+        quizzes_file = os.path.join(DATABASE_FOLDER, "quizzes.json")
         quizzes = load_json_file(quizzes_file, [])
 
         # Check if quiz with same ID already exists
@@ -216,7 +216,7 @@ def get_quizzes():
     Get all saved quizzes
     """
     try:
-        quizzes_file = os.path.join(QUIZ_FOLDER, "quizzes.json")
+        quizzes_file = os.path.join(DATABASE_FOLDER, "quizzes.json")
         quizzes = load_json_file(quizzes_file, [])
         return jsonify({"quizzes": quizzes, "success": True})
 
@@ -231,7 +231,7 @@ def get_quiz(quiz_id):
     Get a specific quiz by ID
     """
     try:
-        quizzes_file = os.path.join(QUIZ_FOLDER, "quizzes.json")
+        quizzes_file = os.path.join(DATABASE_FOLDER, "quizzes.json")
         quizzes = load_json_file(quizzes_file, [])
 
         quiz = next((q for q in quizzes if q.get("id") == quiz_id), None)

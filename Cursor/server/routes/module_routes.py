@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import os
 import json
 
-from config.app_config import MODULES_FOLDER, ACTIVITIES_FOLDER, logger
+from config.app_config import DATABASE_FOLDER, DATABASE_FOLDER, logger
 from utils.file_helpers import load_json_file, save_json_file
 
 # Create blueprint for module-related routes
@@ -15,7 +15,7 @@ def get_modules():
     Retrieves all modules from the server
     """
     try:
-        modules_file = os.path.join(MODULES_FOLDER, "modules.json")
+        modules_file = os.path.join(DATABASE_FOLDER, "modules.json")
         modules = load_json_file(modules_file, [])
         
         return jsonify({"success": True, "modules": modules})
@@ -33,11 +33,11 @@ def get_modules_with_activities():
     """
     try:
         # Load all modules
-        modules_file = os.path.join(MODULES_FOLDER, "modules.json")
+        modules_file = os.path.join(DATABASE_FOLDER, "modules.json")
         modules = load_json_file(modules_file, [])
         
         # Load all activities
-        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         all_activities = load_json_file(activities_file, [])
         
         # Create a dictionary to map moduleId to activities
@@ -77,7 +77,7 @@ def update_module():
         module_id = module_data.get("id")
         
         # Load existing modules
-        modules_file = os.path.join(MODULES_FOLDER, "modules.json")
+        modules_file = os.path.join(DATABASE_FOLDER, "modules.json")
         modules = load_json_file(modules_file, [])
         
         # Find the module to update

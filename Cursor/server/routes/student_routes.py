@@ -6,8 +6,8 @@ from datetime import datetime
 student_bp = Blueprint("student", __name__)
 
 # Path to store student quiz results
-STUDENT_DATA_PATH = "data/student_results.json"
-STUDENTS_LIST_PATH = "data/students.json"
+STUDENT_DATA_PATH = "database/student_results.json"
+STUDENTS_LIST_PATH = "database/students.json"
 
 # Current logged in student
 CURRENT_STUDENT = {
@@ -140,12 +140,11 @@ def save_quiz_result():
 @student_bp.route('/student/quiz/<quiz_id>/results', methods=['GET'])
 def get_quiz_results(quiz_id):
     try:
-        # Load student results
-        results_file = os.path.join('data', 'student_results.json')
-        if not os.path.exists(results_file):
+        # Load student results using the correct path
+        if not os.path.exists(STUDENT_DATA_PATH):
             return jsonify([]), 200
 
-        with open(results_file, 'r', encoding='utf-8') as f:
+        with open(STUDENT_DATA_PATH, 'r', encoding='utf-8') as f:
             data = json.load(f)
             quiz_results = [result for result in data.get('quiz_history', []) 
                           if result.get('quiz_id') == quiz_id]

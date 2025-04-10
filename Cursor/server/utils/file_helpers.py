@@ -2,7 +2,7 @@ import os
 import time
 import json
 from werkzeug.utils import secure_filename
-from config.app_config import UPLOAD_FOLDER, QUIZ_FOLDER, ACTIVITIES_FOLDER, logger
+from config.app_config import UPLOAD_FOLDER, DATABASE_FOLDER, DATABASE_FOLDER, logger
 
 
 def generate_unique_filename(filename):

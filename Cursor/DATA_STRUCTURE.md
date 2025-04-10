@@ -10,11 +10,11 @@ This document outlines the data structure used in the application, particularly 
 
 The application stores data in JSON files on the server:
 
-1. **Modules**: Stored in `server/modules/modules.json`
+1. **Modules**: Stored in `server/database/modules.json`
    - Contains the base module information (id, title, date, description)
    - Does not contain activities directly
 
-2. **Activities**: Stored in `server/activities/activities.json`
+2. **Activities**: Stored in `server/database/activities.json`
    - Each activity includes a `moduleId` field to associate it with a module
    - Activities are stored separately from modules for better performance and separation of concerns
 

@@ -25,10 +25,10 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-10T15:03:20.495068",
+      "timestamp": "2025-04-10T15:34:38.764478",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 2,
+      "score": 1,
       "total_questions": 2,
       "answers": [
         {
@@ -40,11 +40,11 @@
         {
           "question_id": "q2",
           "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Love and romance",
-          "correct": true
+          "answer": "Politics and social issues",
+          "correct": false
         }
       ],
-      "attempts": 2,
+      "attempts": 4,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

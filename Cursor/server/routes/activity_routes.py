@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import os
 import json
 
-from config.app_config import ACTIVITIES_FOLDER, logger
+from config.app_config import DATABASE_FOLDER, logger
 from utils.file_helpers import load_json_file, save_json_file
 
 # Create blueprint for activity-related routes
@@ -32,7 +32,7 @@ def store_activity():
             activity_data["completed"] = False
 
         # Load existing activities
-        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         activities = load_json_file(activities_file, [])
 
         # Special handling for quiz activities to prevent duplication across modules
@@ -131,7 +131,7 @@ def get_module_activities(module_id):
     Retrieves all activities for a specific module from the server
     """
     try:
-        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         all_activities = load_json_file(activities_file, [])
 
         # Filter activities by module ID
@@ -170,7 +170,7 @@ def delete_activity():
         module_id = data.get("moduleId")
 
         # Load existing activities
-        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         activities = load_json_file(activities_file, [])
 
         # Filter out the activity to delete
@@ -253,7 +253,7 @@ def update_quiz_activity_title():
             return jsonify({"success": False, "message": "Quiz ID and new title are required"}), 400
             
         # Load all activities
-        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         all_activities = load_json_file(activities_file, [])
         
         # Update activities that reference this quiz
@@ -295,7 +295,7 @@ def complete_activity():
             return jsonify({"success": False, "message": "Either Activity ID or Quiz ID is required"}), 400
         
         # Load existing activities
-        activities_file = os.path.join(ACTIVITIES_FOLDER, "activities.json")
+        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         activities = load_json_file(activities_file, [])
         
         # Find the activity to mark as completed
