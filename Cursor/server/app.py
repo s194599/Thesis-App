@@ -19,6 +19,7 @@ from routes.file_routes import file_routes
 from routes.quiz_routes import quiz_routes
 from routes.activity_routes import activity_routes
 from routes.module_routes import module_routes
+from routes.student_routes import student_bp
 
 # Create Flask app
 app = Flask(__name__)
@@ -45,18 +46,20 @@ app.config["TEMPLATES_AUTO_RELOAD"] = TEMPLATES_AUTO_RELOAD
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Allowed file extensions for icons
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "svg"}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
+
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 # Register blueprints with URL prefixes
 app.register_blueprint(file_routes, url_prefix="/api")
 app.register_blueprint(quiz_routes, url_prefix="/api")
 app.register_blueprint(activity_routes, url_prefix="/api")
 app.register_blueprint(module_routes, url_prefix="/api")
+app.register_blueprint(student_bp, url_prefix="/api")
 
 
 # Additional CORS headers for file downloads
@@ -89,51 +92,56 @@ def add_cors_headers(response):
 #     # For all non-API routes, send the React app's index.html
 #     return send_from_directory('../client/build', 'index.html')
 
-@app.route('/uploads/icons/<filename>')
+
+@app.route("/uploads/icons/<filename>")
 def serve_icon(filename):
     try:
         return send_from_directory(
-            os.path.join(app.config['UPLOAD_FOLDER'], 'icons'),
-            filename
+            os.path.join(app.config["UPLOAD_FOLDER"], "icons"), filename
         )
     except Exception as e:
         logger.error(f"Error serving icon file: {str(e)}")
-        return jsonify({'error': 'Icon not found'}), 404
+        return jsonify({"error": "Icon not found"}), 404
 
-@app.route('/api/upload-icon', methods=['POST'])
+
+@app.route("/api/upload-icon", methods=["POST"])
 def upload_icon():
-    if 'icon' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
-    
-    file = request.files['icon']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-    
+    if "icon" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+
+    file = request.files["icon"]
+    if file.filename == "":
+        return jsonify({"error": "No file selected"}), 400
+
     # Check file size
     file.seek(0, os.SEEK_END)
     file_size = file.tell()
     file.seek(0)
-    
+
     if file_size > MAX_FILE_SIZE:
-        return jsonify({'error': 'File size exceeds 5MB limit'}), 400
-    
+        return jsonify({"error": "File size exceeds 5MB limit"}), 400
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         # Create a unique filename to prevent overwrites
         unique_filename = f"{uuid.uuid4().hex}_{filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'icons', unique_filename)
-        
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], "icons", unique_filename)
+
         # Ensure the icons directory exists
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
+
         file.save(file_path)
-        
+
         # Return the relative URL path
-        return jsonify({
-            'url': f'/uploads/icons/{unique_filename}'
-        })
-    
-    return jsonify({'error': 'Invalid file type. Allowed types: PNG, JPG, JPEG, GIF, SVG'}), 400
+        return jsonify({"url": f"/uploads/icons/{unique_filename}"})
+
+    return (
+        jsonify(
+            {"error": "Invalid file type. Allowed types: PNG, JPG, JPEG, GIF, SVG"}
+        ),
+        400,
+    )
+
 
 if __name__ == "__main__":
     logger.info("Starting server...")

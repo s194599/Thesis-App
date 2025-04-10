@@ -11,12 +11,63 @@
     "moduleId": "module-3"
   },
   {
-    "title": "Intro-to-Romanticism.pdf",
-    "description": "L\u00e6s kapitel 5",
+    "title": "Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner.pdf",
+    "description": "L\u00e6s kapitel 5\n",
     "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744108455.pdf",
-    "id": "activity_1744108455542",
+    "url": "http://localhost:5001/api/uploads/Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner_1744270048.pdf",
+    "id": "activity_1744270048086",
+    "moduleId": "module-4",
+    "completed": true
+  },
+  {
+    "moduleId": "module-4",
+    "id": "activity_quiz_quiz_1744270236_module-4_1744270238462",
+    "title": "Sociale medier quiz",
+    "type": "quiz",
+    "quizId": "quiz_1744270236",
+    "completed": true,
+    "moduleSpecific": true,
+    "quizScore": 50
+  },
+  {
+    "title": "Unges brug af sociale medier - konsekvenesr",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=Q8Kabmpda2w",
+    "file": null,
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1744270289536",
+    "moduleId": "module-4"
+  },
+  {
+    "title": "Intro-to-Romanticism.pdf",
+    "description": "L\u00e6s kapitel 5\n",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744272217.pdf",
+    "completed": false,
+    "isNew": true,
+    "id": "activity_1744272217607",
+    "moduleId": "module-3"
+  },
+  {
+    "title": "quiz.png",
+    "description": "",
+    "type": "image",
+    "url": "http://localhost:5001/api/uploads/quiz_1744272683.png",
+    "completed": true,
+    "isNew": true,
+    "id": "activity_1744272683494",
+    "moduleId": "module-4"
+  },
+  {
     "moduleId": "module-3",
-    "completed": false
+    "id": "activity_quiz_quiz_1744276041_module-3_1744276042289",
+    "title": "Romantikken Quiz",
+    "type": "quiz",
+    "quizId": "quiz_1744276041",
+    "completed": true,
+    "moduleSpecific": true,
+    "quizScore": 50
   }
 ]

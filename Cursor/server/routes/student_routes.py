@@ -1,0 +1,59 @@
+import os
+import json
+from flask import Blueprint, request, jsonify
+from datetime import datetime
+
+student_bp = Blueprint("student", __name__)
+
+# Path to store student quiz results
+STUDENT_DATA_PATH = "data/student_results.json"
+
+
+def ensure_student_data_exists():
+    """Ensure the data directory and student_results.json file exist"""
+    os.makedirs(os.path.dirname(STUDENT_DATA_PATH), exist_ok=True)
+    if not os.path.exists(STUDENT_DATA_PATH):
+        with open(STUDENT_DATA_PATH, "w") as f:
+            json.dump({"quiz_history": []}, f, indent=2)
+
+
+def load_student_data():
+    """Load student quiz results from JSON file"""
+    ensure_student_data_exists()
+    with open(STUDENT_DATA_PATH, "r") as f:
+        return json.load(f)
+
+
+def save_student_data(data):
+    """Save student quiz results to JSON file"""
+    ensure_student_data_exists()
+    with open(STUDENT_DATA_PATH, "w") as f:
+        json.dump(data, f, indent=2)
+
+
+@student_bp.route("/student/quiz-history", methods=["GET"])
+def get_quiz_history():
+    """Get all quiz results for the student"""
+    student_data = load_student_data()
+    return jsonify(student_data)
+
+
+@student_bp.route("/student/save-quiz-result", methods=["POST"])
+def save_quiz_result():
+    """Save a new quiz result for the student"""
+    data = request.json
+    student_data = load_student_data()
+
+    # Add timestamp to quiz result
+    quiz_result = {
+        "timestamp": datetime.now().isoformat(),
+        "quiz_title": data.get("quiz_title"),
+        "score": data.get("score"),
+        "total_questions": data.get("total_questions"),
+        "answers": data.get("answers"),
+    }
+
+    student_data["quiz_history"].append(quiz_result)
+    save_student_data(student_data)
+
+    return jsonify({"success": True, "message": "Quiz result saved"})

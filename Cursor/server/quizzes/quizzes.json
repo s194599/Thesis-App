@@ -41,5 +41,95 @@
     "quizId": "quiz_1744030473",
     "timestamp": "2025-04-08T07:37:21.220Z",
     "title": "Romantikken 2-Q"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Slots- og Kulturstyrelsen",
+        "id": "q1",
+        "options": [
+          "Slots- og Kulturstyrelsen",
+          "Statsforvaltningens Medieuddanske",
+          "Dansk Medieh\u00e5ndtering",
+          "Medieselskabernes Landsforening"
+        ],
+        "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?"
+      },
+      {
+        "correctAnswer": "Samlingen af apps og netv\u00e6rk for socialisering via internettet",
+        "id": "q2",
+        "options": [
+          "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "Internethjemmesider",
+          "Samlingen af apps og netv\u00e6rk for socialisering via internettet",
+          "Alle af ovenst\u00e5ende begreber"
+        ],
+        "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?"
+      }
+    ],
+    "title": "Sociale medier quiz",
+    "timestamp": "2025-04-10T07:30:36.984Z",
+    "id": "quiz_1744270236"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "It is an artistic, literary, and intellectual movement that originated in Europe around the end of the 18th century and emphasized emotion, individualism, and freedom.",
+        "id": "q1",
+        "options": [
+          "It is an artistic, literary, and intellectual movement that originated in Europe around the end of the 18th century and emphasized emotion, individualism, and freedom.",
+          "It refers to anything related to romantic love or relationships.",
+          "It is a period of time characterized by peace, stability, and prosperity.",
+          "It is an artistic style that is soft, sentimental, and often depicts scenes of nature."
+        ],
+        "question": "What best describes the true nature of Romanticism?"
+      },
+      {
+        "correctAnswer": "Focus on romantic love or relationships",
+        "id": "q2",
+        "options": [
+          "Emphasis on emotion and individualism",
+          "Focus on romantic love or relationships",
+          "Use of bold colors and strong brushstrokes",
+          "Depiction of scenes of nature"
+        ],
+        "question": "Which of the following is NOT a characteristic of Romantic art?"
+      }
+    ],
+    "title": "Romantikken quiz",
+    "timestamp": "2025-04-10T08:05:06.126Z",
+    "id": "quiz_1744272306"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "A literary and artistic movement that began in the late eighteenth century and emphasized emotion, individualism, and the beauty of nature.",
+        "id": "q1",
+        "options": [
+          "A literary and artistic movement that began in the late eighteenth century and emphasized emotion, individualism, and the beauty of nature.",
+          "A style of painting characterized by vibrant colors and dramatic contrasts.",
+          "A philosophical system based on reason and scientific inquiry.",
+          "A genre of music known for its complex melodies and harmonies."
+        ],
+        "question": "What best describes Romanticism, which is not primarily about love or romance as commonly understood?"
+      },
+      {
+        "correctAnswer": "Placing strong emphasis on historical accuracy.",
+        "id": "q2",
+        "options": [
+          "Focusing on the individual and their emotions.",
+          "Using symbolism to convey deeper meanings.",
+          "Emphasizing the power of nature.",
+          "Placing strong emphasis on historical accuracy."
+        ],
+        "question": "Which of the following is NOT a key characteristic of Romantic literature?"
+      }
+    ],
+    "title": "Romantikken Quiz",
+    "timestamp": "2025-04-10T09:07:21.257Z",
+    "id": "quiz_1744276041"
   }
 ]

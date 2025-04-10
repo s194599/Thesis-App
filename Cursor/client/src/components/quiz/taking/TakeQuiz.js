@@ -181,7 +181,7 @@ const TakeQuiz = () => {
     setShowAnswer(true);
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     const nextIndex = currentQuestionIndex + 1;
 
     if (nextIndex < randomizedQuestions.length) {
@@ -196,6 +196,34 @@ const TakeQuiz = () => {
         spread: 70,
         origin: { y: 0.6 },
       });
+
+      // Save quiz results for student
+      try {
+        const quizResult = {
+          quiz_title: quiz.title,
+          score: score,
+          total_questions: randomizedQuestions.length,
+          answers: answers.map((answer, index) => ({
+            question: quiz.questions[index].question,
+            answer: answer,
+            correct: answer === quiz.questions[index].correctAnswer,
+          })),
+        };
+
+        const response = await fetch("/api/student/save-quiz-result", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(quizResult),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to save quiz result");
+        }
+      } catch (error) {
+        console.error("Error saving quiz result:", error);
+      }
     }
   };
 

@@ -1,0 +1,22 @@
+{
+  "quiz_history": [
+    {
+      "timestamp": "2025-04-10T11:21:09.626950",
+      "quiz_title": "Romantikken Quiz",
+      "score": 1,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "What best describes Romanticism, which is not primarily about love or romance as commonly understood?",
+          "answer": "A philosophical system based on reason and scientific inquiry.",
+          "correct": false
+        },
+        {
+          "question": "Which of the following is NOT a key characteristic of Romantic literature?",
+          "answer": "Placing strong emphasis on historical accuracy.",
+          "correct": true
+        }
+      ]
+    }
+  ]
+}
