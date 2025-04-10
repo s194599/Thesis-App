@@ -1,0 +1,54 @@
+{
+  "students": [
+    {
+      "student_id": "1",
+      "name": "Christian Wu",
+      "class": "2.b"
+    },
+    {
+      "student_id": "2",
+      "name": "Maria Jensen",
+      "class": "2.b"
+    },
+    {
+      "student_id": "3",
+      "name": "Peter Nielsen",
+      "class": "2.b"
+    },
+    {
+      "student_id": "4",
+      "name": "Sofie Hansen",
+      "class": "2.b"
+    },
+    {
+      "student_id": "5",
+      "name": "Frederik Barba",
+      "class": "2.b"
+    },
+    {
+      "student_id": "6",
+      "name": "Emma Christensen",
+      "class": "2.b"
+    },
+    {
+      "student_id": "7",
+      "name": "Mikkel Pedersen",
+      "class": "2.b"
+    },
+    {
+      "student_id": "8",
+      "name": "Ida Larsen",
+      "class": "2.b"
+    },
+    {
+      "student_id": "9",
+      "name": "Alexander Schmidt",
+      "class": "2.b"
+    },
+    {
+      "student_id": "10",
+      "name": "Laura Andersen",
+      "class": "2.b"
+    }
+  ]
+} 

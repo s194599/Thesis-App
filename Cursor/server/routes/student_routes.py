@@ -7,6 +7,13 @@ student_bp = Blueprint("student", __name__)
 
 # Path to store student quiz results
 STUDENT_DATA_PATH = "data/student_results.json"
+STUDENTS_LIST_PATH = "data/students.json"
+
+# Current logged in student
+CURRENT_STUDENT = {
+    "student_id": "1",
+    "name": "Christian Wu"
+}
 
 
 def ensure_student_data_exists():
@@ -38,11 +45,49 @@ def save_student_data(data):
         json.dump(data, f, indent=2)
 
 
+def load_all_students():
+    """Load all students from JSON file"""
+    if not os.path.exists(STUDENTS_LIST_PATH):
+        return {"students": []}
+    
+    try:
+        with open(STUDENTS_LIST_PATH, "r") as f:
+            content = f.read().strip()
+            if not content:
+                return {"students": []}
+            return json.loads(content)
+    except json.JSONDecodeError:
+        return {"students": []}
+
+
+@student_bp.route("/student/current", methods=["GET"])
+def get_current_student():
+    """Get information about the currently logged in student"""
+    return jsonify(CURRENT_STUDENT)
+
+
+@student_bp.route("/student/all", methods=["GET"])
+def get_all_students():
+    """Get list of all students"""
+    students = load_all_students()
+    return jsonify(students)
+
+
 @student_bp.route("/student/quiz-history", methods=["GET"])
 def get_quiz_history():
-    """Get all quiz results for the student"""
+    """Get all quiz results for the current student"""
     student_data = load_student_data()
-    return jsonify(student_data)
+    
+    # Filter results by student ID
+    student_id = CURRENT_STUDENT["student_id"]
+    
+    # Get only this student's quiz history
+    history = [
+        result for result in student_data["quiz_history"] 
+        if result.get("student_id") == student_id
+    ]
+    
+    return jsonify({"quiz_history": history})
 
 
 @student_bp.route("/student/save-quiz-result", methods=["POST"])
@@ -52,6 +97,7 @@ def save_quiz_result():
     student_data = load_student_data()
     
     quiz_id = data.get("quiz_id")
+    student_id = CURRENT_STUDENT["student_id"]
     
     if not quiz_id:
         return jsonify({"success": False, "message": "Quiz ID is required"}), 400
@@ -64,13 +110,15 @@ def save_quiz_result():
         "score": data.get("score"),
         "total_questions": data.get("total_questions"),
         "answers": data.get("answers"),
-        "attempts": 1  # Initialize with 1
+        "attempts": 1,  # Initialize with 1
+        "student_id": student_id,
+        "student_name": CURRENT_STUDENT["name"]
     }
     
-    # Check if a result with the same quiz ID already exists
+    # Check if a result with the same quiz ID and student ID already exists
     existing_index = -1
     for i, result in enumerate(student_data["quiz_history"]):
-        if result.get("quiz_id") == quiz_id:
+        if result.get("quiz_id") == quiz_id and result.get("student_id") == student_id:
             existing_index = i
             break
     

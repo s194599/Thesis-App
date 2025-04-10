@@ -18,7 +18,9 @@
           "correct": false
         }
       ],
-      "attempts": 1
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
     },
     {
       "timestamp": "2025-04-10T12:40:11.455030",
@@ -38,7 +40,163 @@
           "correct": false
         }
       ],
-      "attempts": 1
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-04-09T10:15:22.451230",
+      "quiz_id": "quiz_1744270236",
+      "quiz_title": "Sociale medier quiz",
+      "score": 2,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
+          "answer": "Slots- og Kulturstyrelsen",
+          "correct": true
+        },
+        {
+          "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
+          "answer": "Platforme, der muliggør brugerskabt indhold og interaktioner mellem brugere",
+          "correct": true
+        }
+      ],
+      "attempts": 2,
+      "student_id": "2",
+      "student_name": "Maria Jensen"
+    },
+    {
+      "timestamp": "2025-04-08T14:22:33.123456",
+      "quiz_id": "quiz_1744279908",
+      "quiz_title": "Romantikken Quiz",
+      "score": 2,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
+          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
+          "correct": true
+        },
+        {
+          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
+          "answer": "Nature and landscapes",
+          "correct": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "2",
+      "student_name": "Maria Jensen"
+    },
+    {
+      "timestamp": "2025-04-07T09:30:45.654321",
+      "quiz_id": "quiz_1744270236",
+      "quiz_title": "Sociale medier quiz",
+      "score": 0,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
+          "answer": "Danmarks Radio",
+          "correct": false
+        },
+        {
+          "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
+          "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "correct": false
+        }
+      ],
+      "attempts": 3,
+      "student_id": "3",
+      "student_name": "Peter Nielsen"
+    },
+    {
+      "timestamp": "2025-04-09T16:42:18.785412",
+      "quiz_id": "quiz_1744279908",
+      "quiz_title": "Romantikken Quiz",
+      "score": 0,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
+          "answer": "A political movement seeking to restore traditional monarchies.",
+          "correct": false
+        },
+        {
+          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
+          "answer": "Politics and social issues",
+          "correct": false
+        }
+      ],
+      "attempts": 1,
+      "student_id": "3",
+      "student_name": "Peter Nielsen"
+    },
+    {
+      "timestamp": "2025-04-08T11:25:36.951478",
+      "quiz_id": "quiz_1744270236",
+      "quiz_title": "Sociale medier quiz",
+      "score": 1,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
+          "answer": "Slots- og Kulturstyrelsen",
+          "correct": true
+        },
+        {
+          "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
+          "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "correct": false
+        }
+      ],
+      "attempts": 1,
+      "student_id": "4",
+      "student_name": "Sofie Hansen"
+    },
+    {
+      "timestamp": "2025-04-10T08:45:12.357159",
+      "quiz_id": "quiz_1744270236",
+      "quiz_title": "Sociale medier quiz",
+      "score": 1,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
+          "answer": "Slots- og Kulturstyrelsen",
+          "correct": true
+        },
+        {
+          "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
+          "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "correct": false
+        }
+      ],
+      "attempts": 2,
+      "student_id": "5",
+      "student_name": "Frederik Barba"
+    },
+    {
+      "timestamp": "2025-04-09T15:33:27.896541",
+      "quiz_id": "quiz_1744279908",
+      "quiz_title": "Romantikken Quiz",
+      "score": 2,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
+          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
+          "correct": true
+        },
+        {
+          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
+          "answer": "Nature and landscapes",
+          "correct": true
+        }
+      ],
+      "attempts": 2,
+      "student_id": "5",
+      "student_name": "Frederik Barba"
     }
   ]
 }
