@@ -12,6 +12,7 @@ import { useQuizContext } from "./context/QuizContext";
 import { QuizOutput } from "./components/quiz/display";
 import { Container, Alert, Button, Spinner } from "react-bootstrap";
 import { getQuiz } from "./services/api";
+import QuizResults from './components/quiz/results/QuizResults';
 
 function App() {
   const { generatedQuiz } = useQuizContext();
@@ -86,6 +87,15 @@ function App() {
           path="/take-quiz/:quizId"
           element={<Navigate to={location => `/quiz/take/${location.pathname.split('/').pop()}`} replace />}
         />
+
+        <Route path="/quiz/:quizId/results" element={
+          <>
+            <Header />
+            <div className="flex-grow-1">
+              <QuizResults />
+            </div>
+          </>
+        } />
       </Routes>
     </div>
   );

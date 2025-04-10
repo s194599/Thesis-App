@@ -407,9 +407,9 @@ const ModuleContent = ({
         break;
       case "quiz":
         if (userRole === "teacher") {
-          // For teachers, always navigate to the preview page if there's a quizId
+          // For teachers, navigate to the results page if there's a quizId
           if (activity.quizId) {
-            navigate(`/quiz/preview/${activity.quizId}`);
+            navigate(`/quiz/${activity.quizId}/results`);
           } else {
             // For generating a new quiz when no quizId exists
             const documents = activities.filter(

@@ -25,10 +25,10 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-10T12:40:11.455030",
+      "timestamp": "2025-04-10T15:03:20.495068",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 1,
+      "score": 2,
       "total_questions": 2,
       "answers": [
         {
@@ -40,11 +40,11 @@
         {
           "question_id": "q2",
           "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Politics and social issues",
-          "correct": false
+          "answer": "Love and romance",
+          "correct": true
         }
       ],
-      "attempts": 1,
+      "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -64,7 +64,7 @@
         {
           "question_id": "q2",
           "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
-          "answer": "Platforme, der muliggør brugerskabt indhold og interaktioner mellem brugere",
+          "answer": "Platforme, der muligg\u00c3\u00b8r brugerskabt indhold og interaktioner mellem brugere",
           "correct": true
         }
       ],

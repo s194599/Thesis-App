@@ -135,3 +135,26 @@ def save_quiz_result():
     save_student_data(student_data)
     
     return jsonify({"success": True, "message": "Quiz result saved"})
+
+
+@student_bp.route('/student/quiz/<quiz_id>/results', methods=['GET'])
+def get_quiz_results(quiz_id):
+    try:
+        # Load student results
+        results_file = os.path.join('data', 'student_results.json')
+        if not os.path.exists(results_file):
+            return jsonify([]), 200
+
+        with open(results_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            quiz_results = [result for result in data.get('quiz_history', []) 
+                          if result.get('quiz_id') == quiz_id]
+            
+            # Sort results by timestamp (newest first)
+            quiz_results.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
+            
+            return jsonify(quiz_results), 200
+
+    except Exception as e:
+        print(f"Error fetching quiz results: {str(e)}")
+        return jsonify({'error': 'Kunne ikke indlæse quiz resultater'}), 500
