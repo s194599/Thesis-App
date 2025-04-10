@@ -46,7 +46,7 @@ const PlatformOverview = () => {
         // Try to load from localStorage first for immediate display while server data is loading
     const savedModules = localStorage.getItem("learningModules");
         let localModules = [];
-
+    
     if (savedModules) {
       try {
             localModules = JSON.parse(savedModules);
@@ -264,7 +264,7 @@ const PlatformOverview = () => {
     if (initialLoadComplete && modules && modules.length > 0) {
       localStorage.setItem("learningModules", JSON.stringify(modules));
     }
-
+    
     if (selectedModuleId) {
       localStorage.setItem("selectedModuleId", selectedModuleId);
     }
@@ -429,7 +429,7 @@ const PlatformOverview = () => {
   };
 
   // Calculate overall progress with null checks
-  const totalActivities = Array.isArray(modules)
+  const totalActivities = Array.isArray(modules) 
     ? modules.reduce((sum, module) => {
         if (module && Array.isArray(module.activities)) {
           return sum + module.activities.length;
@@ -437,8 +437,8 @@ const PlatformOverview = () => {
         return sum;
       }, 0)
     : 0;
-
-  const completedActivities = Array.isArray(modules)
+    
+  const completedActivities = Array.isArray(modules) 
     ? modules.reduce((sum, module) => {
         if (module && Array.isArray(module.activities)) {
           return (
@@ -451,11 +451,11 @@ const PlatformOverview = () => {
         return sum;
       }, 0)
     : 0;
-
+  
   const overallProgress =
     totalActivities > 0
-      ? Math.round((completedActivities / totalActivities) * 100)
-      : 0;
+    ? Math.round((completedActivities / totalActivities) * 100) 
+    : 0;
 
   const handleModuleSelect = (moduleId) => {
     if (moduleId === selectedModuleId) return; // Do nothing if selecting the same module
@@ -608,20 +608,20 @@ const PlatformOverview = () => {
     setModules((prevModules) =>
       prevModules.map((module) => {
         if (module.id === moduleId) {
-          return {
-            ...module,
+        return {
+          ...module,
             activities: module.activities.map((activity) => {
               if (activity.id === activityId) {
                 return {
                   ...activity,
                   completed: true,
                 };
-                  }
-                  return activity;
+                }
+                return activity;
             }),
-          };
-        }
-        return module;
+        };
+      }
+      return module;
       })
     );
 
@@ -654,7 +654,7 @@ const PlatformOverview = () => {
     // Navigate to the saved quizzes page
     navigate("/saved-quizzes");
   };
-
+  
   // Function to update module activities (add, edit, delete)
   const updateModuleActivities = (
     moduleId,
@@ -662,10 +662,10 @@ const PlatformOverview = () => {
     updatedModule = null
   ) => {
     if (!Array.isArray(modules)) return;
-
+    
     setModules(
       modules.map((module) => {
-        if (module && module.id === moduleId) {
+      if (module && module.id === moduleId) {
           // If full updated module is provided, use it but preserve the activities
           if (updatedModule) {
             return {
@@ -674,27 +674,27 @@ const PlatformOverview = () => {
             };
           }
           // Otherwise just update the activities
-          return {
-            ...module,
+        return {
+          ...module,
             activities: updatedActivities,
-          };
-        }
-        return module;
+        };
+      }
+      return module;
       })
     );
   };
-
+  
   // Make the function available globally for debugging and direct access
   useEffect(() => {
     window.updateModuleActivities = updateModuleActivities;
-
+    
     return () => {
       // Clean up when component unmounts
       delete window.updateModuleActivities;
     };
   }, [modules]); // Re-create when modules change to maintain closure with current state
 
-  const selectedModule = Array.isArray(modules)
+  const selectedModule = Array.isArray(modules) 
     ? modules.find((module) => module && module.id === selectedModuleId) ||
       modules[0]
     : null;
@@ -757,8 +757,8 @@ const PlatformOverview = () => {
       )}
       <Row className="g-0 min-vh-100">
         <Col md={3} className="sidebar-col bg-light border-end">
-          <ModuleSidebar
-            modules={modules || []}
+          <ModuleSidebar 
+            modules={modules || []} 
             selectedModuleId={selectedModuleId}
             onModuleSelect={handleModuleSelect}
             userRole={userRole}
@@ -766,7 +766,7 @@ const PlatformOverview = () => {
         </Col>
         <Col md={9} className="content-col">
           {selectedModule ? (
-            <ModuleContent
+            <ModuleContent 
               module={selectedModule}
               onActivityCompletion={handleActivityCompletion}
               onQuizAccess={handleQuizAccess}
@@ -784,7 +784,7 @@ const PlatformOverview = () => {
           )}
         </Col>
       </Row>
-
+          
       {/* Overall Progress - Only visible in student mode */}
       {userRole === "student" && (
           <div className="fixed-bottom bg-white border-top py-2 px-3">
@@ -806,4 +806,4 @@ const PlatformOverview = () => {
   );
 };
 
-export default PlatformOverview;
+export default PlatformOverview; 

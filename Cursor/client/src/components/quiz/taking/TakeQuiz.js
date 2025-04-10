@@ -205,6 +205,7 @@ const TakeQuiz = () => {
           score: score,
           total_questions: randomizedQuestions.length,
           answers: answers.map((answer, index) => ({
+            question_id: quiz.questions[index].id, // Add the question ID
             question: quiz.questions[index].question,
             answer: answer,
             correct: answer === quiz.questions[index].correctAnswer,

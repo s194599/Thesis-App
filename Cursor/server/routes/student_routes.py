@@ -109,7 +109,7 @@ def save_quiz_result():
         "quiz_title": data.get("quiz_title"),
         "score": data.get("score"),
         "total_questions": data.get("total_questions"),
-        "answers": data.get("answers"),
+        "answers": data.get("answers", []),  # Each answer should now include question_id
         "attempts": 1,  # Initialize with 1
         "student_id": student_id,
         "student_name": CURRENT_STUDENT["name"]
