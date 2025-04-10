@@ -131,5 +131,35 @@
     "title": "Romantikken Quiz",
     "timestamp": "2025-04-10T09:07:21.257Z",
     "id": "quiz_1744276041"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
+        "id": "q1",
+        "options": [
+          "An artistic and literary movement characterized by emotion, individualism, and nature.",
+          "A style of music that focuses on harmony and melody.",
+          "A political ideology advocating for democracy and social equality.",
+          "A philosophical approach emphasizing rationality and empiricism."
+        ],
+        "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?"
+      },
+      {
+        "correctAnswer": "Love and romance",
+        "id": "q2",
+        "options": [
+          "Love and romance",
+          "War and violence",
+          "Politics and social issues",
+          "Mathematics and science"
+        ],
+        "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?"
+      }
+    ],
+    "title": "Romantikken Quiz",
+    "timestamp": "2025-04-10T10:11:48.516Z",
+    "id": "quiz_1744279908"
   }
 ]

@@ -200,6 +200,7 @@ const TakeQuiz = () => {
       // Save quiz results for student
       try {
         const quizResult = {
+          quiz_id: quizId,  // Add the quiz ID from the URL params
           quiz_title: quiz.title,
           score: score,
           total_questions: randomizedQuestions.length,

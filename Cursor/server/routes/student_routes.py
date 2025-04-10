@@ -20,8 +20,15 @@ def ensure_student_data_exists():
 def load_student_data():
     """Load student quiz results from JSON file"""
     ensure_student_data_exists()
-    with open(STUDENT_DATA_PATH, "r") as f:
-        return json.load(f)
+    try:
+        with open(STUDENT_DATA_PATH, "r") as f:
+            content = f.read().strip()
+            if not content:  # Handle empty file
+                return {"quiz_history": []}
+            return json.loads(content)
+    except json.JSONDecodeError:
+        # If file has invalid JSON, return empty quiz history
+        return {"quiz_history": []}
 
 
 def save_student_data(data):
@@ -43,17 +50,40 @@ def save_quiz_result():
     """Save a new quiz result for the student"""
     data = request.json
     student_data = load_student_data()
-
+    
+    quiz_id = data.get("quiz_id")
+    
+    if not quiz_id:
+        return jsonify({"success": False, "message": "Quiz ID is required"}), 400
+    
     # Add timestamp to quiz result
     quiz_result = {
         "timestamp": datetime.now().isoformat(),
+        "quiz_id": quiz_id,
         "quiz_title": data.get("quiz_title"),
         "score": data.get("score"),
         "total_questions": data.get("total_questions"),
         "answers": data.get("answers"),
+        "attempts": 1  # Initialize with 1
     }
-
-    student_data["quiz_history"].append(quiz_result)
+    
+    # Check if a result with the same quiz ID already exists
+    existing_index = -1
+    for i, result in enumerate(student_data["quiz_history"]):
+        if result.get("quiz_id") == quiz_id:
+            existing_index = i
+            break
+    
+    if existing_index >= 0:
+        # Update the existing result
+        existing_result = student_data["quiz_history"][existing_index]
+        attempts = existing_result.get("attempts", 1) + 1
+        quiz_result["attempts"] = attempts
+        student_data["quiz_history"][existing_index] = quiz_result
+    else:
+        # Add new result
+        student_data["quiz_history"].append(quiz_result)
+    
     save_student_data(student_data)
-
+    
     return jsonify({"success": True, "message": "Quiz result saved"})

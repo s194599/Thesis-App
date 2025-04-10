@@ -1,22 +1,44 @@
 {
   "quiz_history": [
     {
-      "timestamp": "2025-04-10T11:21:09.626950",
+      "timestamp": "2025-04-10T12:39:46.620890",
+      "quiz_id": "quiz_1744270236",
+      "quiz_title": "Sociale medier quiz",
+      "score": 1,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
+          "answer": "Slots- og Kulturstyrelsen",
+          "correct": true
+        },
+        {
+          "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
+          "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "correct": false
+        }
+      ],
+      "attempts": 1
+    },
+    {
+      "timestamp": "2025-04-10T12:40:11.455030",
+      "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
       "score": 1,
       "total_questions": 2,
       "answers": [
         {
-          "question": "What best describes Romanticism, which is not primarily about love or romance as commonly understood?",
-          "answer": "A philosophical system based on reason and scientific inquiry.",
-          "correct": false
+          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
+          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
+          "correct": true
         },
         {
-          "question": "Which of the following is NOT a key characteristic of Romantic literature?",
-          "answer": "Placing strong emphasis on historical accuracy.",
-          "correct": true
+          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
+          "answer": "Politics and social issues",
+          "correct": false
         }
-      ]
+      ],
+      "attempts": 1
     }
   ]
 }

@@ -27,7 +27,7 @@
     "quizId": "quiz_1744270236",
     "completed": true,
     "moduleSpecific": true,
-    "quizScore": 50
+    "quizScore": 0
   },
   {
     "title": "Unges brug af sociale medier - konsekvenesr",
@@ -62,10 +62,10 @@
   },
   {
     "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1744276041_module-3_1744276042289",
+    "id": "activity_quiz_quiz_1744279908_module-3_1744279909156",
     "title": "Romantikken Quiz",
     "type": "quiz",
-    "quizId": "quiz_1744276041",
+    "quizId": "quiz_1744279908",
     "completed": true,
     "moduleSpecific": true,
     "quizScore": 50
