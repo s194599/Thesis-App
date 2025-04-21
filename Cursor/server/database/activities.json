@@ -69,5 +69,14 @@
     "completed": true,
     "moduleSpecific": true,
     "quizScore": 50
+  },
+  {
+    "moduleId": "module-3",
+    "id": "activity_quiz_quiz_1745233680_module-3_1745233681971",
+    "title": "Lang Romantikken Quiz",
+    "type": "quiz",
+    "quizId": "quiz_1745233680",
+    "completed": false,
+    "moduleSpecific": true
   }
 ]

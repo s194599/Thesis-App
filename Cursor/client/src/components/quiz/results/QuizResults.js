@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, ProgressBar, Badge, Button } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Spinner, Alert } from 'react-bootstrap';
 import { FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const QuizResults = () => {
@@ -50,18 +50,16 @@ const QuizResults = () => {
 
   if (loading) return (
     <Container className="py-5 text-center">
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Indlæser...</span>
-      </div>
+      <Spinner animation="border" variant="primary" />
       <p className="mt-3">Indlæser quiz resultater...</p>
     </Container>
   );
 
   if (error) return (
     <Container className="py-5 text-center">
-      <div className="alert alert-danger" role="alert">
+      <Alert variant="danger">
         {error}
-      </div>
+      </Alert>
       <Button variant="primary" onClick={() => navigate("/platform")}>
         Tilbage til platformen
       </Button>
@@ -81,9 +79,12 @@ const QuizResults = () => {
 
   // Get the quiz title from details or fall back to the ID or a default
   const quizTitle = quizDetails?.title || `Quiz ${quizId.replace('quiz_', '')}`;
-
+  
+  // Find the maximum number of questions among all results
+  const maxQuestions = Math.max(...quizResults.map(result => result.answers?.length || 0));
+  
   return (
-    <Container className="py-4">
+    <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Quiz Resultater: {quizTitle}</h2>
         <Button 
@@ -95,52 +96,70 @@ const QuizResults = () => {
         </Button>
       </div>
       
-      {quizResults.map((result) => (
-        <Card key={`${result.student_id}-${result.timestamp}`} className="mb-4">
-          <Card.Header className="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 className="mb-0">{result.student_name}</h5>
-              <small className="text-muted">
-                {formatDate(result.timestamp)}
-              </small>
-            </div>
-            <div className="text-end">
-              <Badge bg="info" className="me-2">
-                Forsøg: {result.attempts}
-              </Badge>
-              <Badge bg={result.score === result.total_questions ? "success" : "warning"}>
-                {Math.round((result.score / result.total_questions) * 100)}%
-              </Badge>
-            </div>
-          </Card.Header>
-          
-          <Card.Body>
-            <div className="d-flex gap-2 mb-3">
-              {result.answers.map((answer, index) => (
-                <div
-                  key={index}
-                  className={`flex-grow-1 p-2 text-center rounded ${
-                    answer.correct ? 'bg-success' : 'bg-danger'
-                  }`}
-                  style={{ minWidth: '40px' }}
-                >
-                  {answer.correct ? <FaCheck /> : <FaTimes />}
-                </div>
+      {quizResults.length === 0 ? (
+        <Alert variant="info" className="text-center">
+          Ingen resultater fundet for denne quiz.
+        </Alert>
+      ) : (
+        <div className="table-responsive">
+          <Table striped bordered hover>
+            <thead className="bg-light">
+              <tr>
+                <th>Studerende</th>
+                <th>Forsøg</th>
+                <th>Dato</th>
+                {Array.from({ length: maxQuestions }).map((_, i) => (
+                  <th key={i} className="text-center" style={{ width: '60px' }}>
+                    Spg. {i + 1}
+                  </th>
+                ))}
+                <th className="text-center">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quizResults.map((result, resultIndex) => (
+                <tr key={`${result.student_id}-${result.timestamp}-${resultIndex}`}>
+                  <td className="align-middle">
+                    <div className="fw-bold">{result.student_name}</div>
+                  </td>
+                  <td className="align-middle text-center">
+                    <Badge bg="info">{result.attempts}</Badge>
+                  </td>
+                  <td className="align-middle">
+                    {formatDate(result.timestamp)}
+                  </td>
+                  {Array.from({ length: maxQuestions }).map((_, i) => (
+                    <td key={i} className="text-center align-middle">
+                      {result.answers && result.answers[i] ? (
+                        <div 
+                          className={`d-inline-flex justify-content-center align-items-center rounded-circle ${
+                            result.answers[i].correct ? 'bg-success' : 'bg-danger'
+                          }`} 
+                          style={{ 
+                            width: '32px', 
+                            height: '32px', 
+                            color: 'white'
+                          }}
+                        >
+                          {result.answers[i].correct ? <FaCheck /> : <FaTimes />}
+                        </div>
+                      ) : (
+                        <span className="text-muted">-</span>
+                      )}
+                    </td>
+                  ))}
+                  <td className="align-middle text-center">
+                    <Badge 
+                      bg={result.score === result.total_questions ? "success" : "warning"} 
+                      style={{ fontSize: '1rem', padding: '8px 12px' }}
+                    >
+                      {Math.round((result.score / result.total_questions) * 100)}%
+                    </Badge>
+                  </td>
+                </tr>
               ))}
-            </div>
-            
-            <ProgressBar
-              now={(result.score / result.total_questions) * 100}
-              label={`${Math.round((result.score / result.total_questions) * 100)}%`}
-              variant={result.score === result.total_questions ? "success" : "warning"}
-            />
-          </Card.Body>
-        </Card>
-      ))}
-      
-      {quizResults.length === 0 && (
-        <div className="text-center mt-5">
-          <p>Ingen resultater fundet for denne quiz.</p>
+            </tbody>
+          </Table>
         </div>
       )}
     </Container>

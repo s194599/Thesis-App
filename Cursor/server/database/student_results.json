@@ -215,6 +215,246 @@
       "attempts": 2,
       "student_id": "5",
       "student_name": "Frederik Barba"
+    },
+    {
+      "timestamp": "2025-04-22T09:15:47.123456",
+      "quiz_id": "quiz_1745233680",
+      "quiz_title": "Lang Romantikken Quiz",
+      "score": 6,
+      "total_questions": 6,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "What is Romanticism most commonly associated with?",
+          "answer": "Nature and the outdoors",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
+          "answer": "The sun shines brightly upon its hills and valleys.",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
+          "answer": "Mary Shelley",
+          "correct": true
+        },
+        {
+          "question_id": "q4",
+          "question": "What was a common theme among the works of Romantic writers?",
+          "answer": "The exploration of human emotions and passions",
+          "correct": true
+        },
+        {
+          "question_id": "q5",
+          "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
+          "answer": "John Keats",
+          "correct": true
+        },
+        {
+          "question_id": "q6",
+          "question": "What does the term 'sublime' refer to in Romantic art and literature?",
+          "answer": "A sense of fear or awe inspired by nature's grandeur",
+          "correct": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-04-21T14:30:22.567890",
+      "quiz_id": "quiz_1745233680",
+      "quiz_title": "Lang Romantikken Quiz",
+      "score": 4,
+      "total_questions": 6,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "What is Romanticism most commonly associated with?",
+          "answer": "Nature and the outdoors",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
+          "answer": "The sun shines brightly upon its hills and valleys.",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
+          "answer": "Percy Bysshe Shelley",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "What was a common theme among the works of Romantic writers?",
+          "answer": "The exploration of human emotions and passions",
+          "correct": true
+        },
+        {
+          "question_id": "q5",
+          "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
+          "answer": "John Keats",
+          "correct": true
+        },
+        {
+          "question_id": "q6",
+          "question": "What does the term 'sublime' refer to in Romantic art and literature?",
+          "answer": "The glorification of technology and machinery",
+          "correct": false
+        }
+      ],
+      "attempts": 2,
+      "student_id": "2",
+      "student_name": "Maria Jensen"
+    },
+    {
+      "timestamp": "2025-04-22T10:45:33.789012",
+      "quiz_id": "quiz_1745233680",
+      "quiz_title": "Lang Romantikken Quiz",
+      "score": 2,
+      "total_questions": 6,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "What is Romanticism most commonly associated with?",
+          "answer": "Revolutionary ideologies",
+          "correct": false
+        },
+        {
+          "question_id": "q2",
+          "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
+          "answer": "The sun shines brightly upon its hills and valleys.",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
+          "answer": "Lord Byron",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "What was a common theme among the works of Romantic writers?",
+          "answer": "The exploration of human emotions and passions",
+          "correct": true
+        },
+        {
+          "question_id": "q5",
+          "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
+          "answer": "Percy Bysshe Shelley",
+          "correct": false
+        },
+        {
+          "question_id": "q6",
+          "question": "What does the term 'sublime' refer to in Romantic art and literature?",
+          "answer": "The portrayal of everyday life in the city",
+          "correct": false
+        }
+      ],
+      "attempts": 1,
+      "student_id": "3",
+      "student_name": "Peter Nielsen"
+    },
+    {
+      "timestamp": "2025-04-21T16:20:18.456789",
+      "quiz_id": "quiz_1745233680",
+      "quiz_title": "Lang Romantikken Quiz",
+      "score": 0,
+      "total_questions": 6,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "What is Romanticism most commonly associated with?",
+          "answer": "Love and relationships",
+          "correct": false
+        },
+        {
+          "question_id": "q2",
+          "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
+          "answer": "It is cold, hard, and unfeeling.",
+          "correct": false
+        },
+        {
+          "question_id": "q3",
+          "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
+          "answer": "John Keats",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "What was a common theme among the works of Romantic writers?",
+          "answer": "The glorification of science and reason",
+          "correct": false
+        },
+        {
+          "question_id": "q5",
+          "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
+          "answer": "Lord Byron",
+          "correct": false
+        },
+        {
+          "question_id": "q6",
+          "question": "What does the term 'sublime' refer to in Romantic art and literature?",
+          "answer": "The exploration of logical reasoning",
+          "correct": false
+        }
+      ],
+      "attempts": 3,
+      "student_id": "4",
+      "student_name": "Sofie Hansen"
+    },
+    {
+      "timestamp": "2025-04-22T11:55:39.234567",
+      "quiz_id": "quiz_1745233680",
+      "quiz_title": "Lang Romantikken Quiz",
+      "score": 5,
+      "total_questions": 6,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "What is Romanticism most commonly associated with?",
+          "answer": "Nature and the outdoors",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
+          "answer": "The sun shines brightly upon its hills and valleys.",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
+          "answer": "Mary Shelley",
+          "correct": true
+        },
+        {
+          "question_id": "q4",
+          "question": "What was a common theme among the works of Romantic writers?",
+          "answer": "The exploration of human emotions and passions",
+          "correct": true
+        },
+        {
+          "question_id": "q5",
+          "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
+          "answer": "Percy Bysshe Shelley",
+          "correct": false
+        },
+        {
+          "question_id": "q6",
+          "question": "What does the term 'sublime' refer to in Romantic art and literature?",
+          "answer": "A sense of fear or awe inspired by nature's grandeur",
+          "correct": true
+        }
+      ],
+      "attempts": 2,
+      "student_id": "5",
+      "student_name": "Frederik Barba"
     }
   ]
 }
