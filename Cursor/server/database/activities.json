@@ -76,7 +76,8 @@
     "title": "Lang Romantikken Quiz",
     "type": "quiz",
     "quizId": "quiz_1745233680",
-    "completed": false,
-    "moduleSpecific": true
+    "completed": true,
+    "moduleSpecific": true,
+    "quizScore": 67
   }
 ]

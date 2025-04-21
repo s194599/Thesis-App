@@ -217,10 +217,10 @@
       "student_name": "Frederik Barba"
     },
     {
-      "timestamp": "2025-04-22T09:15:47.123456",
+      "timestamp": "2025-04-21T14:54:29.389939",
       "quiz_id": "quiz_1745233680",
       "quiz_title": "Lang Romantikken Quiz",
-      "score": 6,
+      "score": 4,
       "total_questions": 6,
       "answers": [
         {
@@ -238,8 +238,8 @@
         {
           "question_id": "q3",
           "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
-          "answer": "Mary Shelley",
-          "correct": true
+          "answer": "Percy Bysshe Shelley",
+          "correct": false
         },
         {
           "question_id": "q4",
@@ -250,8 +250,8 @@
         {
           "question_id": "q5",
           "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
-          "answer": "John Keats",
-          "correct": true
+          "answer": "William Blake",
+          "correct": false
         },
         {
           "question_id": "q6",
@@ -260,7 +260,7 @@
           "correct": true
         }
       ],
-      "attempts": 1,
+      "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

@@ -7,6 +7,7 @@ const QuizResults = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
   const [quizResults, setQuizResults] = useState([]);
+  const [allStudents, setAllStudents] = useState([]);
   const [quizDetails, setQuizDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,6 +17,14 @@ const QuizResults = () => {
       try {
         setLoading(true);
         setError(null);
+        
+        // Fetch all students
+        const studentsResponse = await fetch(`/api/student/all`);
+        if (!studentsResponse.ok) {
+          throw new Error('Kunne ikke hente studerende');
+        }
+        const studentsData = await studentsResponse.json();
+        setAllStudents(studentsData.students || []);
         
         // Fetch quiz results
         const resultsResponse = await fetch(`/api/student/quiz/${quizId}/results`);
@@ -67,6 +76,7 @@ const QuizResults = () => {
   );
 
   const formatDate = (timestamp) => {
+    if (!timestamp) return "Ikke taget";
     const date = new Date(timestamp);
     return date.toLocaleString('da-DK', {
       day: '2-digit',
@@ -81,7 +91,24 @@ const QuizResults = () => {
   const quizTitle = quizDetails?.title || `Quiz ${quizId.replace('quiz_', '')}`;
   
   // Find the maximum number of questions among all results
-  const maxQuestions = Math.max(...quizResults.map(result => result.answers?.length || 0));
+  const maxQuestions = Math.max(...quizResults.map(result => result.answers?.length || 0), 0);
+  
+  // Create a map of student IDs to their quiz results
+  const studentResultsMap = {};
+  quizResults.forEach(result => {
+    studentResultsMap[result.student_id] = result;
+  });
+  
+  // Combine all students with their quiz results (if available)
+  const combinedStudentData = allStudents.map(student => {
+    const result = studentResultsMap[student.student_id];
+    return {
+      student_id: student.student_id,
+      student_name: student.name,
+      hasResult: !!result,
+      ...result
+    };
+  });
   
   return (
     <Container fluid className="py-4">
@@ -96,9 +123,9 @@ const QuizResults = () => {
         </Button>
       </div>
       
-      {quizResults.length === 0 ? (
+      {allStudents.length === 0 ? (
         <Alert variant="info" className="text-center">
-          Ingen resultater fundet for denne quiz.
+          Ingen studerende fundet.
         </Alert>
       ) : (
         <div className="table-responsive">
@@ -117,23 +144,27 @@ const QuizResults = () => {
               </tr>
             </thead>
             <tbody>
-              {quizResults.map((result, resultIndex) => (
-                <tr key={`${result.student_id}-${result.timestamp}-${resultIndex}`}>
+              {combinedStudentData.map((student, index) => (
+                <tr key={`${student.student_id}-${index}`}>
                   <td className="align-middle">
-                    <div className="fw-bold">{result.student_name}</div>
+                    <div className="fw-bold">{student.student_name}</div>
                   </td>
                   <td className="align-middle text-center">
-                    <Badge bg="info">{result.attempts}</Badge>
+                    {student.hasResult ? (
+                      <Badge bg="info">{student.attempts}</Badge>
+                    ) : (
+                      <Badge bg="secondary">0</Badge>
+                    )}
                   </td>
                   <td className="align-middle">
-                    {formatDate(result.timestamp)}
+                    {formatDate(student.timestamp)}
                   </td>
                   {Array.from({ length: maxQuestions }).map((_, i) => (
                     <td key={i} className="text-center align-middle">
-                      {result.answers && result.answers[i] ? (
+                      {student.hasResult && student.answers && student.answers[i] ? (
                         <div 
                           className={`d-inline-flex justify-content-center align-items-center rounded-circle ${
-                            result.answers[i].correct ? 'bg-success' : 'bg-danger'
+                            student.answers[i].correct ? 'bg-success' : 'bg-danger'
                           }`} 
                           style={{ 
                             width: '32px', 
@@ -141,7 +172,7 @@ const QuizResults = () => {
                             color: 'white'
                           }}
                         >
-                          {result.answers[i].correct ? <FaCheck /> : <FaTimes />}
+                          {student.answers[i].correct ? <FaCheck /> : <FaTimes />}
                         </div>
                       ) : (
                         <span className="text-muted">-</span>
@@ -149,12 +180,21 @@ const QuizResults = () => {
                     </td>
                   ))}
                   <td className="align-middle text-center">
-                    <Badge 
-                      bg={result.score === result.total_questions ? "success" : "warning"} 
-                      style={{ fontSize: '1rem', padding: '8px 12px' }}
-                    >
-                      {Math.round((result.score / result.total_questions) * 100)}%
-                    </Badge>
+                    {student.hasResult ? (
+                      <Badge 
+                        bg={student.score === student.total_questions ? "success" : "warning"} 
+                        style={{ fontSize: '1rem', padding: '8px 12px' }}
+                      >
+                        {Math.round((student.score / student.total_questions) * 100)}%
+                      </Badge>
+                    ) : (
+                      <Badge 
+                        bg="secondary" 
+                        style={{ fontSize: '1rem', padding: '8px 12px' }}
+                      >
+                        -
+                      </Badge>
+                    )}
                   </td>
                 </tr>
               ))}
