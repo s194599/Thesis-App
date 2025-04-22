@@ -58,14 +58,32 @@ const ModuleOverview = () => {
         const completionsResponse = await fetch(`/api/student-activity-completions?studentId=1`);
         let allCompletions = [];
         
-        if (completionsResponse.ok) {
+        try {
+          // Also fetch the actual completion data with timestamps
+          const detailedCompletionsResponse = await fetch(`/api/database/activity_completions.json`);
+          if (detailedCompletionsResponse.ok) {
+            const detailedData = await detailedCompletionsResponse.json();
+            if (detailedData.completions && Array.isArray(detailedData.completions)) {
+              allCompletions = detailedData.completions.filter(
+                completion => completion.module_id === moduleId
+              );
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching detailed completions:", err);
+          // Continue with basic completions data
+        }
+        
+        // If we couldn't get the detailed completions, fall back to the basic list
+        if (allCompletions.length === 0 && completionsResponse.ok) {
           const data = await completionsResponse.json();
           if (data.success && Array.isArray(data.completed_activities)) {
             // Convert to the format our component expects
             allCompletions = data.completed_activities.map(activityId => ({
               activity_id: activityId,
               module_id: moduleId, // Assume all completions are for this module
-              student_id: "1" // Default to Christian Wu (ID: 1)
+              student_id: "1", // Default to Christian Wu (ID: 1)
+              timestamp: new Date().toISOString() // Use current time as fallback
             }));
           }
         }
@@ -83,11 +101,24 @@ const ModuleOverview = () => {
               
               const randomCompletedActivities = moduleActivities
                 .filter(() => Math.random() > 0.5) // Randomly select about half of activities
-                .map(activity => ({
-                  activity_id: activity.id,
-                  module_id: moduleId,
-                  student_id: student.student_id
-                }));
+                .map(activity => {
+                  // Generate a random timestamp within the last 7 days
+                  const daysAgo = Math.floor(Math.random() * 7); // 0-6 days ago
+                  const hoursAgo = Math.floor(Math.random() * 24); // 0-23 hours ago
+                  const minutesAgo = Math.floor(Math.random() * 60); // 0-59 minutes ago
+                  
+                  const date = new Date();
+                  date.setDate(date.getDate() - daysAgo);
+                  date.setHours(date.getHours() - hoursAgo);
+                  date.setMinutes(date.getMinutes() - minutesAgo);
+                  
+                  return {
+                    activity_id: activity.id,
+                    module_id: moduleId,
+                    student_id: student.student_id,
+                    timestamp: date.toISOString()
+                  };
+                });
               allCompletions = [...allCompletions, ...randomCompletedActivities];
             }
           });
@@ -164,13 +195,43 @@ const ModuleOverview = () => {
       ? Math.round((completedModuleActivities.length / activities.length) * 100)
       : 0;
     
+    // Find the most recent completion timestamp
+    let latestTimestamp = null;
+    if (studentCompletions.length > 0) {
+      // Sort completions by timestamp (newest first)
+      const sortedCompletions = [...studentCompletions].sort((a, b) => {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      });
+      latestTimestamp = sortedCompletions[0].timestamp;
+    }
+    
     return {
       student_id: studentId,
       student_name: student.name,
       completedActivities: completedModuleActivities,
-      completionPercentage
+      completionPercentage,
+      latestTimestamp
     };
   });
+  
+  // Function to format timestamp in a readable way
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return "–";
+    
+    try {
+      const date = new Date(timestamp);
+      return new Intl.DateTimeFormat('da-DK', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    } catch (error) {
+      console.error("Error formatting timestamp:", error);
+      return "–";
+    }
+  };
   
   return (
     <Container fluid className="py-4">
@@ -195,6 +256,7 @@ const ModuleOverview = () => {
             <thead className="bg-light">
               <tr>
                 <th>Studerende</th>
+                <th>Sidste aktivitet gennemført</th>
                 {activities.map((activity, index) => (
                   <th key={activity.id} className="text-center" style={{ minWidth: '80px' }}>
                     <div className="d-inline-block text-truncate" style={{ maxWidth: '150px' }}>
@@ -210,6 +272,9 @@ const ModuleOverview = () => {
                 <tr key={student.student_id}>
                   <td className="align-middle">
                     <div className="fw-bold">{student.student_name}</div>
+                  </td>
+                  <td className="align-middle text-center">
+                    {formatTimestamp(student.latestTimestamp)}
                   </td>
                   {activities.map(activity => (
                     <td key={`${student.student_id}-${activity.id}`} className="text-center align-middle">
