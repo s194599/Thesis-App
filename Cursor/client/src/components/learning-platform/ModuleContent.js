@@ -42,6 +42,7 @@ const ModuleContent = ({
   const isTeacherMode = userRole === "teacher";
 
   const [activities, setActivities] = useState([]);
+  const [completedActivities, setCompletedActivities] = useState([]);
   const [activeTab, setActiveTab] = useState("indhold");
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -102,12 +103,6 @@ const ModuleContent = ({
 
             // Skip if we already have this quiz in this module
             if (activity.quizId && quizMap.has(activity.quizId)) {
-              // If the existing quiz isn't marked completed but this one is,
-              // update the tracked quiz to be completed
-              const existingQuiz = quizMap.get(activity.quizId);
-              if (!existingQuiz.completed && activity.completed) {
-                existingQuiz.completed = true;
-              }
               // Skip this duplicate
               return false;
             }
@@ -129,8 +124,10 @@ const ModuleContent = ({
         })
         .map((activity) => {
           // Make sure moduleId is set correctly for each activity
+          // Remove completed field if present
+          const { completed, ...activityWithoutCompleted } = activity;
           return {
-            ...activity,
+            ...activityWithoutCompleted,
             moduleId: module.id,
           };
         });
@@ -173,16 +170,45 @@ const ModuleContent = ({
     }
   }, [module, userRole]); // Add userRole dependency to ensure re-render when role changes
   
+  // Fetch activity completions for the current student (Christian Wu)
+  useEffect(() => {
+    if (userRole === "student" && activities.length > 0) {
+      fetchStudentCompletions();
+    }
+  }, [activities, userRole]);
+
+  // Function to fetch student activity completions
+  const fetchStudentCompletions = async () => {
+    try {
+      const response = await fetch("/api/student-activity-completions?studentId=1");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && Array.isArray(data.completed_activities)) {
+          setCompletedActivities(data.completed_activities);
+        }
+      } else {
+        console.error("Error fetching activity completions");
+      }
+    } catch (error) {
+      console.error("Error fetching activity completions:", error);
+    }
+  };
+
   if (!module) return <div className="p-4">No module selected</div>;
 
   const totalActivities = activities.length;
-  const completedActivities = activities.filter(
-    (act) => act && act.completed
+  const completedActivitiesCount = activities.filter(activity => 
+    completedActivities.includes(activity.id)
   ).length;
   const progressPercentage =
     totalActivities > 0
-    ? Math.round((completedActivities / totalActivities) * 100) 
-    : 0;
+      ? Math.round((completedActivitiesCount / totalActivities) * 100)
+      : 0;
+
+  // Check if an activity is completed by the current student
+  const isActivityCompleted = (activityId) => {
+    return completedActivities.includes(activityId);
+  };
 
   const getIconForType = (type, url = null) => {
     switch (type) {
@@ -356,7 +382,7 @@ const ModuleContent = ({
       }
 
       // Mark activity as completed for students
-      if (!activity.completed) {
+      if (!isActivityCompleted(activity.id)) {
         try {
           const response = await fetch("/api/complete-activity", {
             method: "POST",
@@ -366,15 +392,14 @@ const ModuleContent = ({
             body: JSON.stringify({
               activityId: activity.id,
               moduleId: module.id,
+              studentId: "1", // Christian Wu's ID
+              studentName: "Christian Wu"
             }),
           });
 
           if (response.ok) {
-            // Update the activity's completion status locally
-            const updatedActivities = activities.map((a) =>
-              a.id === activity.id ? { ...a, completed: true } : a
-            );
-            setActivities(updatedActivities);
+            // Update the completions list locally
+            setCompletedActivities(prev => [...prev, activity.id]);
 
             // Also notify parent component to update its state
             if (onActivityCompletion) {
@@ -447,8 +472,7 @@ const ModuleContent = ({
         type: "pdf", // Default to PDF for file uploads
         url: "",
       file: null,
-      completed: false,
-        isNew: true,
+      isNew: true,
       });
       setShowFileUploadModal(true);
     } else if (type === "link") {
@@ -458,7 +482,6 @@ const ModuleContent = ({
         type: "link",
         url: "",
         file: null,
-        completed: false,
         isNew: true,
       });
       setShowUrlModal(true);
@@ -1334,12 +1357,13 @@ const ModuleContent = ({
           activeTab={activeTab}
           onTabChange={setActiveTab}
           userRole={userRole}
+          moduleId={module.id}
         />
         
         {userRole === "student" && (
         <div className="d-flex justify-content-between align-items-center mb-2 mt-4">
           <div className="text-muted small">
-              {progressPercentage}% - {completedActivities} ud af{" "}
+              {progressPercentage}% - {completedActivitiesCount} ud af{" "}
               {totalActivities} aktiviteter gennemført
           </div>
           
@@ -1373,11 +1397,14 @@ const ModuleContent = ({
             activities.map((activity) => {
               if (!activity) return null;
               
+              // Check if activity is completed by the current student
+              const completed = isActivityCompleted(activity.id);
+
               return (
                 <Card 
                   key={activity.id || Math.random().toString()} 
                   className={`mb-3 activity-card ${
-                    userRole === "student" && activity.completed
+                    userRole === "student" && completed
                       ? "completed"
                       : ""
                   }`}
@@ -1448,7 +1475,7 @@ const ModuleContent = ({
                             {/* Completion Status - Only visible in student mode */}
                             {userRole === "student" && (
                             <div className="ms-2">
-                              {activity.completed ? (
+                              {completed ? (
                                 <BsCheckCircleFill className="text-success" />
                               ) : (
                                   <BsCircleFill

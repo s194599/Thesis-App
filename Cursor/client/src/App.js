@@ -13,6 +13,7 @@ import { QuizOutput } from "./components/quiz/display";
 import { Container, Alert, Button, Spinner } from "react-bootstrap";
 import { getQuiz } from "./services/api";
 import QuizResults from './components/quiz/results/QuizResults';
+import ModuleOverview from './components/learning-platform/ModuleOverview';
 
 function App() {
   const { generatedQuiz } = useQuizContext();
@@ -25,6 +26,16 @@ function App() {
 
         {/* Platform Overview - Main Learning Platform */}
         <Route path="/platform" element={<PlatformOverview />} />
+
+        {/* Module Overview Route */}
+        <Route path="/module/:moduleId/overview" element={
+          <>
+            <Header />
+            <div className="flex-grow-1">
+              <ModuleOverview />
+            </div>
+          </>
+        } />
 
         {/* Quiz Routes */}
         <Route

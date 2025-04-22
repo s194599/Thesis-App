@@ -5,7 +5,6 @@
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=760P94LaNGs&ab_channel=S%C3%B8lvbergetbibliotekogkulturhus",
     "file": null,
-    "completed": false,
     "isNew": true,
     "id": "activity_1744102687303",
     "moduleId": "module-3"
@@ -16,8 +15,7 @@
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner_1744270048.pdf",
     "id": "activity_1744270048086",
-    "moduleId": "module-4",
-    "completed": true
+    "moduleId": "module-4"
   },
   {
     "moduleId": "module-4",
@@ -25,7 +23,6 @@
     "title": "Sociale medier quiz",
     "type": "quiz",
     "quizId": "quiz_1744270236",
-    "completed": true,
     "moduleSpecific": true,
     "quizScore": 0
   },
@@ -35,7 +32,6 @@
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=Q8Kabmpda2w",
     "file": null,
-    "completed": true,
     "isNew": true,
     "id": "activity_1744270289536",
     "moduleId": "module-4"
@@ -45,7 +41,6 @@
     "description": "L\u00e6s kapitel 5\n",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744272217.pdf",
-    "completed": true,
     "isNew": true,
     "id": "activity_1744272217607",
     "moduleId": "module-3"
@@ -55,7 +50,6 @@
     "description": "",
     "type": "image",
     "url": "http://localhost:5001/api/uploads/quiz_1744272683.png",
-    "completed": true,
     "isNew": true,
     "id": "activity_1744272683494",
     "moduleId": "module-4"
@@ -66,7 +60,6 @@
     "title": "Romantikken Quiz",
     "type": "quiz",
     "quizId": "quiz_1744279908",
-    "completed": true,
     "moduleSpecific": true
   },
   {
@@ -75,8 +68,25 @@
     "title": "Lang Romantikken Quiz",
     "type": "quiz",
     "quizId": "quiz_1745233680",
-    "completed": true,
     "moduleSpecific": true,
     "quizScore": 67
+  },
+  {
+    "title": "App design thesis.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/App_design_thesis_1745328099.pdf",
+    "isNew": true,
+    "id": "activity_1745328099637",
+    "moduleId": "module-3"
+  },
+  {
+    "title": "ECG monitoring app (Meget Teknisk).pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/ECG_monitoring_app_Meget_Teknisk_1745330399.pdf",
+    "isNew": true,
+    "id": "activity_1745330399573",
+    "moduleId": "module-3"
   }
 ]

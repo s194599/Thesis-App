@@ -1,7 +1,7 @@
 {
   "quiz_history": [
     {
-      "timestamp": "2025-04-10T12:39:46.620890",
+      "timestamp": "2025-04-22T15:10:52.635421",
       "quiz_id": "quiz_1744270236",
       "quiz_title": "Sociale medier quiz",
       "score": 1,
@@ -20,15 +20,15 @@
           "correct": false
         }
       ],
-      "attempts": 1,
+      "attempts": 3,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-21T18:50:00.068667",
+      "timestamp": "2025-04-22T15:11:20.822068",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 2,
+      "score": 1,
       "total_questions": 3,
       "answers": [
         {
@@ -46,11 +46,11 @@
         {
           "question_id": "q1745254179199",
           "question": "AI Generated Question: What is the main function of DNA?",
-          "answer": "Store genetic information",
-          "correct": true
+          "answer": "Break down nutrients",
+          "correct": false
         }
       ],
-      "attempts": 6,
+      "attempts": 7,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -223,23 +223,23 @@
       "student_name": "Frederik Barba"
     },
     {
-      "timestamp": "2025-04-21T14:54:29.389939",
+      "timestamp": "2025-04-22T15:18:08.945752",
       "quiz_id": "quiz_1745233680",
       "quiz_title": "Lang Romantikken Quiz",
-      "score": 4,
+      "score": 0,
       "total_questions": 6,
       "answers": [
         {
           "question_id": "q1",
           "question": "What is Romanticism most commonly associated with?",
-          "answer": "Nature and the outdoors",
-          "correct": true
+          "answer": "Mathematical theories",
+          "correct": false
         },
         {
           "question_id": "q2",
           "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
-          "answer": "The sun shines brightly upon its hills and valleys.",
-          "correct": true
+          "answer": "Its colors are dull and uninspiring.",
+          "correct": false
         },
         {
           "question_id": "q3",
@@ -250,23 +250,23 @@
         {
           "question_id": "q4",
           "question": "What was a common theme among the works of Romantic writers?",
-          "answer": "The exploration of human emotions and passions",
-          "correct": true
+          "answer": "The analysis of mathematical concepts",
+          "correct": false
         },
         {
           "question_id": "q5",
           "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
-          "answer": "William Blake",
+          "answer": "Lord Byron",
           "correct": false
         },
         {
           "question_id": "q6",
           "question": "What does the term 'sublime' refer to in Romantic art and literature?",
-          "answer": "A sense of fear or awe inspired by nature's grandeur",
-          "correct": true
+          "answer": "The glorification of technology and machinery",
+          "correct": false
         }
       ],
-      "attempts": 2,
+      "attempts": 3,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import os
 import json
+from datetime import datetime
 
 from config.app_config import DATABASE_FOLDER, logger
 from utils.file_helpers import load_json_file, save_json_file
@@ -27,9 +28,9 @@ def store_activity():
         if "moduleId" not in activity_data:
             return jsonify({"success": False, "message": "Module ID is required"}), 400
 
-        # Ensure the completed field is included
-        if "completed" not in activity_data:
-            activity_data["completed"] = False
+        # Remove completed field if present
+        if "completed" in activity_data:
+            del activity_data["completed"]
 
         # Load existing activities
         activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
@@ -60,10 +61,6 @@ def store_activity():
                 # If quiz already exists in THIS module, update it instead of adding again
                 for idx in existing_quiz_indices:
                     if activities[idx].get("moduleId") == module_id:
-                        # Preserve completed state if already completed
-                        if activities[idx].get("completed", False) and not activity_data.get("completed", False):
-                            activity_data["completed"] = True
-                            
                         activities[idx] = activity_data
                         
                         # Save activities back to file
@@ -72,8 +69,7 @@ def store_activity():
                                 {
                                     "success": True,
                                     "message": "Quiz activity updated successfully",
-                                    "activityId": activity_data.get("id"),
-                                    "completed": activity_data.get("completed", False),
+                                    "activityId": activity_data.get("id")
                                 }
                             )
                         else:
@@ -93,13 +89,6 @@ def store_activity():
 
         # Update or add the activity
         if existing_index is not None:
-            # If the existing activity is already completed and new one isn't,
-            # preserve the completed state
-            if activities[existing_index].get(
-                "completed", False
-            ) and not activity_data.get("completed", False):
-                activity_data["completed"] = True
-
             activities[existing_index] = activity_data
         else:
             activities.append(activity_data)
@@ -110,8 +99,7 @@ def store_activity():
                 {
                     "success": True,
                     "message": "Activity saved successfully",
-                    "activityId": activity_data.get("id"),
-                    "completed": activity_data.get("completed", False),
+                    "activityId": activity_data.get("id")
                 }
             )
         else:
@@ -140,6 +128,22 @@ def get_module_activities(module_id):
             for activity in all_activities
             if activity.get("moduleId") == module_id
         ]
+        
+        # Get completion information for the current student (default to Christian Wu)
+        student_id = request.args.get("studentId", "1")  # Default to ID 1 (Christian Wu)
+        completions_file = os.path.join(DATABASE_FOLDER, "activity_completions.json")
+        completions_data = load_json_file(completions_file, {"completions": []})
+        
+        # Create a set of completed activity IDs for this student
+        completed_activities = {
+            completion.get("activity_id") 
+            for completion in completions_data.get("completions", [])
+            if completion.get("student_id") == student_id
+        }
+        
+        # Add completion status to activities
+        for activity in module_activities:
+            activity["completed"] = activity.get("id") in completed_activities
 
         return jsonify({"success": True, "activities": module_activities})
 
@@ -182,9 +186,25 @@ def delete_activity():
                 and activity.get("moduleId") == module_id
             )
         ]
+        
+        # Also remove from completions
+        completions_file = os.path.join(DATABASE_FOLDER, "activity_completions.json")
+        completions_data = load_json_file(completions_file, {"completions": []})
+        
+        # Filter out completions for this activity
+        updated_completions = [
+            completion 
+            for completion in completions_data.get("completions", [])
+            if completion.get("activity_id") != activity_id
+        ]
+        
+        completions_data["completions"] = updated_completions
+        
+        # Save both files
+        activities_saved = save_json_file(activities_file, updated_activities)
+        completions_saved = save_json_file(completions_file, completions_data)
 
-        # Save the updated list back to file
-        if save_json_file(activities_file, updated_activities):
+        if activities_saved and completions_saved:
             return jsonify(
                 {
                     "success": True,
@@ -280,72 +300,85 @@ def update_quiz_activity_title():
 @activity_routes.route("/complete-activity", methods=["POST"])
 def complete_activity():
     """
-    Marks an activity as completed
+    Marks an activity as completed for a specific student
     """
     try:
         data = request.json
-        if not data or "moduleId" not in data:
-            return jsonify({"success": False, "message": "Module ID is required"}), 400
-            
-        module_id = data.get("moduleId")
         activity_id = data.get("activityId")
-        quiz_id = data.get("quizId")  # Allow finding by quizId as well
+        module_id = data.get("moduleId")
+        student_id = data.get("studentId", "1")  # Default to Christian Wu (ID: 1)
+        student_name = data.get("studentName", "Christian Wu")  # Default name
         
-        if not activity_id and not quiz_id:
-            return jsonify({"success": False, "message": "Either Activity ID or Quiz ID is required"}), 400
-        
-        # Load existing activities
-        activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
-        activities = load_json_file(activities_file, [])
-        
-        # Find the activity to mark as completed
-        activity_found = False
-        for activity in activities:
-            # Match by regular activity ID
-            if activity_id and activity.get("id") == activity_id and activity.get("moduleId") == module_id:
-                activity["completed"] = True
-                
-                # Add quiz score if provided
-                if "quizScore" in data:
-                    activity["quizScore"] = data.get("quizScore")
-                    
-                activity_found = True
-                logger.info(f"Activity marked as completed by ID: {activity_id}")
-                break
-                
-            # Special handling for quiz activities that might not have an ID
-            elif quiz_id and activity.get("type") == "quiz" and activity.get("quizId") == quiz_id and activity.get("moduleId") == module_id:
-                activity["completed"] = True
-                
-                # Ensure the activity has an ID field
-                if "id" not in activity:
-                    activity["id"] = f"activity_quiz_{quiz_id}"
-                    logger.info(f"Added ID to quiz activity: {activity['id']}")
-                
-                # Add quiz score if provided
-                if "quizScore" in data:
-                    activity["quizScore"] = data.get("quizScore")
-                
-                activity_found = True
-                logger.info(f"Quiz activity marked as completed by quizId: {quiz_id}")
-                break
-        
-        if not activity_found:
-            error_msg = f"Activity not found with ID: {activity_id} or quizId: {quiz_id} in module: {module_id}"
-            logger.warning(error_msg)
-            return jsonify({"success": False, "message": error_msg}), 404
-        
-        # Save the updated activities
-        if save_json_file(activities_file, activities):
-            return jsonify({
-                "success": True, 
-                "message": "Activity marked as completed",
-                "moduleId": module_id,
-                "activityId": activity_id or f"activity_quiz_{quiz_id}"
-            })
-        else:
-            return jsonify({"success": False, "message": "Failed to save activities file"}), 500
+        if not activity_id or not module_id:
+            return jsonify({"success": False, "message": "Activity ID and Module ID are required"}), 400
             
+        # Path to store completions
+        completions_file = os.path.join(DATABASE_FOLDER, "activity_completions.json")
+        
+        # Load existing completions
+        completions = load_json_file(completions_file, {"completions": []})
+        
+        # Check if this completion already exists
+        completion_exists = False
+        for completion in completions["completions"]:
+            if (completion.get("activity_id") == activity_id and 
+                completion.get("student_id") == student_id):
+                completion_exists = True
+                break
+                
+        # Add completion if it doesn't exist
+        if not completion_exists:
+            new_completion = {
+                "activity_id": activity_id,
+                "module_id": module_id,
+                "student_id": student_id,
+                "student_name": student_name,
+                "timestamp": datetime.now().isoformat()
+            }
+            completions["completions"].append(new_completion)
+            
+            # Save completions back to file
+            if not save_json_file(completions_file, completions):
+                return jsonify({"success": False, "message": "Failed to save completion"}), 500
+        
+        return jsonify({"success": True, "message": "Activity marked as completed"})
+        
     except Exception as e:
         logger.error(f"Error completing activity: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@activity_routes.route("/student-activity-completions", methods=["GET"])
+def get_student_activity_completions():
+    """
+    Get all activity completions for a specific student
+    """
+    try:
+        student_id = request.args.get("studentId", "1")  # Default to Christian Wu (ID: 1)
+        
+        # Path to completions file
+        completions_file = os.path.join(DATABASE_FOLDER, "activity_completions.json")
+        
+        # Load existing completions
+        completions = load_json_file(completions_file, {"completions": []})
+        
+        # Filter completions for this student
+        student_completions = [
+            completion for completion in completions["completions"]
+            if completion.get("student_id") == student_id
+        ]
+        
+        # Return list of activity IDs completed by this student
+        completed_activity_ids = [
+            completion.get("activity_id") for completion in student_completions
+        ]
+        
+        return jsonify({
+            "success": True, 
+            "student_id": student_id,
+            "completed_activities": completed_activity_ids
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting student completions: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500

@@ -15,11 +15,17 @@ TEMPLATES_AUTO_RELOAD = False  # Disable template auto-reload
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 DATABASE_FOLDER = os.path.join(BASE_DIR, "database")
+QUIZ_FOLDER = os.path.join(DATABASE_FOLDER, "quizzes")
+ACTIVITIES_FOLDER = os.path.join(DATABASE_FOLDER, "activities")
+MODULES_FOLDER = os.path.join(DATABASE_FOLDER, "modules")
 
 
 # Create directories if they don't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(DATABASE_FOLDER, exist_ok=True)
+os.makedirs(QUIZ_FOLDER, exist_ok=True)
+os.makedirs(ACTIVITIES_FOLDER, exist_ok=True)
+os.makedirs(MODULES_FOLDER, exist_ok=True)
 
 # File handling configuration
 ALLOWED_EXTENSIONS = {

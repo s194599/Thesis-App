@@ -362,8 +362,8 @@ const QuizForm = () => {
                       disabled={loading || !isFormValid()}
                     >
                       {formData.useSampleQuiz
-                        ? "Generer Eksempelquiz"
-                        : "Generer Quiz"}
+                        ? "Opret Eksempelquiz"
+                        : "Opret Quiz"}
                     </Button>
                   </div>
 

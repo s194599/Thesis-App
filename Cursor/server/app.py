@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import uuid
 from werkzeug.utils import secure_filename
+from datetime import timedelta
 
 # Import configuration
 from config.app_config import (
@@ -12,6 +13,9 @@ from config.app_config import (
     MAX_CONTENT_LENGTH,
     TEMPLATES_AUTO_RELOAD,
     UPLOAD_FOLDER,
+    QUIZ_FOLDER,
+    ACTIVITIES_FOLDER,
+    MODULES_FOLDER,
 )
 
 # Import route blueprints
@@ -20,6 +24,7 @@ from routes.quiz_routes import quiz_routes
 from routes.activity_routes import activity_routes
 from routes.module_routes import module_routes
 from routes.student_routes import student_bp
+from routes.completion_routes import completion_routes
 
 # Create Flask app
 app = Flask(__name__)
@@ -34,6 +39,11 @@ CORS(
             "allow_headers": ["Content-Type", "Authorization"],
             "supports_credentials": True,
             "expose_headers": ["Content-Disposition", "Content-Type"],
+        },
+        r"/files/*": {
+            "origins": "*",
+            "methods": ["GET", "POST"],
+            "allow_headers": ["Content-Type", "Authorization", "Content-Disposition"]
         }
     },
 )
@@ -60,7 +70,13 @@ app.register_blueprint(quiz_routes, url_prefix="/api")
 app.register_blueprint(activity_routes, url_prefix="/api")
 app.register_blueprint(module_routes, url_prefix="/api")
 app.register_blueprint(student_bp, url_prefix="/api")
+app.register_blueprint(completion_routes, url_prefix="/api")
 
+# Create necessary directories
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(QUIZ_FOLDER, exist_ok=True)
+os.makedirs(ACTIVITIES_FOLDER, exist_ok=True)
+os.makedirs(MODULES_FOLDER, exist_ok=True)
 
 # Additional CORS headers for file downloads
 @app.after_request
