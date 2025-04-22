@@ -134,6 +134,7 @@
   },
   {
     "description": "Quiz generated from your content",
+    "id": "quiz_1744279908",
     "questions": [
       {
         "correctAnswer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
@@ -156,11 +157,22 @@
           "Mathematics and science"
         ],
         "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?"
+      },
+      {
+        "correctAnswer": "Store genetic information",
+        "explanation": "DNA (deoxyribonucleic acid) stores genetic information in the form of genes.",
+        "id": "q1745254179199",
+        "options": [
+          "Store genetic information",
+          "Produce energy",
+          "Break down nutrients",
+          "Transport oxygen"
+        ],
+        "question": "AI Generated Question: What is the main function of DNA?"
       }
     ],
-    "title": "Romantikken Quiz",
-    "timestamp": "2025-04-10T10:11:48.516Z",
-    "id": "quiz_1744279908"
+    "timestamp": "2025-04-21T16:50:32.482Z",
+    "title": "Romantikken Quiz"
   },
   {
     "description": "Quiz generated from your content",
@@ -235,5 +247,49 @@
     "title": "Lang Romantikken Quiz",
     "timestamp": "2025-04-21T11:08:00.852Z",
     "id": "quiz_1745233680"
+  },
+  {
+    "title": "Quiz",
+    "description": "Test your knowledge of basic biology concepts",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "What is the green pigment in plants that absorbs sunlight called?",
+        "options": [
+          "Chlorophyll",
+          "Carotene",
+          "Xanthophyll",
+          "Melanin"
+        ],
+        "correctAnswer": "Chlorophyll",
+        "explanation": "Chlorophyll is the green pigment in plants that captures sunlight for photosynthesis."
+      },
+      {
+        "id": "q2",
+        "question": "What is the process by which plants make their own food using sunlight?",
+        "options": [
+          "Photosynthesis",
+          "Respiration",
+          "Transpiration",
+          "Germination"
+        ],
+        "correctAnswer": "Photosynthesis",
+        "explanation": "Photosynthesis is the process where plants convert light energy into chemical energy to fuel their activities."
+      },
+      {
+        "id": "q3",
+        "question": "Which organelle is known as the 'powerhouse' of the cell?",
+        "options": [
+          "Mitochondria",
+          "Nucleus",
+          "Chloroplast",
+          "Endoplasmic reticulum"
+        ],
+        "correctAnswer": "Mitochondria",
+        "explanation": "Mitochondria generate most of the cell's supply of ATP, used as a source of chemical energy."
+      }
+    ],
+    "timestamp": "2025-04-22T10:23:35.178Z",
+    "id": "quiz_1745317415"
   }
 ]

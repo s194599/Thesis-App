@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Card, Button, Form, Spinner, Modal } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
 import {
@@ -7,12 +7,18 @@ import {
   BsTypeH1,
   BsPlus,
   BsArrowLeft,
+  BsFilePdf,
+  BsDownload,
 } from "react-icons/bs";
 import { QuizEditor } from "../management";
 import { useNavigate } from "react-router-dom";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import '../../../styles/QuizOutput.css';
 
 const QuizOutput = () => {
   const navigate = useNavigate();
+  const quizContentRef = useRef(null);
   const {
     generatedQuiz,
     resetForm,
@@ -28,6 +34,9 @@ const QuizOutput = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [isAddingToModule, setIsAddingToModule] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showAnswers, setShowAnswers] = useState(true);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [showPdfOptions, setShowPdfOptions] = useState(false);
 
   // If in editing mode, show the QuizEditor component
   if (isEditing) {
@@ -98,17 +107,17 @@ const QuizOutput = () => {
               <div
                 key={optionIndex}
                 className={`d-flex align-items-center mb-2 py-2 px-3 rounded ${
-                  isCorrect ? "bg-light" : ""
+                  showAnswers && isCorrect ? "bg-light" : ""
                 }`}
               >
                 <div
                   className={`rounded-circle d-flex justify-content-center align-items-center me-3 ${
-                    isCorrect ? "bg-success" : "bg-light border"
+                    showAnswers && isCorrect ? "bg-success" : "bg-light border"
                   }`}
                   style={{ width: "28px", height: "28px", minWidth: "28px" }}
                 >
                   <span
-                    className={isCorrect ? "text-white" : "text-secondary"}
+                    className={showAnswers && isCorrect ? "text-white" : "text-secondary"}
                     style={{ fontSize: "14px" }}
                   >
                     {letter}
@@ -120,8 +129,8 @@ const QuizOutput = () => {
           })}
         </div>
 
-        {/* Explanation section */}
-        {question.explanation && (
+        {/* Explanation section - only show when answers are visible */}
+        {showAnswers && question.explanation && (
           <div className="bg-light p-3 border-top">
             <p className="mb-0">
               <strong>Forklaring</strong>
@@ -131,6 +140,58 @@ const QuizOutput = () => {
         )}
       </div>
     ));
+  };
+
+  // Handle PDF generation
+  const generatePDF = async () => {
+    setIsPdfGenerating(true);
+    try {
+      const content = quizContentRef.current;
+      
+      // First, create a canvas from the content
+      const canvas = await html2canvas(content, {
+        scale: 2, // Higher scale for better quality
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#f8f9fa" // Light grey background
+      });
+      
+      // Create PDF with appropriate dimensions
+      const imgWidth = 190; // mm, slightly less than A4 width
+      const pageHeight = 280; // mm, slightly less than A4 height
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      // Calculate number of pages needed
+      const pdfHeight = Math.max(imgHeight, pageHeight);
+      const pdfDoc = new jsPDF('p', 'mm', 'a4');
+      
+      // Add quiz title as a header
+      pdfDoc.setFontSize(18);
+      pdfDoc.text(generatedQuiz.title || 'Quiz', 105, 15, { align: 'center' });
+      
+      // Add image of the content
+      const imgData = canvas.toDataURL('image/png');
+      pdfDoc.addImage(imgData, 'PNG', 10, 20, imgWidth, imgHeight);
+      
+      // Add footer with page info and date
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('da-DK');
+      pdfDoc.setFontSize(10);
+      pdfDoc.text(`Generet d. ${dateStr}`, 10, 287);
+      
+      // Save the PDF
+      pdfDoc.save(`${generatedQuiz.title || 'Quiz'}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsPdfGenerating(false);
+      setShowPdfOptions(false);
+    }
+  };
+
+  // Handle the PDF options modal
+  const handlePdfOptionsConfirm = () => {
+    generatePDF();
   };
 
   // Handle the save quiz action
@@ -276,7 +337,9 @@ const QuizOutput = () => {
         </div>
       </div>
 
-      <div className="quiz-questions">{renderQuizQuestions()}</div>
+      <div className="quiz-questions" ref={quizContentRef}>
+        {renderQuizQuestions()}
+      </div>
 
       <div className="mt-4 d-flex justify-content-end gap-2">
         {/* Check if quiz is being viewed from a saved state (has quizId) */}
@@ -289,7 +352,29 @@ const QuizOutput = () => {
           </Button>
         )}
 
-        <Button variant="outline-secondary">Download som PDF</Button>
+        <Button 
+          variant="outline-secondary"
+          onClick={() => setShowPdfOptions(true)}
+          disabled={isPdfGenerating}
+        >
+          {isPdfGenerating ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="me-2"
+              />
+              Genererer PDF...
+            </>
+          ) : (
+            <>
+              <BsFilePdf className="me-2" /> Download som PDF
+            </>
+          )}
+        </Button>
 
         {/* Streamlined save buttons logic */}
         {isFromModule ? (
@@ -395,6 +480,56 @@ const QuizOutput = () => {
           </Button>
           <Button variant="danger" onClick={handleDeleteQuiz}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* PDF Options Modal */}
+      <Modal 
+        show={showPdfOptions} 
+        onHide={() => setShowPdfOptions(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>PDF Indstillinger</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Check
+                type="checkbox"
+                id="showAnswersCheck"
+                label="Vis korrekte svar i PDF"
+                checked={showAnswers}
+                onChange={() => setShowAnswers(!showAnswers)}
+              />
+              <Form.Text className="text-muted">
+                Fravælg denne indstilling hvis du vil udskrive en version uden markerede svar til eleverne.
+              </Form.Text>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button 
+            variant="secondary" 
+            onClick={() => setShowPdfOptions(false)}
+          >
+            Annuller
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={handlePdfOptionsConfirm}
+            disabled={isPdfGenerating}
+          >
+            {isPdfGenerating ? (
+              <>
+                <Spinner size="sm" className="me-2" /> Genererer...
+              </>
+            ) : (
+              <>
+                <BsDownload className="me-2" /> Download PDF
+              </>
+            )}
           </Button>
         </Modal.Footer>
       </Modal>

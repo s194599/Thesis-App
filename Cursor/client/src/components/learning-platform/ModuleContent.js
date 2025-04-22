@@ -8,11 +8,11 @@ import {
   Form,
   Spinner,
 } from "react-bootstrap";
-import {
-  BsCheckCircleFill,
-  BsCircleFill,
-  BsFileEarmarkPdf,
-  BsFileEarmarkWord,
+import { 
+  BsCheckCircleFill, 
+  BsCircleFill, 
+  BsFileEarmarkPdf, 
+  BsFileEarmarkWord, 
   BsYoutube,
   BsListCheck,
   BsPencil,
@@ -71,7 +71,7 @@ const ModuleContent = ({
   const [editingDate, setEditingDate] = useState(false);
   const [editedDate, setEditedDate] = useState("");
   const navigate = useNavigate();
-
+  
   // Initialize activities from module when it changes
   useEffect(() => {
     if (module && Array.isArray(module.activities)) {
@@ -172,7 +172,7 @@ const ModuleContent = ({
       setEditedDate("");
     }
   }, [module, userRole]); // Add userRole dependency to ensure re-render when role changes
-
+  
   if (!module) return <div className="p-4">No module selected</div>;
 
   const totalActivities = activities.length;
@@ -181,8 +181,8 @@ const ModuleContent = ({
   ).length;
   const progressPercentage =
     totalActivities > 0
-      ? Math.round((completedActivities / totalActivities) * 100)
-      : 0;
+    ? Math.round((completedActivities / totalActivities) * 100) 
+    : 0;
 
   const getIconForType = (type, url = null) => {
     switch (type) {
@@ -222,9 +222,9 @@ const ModuleContent = ({
 
   const detectFileType = (filename) => {
     if (!filename) return "pdf"; // Default
-
+    
     const lowerFilename = filename.toLowerCase();
-
+    
     if (lowerFilename.endsWith(".pdf")) {
       return "pdf";
     } else if (
@@ -253,7 +253,7 @@ const ModuleContent = ({
   // Function to extract YouTube video ID from different URL formats
   const extractYoutubeVideoId = (url) => {
     if (!url) return null;
-
+    
     // Regular YouTube URL: https://www.youtube.com/watch?v=VIDEO_ID
     // Shortened URL: https://youtu.be/VIDEO_ID
     // Embedded URL: https://www.youtube.com/embed/VIDEO_ID
@@ -264,7 +264,7 @@ const ModuleContent = ({
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
-
+    
     if (match && match[2].length === 11) {
       videoId = match[2];
     }
@@ -315,12 +315,12 @@ const ModuleContent = ({
   // Validate and potentially fix URL format
   const validateUrl = (url) => {
     if (!url) return false;
-
+    
     // Check if URL already has http/https protocol
     if (url.startsWith("http://") || url.startsWith("https://")) {
       return true; // URL is already valid with protocol
     }
-
+    
     // Check for malformed URLs with duplicate protocols or domains
     if (
       url.includes("http://http://") ||
@@ -335,12 +335,12 @@ const ModuleContent = ({
       }
       return false;
     }
-
+    
     // If it's a relative path starting with /api or /uploads, it's valid
     if (url.startsWith("/api/") || url.startsWith("/uploads/")) {
       return true; // This is valid as-is and will work with the proxy
     }
-
+    
     // For other relative URLs, prepend https:// as a default
     return `https://${url}`;
   };
@@ -410,7 +410,7 @@ const ModuleContent = ({
           // For teachers, navigate to the results page if there's a quizId
           if (activity.quizId) {
             navigate(`/quiz/${activity.quizId}/results`);
-          } else {
+    } else {
             // For generating a new quiz when no quizId exists
             const documents = activities.filter(
               (a) => a.type === "pdf" || a.type === "word" || a.type === "doc"
@@ -431,7 +431,7 @@ const ModuleContent = ({
         console.log("Opening activity:", activity.title);
     }
   };
-
+  
   const handleAddActivity = () => {
     setShowActivityTypeModal(true);
   };
@@ -441,13 +441,13 @@ const ModuleContent = ({
 
     // Configure the new activity based on the selected type
     if (type === "file") {
-      setNewActivity({
+    setNewActivity({
         title: "",
         description: "",
         type: "pdf", // Default to PDF for file uploads
         url: "",
-        file: null,
-        completed: false,
+      file: null,
+      completed: false,
         isNew: true,
       });
       setShowFileUploadModal(true);
@@ -491,7 +491,7 @@ const ModuleContent = ({
       navigate("/quiz/create");
     }
   };
-
+  
   const handleEditActivity = (e, activity) => {
     e.stopPropagation(); // Prevent triggering the card click
     setEditActivityId(activity.id);
@@ -528,7 +528,7 @@ const ModuleContent = ({
     setShowAddModal(true);
     }
   };
-
+  
   const handleDeleteActivity = (e, activityId) => {
     e.stopPropagation(); // Prevent triggering the card click
     if (window.confirm("Er du sikker på, at du vil slette denne aktivitet?")) {
@@ -549,7 +549,7 @@ const ModuleContent = ({
       if (onUpdateActivities && module) {
         onUpdateActivities(module.id, updatedActivities);
       }
-
+      
       // Delete from server storage for all activity types
       if (activityToDelete) {
         fetch("/api/delete-activity", {
@@ -575,18 +575,18 @@ const ModuleContent = ({
             console.error(
               `Error deleting activity from server: ${error.message}`
             );
-          });
+        });
       }
     }
   };
-
+  
   const handleModalInputChange = (e) => {
     const { name, value, files } = e.target;
-
+    
     if (name === "file" && files && files.length > 0) {
       const file = files[0];
       const fileType = detectFileType(file.name);
-
+      
       setNewActivity({
         ...newActivity,
         file: file,
@@ -596,17 +596,17 @@ const ModuleContent = ({
     } else if (name === "url") {
       // Validate and possibly correct URL
       const validatedUrl = validateUrl(value);
-
+      
       // If URL was corrected (string returned), use the corrected version
       const finalUrl = typeof validatedUrl === "string" ? validatedUrl : value;
 
       // Detect if this is a YouTube URL
       const isYoutubeUrl =
         finalUrl.includes("youtube.com") || finalUrl.includes("youtu.be");
-
+      
       // Auto-detect file type based on URL
       const fileType = isYoutubeUrl ? "youtube" : detectFileType(finalUrl);
-
+      
       setNewActivity({
         ...newActivity,
         url: finalUrl,
@@ -657,53 +657,53 @@ const ModuleContent = ({
       });
     }
   };
-
+  
   const handleSaveActivity = () => {
     // Validate URL if present before saving
     if (newActivity.url && !newActivity.file) {
       const validatedUrl = validateUrl(newActivity.url);
-
+      
       if (!validatedUrl) {
         alert("Ugyldig URL. Angiv venligst en gyldig URL.");
         return;
       }
-
+      
       // Use corrected URL if returned
       if (typeof validatedUrl === "string") {
         newActivity.url = validatedUrl;
       }
     }
-
+    
     // Generate a unique ID for new activities
     const activityId = editActivityId || `activity_${Date.now()}`;
-
+    
     const updatedActivity = {
       ...newActivity,
       id: activityId,
     };
-
+    
     // Remove the file object before saving to state
     const { file, ...activityToSave } = updatedActivity;
-
+    
     // Handle file upload if there's a file
     if (file) {
       // Create form data for file upload
       const formData = new FormData();
       formData.append("file", file);
-
+      
       // Upload the file
       fetch("/api/upload", {
         method: "POST",
         body: formData,
       })
         .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
         .then((data) => {
-          if (data.success) {
+        if (data.success) {
             // Always use the full server URL for all file types to avoid routing issues
             let fileUrl = data.serverUrl;
 
@@ -712,24 +712,24 @@ const ModuleContent = ({
               fileUrl = `http://localhost:5001${
                 data.url.startsWith("/") ? "" : "/"
               }${data.url}`;
-            }
-
-            // Add the URL to the activity
-            const fileActivity = {
-              ...activityToSave,
-              url: fileUrl,
-              type: data.type || activityToSave.type,
+          }
+          
+          // Add the URL to the activity
+          const fileActivity = {
+            ...activityToSave,
+            url: fileUrl,
+            type: data.type || activityToSave.type,
               moduleId: module.id, // Ensure moduleId is set correctly
-            };
-
-            // Store the activity on the server for persistence
+          };
+          
+          // Store the activity on the server for persistence
             fetch("/api/store-activity", {
               method: "POST",
-              headers: {
+            headers: {
                 "Content-Type": "application/json",
-              },
-              body: JSON.stringify(fileActivity),
-            })
+            },
+            body: JSON.stringify(fileActivity),
+          })
               .then((response) => {
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
@@ -743,29 +743,29 @@ const ModuleContent = ({
                 console.error(
                   `Error storing activity on server: ${error.message}`
                 );
-              });
-
-            // Update activities
-            let updatedActivities;
-            if (editActivityId) {
-              // Update existing activity
+          });
+          
+          // Update activities
+          let updatedActivities;
+          if (editActivityId) {
+            // Update existing activity
               updatedActivities = activities.map((activity) =>
-                activity.id === editActivityId ? fileActivity : activity
-              );
-            } else {
-              // Add new activity
-              updatedActivities = [...activities, fileActivity];
-            }
+              activity.id === editActivityId ? fileActivity : activity
+            );
+          } else {
+            // Add new activity
+            updatedActivities = [...activities, fileActivity];
+          }
 
             // Update local state first for immediate UI feedback
             setActivities(updatedActivities);
-
-            // Update the parent component
+          
+          // Update the parent component
             if (onUpdateActivities && module) {
-              onUpdateActivities(module.id, updatedActivities);
-            }
-
-            setShowAddModal(false);
+            onUpdateActivities(module.id, updatedActivities);
+          }
+          
+          setShowAddModal(false);
             // Reset newActivity state
             setNewActivity({
               title: "",
@@ -776,8 +776,8 @@ const ModuleContent = ({
               content: "",
             });
             setEditActivityId(null);
-          } else {
-            // Handle error
+        } else {
+          // Handle error
             console.error("Error uploading file:", data.error);
             alert("Error uploading file: " + (data.error || "Unknown error"));
           }
@@ -785,7 +785,7 @@ const ModuleContent = ({
         .catch((error) => {
           console.error(`Error uploading file: ${error.message}`);
           alert("Error uploading file. Please try again.");
-        });
+      });
     } else {
       // No file to upload, just update activities
       // Add moduleId to the activity for server storage
@@ -793,7 +793,7 @@ const ModuleContent = ({
         ...activityToSave,
         moduleId: module.id, // Ensure moduleId is set correctly
       };
-
+      
       // Store activities that have URLs on the server
       if (activityWithModule.url) {
         fetch("/api/store-activity", {
@@ -809,11 +809,11 @@ const ModuleContent = ({
           })
           .catch((error) => {
             console.error(`Error storing activity on server: ${error.message}`);
-          });
+        });
       }
-
+      
       let updatedActivities;
-
+      
       if (editActivityId) {
         // Update existing activity
         updatedActivities = activities.map((activity) =>
@@ -826,12 +826,12 @@ const ModuleContent = ({
 
       // Update local state first for immediate UI feedback
       setActivities(updatedActivities);
-
+      
       // Update the parent component
       if (onUpdateActivities && module) {
         onUpdateActivities(module.id, updatedActivities);
       }
-
+      
       setShowAddModal(false);
       // Reset newActivity state
       setNewActivity({
@@ -863,29 +863,29 @@ const ModuleContent = ({
       setEditingDescription(false);
     }
   };
-
+  
   // Handle file drag events
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-
+    
     if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
     } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
-
+  
   // Handle file drop
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
+    
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
       const fileType = detectFileType(file.name);
-
+      
       // Create a synthetic event object to reuse the existing handler
       const syntheticEvent = {
         target: {
@@ -893,7 +893,7 @@ const ModuleContent = ({
           files: e.dataTransfer.files,
         },
       };
-
+      
       handleModalInputChange(syntheticEvent);
     }
   };
@@ -1216,7 +1216,7 @@ const ModuleContent = ({
                   onClick={handleDateSave}
                   style={{ cursor: "pointer" }}
                 />
-              </div>
+          </div>
             ) : (
               <div className="d-flex align-items-center">
                 <small className="text-muted d-block">
@@ -1230,7 +1230,7 @@ const ModuleContent = ({
                     style={{ cursor: "pointer" }}
                   />
                 )}
-              </div>
+        </div>
             )}
 
             {editingTitle && isTeacherMode ? (
@@ -1329,20 +1329,20 @@ const ModuleContent = ({
             )}
           </div>
         )}
-
-        <ModuleTabs
+        
+        <ModuleTabs 
           activeTab={activeTab}
           onTabChange={setActiveTab}
           userRole={userRole}
         />
-
+        
         {userRole === "student" && (
-          <div className="d-flex justify-content-between align-items-center mb-2 mt-4">
-            <div className="text-muted small">
+        <div className="d-flex justify-content-between align-items-center mb-2 mt-4">
+          <div className="text-muted small">
               {progressPercentage}% - {completedActivities} ud af{" "}
               {totalActivities} aktiviteter gennemført
-            </div>
-
+          </div>
+          
             <ProgressBar
               now={progressPercentage}
               variant="primary"
@@ -1355,27 +1355,27 @@ const ModuleContent = ({
         {/* Add Activity Button - Only visible in teacher mode */}
         {activeTab === "indhold" && isTeacherMode && (
           <div className="d-flex justify-content-end my-3">
-            <Button
-              variant="outline-primary"
-              size="sm"
-              onClick={handleAddActivity}
+            <Button 
+              variant="outline-primary" 
+              size="sm" 
+              onClick={handleAddActivity} 
               className="d-flex align-items-center tilfoej-aktivitet-btn"
             >
               <BsPlus className="me-1" /> Tilføj aktivitet
             </Button>
-          </div>
+        </div>
         )}
       </header>
-
+      
       {activeTab === "indhold" && (
         <div className="activities-container">
           {activities.length > 0 ? (
             activities.map((activity) => {
               if (!activity) return null;
-
+              
               return (
-                <Card
-                  key={activity.id || Math.random().toString()}
+                <Card 
+                  key={activity.id || Math.random().toString()} 
                   className={`mb-3 activity-card ${
                     userRole === "student" && activity.completed
                       ? "completed"
@@ -1389,7 +1389,7 @@ const ModuleContent = ({
                       <div className="activity-icon me-3">
                         {getIconForType(activity.type, activity.url)}
                       </div>
-
+                      
                       <div className="activity-content flex-grow-1">
                         <div className="d-flex justify-content-between align-items-start">
                           <div>
@@ -1417,52 +1417,52 @@ const ModuleContent = ({
                               </div>
                             )}
                           </div>
-
+                          
                           <div className="d-flex align-items-center">
                             {/* Edit and Delete buttons - Only visible in teacher mode */}
                             {isTeacherMode && (
-                              <div className="edit-delete-buttons d-flex me-2">
-                                <Button
-                                  variant="link"
-                                  className="p-0 me-2 text-secondary"
+                            <div className="edit-delete-buttons d-flex me-2">
+                              <Button
+                                variant="link"
+                                className="p-0 me-2 text-secondary"
                                   onClick={(e) =>
                                     handleEditActivity(e, activity)
                                   }
                                   style={{ fontSize: "1rem" }}
-                                >
-                                  <BsPencil />
-                                </Button>
-                                <Button
-                                  variant="link"
-                                  className="p-0 text-danger"
+                              >
+                                <BsPencil />
+                              </Button>
+                              <Button
+                                variant="link"
+                                className="p-0 text-danger"
                                   onClick={(e) =>
                                     handleDeleteActivity(e, activity.id)
                                   }
                                   style={{ fontSize: "1rem" }}
-                                >
-                                  <BsX />
-                                </Button>
-                              </div>
+                              >
+                                <BsX />
+                              </Button>
+                            </div>
                             )}
-
+                            
                             {/* Completion Status - Only visible in student mode */}
                             {userRole === "student" && (
-                              <div className="ms-2">
-                                {activity.completed ? (
-                                  <BsCheckCircleFill className="text-success" />
-                                ) : (
+                            <div className="ms-2">
+                              {activity.completed ? (
+                                <BsCheckCircleFill className="text-success" />
+                              ) : (
                                   <BsCircleFill
                                     className="text-secondary"
                                     style={{ opacity: 0.3 }}
                                   />
-                                )}
-                              </div>
+                              )}
+                            </div>
                             )}
                           </div>
                         </div>
                       </div>
                     </div>
-
+                    
                     {activity.type === "image" && activity.url && (
                       <div className="mt-3 activity-image-container">
                         <img
@@ -1496,13 +1496,13 @@ const ModuleContent = ({
           )}
         </div>
       )}
-
+      
       {activeTab === "forum" && (
         <div className="forum-placeholder p-4 text-center bg-light rounded">
           <p className="mb-0 text-muted">Forum indhold vil blive vist her</p>
         </div>
       )}
-
+      
       {/* Only render modals if in teacher mode */}
       {isTeacherMode && (
         <>
@@ -1764,149 +1764,149 @@ const ModuleContent = ({
           </Modal>
 
           {/* Edit Activity Modal */}
-          <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
-            <Modal.Header closeButton>
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
               <Modal.Title>Rediger aktivitet</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Form.Group className="mb-3">
-                  <Form.Label>Titel</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="title"
-                    value={newActivity.title}
-                    onChange={handleModalInputChange}
-                    placeholder="Angiv en titel for aktiviteten"
-                    required
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Beskrivelse</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={2}
-                    name="description"
-                    value={newActivity.description}
-                    onChange={handleModalInputChange}
-                    placeholder="Angiv en beskrivelse (valgfrit)"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>URL eller Fil</Form.Label>
-                  <div className="d-flex flex-column gap-2">
-                    <Form.Control
-                      type="url"
-                      name="url"
-                      value={newActivity.url}
-                      onChange={handleModalInputChange}
-                      placeholder="Angiv URL til YouTube video, quiz eller anden ressource"
-                    />
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Titel</Form.Label>
+              <Form.Control 
+                type="text" 
+                name="title"
+                value={newActivity.title} 
+                onChange={handleModalInputChange}
+                placeholder="Angiv en titel for aktiviteten"
+                required
+              />
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Beskrivelse</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={2}
+                name="description"
+                value={newActivity.description} 
+                onChange={handleModalInputChange}
+                placeholder="Angiv en beskrivelse (valgfrit)"
+              />
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>URL eller Fil</Form.Label>
+              <div className="d-flex flex-column gap-2">
+                <Form.Control 
+                  type="url" 
+                  name="url"
+                  value={newActivity.url} 
+                  onChange={handleModalInputChange}
+                  placeholder="Angiv URL til YouTube video, quiz eller anden ressource"
+                />
                     <div className="text-center text-muted small py-1">
                       - eller -
                     </div>
-                    <div
+                <div 
                       className={`file-upload-container ${
                         dragActive ? "active-drag" : ""
                       }`}
-                      onDragEnter={handleDrag}
-                      onDragOver={handleDrag}
-                      onDragLeave={handleDrag}
-                      onDrop={handleDrop}
-                    >
-                      <label className="file-input-label w-100">
-                        <div className="mb-2">
-                          <BsFileEarmark size={24} className="mb-2" />
-                          <div className="fw-bold">Upload fil</div>
-                        </div>
-                        <div className="text-muted small mb-2">
-                          Slip filer her, eller klik for at vælge
-                        </div>
-                        <Form.Control
-                          type="file"
-                          name="file"
-                          onChange={handleModalInputChange}
+                  onDragEnter={handleDrag}
+                  onDragOver={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <label className="file-input-label w-100">
+                    <div className="mb-2">
+                      <BsFileEarmark size={24} className="mb-2" />
+                      <div className="fw-bold">Upload fil</div>
+                    </div>
+                    <div className="text-muted small mb-2">
+                      Slip filer her, eller klik for at vælge
+                    </div>
+                    <Form.Control 
+                      type="file" 
+                      name="file"
+                      onChange={handleModalInputChange}
                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          className="file-input-hidden"
-                        />
-                      </label>
-                    </div>
-                    <div className="text-muted small mt-1 text-center">
+                      className="file-input-hidden"
+                    />
+                  </label>
+                </div>
+                <div className="text-muted small mt-1 text-center">
                       Accepterede filtyper: PDF, Word dokumenter, billeder
-                    </div>
-                  </div>
-                  {newActivity.url && (
-                    <div className="activity-url-preview mt-2">
-                      <div className="d-flex align-items-center">
-                        {getIconForType(newActivity.type)}
+                </div>
+              </div>
+              {newActivity.url && (
+                <div className="activity-url-preview mt-2">
+                  <div className="d-flex align-items-center">
+                    {getIconForType(newActivity.type)}
                         <span className="ms-2 text-truncate">
                           {newActivity.url}
                         </span>
-                      </div>
-                      <div className="text-muted small">
-                        Detekteret type: {newActivity.type.toUpperCase()}
-                      </div>
-                    </div>
-                  )}
-                  {newActivity.file && (
-                    <div className="activity-url-preview mt-2">
-                      <div className="d-flex align-items-center">
-                        {getIconForType(detectFileType(newActivity.file.name))}
+                  </div>
+                  <div className="text-muted small">
+                    Detekteret type: {newActivity.type.toUpperCase()}
+                  </div>
+                </div>
+              )}
+              {newActivity.file && (
+                <div className="activity-url-preview mt-2">
+                  <div className="d-flex align-items-center">
+                    {getIconForType(detectFileType(newActivity.file.name))}
                         <span className="ms-2 text-truncate">
                           {newActivity.file.name}
                         </span>
-                      </div>
-                      <div className="text-muted small">
-                        Størrelse: {Math.round(newActivity.file.size / 1024)} KB
-                      </div>
-                    </div>
-                  )}
+                  </div>
+                  <div className="text-muted small">
+                    Størrelse: {Math.round(newActivity.file.size / 1024)} KB
+                  </div>
+                </div>
+              )}
                   {newActivity.url && newActivity.type === "youtube" && (
-                    <div className="mt-3">
+                <div className="mt-3">
                       <div className="small fw-bold mb-1">
                         Video forhåndsvisning:
                       </div>
-                      <div className="ratio ratio-16x9">
-                        <iframe
-                          src={getYoutubeEmbedUrl(newActivity.url)}
-                          title="YouTube video player"
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
-                      </div>
-                    </div>
-                  )}
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
+                  <div className="ratio ratio-16x9">
+                    <iframe
+                      src={getYoutubeEmbedUrl(newActivity.url)}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                </div>
+              )}
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
               <Button
                 variant="secondary"
                 onClick={() => setShowAddModal(false)}
               >
-                Annuller
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleSaveActivity}
+            Annuller
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={handleSaveActivity}
                 disabled={
                   !newActivity.title || (!newActivity.url && !newActivity.file)
                 }
-              >
+          >
                 Gem ændringer
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          </Button>
+        </Modal.Footer>
+      </Modal>
         </>
       )}
-
+      
       {/* These modals are always available as they're for viewing content, not editing */}
       {/* PDF Viewer Modal */}
-      <Modal
-        show={showPdfModal}
+      <Modal 
+        show={showPdfModal} 
         onHide={() => setShowPdfModal(false)}
         size="lg"
         centered
@@ -1929,9 +1929,9 @@ const ModuleContent = ({
             </div>
           )}
           <div className="ratio ratio-16x9" style={{ minHeight: "80vh" }}>
-            <iframe
-              src={selectedPdfUrl}
-              title="PDF Dokument"
+            <iframe 
+              src={selectedPdfUrl} 
+              title="PDF Dokument" 
               allowFullScreen
               className="w-100 h-100 border-0"
               onLoad={() => setPdfLoading(false)}
@@ -1967,4 +1967,4 @@ const ModuleContent = ({
   );
 };
 
-export default ModuleContent;
+export default ModuleContent; 

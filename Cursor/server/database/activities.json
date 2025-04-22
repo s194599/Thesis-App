@@ -45,7 +45,7 @@
     "description": "L\u00e6s kapitel 5\n",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744272217.pdf",
-    "completed": false,
+    "completed": true,
     "isNew": true,
     "id": "activity_1744272217607",
     "moduleId": "module-3"
@@ -62,13 +62,12 @@
   },
   {
     "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1744279908_module-3_1744279909156",
+    "id": "activity_quiz_quiz_1744279908_module-3_1745324825187",
     "title": "Romantikken Quiz",
     "type": "quiz",
     "quizId": "quiz_1744279908",
     "completed": true,
-    "moduleSpecific": true,
-    "quizScore": 50
+    "moduleSpecific": true
   },
   {
     "moduleId": "module-3",

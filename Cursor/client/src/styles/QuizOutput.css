@@ -1,0 +1,81 @@
+.quiz-questions {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.quiz-output-title {
+  position: relative;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  transition: background-color 0.2s;
+}
+
+.quiz-output-title:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.editable-title-hint {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-left: 0.5rem;
+  font-weight: normal;
+  opacity: 0;
+  transition: opacity 0.2s;
+  vertical-align: middle;
+}
+
+.quiz-output-title:hover .editable-title-hint {
+  opacity: 1;
+}
+
+@media print {
+  .quiz-questions {
+    font-size: 12pt;
+  }
+  
+  .editable-title-hint {
+    display: none;
+  }
+  
+  .quiz-output-title {
+    cursor: default;
+  }
+  
+  .quiz-output-title:hover {
+    background-color: transparent;
+  }
+}
+
+/* PDF-specific styling */
+.pdf-container .quiz-questions {
+  padding: 20px;
+  background-color: #fff;
+}
+
+.pdf-container .question-container {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 20px;
+}
+
+/* Hide printer-unfriendly elements when printing */
+@media print {
+  button, 
+  .modal,
+  .fixed-bottom,
+  .fixed-top,
+  .role-toggle-container {
+    display: none !important;
+  }
+  
+  body {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .quiz-questions {
+    padding: 10mm;
+  }
+} 

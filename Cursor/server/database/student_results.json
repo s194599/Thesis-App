@@ -25,26 +25,32 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-10T15:34:38.764478",
+      "timestamp": "2025-04-21T18:50:00.068667",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 1,
-      "total_questions": 2,
+      "score": 2,
+      "total_questions": 3,
       "answers": [
         {
           "question_id": "q1",
           "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
-          "correct": true
+          "answer": "A political ideology advocating for democracy and social equality.",
+          "correct": false
         },
         {
           "question_id": "q2",
           "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Politics and social issues",
-          "correct": false
+          "answer": "Love and romance",
+          "correct": true
+        },
+        {
+          "question_id": "q1745254179199",
+          "question": "AI Generated Question: What is the main function of DNA?",
+          "answer": "Store genetic information",
+          "correct": true
         }
       ],
-      "attempts": 4,
+      "attempts": 6,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
