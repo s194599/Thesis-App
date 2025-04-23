@@ -382,3 +382,37 @@ def get_student_activity_completions():
     except Exception as e:
         logger.error(f"Error getting student completions: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500
+
+
+@activity_routes.route("/activity-completions/detailed", methods=["GET"])
+def get_detailed_activity_completions():
+    """
+    Get detailed activity completions including timestamps, optionally filtered by module
+    """
+    try:
+        # Optional moduleId filter
+        module_id = request.args.get("moduleId")
+        
+        # Path to completions file
+        completions_file = os.path.join(DATABASE_FOLDER, "activity_completions.json")
+        
+        # Load existing completions
+        completions_data = load_json_file(completions_file, {"completions": []})
+        
+        # Filter by module if specified
+        if module_id:
+            filtered_completions = [
+                completion for completion in completions_data["completions"]
+                if completion.get("module_id") == module_id
+            ]
+        else:
+            filtered_completions = completions_data["completions"]
+        
+        return jsonify({
+            "success": True,
+            "completions": filtered_completions
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting detailed completions: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500

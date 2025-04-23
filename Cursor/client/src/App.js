@@ -5,7 +5,7 @@ import "./App.css";
 import "./styles/PlatformOverview.css";
 import { Header } from "./components/layout";
 import { SavedQuizzes } from "./components/quiz/management";
-import { TakeQuiz } from "./components/quiz/taking";
+import { TakeQuiz, QuizIntro } from "./components/quiz/taking";
 import { QuizForm } from "./components/quiz/creation";
 import { PlatformOverview } from "./components/learning-platform";
 import { useQuizContext } from "./context/QuizContext";
@@ -69,6 +69,18 @@ function App() {
         />
 
         <Route
+          path="/quiz/intro/:quizId"
+          element={
+            <>
+              <Header />
+              <div className="flex-grow-1">
+                <QuizIntro />
+              </div>
+            </>
+          }
+        />
+
+        <Route
           path="/quiz/take/:quizId"
           element={
             <>
@@ -96,7 +108,7 @@ function App() {
         {/* Alias for backwards compatibility */}
         <Route
           path="/take-quiz/:quizId"
-          element={<Navigate to={location => `/quiz/take/${location.pathname.split('/').pop()}`} replace />}
+          element={<Navigate to={location => `/quiz/intro/${location.pathname.split('/').pop()}${location.search}`} replace />}
         />
 
         <Route path="/quiz/:quizId/results" element={

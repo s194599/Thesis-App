@@ -157,3 +157,34 @@ def get_quiz_results(quiz_id):
     except Exception as e:
         print(f"Error fetching quiz results: {str(e)}")
         return jsonify({'error': 'Kunne ikke indlæse quiz resultater'}), 500
+
+
+@student_bp.route('/student/<student_id>/quiz/<quiz_id>/latest', methods=['GET'])
+def get_student_latest_quiz_result(student_id, quiz_id):
+    """Get the latest quiz result for a specific student and quiz"""
+    try:
+        # Load student results
+        if not os.path.exists(STUDENT_DATA_PATH):
+            return jsonify(None), 200
+
+        with open(STUDENT_DATA_PATH, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+            # Filter results for this student and quiz
+            student_quiz_results = [
+                result for result in data.get('quiz_history', []) 
+                if result.get('quiz_id') == quiz_id and result.get('student_id') == student_id
+            ]
+            
+            if not student_quiz_results:
+                return jsonify(None), 200
+                
+            # Sort results by timestamp (newest first)
+            student_quiz_results.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
+            
+            # Return only the latest result
+            return jsonify(student_quiz_results[0]), 200
+
+    except Exception as e:
+        print(f"Error fetching student's latest quiz result: {str(e)}")
+        return jsonify({'error': 'Kunne ikke indlæse quiz resultater'}), 500

@@ -67,14 +67,12 @@ const ModuleOverview = () => {
         let allCompletions = [];
         
         try {
-          // Also fetch the actual completion data with timestamps
-          const detailedCompletionsResponse = await fetch(`/api/database/activity_completions.json`);
+          // Instead of trying to directly access the database file, use the API endpoint
+          const detailedCompletionsResponse = await fetch(`/api/activity-completions/detailed?moduleId=${moduleId}`);
           if (detailedCompletionsResponse.ok) {
             const detailedData = await detailedCompletionsResponse.json();
             if (detailedData.completions && Array.isArray(detailedData.completions)) {
-              allCompletions = detailedData.completions.filter(
-                completion => completion.module_id === moduleId
-              );
+              allCompletions = detailedData.completions;
             }
           }
         } catch (err) {

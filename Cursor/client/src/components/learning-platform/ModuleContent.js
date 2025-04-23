@@ -374,9 +374,9 @@ const ModuleContent = ({
   const handleActivityClick = async (activity) => {
     if (userRole === "student") {
       if (activity.type === "quiz") {
-        // Navigate to quiz taking view with the quiz ID and activity/module IDs as query params
+        // Navigate to quiz intro view with the quiz ID and activity/module IDs as query params
         navigate(
-          `/quiz/take/${activity.quizId}?activityId=${activity.id}&moduleId=${module.id}`
+          `/quiz/intro/${activity.quizId}?activityId=${activity.id}&moduleId=${module.id}`
         );
         return;
       }

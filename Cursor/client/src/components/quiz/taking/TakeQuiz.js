@@ -98,6 +98,48 @@ const TakeQuiz = () => {
   }, [quizId]);
 
   useEffect(() => {
+    // Add a separate useEffect to handle saving quiz results when quiz is completed
+    const saveQuizResult = async () => {
+      if (quizCompleted && quiz && randomizedQuestions.length > 0) {
+        try {
+          console.log("Saving quiz result for student...");
+          
+          const quizResult = {
+            quiz_id: quizId,
+            quiz_title: quiz.title,
+            score: score,
+            total_questions: randomizedQuestions.length,
+            answers: answers.map((answer, index) => ({
+              question_id: quiz.questions[index].id,
+              question: quiz.questions[index].question,
+              answer: answer,
+              correct: answer === quiz.questions[index].correctAnswer,
+            })),
+          };
+
+          const response = await fetch("/api/student/save-quiz-result", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(quizResult),
+          });
+
+          if (response.ok) {
+            console.log("Quiz result saved successfully");
+          } else {
+            console.error("Failed to save quiz result");
+          }
+        } catch (error) {
+          console.error("Error saving quiz result:", error);
+        }
+      }
+    };
+
+    saveQuizResult();
+  }, [quizCompleted, quiz, quizId, score, answers, randomizedQuestions]);
+
+  useEffect(() => {
     // Mark activity as completed when quiz is finished
     const markActivityCompleted = async () => {
       if (quizCompleted && moduleId && !alreadyMarkedComplete && quiz) {
@@ -196,36 +238,7 @@ const TakeQuiz = () => {
         spread: 70,
         origin: { y: 0.6 },
       });
-
-      // Save quiz results for student
-      try {
-        const quizResult = {
-          quiz_id: quizId,  // Add the quiz ID from the URL params
-          quiz_title: quiz.title,
-          score: score,
-          total_questions: randomizedQuestions.length,
-          answers: answers.map((answer, index) => ({
-            question_id: quiz.questions[index].id, // Add the question ID
-            question: quiz.questions[index].question,
-            answer: answer,
-            correct: answer === quiz.questions[index].correctAnswer,
-          })),
-        };
-
-        const response = await fetch("/api/student/save-quiz-result", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(quizResult),
-        });
-
-        if (!response.ok) {
-          console.error("Failed to save quiz result");
-        }
-      } catch (error) {
-        console.error("Error saving quiz result:", error);
-      }
+      // Quiz results are now saved in the dedicated useEffect hook
     }
   };
 
@@ -392,12 +405,15 @@ const TakeQuiz = () => {
               variant="primary"
               size="lg"
               onClick={() => {
+                // Reset all state variables to start a new attempt
                 setCurrentQuestionIndex(0);
                 setSelectedAnswer(null);
                 setShowAnswer(false);
                 setQuizCompleted(false);
                 setScore(0);
                 setAnswers(new Array(randomizedQuestions.length).fill(null));
+                // Reset alreadyMarkedComplete so activity will be marked as completed again
+                setAlreadyMarkedComplete(false);
               }}
             >
               Prøv Igen

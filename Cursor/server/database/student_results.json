@@ -25,17 +25,17 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-22T15:11:20.822068",
+      "timestamp": "2025-04-23T09:58:03.289976",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 1,
+      "score": 3,
       "total_questions": 3,
       "answers": [
         {
           "question_id": "q1",
           "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "A political ideology advocating for democracy and social equality.",
-          "correct": false
+          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
+          "correct": true
         },
         {
           "question_id": "q2",
@@ -46,11 +46,11 @@
         {
           "question_id": "q1745254179199",
           "question": "AI Generated Question: What is the main function of DNA?",
-          "answer": "Break down nutrients",
-          "correct": false
+          "answer": "Store genetic information",
+          "correct": true
         }
       ],
-      "attempts": 7,
+      "attempts": 8,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
