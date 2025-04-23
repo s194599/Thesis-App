@@ -24,6 +24,7 @@ import {
   BsPencilSquare,
   BsImage,
   BsCheck,
+  BsRobot,
 } from "react-icons/bs";
 import ModuleTabs from "./ModuleTabs";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +51,7 @@ const ModuleContent = ({
   const [showUrlModal, setShowUrlModal] = useState(false);
   const [showActivityTypeModal, setShowActivityTypeModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showQuizChoiceModal, setShowQuizChoiceModal] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   const [selectedImageTitle, setSelectedImageTitle] = useState("");
   const [newActivity, setNewActivity] = useState({
@@ -510,8 +512,21 @@ const ModuleContent = ({
         })
       );
 
-      // Navigate to quiz creation page with the correct path
+      // Show quiz choice modal instead of navigating to a separate page
+      setShowQuizChoiceModal(true);
+    }
+  };
+  
+  // Handle quiz creation method selection
+  const handleQuizMethodSelect = (method) => {
+    setShowQuizChoiceModal(false);
+    
+    if (method === "ai") {
+      // Navigate to AI quiz generation page
       navigate("/quiz/create");
+    } else if (method === "manual") {
+      // Navigate to manual quiz creation page
+      navigate("/quiz/manual-create");
     }
   };
   
@@ -1578,7 +1593,7 @@ const ModuleContent = ({
                 >
                   <BsQuestionCircle className="me-3 fs-4" />
                   <div className="text-start">
-                    <h5 className="mb-1">Generer quiz</h5>
+                    <h5 className="mb-1">Opret quiz</h5>
                     <small className="text-muted">
                       Opret en interaktiv quiz
                     </small>
@@ -1988,6 +2003,49 @@ const ModuleContent = ({
             alt={selectedImageTitle}
             className="w-100 h-100"
           />
+        </Modal.Body>
+      </Modal>
+
+      {/* Quiz Creation Choice Modal */}
+      <Modal
+        show={showQuizChoiceModal}
+        onHide={() => setShowQuizChoiceModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Vælg oprettelsesmetode</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="d-flex flex-column gap-3">
+            <Button
+              variant="outline-primary"
+              className="p-3 d-flex align-items-center"
+              onClick={() => handleQuizMethodSelect("ai")}
+            >
+              <BsRobot className="me-3 fs-4" />
+              <div className="text-start">
+                <h5 className="mb-1">Generer med AI</h5>
+                <small className="text-muted">
+                  Lad kunstig intelligens oprette en quiz baseret på emne, tekst eller filer.
+                  Perfekt til at spare tid og få inspiration.
+                </small>
+              </div>
+            </Button>
+
+            <Button
+              variant="outline-primary"
+              className="p-3 d-flex align-items-center"
+              onClick={() => handleQuizMethodSelect("manual")}
+            >
+              <BsPencilSquare className="me-3 fs-4" />
+              <div className="text-start">
+                <h5 className="mb-1">Opret manuelt</h5>
+                <small className="text-muted">
+                  Opret og tilpas din egen quiz med dine egne spørgsmål og svarmuligheder.
+                  Fuld kontrol over indholdet.
+                </small>
+              </div>
+            </Button>
+          </div>
         </Modal.Body>
       </Modal>
     </div>

@@ -46,15 +46,6 @@
     "moduleId": "module-3"
   },
   {
-    "title": "quiz.png",
-    "description": "",
-    "type": "image",
-    "url": "http://localhost:5001/api/uploads/quiz_1744272683.png",
-    "isNew": true,
-    "id": "activity_1744272683494",
-    "moduleId": "module-4"
-  },
-  {
     "moduleId": "module-3",
     "id": "activity_quiz_quiz_1744279908_module-3_1745324825187",
     "title": "Romantikken Quiz",
@@ -70,23 +61,5 @@
     "quizId": "quiz_1745233680",
     "moduleSpecific": true,
     "quizScore": 67
-  },
-  {
-    "title": "App design thesis.pdf",
-    "description": "",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/App_design_thesis_1745328099.pdf",
-    "isNew": true,
-    "id": "activity_1745328099637",
-    "moduleId": "module-3"
-  },
-  {
-    "title": "ECG monitoring app (Meget Teknisk).pdf",
-    "description": "",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/ECG_monitoring_app_Meget_Teknisk_1745330399.pdf",
-    "isNew": true,
-    "id": "activity_1745330399573",
-    "moduleId": "module-3"
   }
 ]

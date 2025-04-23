@@ -461,6 +461,24 @@
       "attempts": 2,
       "student_id": "5",
       "student_name": "Frederik Barba"
+    },
+    {
+      "timestamp": "2025-04-23T14:35:37.024907",
+      "quiz_id": "quiz_1745411719",
+      "quiz_title": "Unavngiven Quiz test",
+      "score": 1,
+      "total_questions": 1,
+      "answers": [
+        {
+          "question_id": 1,
+          "question": "New Question",
+          "answer": "Option 1",
+          "correct": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
     }
   ]
 }

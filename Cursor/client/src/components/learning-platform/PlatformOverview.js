@@ -762,6 +762,7 @@ const PlatformOverview = () => {
             selectedModuleId={selectedModuleId}
             onModuleSelect={handleModuleSelect}
             userRole={userRole}
+            onModuleUpdate={handleModuleUpdate}
           />
         </Col>
         <Col md={9} className="content-col">

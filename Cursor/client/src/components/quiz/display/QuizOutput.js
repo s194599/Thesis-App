@@ -16,6 +16,28 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import '../../../styles/QuizOutput.css';
 
+// Import styles specific to PDF generation
+const pdfStyles = `
+.pdf-content {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  overflow: visible !important;
+}
+.pdf-content .question-item {
+  margin-bottom: 16px;
+  page-break-inside: avoid;
+}
+.pdf-content .options-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+.pdf-content .option-item {
+  padding: 8px;
+  margin-bottom: 4px;
+}
+`;
+
 const QuizOutput = () => {
   const navigate = useNavigate();
   const quizContentRef = useRef(null);
@@ -79,7 +101,7 @@ const QuizOutput = () => {
   const renderQuizQuestions = () => {
     return generatedQuiz.questions.map((question, questionIndex) => (
       <div
-        className="bg-white rounded shadow-sm mb-4 overflow-hidden"
+        className="bg-white rounded shadow-sm mb-4 overflow-hidden question-item"
         key={question.id || questionIndex}
       >
         {/* Question header with number */}
@@ -94,7 +116,7 @@ const QuizOutput = () => {
         </div>
 
         {/* Options with letters */}
-        <div className="p-3">
+        <div className="p-3 options-list">
           {question.options.map((option, optionIndex) => {
             const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
             const letter =
@@ -106,7 +128,7 @@ const QuizOutput = () => {
             return (
               <div
                 key={optionIndex}
-                className={`d-flex align-items-center mb-2 py-2 px-3 rounded ${
+                className={`d-flex align-items-center mb-2 py-2 px-3 rounded option-item ${
                   showAnswers && isCorrect ? "bg-light" : ""
                 }`}
               >
@@ -146,43 +168,175 @@ const QuizOutput = () => {
   const generatePDF = async () => {
     setIsPdfGenerating(true);
     try {
-      const content = quizContentRef.current;
+      console.log('Starting PDF generation...');
       
-      // First, create a canvas from the content
-      const canvas = await html2canvas(content, {
-        scale: 2, // Higher scale for better quality
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#f8f9fa" // Light grey background
+      // Get the content element
+      const content = quizContentRef.current;
+      if (!content) {
+        console.error('Content reference is null');
+        throw new Error('Cannot generate PDF: Content element not found');
+      }
+      
+      // Initialize PDF document with A4 dimensions (210 x 297 mm)
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
       });
       
-      // Create PDF with appropriate dimensions
-      const imgWidth = 190; // mm, slightly less than A4 width
-      const pageHeight = 280; // mm, slightly less than A4 height
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Set up dimensions
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 15; // margin in mm
+      const contentWidth = pageWidth - (2 * margin);
       
-      // Calculate number of pages needed
-      const pdfHeight = Math.max(imgHeight, pageHeight);
-      const pdfDoc = new jsPDF('p', 'mm', 'a4');
+      // Add title
+      const title = generatedQuiz.title || 'Quiz';
+      pdf.setFontSize(16);
+      pdf.text(title, pageWidth / 2, margin, { align: 'center' });
       
-      // Add quiz title as a header
-      pdfDoc.setFontSize(18);
-      pdfDoc.text(generatedQuiz.title || 'Quiz', 105, 15, { align: 'center' });
+      // Format each question individually
+      let yPosition = margin + 10; // Start position after title
       
-      // Add image of the content
-      const imgData = canvas.toDataURL('image/png');
-      pdfDoc.addImage(imgData, 'PNG', 10, 20, imgWidth, imgHeight);
+      // Track if we need a new page
+      let pageNum = 1;
       
-      // Add footer with page info and date
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('da-DK');
-      pdfDoc.setFontSize(10);
-      pdfDoc.text(`Generet d. ${dateStr}`, 10, 287);
+      // Process each question
+      for (let i = 0; i < generatedQuiz.questions.length; i++) {
+        const question = generatedQuiz.questions[i];
+        
+        // Calculate if we need a new page
+        if (yPosition > pageHeight - 60) { // Leave space for footer
+          pdf.addPage();
+          pageNum++;
+          yPosition = margin; // Reset y position on new page
+          
+          // Add header on new page
+          pdf.setFontSize(10);
+          pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
+          yPosition += 7;
+        }
+        
+        // Question number and text
+        pdf.setFontSize(12);
+        pdf.setFont(undefined, 'bold');
+        pdf.text(`Spørgsmål ${i + 1}`, margin, yPosition);
+        yPosition += 7;
+        
+        // Question text with wrap
+        pdf.setFont(undefined, 'normal');
+        const questionLines = pdf.splitTextToSize(question.question, contentWidth);
+        pdf.text(questionLines, margin, yPosition);
+        yPosition += 6 * questionLines.length;
+        
+        // Loop through options
+        const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+        for (let j = 0; j < question.options.length; j++) {
+          // Check if we need a new page
+          if (yPosition > pageHeight - 60) {
+            pdf.addPage();
+            pageNum++;
+            yPosition = margin;
+            
+            // Add header on new page
+            pdf.setFontSize(10);
+            pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
+            yPosition += 7;
+            
+            // Remind the question number
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'italic');
+            pdf.text(`(Spørgsmål ${i + 1} fortsat)`, margin, yPosition);
+            pdf.setFont(undefined, 'normal');
+            yPosition += 7;
+          }
+          
+          const option = question.options[j];
+          const letter = j < letters.length ? letters[j] : `Option ${j + 1}`;
+          const isCorrect = option === question.correctAnswer;
+          
+          // Highlight correct answer if showing answers
+          if (showAnswers && isCorrect) {
+            // Draw a light green background for correct answer
+            pdf.setFillColor(230, 248, 230); // Light green
+            pdf.rect(margin - 2, yPosition - 5, contentWidth + 4, 10, 'F');
+          }
+          
+          // Draw the option letter in a circle
+          pdf.setDrawColor(100, 100, 100);
+          pdf.setFillColor(isCorrect && showAnswers ? 40 : 255, isCorrect && showAnswers ? 167 : 255, isCorrect && showAnswers ? 69 : 255); // Green for correct, white for others
+          pdf.circle(margin + 4, yPosition - 1, 3, isCorrect && showAnswers ? 'F' : 'FD');
+          
+          // Add letter
+          pdf.setTextColor(isCorrect && showAnswers ? 255 : 0, 0, 0); // White for correct, black for others
+          pdf.setFontSize(8);
+          pdf.text(letter, margin + 4, yPosition, { align: 'center' });
+          
+          // Reset text color
+          pdf.setTextColor(0, 0, 0);
+          
+          // Add option text with wrap
+          pdf.setFontSize(10);
+          const optionLines = pdf.splitTextToSize(option, contentWidth - 12);
+          pdf.text(optionLines, margin + 10, yPosition);
+          
+          yPosition += 6 * optionLines.length + 3; // Add extra space between options
+        }
+        
+        // Add explanation if showing answers
+        if (showAnswers && question.explanation) {
+          // Check if we need a new page for explanation
+          if (yPosition > pageHeight - 80) {
+            pdf.addPage();
+            pageNum++;
+            yPosition = margin;
+            
+            // Add header on new page
+            pdf.setFontSize(10);
+            pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
+            yPosition += 7;
+          }
+          
+          // Explanation header
+          pdf.setFontSize(10);
+          pdf.setFont(undefined, 'bold');
+          pdf.text('Forklaring:', margin, yPosition);
+          yPosition += 5;
+          
+          // Explanation text with wrap
+          pdf.setFont(undefined, 'normal');
+          const explanationLines = pdf.splitTextToSize(question.explanation, contentWidth);
+          pdf.text(explanationLines, margin, yPosition);
+          yPosition += 6 * explanationLines.length;
+        }
+        
+        // Add space between questions
+        yPosition += 10;
+      }
+      
+      // Add footer on each page
+      const totalPages = pdf.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        
+        // Page number
+        pdf.setFontSize(8);
+        pdf.text(`Side ${i} af ${totalPages}`, pageWidth - margin, pageHeight - margin);
+        
+        // Date
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('da-DK');
+        pdf.text(`Genereret: ${dateStr}`, margin, pageHeight - margin);
+      }
       
       // Save the PDF
-      pdfDoc.save(`${generatedQuiz.title || 'Quiz'}.pdf`);
+      console.log(`Saving PDF with ${totalPages} pages`);
+      pdf.save(`${title.replace(/[^\w\s-]/gi, '')}.pdf`);
+      
+      console.log('PDF generated successfully');
     } catch (error) {
       console.error('Error generating PDF:', error);
+      alert(`Der opstod en fejl ved generering af PDF: ${error.message}`);
     } finally {
       setIsPdfGenerating(false);
       setShowPdfOptions(false);
@@ -295,6 +449,23 @@ const QuizOutput = () => {
   // Check if we're coming from a module (for adding to module)
   const isFromModule = !!localStorage.getItem("quizDocuments");
 
+  const openPdfOptions = () => {
+    // Make sure the content is visible
+    if (quizContentRef.current) {
+      // Scroll to the content to ensure it's in view
+      quizContentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // A small delay to ensure scrolling completes before opening modal
+      setTimeout(() => {
+        setShowPdfOptions(true);
+      }, 300);
+    } else {
+      // If the ref isn't available, still show the modal
+      console.warn('Quiz content reference not found');
+      setShowPdfOptions(true);
+    }
+  };
+
   return (
     <div className="mt-4 p-4 bg-light">
       <div className="d-flex justify-content-between align-items-start mb-4">
@@ -354,7 +525,7 @@ const QuizOutput = () => {
 
         <Button 
           variant="outline-secondary"
-          onClick={() => setShowPdfOptions(true)}
+          onClick={openPdfOptions}
           disabled={isPdfGenerating}
         >
           {isPdfGenerating ? (

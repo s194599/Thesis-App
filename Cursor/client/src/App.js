@@ -6,7 +6,7 @@ import "./styles/PlatformOverview.css";
 import { Header } from "./components/layout";
 import { SavedQuizzes } from "./components/quiz/management";
 import { TakeQuiz, QuizIntro } from "./components/quiz/taking";
-import { QuizForm } from "./components/quiz/creation";
+import { QuizForm, QuizCreationChoice, ManualQuizCreation } from "./components/quiz/creation";
 import { PlatformOverview } from "./components/learning-platform";
 import { useQuizContext } from "./context/QuizContext";
 import { QuizOutput } from "./components/quiz/display";
@@ -39,6 +39,18 @@ function App() {
 
         {/* Quiz Routes */}
         <Route
+          path="/quiz/choice"
+          element={
+            <>
+              <Header />
+              <div className="flex-grow-1">
+                <QuizCreationChoice />
+              </div>
+            </>
+          }
+        />
+
+        <Route
           path="/quiz/create"
           element={
             <>
@@ -50,10 +62,22 @@ function App() {
           }
         />
 
+        <Route
+          path="/quiz/manual-create"
+          element={
+            <>
+              <Header />
+              <div className="flex-grow-1">
+                <ManualQuizCreation />
+              </div>
+            </>
+          }
+        />
+
         {/* Alias for backwards compatibility */}
         <Route
           path="/create-quiz"
-          element={<Navigate to="/quiz/create" replace />}
+          element={<Navigate to="/quiz/choice" replace />}
         />
 
         <Route

@@ -291,5 +291,99 @@
     ],
     "timestamp": "2025-04-22T10:23:35.178Z",
     "id": "quiz_1745317415"
+  },
+  {
+    "title": "2",
+    "description": "Test your knowledge of basic biology concepts",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "What is the green pigment in plants that absorbs sunlight called?",
+        "options": [
+          "Chlorophyll",
+          "Carotene",
+          "Xanthophyll",
+          "Melanin"
+        ],
+        "correctAnswer": "Chlorophyll",
+        "explanation": "Chlorophyll is the green pigment in plants that captures sunlight for photosynthesis."
+      },
+      {
+        "id": "q2",
+        "question": "What is the process by which plants make their own food using sunlight?",
+        "options": [
+          "Photosynthesis",
+          "Respiration",
+          "Transpiration",
+          "Germination"
+        ],
+        "correctAnswer": "Photosynthesis",
+        "explanation": "Photosynthesis is the process where plants convert light energy into chemical energy to fuel their activities."
+      },
+      {
+        "id": "q3",
+        "question": "Which organelle is known as the 'powerhouse' of the cell?",
+        "options": [
+          "Mitochondria",
+          "Nucleus",
+          "Chloroplast",
+          "Endoplasmic reticulum"
+        ],
+        "correctAnswer": "Mitochondria",
+        "explanation": "Mitochondria generate most of the cell's supply of ATP, used as a source of chemical energy."
+      }
+    ],
+    "id": "quiz_1745411154",
+    "quizId": "quiz_1745411154",
+    "timestamp": "2025-04-23T12:26:42.110Z"
+  },
+  {
+    "title": "Unavngiven Quiz test",
+    "questions": [
+      {
+        "id": 1,
+        "question": "New Question",
+        "options": [
+          "Option 1",
+          "Option 2",
+          "Option 3",
+          "Option 4"
+        ],
+        "correctAnswer": "Option 1",
+        "explanation": ""
+      }
+    ],
+    "timestamp": "2025-04-23T12:35:19.870Z",
+    "id": "quiz_1745411719"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "En social bev\u00e6gelse fra det 18. \u00e5rhundredes slutning og det 19. \u00e5rhundredes begyndelse, der er pr\u00e6get af en st\u00e6rk fokus p\u00e5 naturen, fantasy, emotioner og idealisme",
+        "id": "q1",
+        "options": [
+          "En k\u00e6rlighedsromance i en film",
+          "En form for kunst der ofte handler om elskov",
+          "Et livsf\u00f8lge som er fyldt med ros og solskin",
+          "En social bev\u00e6gelse fra det 18. \u00e5rhundredes slutning og det 19. \u00e5rhundredes begyndelse, der er pr\u00e6get af en st\u00e6rk fokus p\u00e5 naturen, fantasy, emotioner og idealisme"
+        ],
+        "question": "Hvad er Romantik?"
+      },
+      {
+        "correctAnswer": "At v\u00e6re romantisk i dagligtlivet",
+        "id": "q2",
+        "options": [
+          "At v\u00e6re romantisk i dagligtlivet",
+          "At vise en rosig og lykkelig billede af livet",
+          "At handle om k\u00e6rlighed i kunstv\u00e6rker",
+          "At fokuserer p\u00e5 praktiske og realistiske ting"
+        ],
+        "question": "Hvad g\u00f8r Romantik i alt virkelig ikke?"
+      }
+    ],
+    "title": "Quiz",
+    "timestamp": "2025-04-23T12:38:59.155Z",
+    "id": "quiz_1745411939"
   }
 ]

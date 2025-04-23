@@ -27,11 +27,18 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
 
   // Load saved icon from localStorage on component mount
   useEffect(() => {
-    const savedIcon = localStorage.getItem('courseIcon');
-    if (savedIcon) {
-      setSelectedIcon(savedIcon);
+    // If we have a selected module and it has an icon, use that
+    const selectedModule = safeModules.find(module => module.id === selectedModuleId);
+    if (selectedModule && selectedModule.icon) {
+      setSelectedIcon(selectedModule.icon);
+    } else {
+      // Otherwise, fall back to localStorage
+      const savedIcon = localStorage.getItem('courseIcon');
+      if (savedIcon) {
+        setSelectedIcon(savedIcon);
+      }
     }
-  }, []);
+  }, [selectedModuleId, safeModules]);
 
   const handleIconFileChange = (e) => {
     const file = e.target.files[0];
@@ -73,12 +80,13 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         iconUrl = data.url;
       }
 
-      // Save the icon URL to localStorage
+      // Save the icon URL to localStorage as a fallback
       localStorage.setItem('courseIcon', iconUrl);
       setSelectedIcon(iconUrl);
 
       // Update the module if we're in a specific module context
       if (selectedModuleId && onModuleUpdate) {
+        console.log('Updating module icon for module ID:', selectedModuleId);
         onModuleUpdate(selectedModuleId, { icon: iconUrl });
       }
 
@@ -104,7 +112,15 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         <div className="course-icon me-3">
           <div className="course-icon-wrapper">
             <img 
-              src={selectedIcon || '/abc-icon.svg'} 
+              src={
+                // First try to use the selected module's icon
+                (selectedModuleId && 
+                 safeModules.find(m => m.id === selectedModuleId)?.icon) ||
+                // Then fall back to the stored selectedIcon
+                selectedIcon || 
+                // Then use a default placeholder
+                '/abc-icon.svg'
+              } 
               alt="Course Icon" 
               style={{ width: '40px', height: '40px' }}
               onError={(e) => {

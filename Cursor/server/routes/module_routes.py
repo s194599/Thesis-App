@@ -91,7 +91,7 @@ def update_module():
             return jsonify({"success": False, "message": f"Module with ID {module_id} not found"}), 404
         
         # Update module properties, preserving any that aren't in the request
-        updatable_fields = ["title", "date", "description", "subtitle"]
+        updatable_fields = ["title", "date", "description", "subtitle", "icon"]
         for field in updatable_fields:
             if field in module_data:
                 modules[module_index][field] = module_data[field]
