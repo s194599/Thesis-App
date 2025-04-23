@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Table, Badge, Button, Spinner, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { 
+  BsFileEarmarkPdf, 
+  BsFileEarmarkWord, 
+  BsYoutube,
+  BsListCheck,
+  BsFileEarmark,
+  BsImage,
+} from "react-icons/bs";
 
 const ModuleOverview = () => {
   const { moduleId } = useParams();
@@ -235,14 +243,46 @@ const ModuleOverview = () => {
   
   // Render activity completion square with tooltip
   const renderActivitySquare = (activity, isCompleted) => {
+    // Get icon based on activity type
+    const getIconForType = (type, url = null) => {
+      switch (type) {
+        case "pdf":
+          return <BsFileEarmarkPdf className="text-danger" size={20} />;
+        case "youtube":
+          return <BsYoutube className="text-danger" size={20} />;
+        case "word":
+          return <BsFileEarmarkWord className="text-primary" size={20} />;
+        case "quiz":
+          return <BsListCheck className="text-warning" size={20} />;
+        case "image":
+          return <BsImage className="text-success" size={20} />;
+        default:
+          return <BsFileEarmark className="text-secondary" size={20} />;
+      }
+    };
+
     return (
       <OverlayTrigger
         key={activity.id}
         placement="top"
         overlay={
           <Tooltip id={`tooltip-${activity.id}`}>
-            {activity.title || 'Aktivitet'}
-            {isCompleted ? ' (Gennemført)' : ' (Ikke gennemført)'}
+            <div className="d-flex align-items-center">
+              <div className="flex-shrink-0 d-flex align-items-center justify-content-center" style={{ width: '24px' }}>
+                {getIconForType(activity.type, activity.url)}
+              </div>
+              <div className="ms-2" style={{ 
+                maxWidth: '200px',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}>
+                {activity.title || 'Aktivitet'}
+                {isCompleted ? ' (Gennemført)' : ' (Ikke gennemført)'}
+              </div>
+            </div>
           </Tooltip>
         }
       >
@@ -308,13 +348,12 @@ const ModuleOverview = () => {
                     </div>
                   </td>
                   <td className="align-middle text-center">
-                    <Badge 
-                      bg={student.completionPercentage === 100 ? "success" : 
-                         student.completionPercentage > 50 ? "warning" : "danger"} 
-                      style={{ fontSize: '1rem', padding: '8px 12px' }}
+                    <span 
+                      className="fw-bold"
+                      style={{ fontSize: '1rem' }}
                     >
                       {student.completionPercentage}%
-                    </Badge>
+                    </span>
                   </td>
                 </tr>
               ))}
