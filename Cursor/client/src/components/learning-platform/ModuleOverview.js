@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Table, Badge, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Spinner, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const ModuleOverview = () => {
@@ -233,6 +233,33 @@ const ModuleOverview = () => {
     }
   };
   
+  // Render activity completion square with tooltip
+  const renderActivitySquare = (activity, isCompleted) => {
+    return (
+      <OverlayTrigger
+        key={activity.id}
+        placement="top"
+        overlay={
+          <Tooltip id={`tooltip-${activity.id}`}>
+            {activity.title || 'Aktivitet'}
+            {isCompleted ? ' (Gennemført)' : ' (Ikke gennemført)'}
+          </Tooltip>
+        }
+      >
+        <div
+          className="d-inline-block"
+          style={{
+            width: '16px',
+            height: '16px',
+            backgroundColor: isCompleted ? '#28a745' : '#dc3545',
+            margin: '0 2px',
+            borderRadius: '2px'
+          }}
+        />
+      </OverlayTrigger>
+    );
+  };
+
   return (
     <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -257,13 +284,7 @@ const ModuleOverview = () => {
               <tr>
                 <th>Studerende</th>
                 <th>Sidste aktivitet gennemført</th>
-                {activities.map((activity, index) => (
-                  <th key={activity.id} className="text-center" style={{ minWidth: '80px' }}>
-                    <div className="d-inline-block text-truncate" style={{ maxWidth: '150px' }}>
-                      {activity.title || `Aktivitet ${index + 1}`}
-                    </div>
-                  </th>
-                ))}
+                <th>Aktiviteter status</th>
                 <th className="text-center">Gennemført</th>
               </tr>
             </thead>
@@ -276,21 +297,16 @@ const ModuleOverview = () => {
                   <td className="align-middle text-center">
                     {formatTimestamp(student.latestTimestamp)}
                   </td>
-                  {activities.map(activity => (
-                    <td key={`${student.student_id}-${activity.id}`} className="text-center align-middle">
-                      {student.completedActivities.includes(activity.id) ? (
-                        <div className="d-inline-flex justify-content-center align-items-center rounded-circle bg-success" 
-                          style={{ width: '32px', height: '32px', color: 'white' }}>
-                          <FaCheck />
-                        </div>
-                      ) : (
-                        <div className="d-inline-flex justify-content-center align-items-center rounded-circle bg-danger" 
-                          style={{ width: '32px', height: '32px', color: 'white' }}>
-                          <FaTimes />
-                        </div>
+                  <td className="align-middle">
+                    <div className="d-flex flex-wrap gap-1">
+                      {activities.map(activity => 
+                        renderActivitySquare(
+                          activity, 
+                          student.completedActivities.includes(activity.id)
+                        )
                       )}
-                    </td>
-                  ))}
+                    </div>
+                  </td>
                   <td className="align-middle text-center">
                     <Badge 
                       bg={student.completionPercentage === 100 ? "success" : 
