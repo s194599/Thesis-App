@@ -22,6 +22,31 @@ const ModuleOverview = () => {
   const [students, setStudents] = useState([]);
   const [completions, setCompletions] = useState([]);
 
+  // Profile image URLs (open source)
+  const profileImages = {
+    // Default profile images from UI Faces (open source)
+    default: [
+      "https://randomuser.me/api/portraits/men/1.jpg",
+      "https://randomuser.me/api/portraits/women/2.jpg",
+      "https://randomuser.me/api/portraits/men/3.jpg",
+      "https://randomuser.me/api/portraits/women/4.jpg",
+      "https://randomuser.me/api/portraits/men/5.jpg",
+      "https://randomuser.me/api/portraits/women/6.jpg",
+    ],
+    // Known student IDs with specific images
+    "1": "https://randomuser.me/api/portraits/men/41.jpg", // Christian Wu
+  };
+
+  // Get profile image for a student
+  const getProfileImage = (studentId, index) => {
+    // If we have a specific image for this student ID, use it
+    if (profileImages[studentId]) {
+      return profileImages[studentId];
+    }
+    // Otherwise use one from the default collection based on index
+    return profileImages.default[index % profileImages.default.length];
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -327,10 +352,26 @@ const ModuleOverview = () => {
               </tr>
             </thead>
             <tbody>
-              {studentProgress.map((student) => (
+              {studentProgress.map((student, index) => (
                 <tr key={student.student_id}>
                   <td className="align-middle">
-                    <div className="fw-bold">{student.student_name}</div>
+                    <div className="d-flex align-items-center">
+                      <div className="me-3">
+                        <img 
+                          src={getProfileImage(student.student_id, index)} 
+                          alt={student.student_name}
+                          className="rounded-circle"
+                          width="40"
+                          height="40"
+                          style={{ objectFit: "cover" }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://via.placeholder.com/40?text=?";
+                          }}
+                        />
+                      </div>
+                      <div className="fw-bold">{student.student_name}</div>
+                    </div>
                   </td>
                   <td className="align-middle text-center">
                     {formatTimestamp(student.latestTimestamp)}
