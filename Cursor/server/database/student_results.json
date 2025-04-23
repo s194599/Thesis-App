@@ -223,35 +223,35 @@
       "student_name": "Frederik Barba"
     },
     {
-      "timestamp": "2025-04-22T15:18:08.945752",
+      "timestamp": "2025-04-23T14:14:24.287079",
       "quiz_id": "quiz_1745233680",
       "quiz_title": "Lang Romantikken Quiz",
-      "score": 0,
+      "score": 3,
       "total_questions": 6,
       "answers": [
         {
           "question_id": "q1",
           "question": "What is Romanticism most commonly associated with?",
-          "answer": "Mathematical theories",
+          "answer": "Revolutionary ideologies",
           "correct": false
         },
         {
           "question_id": "q2",
           "question": "Which of these phrases might be used by a Romantic poet to describe a beautiful landscape?",
-          "answer": "Its colors are dull and uninspiring.",
-          "correct": false
+          "answer": "The sun shines brightly upon its hills and valleys.",
+          "correct": true
         },
         {
           "question_id": "q3",
           "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
-          "answer": "Percy Bysshe Shelley",
+          "answer": "John Keats",
           "correct": false
         },
         {
           "question_id": "q4",
           "question": "What was a common theme among the works of Romantic writers?",
-          "answer": "The analysis of mathematical concepts",
-          "correct": false
+          "answer": "The exploration of human emotions and passions",
+          "correct": true
         },
         {
           "question_id": "q5",
@@ -262,11 +262,11 @@
         {
           "question_id": "q6",
           "question": "What does the term 'sublime' refer to in Romantic art and literature?",
-          "answer": "The glorification of technology and machinery",
-          "correct": false
+          "answer": "A sense of fear or awe inspired by nature's grandeur",
+          "correct": true
         }
       ],
-      "attempts": 3,
+      "attempts": 4,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Table, Badge, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Spinner, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const QuizResults = () => {
@@ -12,6 +12,31 @@ const QuizResults = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Profile image URLs (open source)
+  const profileImages = {
+    // Default profile images from UI Faces (open source)
+    default: [
+      "https://randomuser.me/api/portraits/men/1.jpg",
+      "https://randomuser.me/api/portraits/women/2.jpg",
+      "https://randomuser.me/api/portraits/men/3.jpg",
+      "https://randomuser.me/api/portraits/women/4.jpg",
+      "https://randomuser.me/api/portraits/men/5.jpg",
+      "https://randomuser.me/api/portraits/women/6.jpg",
+    ],
+    // Known student IDs with specific images
+    "1": "https://randomuser.me/api/portraits/men/41.jpg", // Christian Wu
+  };
+
+  // Get profile image for a student
+  const getProfileImage = (studentId, index) => {
+    // If we have a specific image for this student ID, use it
+    if (profileImages[studentId]) {
+      return profileImages[studentId];
+    }
+    // Otherwise use one from the default collection based on index
+    return profileImages.default[index % profileImages.default.length];
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,7 +46,7 @@ const QuizResults = () => {
         // Fetch all students
         const studentsResponse = await fetch(`/api/student/all`);
         if (!studentsResponse.ok) {
-          throw new Error('Kunne ikke hente studerende');
+          throw new Error('Kunne ikke hente elever');
         }
         const studentsData = await studentsResponse.json();
         setAllStudents(studentsData.students || []);
@@ -32,7 +57,32 @@ const QuizResults = () => {
           throw new Error('Kunne ikke hente quiz resultater');
         }
         const resultsData = await resultsResponse.json();
-        setQuizResults(resultsData);
+        
+        // Update the results to include full question and answer data
+        // This is an enhanced version of what the backend might provide
+        if (Array.isArray(resultsData)) {
+          // Enhance the results with detailed info where available
+          const enhancedResults = resultsData.map(result => {
+            if (result.answers) {
+              return {
+                ...result,
+                answers: result.answers.map(answer => {
+                  // For each answer, add the question text if available
+                  return {
+                    ...answer,
+                    question_text: answer.question || `Spørgsmål ${answer.question_id}`,
+                    student_answer: answer.answer || "Intet svar",
+                    correct_answer: answer.correct_answer || (answer.correct ? answer.answer : "Ukendt svar")
+                  };
+                })
+              };
+            }
+            return result;
+          });
+          setQuizResults(enhancedResults);
+        } else {
+          setQuizResults(resultsData);
+        }
         
         try {
           // Try to fetch quiz details, but continue if it fails
@@ -105,11 +155,66 @@ const QuizResults = () => {
     return {
       student_id: student.student_id,
       student_name: student.name,
+      class: student.class,
       hasResult: !!result,
       ...result
     };
   });
   
+  // Render question result indicator with tooltip
+  const renderQuestionResult = (answer, questionIndex) => {
+    if (!answer) return <span className="text-muted">-</span>;
+    
+    const isCorrect = answer.correct;
+    
+    // Get the question text from the answer object
+    const questionText = answer.question_text || answer.question || `Spørgsmål ${questionIndex + 1}`;
+    
+    // Get the student's answer
+    const studentAnswer = answer.student_answer || answer.answer || "Intet svar";
+    
+    // For the correct answer, we rely on what was provided or mark it as unknown
+    // In a real app, we would fetch this from the quiz questions data
+    const correctAnswer = answer.correct_answer || 
+                          (isCorrect ? studentAnswer : "Se facitliste");
+    
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id={`tooltip-question-${questionIndex}`}>
+            <div style={{ 
+              maxWidth: '300px',
+              textAlign: 'left'
+            }}>
+              <div className="fw-bold mb-1">
+                {questionText}
+              </div>
+              <div className="small">
+                <div><strong>Elevens svar:</strong> {studentAnswer}</div>
+                {!isCorrect && <div><strong>Korrekt svar:</strong> {correctAnswer}</div>}
+              </div>
+            </div>
+          </Tooltip>
+        }
+      >
+        <div 
+          className={`d-inline-flex justify-content-center align-items-center rounded-circle ${
+            isCorrect ? 'bg-success' : 'bg-danger'
+          }`} 
+          style={{ 
+            width: '32px', 
+            height: '32px', 
+            color: 'white',
+            cursor: 'help'
+          }}
+        >
+          {isCorrect ? <FaCheck /> : <FaTimes />}
+        </div>
+      </OverlayTrigger>
+    );
+  };
+
   return (
     <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -125,16 +230,17 @@ const QuizResults = () => {
       
       {allStudents.length === 0 ? (
         <Alert variant="info" className="text-center">
-          Ingen studerende fundet.
+          Ingen elever fundet.
         </Alert>
       ) : (
         <div className="table-responsive">
           <Table striped bordered hover>
             <thead className="bg-light">
               <tr>
-                <th>Studerende</th>
+                <th>Elever</th>
+                <th>Klasse</th>
                 <th>Forsøg</th>
-                <th>Dato</th>
+                <th className="text-center">Dato</th>
                 {Array.from({ length: maxQuestions }).map((_, i) => (
                   <th key={i} className="text-center" style={{ width: '60px' }}>
                     Spg. {i + 1}
@@ -147,53 +253,56 @@ const QuizResults = () => {
               {combinedStudentData.map((student, index) => (
                 <tr key={`${student.student_id}-${index}`}>
                   <td className="align-middle">
-                    <div className="fw-bold">{student.student_name}</div>
-                  </td>
-                  <td className="align-middle text-center">
-                    {student.hasResult ? (
-                      <Badge bg="info">{student.attempts}</Badge>
-                    ) : (
-                      <Badge bg="secondary">0</Badge>
-                    )}
+                    <div className="d-flex align-items-center">
+                      <div className="me-3">
+                        <img 
+                          src={getProfileImage(student.student_id, index)} 
+                          alt={student.student_name}
+                          className="rounded-circle"
+                          width="40"
+                          height="40"
+                          style={{ objectFit: "cover" }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://via.placeholder.com/40?text=?";
+                          }}
+                        />
+                      </div>
+                      <div className="fw-bold">{student.student_name}</div>
+                    </div>
                   </td>
                   <td className="align-middle">
+                    {student.class || "-"}
+                  </td>
+                  <td className="align-middle text-center">
+                    <span className="fw-bold">
+                      {student.hasResult ? student.attempts : "0"}
+                    </span>
+                  </td>
+                  <td className="align-middle text-center">
                     {formatDate(student.timestamp)}
                   </td>
                   {Array.from({ length: maxQuestions }).map((_, i) => (
                     <td key={i} className="text-center align-middle">
-                      {student.hasResult && student.answers && student.answers[i] ? (
-                        <div 
-                          className={`d-inline-flex justify-content-center align-items-center rounded-circle ${
-                            student.answers[i].correct ? 'bg-success' : 'bg-danger'
-                          }`} 
-                          style={{ 
-                            width: '32px', 
-                            height: '32px', 
-                            color: 'white'
-                          }}
-                        >
-                          {student.answers[i].correct ? <FaCheck /> : <FaTimes />}
-                        </div>
-                      ) : (
+                      {student.hasResult && student.answers && student.answers[i] ? 
+                        renderQuestionResult(student.answers[i], i)
+                       : (
                         <span className="text-muted">-</span>
                       )}
                     </td>
                   ))}
                   <td className="align-middle text-center">
                     {student.hasResult ? (
-                      <Badge 
-                        bg={student.score === student.total_questions ? "success" : "warning"} 
-                        style={{ fontSize: '1rem', padding: '8px 12px' }}
+                      <span 
+                        className="fw-bold"
+                        style={{ fontSize: '1rem' }}
                       >
                         {Math.round((student.score / student.total_questions) * 100)}%
-                      </Badge>
+                      </span>
                     ) : (
-                      <Badge 
-                        bg="secondary" 
-                        style={{ fontSize: '1rem', padding: '8px 12px' }}
-                      >
+                      <span className="text-muted fw-bold">
                         -
-                      </Badge>
+                      </span>
                     )}
                   </td>
                 </tr>

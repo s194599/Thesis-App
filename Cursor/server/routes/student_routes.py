@@ -70,6 +70,11 @@ def get_current_student():
 def get_all_students():
     """Get list of all students"""
     students = load_all_students()
+    
+    # Sort students by name
+    if "students" in students and isinstance(students["students"], list):
+        students["students"] = sorted(students["students"], key=lambda x: x.get("name", ""))
+    
     return jsonify(students)
 
 

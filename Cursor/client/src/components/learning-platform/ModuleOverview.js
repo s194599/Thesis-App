@@ -239,6 +239,7 @@ const ModuleOverview = () => {
     return {
       student_id: studentId,
       student_name: student.name,
+      class: student.class,
       completedActivities: completedModuleActivities,
       completionPercentage,
       latestTimestamp
@@ -312,11 +313,11 @@ const ModuleOverview = () => {
         <div
           className="d-inline-block"
           style={{
-            width: '16px',
-            height: '16px',
+            width: '22px',
+            height: '22px',
             backgroundColor: isCompleted ? '#28a745' : '#dc3545',
-            margin: '0 2px',
-            borderRadius: '2px'
+            margin: '0 3px',
+            borderRadius: '3px'
           }}
         />
       </OverlayTrigger>
@@ -346,6 +347,7 @@ const ModuleOverview = () => {
             <thead className="bg-light">
               <tr>
                 <th>Studerende</th>
+                <th>Klasse</th>
                 <th>Sidste aktivitet gennemført</th>
                 <th>Aktiviteter status</th>
                 <th className="text-center">Gennemført</th>
@@ -373,11 +375,14 @@ const ModuleOverview = () => {
                       <div className="fw-bold">{student.student_name}</div>
                     </div>
                   </td>
+                  <td className="align-middle">
+                    {student.class || "-"}
+                  </td>
                   <td className="align-middle text-center">
                     {formatTimestamp(student.latestTimestamp)}
                   </td>
                   <td className="align-middle">
-                    <div className="d-flex flex-wrap gap-1">
+                    <div className="d-flex flex-wrap gap-2 justify-content-center">
                       {activities.map(activity => 
                         renderActivitySquare(
                           activity, 
