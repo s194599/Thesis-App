@@ -1,0 +1,15 @@
+.lectio-text {
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  letter-spacing: -0.05rem;
+  color: #000;
+}
+
+.classroom-text {
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: #555;
+  margin-left: 0px;
+} 

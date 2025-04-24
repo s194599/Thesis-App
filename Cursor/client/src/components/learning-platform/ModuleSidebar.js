@@ -99,15 +99,6 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
 
   return (
     <div className="module-sidebar p-3">
-      <div className="d-flex align-items-center mb-3">
-        <button 
-          className="btn btn-link text-decoration-none p-0 text-dark" 
-          onClick={() => window.history.back()}
-        >
-          ← Fag
-        </button>
-      </div>
-      
       <div className="course-header d-flex align-items-center mb-4">
         <div className="course-icon me-3">
           <div className="course-icon-wrapper">
@@ -168,7 +159,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
               >
                 <div className="d-flex flex-column w-100">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <div className="text-nowrap">{module.date || 'No date'}</div>
+                    <div className="text-nowrap small text-muted" style={{ fontSize: '0.8rem' }}>{module.date || 'No date'}</div>
                     
                     {userRole === 'student' && (
                       allCompleted ? (
@@ -180,7 +171,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                   </div>
                   
                   <div>
-                    <span className="text-truncate">{module.title}</span>
+                    <span className="text-truncate fw-medium">{module.title}</span>
                     {module.subtitle && <small className="text-muted d-block">{module.subtitle}</small>}
                     
                     {/* Add progress indicator for students */}

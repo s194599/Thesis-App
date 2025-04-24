@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-do
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./styles/PlatformOverview.css";
-import { Header } from "./components/layout";
+import { Header, CourseSelection, TopBar } from "./components/layout";
 import { SavedQuizzes } from "./components/quiz/management";
 import { TakeQuiz, QuizIntro } from "./components/quiz/taking";
 import { QuizForm, QuizCreationChoice, ManualQuizCreation } from "./components/quiz/creation";
@@ -21,16 +21,21 @@ function App() {
   return (
     <div className="App d-flex flex-column min-vh-100">
       <Routes>
-        {/* Redirect root to platform */}
-        <Route path="/" element={<Navigate to="/platform" replace />} />
+        {/* Change root to course selection */}
+        <Route path="/" element={<CourseSelection />} />
 
         {/* Platform Overview - Main Learning Platform */}
-        <Route path="/platform" element={<PlatformOverview />} />
+        <Route path="/platform" element={
+          <>
+            <TopBar />
+            <PlatformOverview />
+          </>
+        } />
 
         {/* Module Overview Route */}
         <Route path="/module/:moduleId/overview" element={
           <>
-            <Header />
+            <TopBar />
             <div className="flex-grow-1">
               <ModuleOverview />
             </div>
@@ -42,7 +47,7 @@ function App() {
           path="/quiz/choice"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <QuizCreationChoice />
               </div>
@@ -54,7 +59,7 @@ function App() {
           path="/quiz/create"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <QuizForm />
               </div>
@@ -66,7 +71,7 @@ function App() {
           path="/quiz/manual-create"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <ManualQuizCreation />
               </div>
@@ -84,7 +89,7 @@ function App() {
           path="/saved-quizzes"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <SavedQuizzes />
               </div>
@@ -96,7 +101,7 @@ function App() {
           path="/quiz/intro/:quizId"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <QuizIntro />
               </div>
@@ -108,7 +113,7 @@ function App() {
           path="/quiz/take/:quizId"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <TakeQuiz />
               </div>
@@ -121,7 +126,7 @@ function App() {
           path="/quiz/preview/:quizId"
           element={
             <>
-              <Header />
+              <TopBar />
               <div className="flex-grow-1">
                 <QuizPreview />
               </div>
@@ -137,7 +142,7 @@ function App() {
 
         <Route path="/quiz/:quizId/results" element={
           <>
-            <Header />
+            <TopBar />
             <div className="flex-grow-1">
               <QuizResults />
             </div>

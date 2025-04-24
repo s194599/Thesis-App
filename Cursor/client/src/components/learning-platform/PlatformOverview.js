@@ -702,7 +702,7 @@ const PlatformOverview = () => {
   return (
     <Container fluid className="platform-overview p-0">
       {/* Role toggle switch with label */}
-      <div className="role-toggle-container position-fixed end-0 top-0 m-3 z-3">
+      <div className="role-toggle-container position-fixed end-0 top-0 mt-5 me-3 z-3">
         <div className="d-flex align-items-center bg-light p-2 rounded shadow-sm">
           <span className="me-2 fw-bold small text-secondary">Vælg rolle:</span>
           <ButtonGroup>
