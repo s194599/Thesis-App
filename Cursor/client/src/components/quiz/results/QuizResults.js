@@ -137,6 +137,30 @@ const QuizResults = () => {
     });
   };
 
+  // Calculate time between start and end timestamps
+  const calculateQuizDuration = (startTimestamp, endTimestamp) => {
+    if (!startTimestamp || !endTimestamp) return "–";
+    
+    try {
+      const start = new Date(startTimestamp);
+      const end = new Date(endTimestamp);
+      
+      // Calculate duration in milliseconds
+      const durationMs = end - start;
+      
+      if (durationMs < 0) return "–"; // Invalid duration
+      
+      // Convert to minutes and seconds
+      const minutes = Math.floor(durationMs / 60000);
+      const seconds = Math.floor((durationMs % 60000) / 1000);
+      
+      return `${minutes} min ${seconds} sek`;
+    } catch (error) {
+      console.error("Error calculating quiz duration:", error);
+      return "–";
+    }
+  };
+
   // Get the quiz title from details or fall back to the ID or a default
   const quizTitle = quizDetails?.title || `Quiz ${quizId.replace('quiz_', '')}`;
   
@@ -241,6 +265,7 @@ const QuizResults = () => {
                 <th>Klasse</th>
                 <th>Forsøg</th>
                 <th className="text-center">Dato</th>
+                <th className="text-center">Besvarelsestid</th>
                 {Array.from({ length: maxQuestions }).map((_, i) => (
                   <th key={i} className="text-center" style={{ width: '60px' }}>
                     Spg. {i + 1}
@@ -281,6 +306,10 @@ const QuizResults = () => {
                   </td>
                   <td className="align-middle text-center">
                     {formatDate(student.timestamp)}
+                  </td>
+                  <td className="align-middle text-center">
+                    {student.hasResult ? 
+                      calculateQuizDuration(student.start_timestamp, student.timestamp) : "–"}
                   </td>
                   {Array.from({ length: maxQuestions }).map((_, i) => (
                     <td key={i} className="text-center align-middle">

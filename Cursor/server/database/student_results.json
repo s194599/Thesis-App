@@ -25,17 +25,18 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-23T09:58:03.289976",
+      "timestamp": "2025-04-24T13:26:10.461924",
+      "start_timestamp": "2025-04-24T11:26:01.380Z",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 3,
+      "score": 1,
       "total_questions": 3,
       "answers": [
         {
           "question_id": "q1",
           "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
-          "correct": true
+          "answer": "A style of music that focuses on harmony and melody.",
+          "correct": false
         },
         {
           "question_id": "q2",
@@ -46,11 +47,11 @@
         {
           "question_id": "q1745254179199",
           "question": "AI Generated Question: What is the main function of DNA?",
-          "answer": "Store genetic information",
-          "correct": true
+          "answer": "Transport oxygen",
+          "correct": false
         }
       ],
-      "attempts": 8,
+      "attempts": 10,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -223,17 +224,18 @@
       "student_name": "Frederik Barba"
     },
     {
-      "timestamp": "2025-04-23T14:14:24.287079",
+      "timestamp": "2025-04-24T13:28:55.290227",
+      "start_timestamp": "2025-04-24T11:27:54.595Z",
       "quiz_id": "quiz_1745233680",
       "quiz_title": "Lang Romantikken Quiz",
-      "score": 3,
+      "score": 6,
       "total_questions": 6,
       "answers": [
         {
           "question_id": "q1",
           "question": "What is Romanticism most commonly associated with?",
-          "answer": "Revolutionary ideologies",
-          "correct": false
+          "answer": "Nature and the outdoors",
+          "correct": true
         },
         {
           "question_id": "q2",
@@ -244,8 +246,8 @@
         {
           "question_id": "q3",
           "question": "Which Romantic writer is most known for his epic poem \"Frankenstein\"?",
-          "answer": "John Keats",
-          "correct": false
+          "answer": "Mary Shelley",
+          "correct": true
         },
         {
           "question_id": "q4",
@@ -256,8 +258,8 @@
         {
           "question_id": "q5",
           "question": "Which Romantic poet wrote the line, \"I wandered lonely as a cloud\"?",
-          "answer": "Lord Byron",
-          "correct": false
+          "answer": "John Keats",
+          "correct": true
         },
         {
           "question_id": "q6",
@@ -266,7 +268,7 @@
           "correct": true
         }
       ],
-      "attempts": 4,
+      "attempts": 6,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

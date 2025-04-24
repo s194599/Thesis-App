@@ -48,12 +48,16 @@ const TakeQuiz = () => {
   const [alreadyMarkedComplete, setAlreadyMarkedComplete] = useState(false);
   const [randomizedQuestions, setRandomizedQuestions] = useState([]);
   const [randomizedOptions, setRandomizedOptions] = useState([]);
+  const [quizStartTime, setQuizStartTime] = useState(null);
 
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
         setLoading(true);
         const data = await getQuiz(quizId);
+
+        // Set quiz start time when quiz is first loaded
+        setQuizStartTime(new Date().toISOString());
 
         // Create a deep copy of questions to avoid mutating the original data
         const questionsWithIndex = data.questions.map((q, index) => ({
@@ -109,6 +113,7 @@ const TakeQuiz = () => {
             quiz_title: quiz.title,
             score: score,
             total_questions: randomizedQuestions.length,
+            start_timestamp: quizStartTime, // Include the quiz start time
             answers: answers.map((answer, index) => ({
               question_id: quiz.questions[index].id,
               question: quiz.questions[index].question,
@@ -137,7 +142,7 @@ const TakeQuiz = () => {
     };
 
     saveQuizResult();
-  }, [quizCompleted, quiz, quizId, score, answers, randomizedQuestions]);
+  }, [quizCompleted, quiz, quizId, score, answers, randomizedQuestions, quizStartTime]);
 
   useEffect(() => {
     // Mark activity as completed when quiz is finished

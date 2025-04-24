@@ -110,6 +110,7 @@ def save_quiz_result():
     # Add timestamp to quiz result
     quiz_result = {
         "timestamp": datetime.now().isoformat(),
+        "start_timestamp": data.get("start_timestamp", datetime.now().isoformat()),
         "quiz_id": quiz_id,
         "quiz_title": data.get("quiz_title"),
         "score": data.get("score"),

@@ -291,20 +291,24 @@ const ModuleOverview = () => {
         placement="top"
         overlay={
           <Tooltip id={`tooltip-${activity.id}`}>
-            <div className="d-flex align-items-center">
-              <div className="flex-shrink-0 d-flex align-items-center justify-content-center" style={{ width: '24px' }}>
-                {getIconForType(activity.type, activity.url)}
+            <div className="d-flex flex-column">
+              <div className="d-flex align-items-center">
+                <div className="flex-shrink-0 d-flex align-items-center justify-content-center" style={{ width: '24px' }}>
+                  {getIconForType(activity.type, activity.url)}
+                </div>
+                <div className="ms-2" style={{ 
+                  maxWidth: '200px',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {activity.title || 'Aktivitet'}
+                </div>
               </div>
-              <div className="ms-2" style={{ 
-                maxWidth: '200px',
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}>
-                {activity.title || 'Aktivitet'}
-                {isCompleted ? ' (Gennemført)' : ' (Ikke gennemført)'}
+              <div className="mt-1 text-center">
+                {isCompleted ? '(Gennemført)' : '(Ikke gennemført)'}
               </div>
             </div>
           </Tooltip>
