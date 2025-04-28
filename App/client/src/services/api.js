@@ -68,61 +68,58 @@ export const generateQuiz = async (quizData) => {
   }
 };
 
-// Function to upload multiple files to the backend
+// Function to upload files to the server
 export const uploadFiles = async (files) => {
   try {
-    const formData = new FormData();
-
-    // Append each file to the form data
-    files.forEach((file) => {
-      formData.append(`files`, file);
-    });
-
-    const response = await axios.post(
-      `${API_BASE_URL}/upload-files`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        timeout: 60000, // 1-minute timeout
-        validateStatus: function (status) {
-          return status >= 200 && status < 500; // Don't reject if status is less than 500
-        },
-      }
-    );
-
-    if (response.status >= 400) {
-      // Check if this is a video transcription error
-      if (response.data.error === "Video transcription failed") {
-        throw new Error(`Video transcription failed: ${response.data.message}`);
-      }
-      throw new Error(
-        response.data.error || response.data.message || "Failed to upload files"
-      );
+    // Check if we have files to upload
+    if (!files || files.length === 0) {
+      return { error: "No files to upload" };
     }
 
-    // Process the response - convert to a format expected by the QuizForm
-    let combinedContent = "";
-    if (response.data.files && response.data.files.length > 0) {
-      // Extract full content from each file and combine
-      combinedContent = response.data.files
-        .map((file) => file.content)
-        .join("\n\n");
+    // Filter YouTube videos from regular files
+    const regularFiles = files.filter(file => !file.isYoutubeVideo);
+    const youtubeVideos = files.filter(file => file.isYoutubeVideo);
+    
+    // Extract YouTube URLs
+    const youtubeUrls = youtubeVideos.map(file => file.youtubeUrl).join(',');
+    
+    // Create FormData for regular files
+    const formData = new FormData();
+    
+    // Add all regular files to the form data
+    regularFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+    
+    // Add YouTube URLs to the form data if any exist
+    if (youtubeUrls) {
+      formData.append("youtubeUrls", youtubeUrls);
+    }
+
+    // Upload to the server
+    const response = await fetch("/api/upload-files", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to upload files");
     }
 
     return {
-      ...response.data,
-      combinedContent,
+      success: true,
+      files: data.files,
+      combinedContent: data.combinedContent,
     };
   } catch (error) {
     console.error("Error uploading files:", error);
-    if (error.response) {
-      console.error("Error response data:", error.response.data);
-      console.error("Error response status:", error.response.status);
-      console.error("Error response headers:", error.response.headers);
-    }
-    throw error;
+    return {
+      error: error.message || "Failed to upload files",
+      files: [],
+      combinedContent: "",
+    };
   }
 };
 

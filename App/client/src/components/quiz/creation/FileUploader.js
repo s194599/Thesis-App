@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useQuizContext } from "../../../context/QuizContext";
 import {
@@ -7,11 +7,15 @@ import {
   BsFileEarmarkWord,
   BsFileEarmarkText,
   BsFileEarmarkPlay,
+  BsYoutube,
+  BsPlus,
 } from "react-icons/bs";
-import { Alert } from "react-bootstrap";
+import { Alert, Form, Button, InputGroup } from "react-bootstrap";
 
 const FileUploader = () => {
   const { formData, updateFormData } = useQuizContext();
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeError, setYoutubeError] = useState("");
 
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -48,6 +52,10 @@ const FileUploader = () => {
       "video/quicktime": [".mov"],
       "video/x-msvideo": [".avi"],
       "video/webm": [".webm"],
+      "audio/mpeg": [".mp3"],
+      "audio/wav": [".wav"],
+      "audio/ogg": [".ogg"],
+      "audio/mp4": [".m4a"],
     },
     multiple: true,
   });
@@ -60,6 +68,10 @@ const FileUploader = () => {
       return <BsFileEarmarkWord size={24} className="text-primary" />;
     } else if (fileType.includes("video")) {
       return <BsFileEarmarkPlay size={24} className="text-success" />;
+    } else if (fileType.includes("audio")) {
+      return <BsFileEarmarkPlay size={24} className="text-warning" />;
+    } else if (fileType === "youtube") {
+      return <BsYoutube size={24} className="text-danger" />;
     } else {
       return <BsFileEarmarkText size={24} className="text-secondary" />;
     }
@@ -71,13 +83,61 @@ const FileUploader = () => {
     updateFormData("files", updatedFiles.length ? updatedFiles : null);
   };
 
+  // Function to validate YouTube URL
+  const validateYoutubeUrl = (url) => {
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+    return youtubeRegex.test(url);
+  };
+
+  // Function to extract video ID from URL
+  const extractYoutubeVideoId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  // Function to add YouTube link
+  const addYoutubeLink = () => {
+    if (!validateYoutubeUrl(youtubeUrl)) {
+      setYoutubeError("Ugyldig YouTube URL. Prøv igen.");
+      return;
+    }
+
+    setYoutubeError("");
+    const videoId = extractYoutubeVideoId(youtubeUrl);
+    
+    if (!videoId) {
+      setYoutubeError("Kunne ikke udtrække video-ID fra URL.");
+      return;
+    }
+
+    // Creating a "virtual" file object for the YouTube URL
+    const youtubeFile = {
+      name: `YouTube Video (${videoId})`,
+      size: 0,
+      type: "youtube",
+      youtubeUrl: youtubeUrl,
+      videoId: videoId,
+      isYoutubeVideo: true
+    };
+
+    const currentFiles = formData.files || [];
+    const updatedFiles = [...currentFiles, youtubeFile];
+    updateFormData("files", updatedFiles);
+    setYoutubeUrl("");
+  };
+
   const totalFileSize = formData.files
-    ? formData.files.reduce((acc, file) => acc + file.size, 0) / (1024 * 1024)
+    ? formData.files.filter(file => !file.isYoutubeVideo).reduce((acc, file) => acc + file.size, 0) / (1024 * 1024)
     : 0;
 
   const hasVideoFiles =
     formData.files &&
     formData.files.some((file) => file.type.includes("video"));
+
+  const hasYoutubeVideos =
+    formData.files &&
+    formData.files.some((file) => file.isYoutubeVideo);
 
   return (
     <div className="mb-3">
@@ -96,8 +156,33 @@ const FileUploader = () => {
             : "Træk og slip filer her, eller klik for at vælge filer"}
         </p>
         <p className="text-muted small">
-          Accepterede formater: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM
+          Accepterede formater: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM, MP3, WAV, OGG, M4A
           (Maksimal størrelse: 50MB per fil)
+        </p>
+      </div>
+
+      {/* YouTube URL input section */}
+      <div className="mt-3">
+        <Form.Label className="fw-bold">YouTube Video URL</Form.Label>
+        <InputGroup className="mb-2">
+          <Form.Control
+            type="text"
+            placeholder="Indtast YouTube video URL"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            isInvalid={!!youtubeError}
+          />
+          <Button 
+            variant="primary" 
+            onClick={addYoutubeLink}
+            disabled={!youtubeUrl}
+          >
+            <BsPlus size={20} /> Tilføj
+          </Button>
+        </InputGroup>
+        {youtubeError && <div className="text-danger small mb-2">{youtubeError}</div>}
+        <p className="text-muted small">
+          Tilføj YouTube videoer til at generere quiz-spørgsmål baseret på videoindholdet.
         </p>
       </div>
 
@@ -112,18 +197,13 @@ const FileUploader = () => {
             </span>
           </div>
 
-          {hasVideoFiles && (
+          {(hasVideoFiles || hasYoutubeVideos) && (
             <div className="mt-3">
               <Alert variant="info">
-                <strong>Bemærk:</strong> Videoer vil blive transskriberet
-                automatisk ved hjælp af AI-talegenkendelse. Dette kræver at
-                FFmpeg er installeret på serveren. Hvis du oplever
-                transskriptionsfejl, bed din administrator om at installere
-                FFmpeg.
+                <strong>Bemærk:</strong> {hasVideoFiles ? "Videoer vil blive transskriberet automatisk ved hjælp af AI-talegenkendelse." : ""} 
+                {hasYoutubeVideos ? "YouTube videoer vil blive analyseret via undertekster og videoindhold." : ""}
                 <br />
-                <strong>Tips:</strong> Brug videoer med tydelig lyd, hold
-                videoerne under 10 minutter for bedste resultater, og overvej at
-                tilføje yderligere kontekst i emnefeltet.
+                <strong>Tips:</strong> Brug videoer med tydelig lyd eller undertekster for de bedste resultater.
               </Alert>
             </div>
           )}
@@ -141,7 +221,9 @@ const FileUploader = () => {
                   <div className="ms-2">
                     <p className="mb-0 small">{file.name}</p>
                     <p className="mb-0 text-muted small">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                      {file.isYoutubeVideo 
+                        ? "YouTube Video" 
+                        : `${(file.size / 1024 / 1024).toFixed(2)} MB`}
                     </p>
                   </div>
                 </div>
