@@ -61,5 +61,14 @@
     "quizId": "quiz_1745233680",
     "moduleSpecific": true,
     "quizScore": 67
+  },
+  {
+    "title": "ww2.mp4",
+    "description": "",
+    "type": "video",
+    "url": "http://localhost:5001/api/uploads/ww2_1745831570.mp4",
+    "isNew": true,
+    "id": "activity_1745831570547",
+    "moduleId": "module-3"
   }
 ]

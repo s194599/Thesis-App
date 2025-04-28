@@ -72,10 +72,35 @@ const QuizForm = () => {
             documents.map(async (doc) => {
               const response = await fetch(doc.url);
               const blob = await response.blob();
-              return new File([blob], doc.title, {
-                type:
-                  doc.type === "pdf" ? "application/pdf" : "application/msword",
-              });
+              
+              // Determine mime type based on the document type
+              let mimeType;
+              switch (doc.type) {
+                case "pdf":
+                  mimeType = "application/pdf";
+                  break;
+                case "word":
+                case "doc":
+                  mimeType = "application/msword";
+                  break;
+                case "video":
+                  mimeType = "video/mp4"; // Default to mp4, most common format
+                  if (doc.url.toLowerCase().endsWith('.webm')) mimeType = "video/webm";
+                  if (doc.url.toLowerCase().endsWith('.mov')) mimeType = "video/quicktime";
+                  if (doc.url.toLowerCase().endsWith('.avi')) mimeType = "video/x-msvideo";
+                  break;
+                case "audio":
+                  mimeType = "audio/mpeg"; // Default to mp3, most common format
+                  if (doc.url.toLowerCase().endsWith('.wav')) mimeType = "audio/wav";
+                  if (doc.url.toLowerCase().endsWith('.ogg')) mimeType = "audio/ogg";
+                  if (doc.url.toLowerCase().endsWith('.m4a')) mimeType = "audio/mp4";
+                  break;
+                default:
+                  mimeType = "application/octet-stream"; // Generic binary
+                  break;
+              }
+              
+              return new File([blob], doc.title, { type: mimeType });
             })
           )
             .then((files) => {

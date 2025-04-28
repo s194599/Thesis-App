@@ -73,6 +73,12 @@ const ModuleContent = ({
   const [editedTitle, setEditedTitle] = useState("");
   const [editingDate, setEditingDate] = useState(false);
   const [editedDate, setEditedDate] = useState("");
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showAudioModal, setShowAudioModal] = useState(false);
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
+  const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
+  const [selectedAudioUrl, setSelectedAudioUrl] = useState("");
+  const [selectedAudioTitle, setSelectedAudioTitle] = useState("");
   const navigate = useNavigate();
   
   // Initialize activities from module when it changes
@@ -243,6 +249,10 @@ const ModuleContent = ({
         return <BsListCheck className="text-warning" size={20} />;
       case "image":
         return <BsImage className="text-success" size={20} />;
+      case "video":
+        return <BsYoutube className="text-info" size={20} />;
+      case "audio":
+        return <BsFileEarmark className="text-warning" size={20} />;
       default:
         return <BsFileEarmark className="text-secondary" size={20} />;
     }
@@ -269,9 +279,24 @@ const ModuleContent = ({
     } else if (
       lowerFilename.endsWith(".jpg") ||
       lowerFilename.endsWith(".jpeg") ||
-      lowerFilename.endsWith(".png")
+      lowerFilename.endsWith(".png") ||
+      lowerFilename.endsWith(".gif")
     ) {
       return "image";
+    } else if (
+      lowerFilename.endsWith(".mp4") ||
+      lowerFilename.endsWith(".webm") ||
+      lowerFilename.endsWith(".mov") ||
+      lowerFilename.endsWith(".avi")
+    ) {
+      return "video";
+    } else if (
+      lowerFilename.endsWith(".mp3") ||
+      lowerFilename.endsWith(".wav") ||
+      lowerFilename.endsWith(".ogg") ||
+      lowerFilename.endsWith(".m4a")
+    ) {
+      return "audio";
     } else {
       // Default to generic file
       return "file";
@@ -424,7 +449,7 @@ const ModuleContent = ({
         window.open(activity.url, "_blank", "noopener,noreferrer");
         break;
       case "image":
-        console.log("Displaying image:", activity.title);
+        handleImageClick(null, activity.url, activity.title);
         break;
       case "link":
         window.open(activity.url, "_blank", "noopener,noreferrer");
@@ -432,15 +457,30 @@ const ModuleContent = ({
       case "youtube":
         window.open(activity.url, "_blank", "noopener,noreferrer");
         break;
+      case "video":
+        setSelectedVideoUrl(activity.url);
+        setSelectedVideoTitle(activity.title || "Video");
+        setShowVideoModal(true);
+        break;
+      case "audio":
+        setSelectedAudioUrl(activity.url);
+        setSelectedAudioTitle(activity.title || "Audio");
+        setShowAudioModal(true);
+        break;
       case "quiz":
         if (userRole === "teacher") {
           // For teachers, navigate to the results page if there's a quizId
           if (activity.quizId) {
             navigate(`/quiz/${activity.quizId}/results`);
-    } else {
+          } else {
             // For generating a new quiz when no quizId exists
+            // Include pdf, doc, word, video, and audio files for quiz generation
             const documents = activities.filter(
-              (a) => a.type === "pdf" || a.type === "word" || a.type === "doc"
+              (a) => a.type === "pdf" || 
+                     a.type === "word" || 
+                     a.type === "doc" || 
+                     a.type === "video" || 
+                     a.type === "audio"
             );
             localStorage.setItem(
               "quizDocuments",
@@ -488,14 +528,17 @@ const ModuleContent = ({
       });
       setShowUrlModal(true);
     } else if (type === "quiz") {
-      // Get all PDF and DOC activities from the current module
+      // Get all relevant activities from the current module for quiz generation
+      // Include pdf, doc, word, video, and audio files
       const documents = activities
         .filter(
           (activity) =>
             activity &&
             (activity.type === "pdf" ||
-              activity.type === "word" ||
-              activity.type === "doc")
+             activity.type === "word" ||
+             activity.type === "doc" ||
+             activity.type === "video" ||
+             activity.type === "audio")
         )
         .map((activity) => ({
           url: activity.url,
@@ -1659,13 +1702,13 @@ const ModuleContent = ({
                         type="file"
                         name="file"
                         onChange={handleModalInputChange}
-                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.webm,.mov,.avi,.mp3,.wav,.ogg,.m4a"
                         className="file-input-hidden"
                       />
                     </label>
                   </div>
                   <div className="text-muted small mt-1 text-center">
-                    Accepterede filtyper: PDF, Word dokumenter, billeder
+                    Accepterede filtyper: PDF, Word dokumenter, billeder, videoer, lydfiler
                   </div>
 
                   {newActivity.file && (
@@ -1869,13 +1912,13 @@ const ModuleContent = ({
                       type="file" 
                       name="file"
                       onChange={handleModalInputChange}
-                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.webm,.mov,.avi,.mp3,.wav,.ogg,.m4a"
                       className="file-input-hidden"
                     />
                   </label>
                 </div>
                 <div className="text-muted small mt-1 text-center">
-                      Accepterede filtyper: PDF, Word dokumenter, billeder
+                      Accepterede filtyper: PDF, Word dokumenter, billeder, videoer, lydfiler
                 </div>
               </div>
               {newActivity.url && (
@@ -2045,6 +2088,60 @@ const ModuleContent = ({
               </div>
             </Button>
           </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Video Player Modal */}
+      <Modal
+        show={showVideoModal}
+        onHide={() => setShowVideoModal(false)}
+        size="lg"
+        centered
+        className="video-viewer-modal"
+        contentClassName="h-100"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center">
+            <BsYoutube className="text-danger me-2" />
+            {selectedVideoTitle}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0 position-relative">
+          <div className="ratio ratio-16x9" style={{ minHeight: "70vh" }}>
+            <video 
+              src={selectedVideoUrl} 
+              controls
+              className="w-100 h-100"
+              controlsList="nodownload"
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Audio Player Modal */}
+      <Modal
+        show={showAudioModal}
+        onHide={() => setShowAudioModal(false)}
+        centered
+        className="audio-viewer-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center">
+            <BsFileEarmark className="text-warning me-2" />
+            {selectedAudioTitle}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center p-4">
+          <audio 
+            src={selectedAudioUrl} 
+            controls
+            className="w-100"
+            controlsList="nodownload"
+          >
+            Your browser does not support the audio tag.
+          </audio>
         </Modal.Body>
       </Modal>
     </div>
