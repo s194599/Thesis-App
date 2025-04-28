@@ -3,17 +3,20 @@
   background-color: #f8f9fa;
 }
 
+.platform-content {
+  min-height: 100vh;
+  padding-bottom: 100px; /* Ensure content is not covered by the fixed bottom bar */
+}
+
 .sidebar-col {
-  height: 100vh;
-  overflow-y: auto;
   position: sticky;
   top: 0;
-  padding-bottom: 60px; /* Add padding at the bottom to account for the progress bar height */
+  padding-bottom: 120px; /* Increased padding to prevent content from being hidden by progress bar */
 }
 
 .content-col {
   min-height: 100vh;
-  padding-bottom: 80px; /* Space for the fixed bottom bar */
+  padding-bottom: 120px; /* Space for the fixed bottom bar */
 }
 
 .module-sidebar {
@@ -21,8 +24,7 @@
 }
 
 .module-list {
-  overflow-y: auto;
-  padding-bottom: 10px; /* Extra padding at the bottom of the list */
+  padding-bottom: 30px; /* Extra padding at the bottom of the list */
 }
 
 .module-list .list-group-item {

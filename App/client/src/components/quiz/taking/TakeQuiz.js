@@ -396,10 +396,12 @@ const TakeQuiz = () => {
           <ProgressBar
             variant={resultVariant}
             now={percentage}
-            label={`${percentage}%`}
-            className="mb-4"
+            className="mb-2"
             style={{ height: "2rem" }}
           />
+          <div className="text-center mb-4">
+            <span className={`text-${resultVariant} fw-bold`}>{percentage}%</span>
+          </div>
 
           <Alert variant={resultVariant} className="mb-4">
             <h4>{resultMessage}</h4>
@@ -513,11 +515,16 @@ const TakeQuiz = () => {
         {/* {quiz.description && <p className="text-muted">{quiz.description}</p>} */}
 
         {!quizCompleted && (
-          <ProgressBar
-            variant="primary"
-            now={(currentQuestionIndex / randomizedQuestions.length) * 100}
-            className="mb-4"
-          />
+          <>
+            <ProgressBar
+              variant="primary"
+              now={(currentQuestionIndex / randomizedQuestions.length) * 100}
+              className="mb-2"
+            />
+            <div className="text-center text-muted small mb-4">
+              <span className="fw-bold">{Math.round((currentQuestionIndex / randomizedQuestions.length) * 100)}%</span>
+            </div>
+          </>
         )}
       </div>
 
