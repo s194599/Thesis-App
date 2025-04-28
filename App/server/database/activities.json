@@ -70,5 +70,14 @@
     "isNew": true,
     "id": "activity_1745831570547",
     "moduleId": "module-3"
+  },
+  {
+    "title": "Tracking billede",
+    "description": "L\u00e6s kap. 5",
+    "type": "image",
+    "url": "http://localhost:5001/api/uploads/Skrmbillede_2025-04-10_kl._14.43.25_1745845666.png",
+    "isNew": true,
+    "id": "activity_1745845666177",
+    "moduleId": "module-5"
   }
 ]

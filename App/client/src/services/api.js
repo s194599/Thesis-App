@@ -237,60 +237,47 @@ export const getQuiz = async (quizId) => {
   }
 };
 
-// Forum API endpoints
+// Get forum posts for a module
 export const getForumPosts = async (moduleId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}`);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch forum posts');
-    }
-    
-    return await response.json();
+    const response = await axios.get(`${API_BASE_URL}/forum/${moduleId}`, {
+      timeout: 10000
+    });
+    return response.data;
   } catch (error) {
     console.error('Error fetching forum posts:', error);
     throw error;
   }
 };
 
+// Create a new forum post
 export const createForumPost = async (moduleId, postData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}/post`, {
-      method: 'POST',
+    const response = await axios.post(`${API_BASE_URL}/forum/${moduleId}/post`, postData, {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(postData),
+      timeout: 30000 // Increased timeout for potential image uploads
     });
-    
-    if (!response.ok) {
-      throw new Error('Failed to create forum post');
-    }
-    
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error('Error creating forum post:', error);
     throw error;
   }
 };
 
+// Add a comment to a forum post
 export const addForumComment = async (moduleId, postId, commentData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}/post/${postId}/comment`, {
-      method: 'POST',
+    const response = await axios.post(`${API_BASE_URL}/forum/${moduleId}/post/${postId}/comment`, commentData, {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(commentData),
+      timeout: 30000 // Increased timeout for potential image uploads
     });
-    
-    if (!response.ok) {
-      throw new Error('Failed to add comment');
-    }
-    
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.error('Error adding comment:', error);
+    console.error('Error adding forum comment:', error);
     throw error;
   }
 };

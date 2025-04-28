@@ -1,8 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 import os
 import json
 import uuid
+import base64
 from datetime import datetime
+import re
 
 # Create blueprint
 forum_routes = Blueprint('forum_routes', __name__)
@@ -10,6 +12,38 @@ forum_routes = Blueprint('forum_routes', __name__)
 # Define path to forum data
 FORUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'database', 'forum')
 os.makedirs(FORUM_DIR, exist_ok=True)
+
+# Define path for forum images
+FORUM_IMAGES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'images', 'forum')
+os.makedirs(FORUM_IMAGES_DIR, exist_ok=True)
+
+# Helper function to save an image from base64 data
+def save_image_from_base64(base64_data, module_id):
+    # Check if the data is actually base64
+    if not base64_data or not isinstance(base64_data, str):
+        return None
+    
+    # Extract the actual base64 data (remove the data:image/jpeg;base64, prefix)
+    if ',' in base64_data:
+        _, base64_data = base64_data.split(',', 1)
+    
+    try:
+        # Decode base64 data
+        image_data = base64.b64decode(base64_data)
+        
+        # Generate a unique filename
+        image_filename = f"{module_id}_{str(uuid.uuid4())}.jpg"
+        image_path = os.path.join(FORUM_IMAGES_DIR, image_filename)
+        
+        # Save the image file
+        with open(image_path, 'wb') as f:
+            f.write(image_data)
+        
+        # Return the relative URL to the image
+        return f"/static/images/forum/{image_filename}"
+    except Exception as e:
+        print(f"Error saving image: {str(e)}")
+        return None
 
 # Helper function to get all forum posts for a specific module
 def get_forum_posts(module_id):
@@ -58,6 +92,11 @@ def create_forum_post(module_id):
             if field not in data and field != 'profilePictureUrl':
                 return jsonify({'error': f'Missing required field: {field}'}), 400
         
+        # Check if there's an image attachment
+        image_url = None
+        if 'imageAttachment' in data and data['imageAttachment']:
+            image_url = save_image_from_base64(data['imageAttachment'], module_id)
+        
         # Create new post with timestamp and ID
         new_post = {
             'id': str(uuid.uuid4()),
@@ -69,6 +108,10 @@ def create_forum_post(module_id):
             'comments': [],
             'moduleId': module_id
         }
+        
+        # Add image URL if available
+        if image_url:
+            new_post['imageAttachment'] = image_url
         
         # Get existing posts and add the new one
         posts = get_forum_posts(module_id)
@@ -95,6 +138,11 @@ def add_comment(module_id, post_id):
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 400
         
+        # Check if there's an image attachment
+        image_url = None
+        if 'imageAttachment' in data and data['imageAttachment']:
+            image_url = save_image_from_base64(data['imageAttachment'], module_id)
+        
         # Create new comment
         new_comment = {
             'id': str(uuid.uuid4()),
@@ -103,6 +151,10 @@ def add_comment(module_id, post_id):
             'profilePictureUrl': data.get('profilePictureUrl', ''),
             'timestamp': datetime.now().isoformat()
         }
+        
+        # Add image URL if available
+        if image_url:
+            new_comment['imageAttachment'] = image_url
         
         # Get existing posts
         posts = get_forum_posts(module_id)

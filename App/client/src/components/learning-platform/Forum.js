@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, Form, Button, Image, Badge, Spinner, Alert, Modal } from 'react-bootstrap';
-import { BsPersonCircle, BsReply, BsArrowReturnRight, BsTrash, BsExclamationCircle } from 'react-icons/bs';
+import { BsPersonCircle, BsReply, BsArrowReturnRight, BsTrash, BsExclamationCircle, BsImage, BsX } from 'react-icons/bs';
 import { getForumPosts, createForumPost, addForumComment, deleteForumPost } from '../../services/api';
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
@@ -29,9 +29,17 @@ const Forum = ({ moduleId, userRole }) => {
   // State for new post form
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
+  const [newPostImage, setNewPostImage] = useState(null);
+  const [newPostImagePreview, setNewPostImagePreview] = useState('');
   
   // State for new comment form
   const [newCommentBody, setNewCommentBody] = useState('');
+  const [newCommentImage, setNewCommentImage] = useState(null);
+  const [newCommentImagePreview, setNewCommentImagePreview] = useState('');
+  
+  // File input refs
+  const postImageInputRef = useRef(null);
+  const commentImageInputRef = useRef(null);
   
   // Get current user info based on role
   const currentUser = USER_PROFILES[userRole] || USER_PROFILES.student;
@@ -64,6 +72,64 @@ const Forum = ({ moduleId, userRole }) => {
 
     fetchPosts();
   }, [moduleId]);
+  
+  // Handle image file selection for post
+  const handlePostImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError('Billedet er for stort. Maksimal størrelse er 5MB.');
+        return;
+      }
+      
+      setNewPostImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewPostImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  // Handle image file selection for comment
+  const handleCommentImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError('Billedet er for stort. Maksimal størrelse er 5MB.');
+        return;
+      }
+      
+      setNewCommentImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewCommentImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  // Remove post image
+  const removePostImage = () => {
+    setNewPostImage(null);
+    setNewPostImagePreview('');
+    if (postImageInputRef.current) {
+      postImageInputRef.current.value = '';
+    }
+  };
+  
+  // Remove comment image
+  const removeCommentImage = () => {
+    setNewCommentImage(null);
+    setNewCommentImagePreview('');
+    if (commentImageInputRef.current) {
+      commentImageInputRef.current.value = '';
+    }
+  };
 
   // Handle creating a new post
   const handleCreatePost = async (e) => {
@@ -82,6 +148,11 @@ const Forum = ({ moduleId, userRole }) => {
         profilePictureUrl: currentUser.profilePictureUrl || DEFAULT_PROFILE_PICTURE
       };
       
+      // If we have an image, add it to the post data
+      if (newPostImagePreview) {
+        postData.imageAttachment = newPostImagePreview;
+      }
+      
       const newPost = await createForumPost(moduleId, postData);
       
       // Add the new post to the posts list
@@ -90,6 +161,8 @@ const Forum = ({ moduleId, userRole }) => {
       // Reset form
       setNewPostTitle('');
       setNewPostBody('');
+      setNewPostImage(null);
+      setNewPostImagePreview('');
       setShowNewPostForm(false);
       setError(null);
     } catch (err) {
@@ -114,6 +187,11 @@ const Forum = ({ moduleId, userRole }) => {
         profilePictureUrl: currentUser.profilePictureUrl || DEFAULT_PROFILE_PICTURE
       };
       
+      // If we have an image, add it to the comment data
+      if (newCommentImagePreview) {
+        commentData.imageAttachment = newCommentImagePreview;
+      }
+      
       const newComment = await addForumComment(moduleId, postId, commentData);
       
       // Update the post with the new comment
@@ -128,6 +206,8 @@ const Forum = ({ moduleId, userRole }) => {
       
       // Reset form
       setNewCommentBody('');
+      setNewCommentImage(null);
+      setNewCommentImagePreview('');
       setReplyingToPostId(null);
       setError(null);
     } catch (err) {
@@ -233,6 +313,42 @@ const Forum = ({ moduleId, userRole }) => {
                 />
               </Form.Group>
               
+              {/* Image attachment for post */}
+              <Form.Group className="mb-3">
+                <Form.Label>Vedhæft billede (valgfrit)</Form.Label>
+                <div className="d-flex align-items-center">
+                  <Button 
+                    variant="outline-secondary" 
+                    onClick={() => postImageInputRef.current.click()}
+                    className="me-2"
+                  >
+                    <BsImage className="me-1" /> Vælg billede
+                  </Button>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePostImageChange}
+                    className="d-none"
+                    ref={postImageInputRef}
+                  />
+                  <small className="text-muted">Max 5MB</small>
+                </div>
+                
+                {newPostImagePreview && (
+                  <div className="position-relative mt-3" style={{ maxWidth: '300px' }}>
+                    <Image src={newPostImagePreview} fluid thumbnail />
+                    <Button 
+                      variant="danger" 
+                      size="sm" 
+                      className="position-absolute top-0 end-0 m-1 p-1" 
+                      onClick={removePostImage}
+                    >
+                      <BsX />
+                    </Button>
+                  </div>
+                )}
+              </Form.Group>
+              
               <div className="d-flex justify-content-end gap-2">
                 <Button variant="secondary" onClick={() => setShowNewPostForm(false)}>
                   Annuller
@@ -291,6 +407,21 @@ const Forum = ({ moduleId, userRole }) => {
             <Card.Body>
               <p className="post-body">{post.bodyText}</p>
               
+              {/* Display post image if available */}
+              {post.imageAttachment && (
+                <div className="post-image-container mb-3">
+                  <Image 
+                    src={post.imageAttachment} 
+                    fluid 
+                    thumbnail 
+                    style={{ maxWidth: '300px' }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              
               <Button 
                 variant="link" 
                 className="p-0 text-decoration-none" 
@@ -333,7 +464,22 @@ const Forum = ({ moduleId, userRole }) => {
                               <span className="mx-1 text-muted">•</span>
                               <span className="text-muted small">{formatTimestamp(comment.timestamp)}</span>
                             </div>
-                            <p className="mb-0">{comment.bodyText}</p>
+                            <p className="mb-1">{comment.bodyText}</p>
+                            
+                            {/* Display comment image if available */}
+                            {comment.imageAttachment && (
+                              <div className="comment-image-container mb-1">
+                                <Image 
+                                  src={comment.imageAttachment} 
+                                  fluid 
+                                  thumbnail 
+                                  style={{ maxWidth: '200px' }}
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              </div>
+                            )}
                           </div>
                         </div>
                       </Card.Body>
@@ -345,7 +491,7 @@ const Forum = ({ moduleId, userRole }) => {
               {/* Reply Form */}
               {replyingToPostId === post.id && (
                 <Form className="mt-3" onSubmit={(e) => handleAddComment(e, post.id)}>
-                  <Form.Group>
+                  <Form.Group className="mb-2">
                     <Form.Control
                       as="textarea"
                       rows={2}
@@ -355,6 +501,42 @@ const Forum = ({ moduleId, userRole }) => {
                       required
                     />
                   </Form.Group>
+                  
+                  {/* Image attachment for comment */}
+                  <Form.Group className="mb-2">
+                    <div className="d-flex align-items-center">
+                      <Button 
+                        variant="outline-secondary" 
+                        size="sm"
+                        onClick={() => commentImageInputRef.current.click()}
+                        className="me-2"
+                      >
+                        <BsImage /> Vedhæft billede
+                      </Button>
+                      <Form.Control
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCommentImageChange}
+                        className="d-none"
+                        ref={commentImageInputRef}
+                      />
+                    </div>
+                    
+                    {newCommentImagePreview && (
+                      <div className="position-relative mt-2" style={{ maxWidth: '200px' }}>
+                        <Image src={newCommentImagePreview} fluid thumbnail />
+                        <Button 
+                          variant="danger" 
+                          size="sm" 
+                          className="position-absolute top-0 end-0 m-1 p-1" 
+                          onClick={removeCommentImage}
+                        >
+                          <BsX />
+                        </Button>
+                      </div>
+                    )}
+                  </Form.Group>
+                  
                   <div className="d-flex justify-content-end mt-2">
                     <Button variant="primary" type="submit" size="sm">
                       Send kommentar
@@ -375,7 +557,7 @@ const Forum = ({ moduleId, userRole }) => {
           </Button>
         </div>
       )}
-
+      
       {/* Delete Confirmation Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
