@@ -177,6 +177,14 @@ def delete_activity():
         activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
         activities = load_json_file(activities_file, [])
 
+        # Find the activity before removing it to check if it's a quiz
+        activity_to_delete = None
+        for activity in activities:
+            if (activity.get("id") == activity_id and 
+                activity.get("moduleId") == module_id):
+                activity_to_delete = activity
+                break
+
         # Filter out the activity to delete
         updated_activities = [
             activity
@@ -200,6 +208,45 @@ def delete_activity():
         
         completions_data["completions"] = updated_completions
         
+        # Variables to track if quiz data was deleted
+        quiz_deleted = False
+        quiz_results_deleted = False
+        quiz_id = None
+        
+        # If this was a quiz activity, also remove the associated quiz from quizzes.json
+        if activity_to_delete and activity_to_delete.get("type") == "quiz" and activity_to_delete.get("quizId"):
+            quiz_id = activity_to_delete.get("quizId")
+            
+            # Remove from quizzes.json
+            quizzes_file = os.path.join(DATABASE_FOLDER, "quizzes.json")
+            quizzes = load_json_file(quizzes_file, [])
+            
+            # Filter out the quiz with the matching ID
+            updated_quizzes = [
+                quiz for quiz in quizzes if quiz.get("id") != quiz_id
+            ]
+            
+            # Save the updated quizzes list if there was a change
+            if len(quizzes) != len(updated_quizzes):
+                quiz_deleted = save_json_file(quizzes_file, updated_quizzes)
+                logger.info(f"Quiz {quiz_id} deleted from quizzes.json")
+            
+            # Also remove corresponding quiz results from student_results.json
+            results_file = os.path.join(DATABASE_FOLDER, "student_results.json")
+            results_data = load_json_file(results_file, {"quiz_history": []})
+            
+            # Filter out quiz results for this quiz
+            quiz_history = results_data.get("quiz_history", [])
+            updated_quiz_history = [
+                result for result in quiz_history if result.get("quiz_id") != quiz_id
+            ]
+            
+            # Check if any results were removed
+            if len(quiz_history) != len(updated_quiz_history):
+                results_data["quiz_history"] = updated_quiz_history
+                quiz_results_deleted = save_json_file(results_file, results_data)
+                logger.info(f"Removed {len(quiz_history) - len(updated_quiz_history)} quiz results for quiz {quiz_id} from student_results.json")
+        
         # Save both files
         activities_saved = save_json_file(activities_file, updated_activities)
         completions_saved = save_json_file(completions_file, completions_data)
@@ -210,6 +257,9 @@ def delete_activity():
                     "success": True,
                     "message": "Activity deleted successfully",
                     "deleted": len(activities) - len(updated_activities) > 0,
+                    "quiz_deleted": quiz_deleted,
+                    "quiz_results_deleted": quiz_results_deleted,
+                    "quiz_id": quiz_id
                 }
             )
         else:
