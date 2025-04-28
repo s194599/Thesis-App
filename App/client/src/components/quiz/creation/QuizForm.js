@@ -67,44 +67,58 @@ const QuizForm = () => {
           // Set input type to document
           updateFormData("inputType", "document");
 
-          // Convert document URLs to File objects
+          // Process YouTube links separately
+          const youtubeVideos = documents.filter(doc => doc.type === "youtube").map(doc => ({
+            name: `YouTube Video (${doc.title})`,
+            size: 0,
+            type: "youtube",
+            youtubeUrl: doc.url,
+            videoId: extractYoutubeVideoId(doc.url),
+            isYoutubeVideo: true
+          }));
+          
+          // Convert document URLs to File objects (only for non-YouTube content)
           Promise.all(
-            documents.map(async (doc) => {
-              const response = await fetch(doc.url);
-              const blob = await response.blob();
-              
-              // Determine mime type based on the document type
-              let mimeType;
-              switch (doc.type) {
-                case "pdf":
-                  mimeType = "application/pdf";
-                  break;
-                case "word":
-                case "doc":
-                  mimeType = "application/msword";
-                  break;
-                case "video":
-                  mimeType = "video/mp4"; // Default to mp4, most common format
-                  if (doc.url.toLowerCase().endsWith('.webm')) mimeType = "video/webm";
-                  if (doc.url.toLowerCase().endsWith('.mov')) mimeType = "video/quicktime";
-                  if (doc.url.toLowerCase().endsWith('.avi')) mimeType = "video/x-msvideo";
-                  break;
-                case "audio":
-                  mimeType = "audio/mpeg"; // Default to mp3, most common format
-                  if (doc.url.toLowerCase().endsWith('.wav')) mimeType = "audio/wav";
-                  if (doc.url.toLowerCase().endsWith('.ogg')) mimeType = "audio/ogg";
-                  if (doc.url.toLowerCase().endsWith('.m4a')) mimeType = "audio/mp4";
-                  break;
-                default:
-                  mimeType = "application/octet-stream"; // Generic binary
-                  break;
-              }
-              
-              return new File([blob], doc.title, { type: mimeType });
-            })
+            documents
+              .filter(doc => doc.type !== "youtube")
+              .map(async (doc) => {
+                const response = await fetch(doc.url);
+                const blob = await response.blob();
+                
+                // Determine mime type based on the document type
+                let mimeType;
+                switch (doc.type) {
+                  case "pdf":
+                    mimeType = "application/pdf";
+                    break;
+                  case "word":
+                  case "doc":
+                    mimeType = "application/msword";
+                    break;
+                  case "video":
+                    mimeType = "video/mp4"; // Default to mp4, most common format
+                    if (doc.url.toLowerCase().endsWith('.webm')) mimeType = "video/webm";
+                    if (doc.url.toLowerCase().endsWith('.mov')) mimeType = "video/quicktime";
+                    if (doc.url.toLowerCase().endsWith('.avi')) mimeType = "video/x-msvideo";
+                    break;
+                  case "audio":
+                    mimeType = "audio/mpeg"; // Default to mp3, most common format
+                    if (doc.url.toLowerCase().endsWith('.wav')) mimeType = "audio/wav";
+                    if (doc.url.toLowerCase().endsWith('.ogg')) mimeType = "audio/ogg";
+                    if (doc.url.toLowerCase().endsWith('.m4a')) mimeType = "audio/mp4";
+                    break;
+                  default:
+                    mimeType = "application/octet-stream"; // Generic binary
+                    break;
+                }
+                
+                return new File([blob], doc.title, { type: mimeType });
+              })
           )
             .then((files) => {
-              updateFormData("files", files);
+              // Combine regular files with YouTube videos
+              const allFiles = [...files, ...youtubeVideos];
+              updateFormData("files", allFiles);
             })
             .catch((error) => {
               console.error("Error loading module documents:", error);
@@ -115,6 +129,15 @@ const QuizForm = () => {
       }
     }
   }, []);
+
+  // Function to extract YouTube video ID
+  const extractYoutubeVideoId = (url) => {
+    if (!url) return null;
+    
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   // Effect to scroll to loading spinner when loading state changes to true
   useEffect(() => {

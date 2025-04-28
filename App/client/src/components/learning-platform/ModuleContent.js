@@ -482,7 +482,8 @@ const ModuleContent = ({
                      a.type === "word" || 
                      a.type === "doc" || 
                      a.type === "video" || 
-                     a.type === "audio"
+                     a.type === "audio" ||
+                     a.type === "youtube"
             );
             localStorage.setItem(
               "quizDocuments",
@@ -531,7 +532,7 @@ const ModuleContent = ({
       setShowUrlModal(true);
     } else if (type === "quiz") {
       // Get all relevant activities from the current module for quiz generation
-      // Include pdf, doc, word, video, and audio files
+      // Include pdf, doc, word, video, audio, and youtube files
       const documents = activities
         .filter(
           (activity) =>
@@ -540,7 +541,8 @@ const ModuleContent = ({
              activity.type === "word" ||
              activity.type === "doc" ||
              activity.type === "video" ||
-             activity.type === "audio")
+             activity.type === "audio" ||
+             activity.type === "youtube")
         )
         .map((activity) => ({
           url: activity.url,

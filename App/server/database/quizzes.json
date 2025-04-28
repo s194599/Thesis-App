@@ -385,5 +385,68 @@
     "title": "Quiz",
     "timestamp": "2025-04-23T12:38:59.155Z",
     "id": "quiz_1745411939"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Symbolisme",
+        "id": "q1",
+        "options": [
+          "Symbolisme",
+          "Gothic",
+          "Klassiskismen",
+          "Barok"
+        ],
+        "question": "Hvilken bev\u00e6gelse i litteraturen er en overgang fra Romantik og f\u00f8rte til realisme?"
+      },
+      {
+        "correctAnswer": "En fokus p\u00e5 naturen, m\u00f8der og emotioner",
+        "id": "q2",
+        "options": [
+          "En fokus p\u00e5 naturen, m\u00f8der og emotioner",
+          "Detaljrig stil med en stor interesse i sociale samfundsforhold",
+          "En samfundskritisk ton med et brug af satire og ironi",
+          "En konstruktivistisk tilgang med en fokus p\u00e5 sproget og formen"
+        ],
+        "question": "Hvilke tre karakteristika er typiske for Romantikkens litteratur?"
+      },
+      {
+        "correctAnswer": "Adam Oehlenschl\u00e4ger",
+        "id": "q3",
+        "options": [
+          "Steen Steensen Blicher",
+          "Adam Oehlenschl\u00e4ger",
+          "Jens Baggesen",
+          "Bertel Thorvaldsen"
+        ],
+        "question": "Hvem var den mest betydende forfatter, der for alvor skabte Romantikken i Danmark?"
+      },
+      {
+        "correctAnswer": "K\u00e6rligheden mellem to unge mennesker",
+        "id": "q4",
+        "options": [
+          "K\u00e6rligheden mellem to unge mennesker",
+          "Menneskets kamp mod naturen",
+          "Historien om en ond heks og hendens fald",
+          "En mands opg\u00f8r med sit eget liv"
+        ],
+        "question": "Hvad er hovedtemaet for digtet \"Fem H\u00f8jtidsdage\" af Adam Oehlenschl\u00e4ger?"
+      },
+      {
+        "correctAnswer": "Fokus p\u00e5 naturen og emotionerne",
+        "id": "q5",
+        "options": [
+          "Detaljrig og mystisk stil",
+          "Samfundskritiske tanker med en fokus p\u00e5 sociale problemer",
+          "Fokus p\u00e5 naturen og emotionerne",
+          "Konstruktivistisk tilgang med en fokus p\u00e5 sproget og formen"
+        ],
+        "question": "Hvad er et vigtigt tr\u00e6k i Romantikken, der ogs\u00e5 kan findes i nutidens litteratur?"
+      }
+    ],
+    "title": "Romantikken Samlet",
+    "timestamp": "2025-04-28T13:29:57.302Z",
+    "id": "quiz_1745846997"
   }
 ]

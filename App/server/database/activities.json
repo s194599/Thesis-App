@@ -61,5 +61,13 @@
     "quizId": "quiz_1745233680",
     "moduleSpecific": true,
     "quizScore": 67
+  },
+  {
+    "moduleId": "module-3",
+    "id": "activity_quiz_quiz_1745846997_module-3_1745847000215",
+    "title": "Romantikken Samlet",
+    "type": "quiz",
+    "quizId": "quiz_1745846997",
+    "moduleSpecific": true
   }
 ]
