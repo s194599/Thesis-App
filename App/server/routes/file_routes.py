@@ -19,85 +19,195 @@ def upload_files():
     try:
         logger.info("Received upload request for 1 or more files")
 
-        # Check if 'files' key is present in the request
-        if "files" not in request.files:
-            return jsonify({"error": "No files provided"}), 400
+        # Check if files are in request - either as file uploads or YouTube URLs
+        has_files = 'files' in request.files
+        has_youtube = request.form.get('youtubeUrls')
+        
+        if not has_files and not has_youtube:
+            return jsonify({"error": "No files or YouTube URLs provided"}), 400
 
-        files = request.files.getlist("files")
-
-        # Check if any files were actually selected
-        if not files or all(file.filename == "" for file in files):
-            return jsonify({"error": "No files selected"}), 400
-
+        combined_content = []
         file_info = []
 
-        for file in files:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file_path = os.path.join(UPLOAD_FOLDER, filename)
-                logger.info(f"Saving file to: {file_path}")
-                file.save(file_path)
+        # Process YouTube URLs if present
+        if has_youtube:
+            youtube_urls = request.form.get('youtubeUrls').split(',')
+            logger.info(f"Processing {len(youtube_urls)} YouTube URLs")
+            
+            for url in youtube_urls:
+                if not url.strip():
+                    continue
+                    
+                try:
+                    # Extract video ID from URL
+                    import re
+                    video_id = None
+                    patterns = [
+                        r'(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)',
+                        r'(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?]+)'
+                    ]
+                    
+                    for pattern in patterns:
+                        match = re.search(pattern, url)
+                        if match:
+                            video_id = match.group(1)
+                            break
+                    
+                    if not video_id:
+                        logger.error(f"Could not extract video ID from YouTube URL: {url}")
+                        continue
+                        
+                    logger.info(f"Processing YouTube video: {video_id}")
+                    
+                    # Here you would integrate with YouTube API to get transcripts
+                    # This is a simplified demonstration - you'll need to implement
+                    # actual transcript fetching from YouTube API
+                    
+                    # Attempt to get transcript (mock implementation)
+                    try:
+                        # Example implementation - this should be replaced with actual API calls
+                        from youtube_transcript_api import YouTubeTranscriptApi
+                        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+                        
+                        # Format the transcript
+                        transcript_text = f"YouTube Video Transcript (ID: {video_id}):\n\n"
+                        for item in transcript_list:
+                            transcript_text += f"{item['text']} "
+                            
+                        # Add to combined content
+                        combined_content.append(transcript_text)
+                        
+                        # Add to file info
+                        file_info.append({
+                            "filename": f"youtube_{video_id}.txt",
+                            "type": "youtube",
+                            "videoId": video_id,
+                            "url": url,
+                            "content": transcript_text[:200] + "..." if len(transcript_text) > 200 else transcript_text
+                        })
+                        
+                        logger.info(f"Successfully processed YouTube transcript for video {video_id}")
+                        
+                    except Exception as e:
+                        logger.error(f"Error fetching YouTube transcript: {str(e)}")
+                        # Fallback message when transcript can't be fetched
+                        fallback_text = f"[YouTube video content from: {url}] - Transcript unavailable. The quiz generator will consider the video title and description only."
+                        combined_content.append(fallback_text)
+                        
+                        file_info.append({
+                            "filename": f"youtube_{video_id}.txt",
+                            "type": "youtube",
+                            "videoId": video_id,
+                            "url": url,
+                            "content": fallback_text,
+                            "error": str(e)
+                        })
+                        
+                except Exception as youtube_error:
+                    logger.error(f"Error processing YouTube URL {url}: {str(youtube_error)}")
+                    
+        # Process file uploads if present
+        if has_files:
+            files = request.files.getlist("files")
+            if not files or all(file.filename == "" for file in files):
+                if not has_youtube:  # Only return error if no YouTube URLs were processed
+                    return jsonify({"error": "No files selected"}), 400
+            else:
+                for file in files:
+                    if file and allowed_file(file.filename):
+                        filename = secure_filename(file.filename)
+                        file_path = os.path.join(UPLOAD_FOLDER, filename)
+                        logger.info(f"Saving file to: {file_path}")
+                        file.save(file_path)
 
-                # Process file based on its type
-                file_extension = (
-                    filename.rsplit(".", 1)[1].lower() if "." in filename else ""
-                )
-                content = ""
+                        # Process file based on its type
+                        file_extension = (
+                            filename.rsplit(".", 1)[1].lower() if "." in filename else ""
+                        )
+                        content = ""
 
-                if file_extension in ["mp4", "mov", "avi", "webm"]:
-                    # This is a video file, transcribe it
-                    logger.info(f"Starting video transcription for: {filename}")
-                    content = transcribe_video(file_path)
-                    logger.info(
-                        f"Transcribed {len(content)} characters from video: {filename}"
-                    )
+                        if file_extension in ["mp4", "mov", "avi", "webm"]:
+                            # This is a video file, transcribe it
+                            logger.info(f"Starting video transcription for: {filename}")
+                            content = transcribe_video(file_path)
+                            logger.info(
+                                f"Transcribed {len(content)} characters from video: {filename}"
+                            )
 
-                    # Check if transcription failed and contains an error message
-                    if content.startswith("[VIDEO TRANSCRIPTION ERROR]"):
+                            # Check if transcription failed and contains an error message
+                            if content.startswith("[VIDEO TRANSCRIPTION ERROR]"):
+                                return (
+                                    jsonify(
+                                        {
+                                            "error": "Video transcription failed",
+                                            "message": content,
+                                            "filename": filename,
+                                        }
+                                    ),
+                                    400,
+                                )
+                        elif file_extension in ["mp3", "wav", "ogg", "m4a"]:
+                            # This is an audio file, handle it similar to video (transcribe)
+                            logger.info(f"Starting audio transcription for: {filename}")
+                            content = transcribe_video(file_path)  # reuse the same function for audio
+                            logger.info(
+                                f"Transcribed {len(content)} characters from audio: {filename}"
+                            )
+                            
+                            # Check if transcription failed
+                            if content.startswith("[VIDEO TRANSCRIPTION ERROR]") or content.startswith("[AUDIO TRANSCRIPTION ERROR]"):
+                                return (
+                                    jsonify(
+                                        {
+                                            "error": "Audio transcription failed",
+                                            "message": content,
+                                            "filename": filename,
+                                        }
+                                    ),
+                                    400,
+                                )
+                        elif file_extension == "pdf":
+                            # Process PDF
+                            content = extract_text_from_pdf(file_path)
+                        elif file_extension in ["doc", "docx"]:
+                            # For simplicity, assuming .doc/.docx files are handled elsewhere or by a library
+                            content = "Document content (processing not shown in this example)"
+                        else:
+                            # For text files, read directly
+                            try:
+                                content = extract_text_from_file(file_path)
+                            except:
+                                content = f"Failed to extract content from {filename}"
+
+                        combined_content.append(content)
+                        file_info.append(
+                            {
+                                "filename": filename,
+                                "path": file_path,
+                                "content": (
+                                    content[:200] + "..." if len(content) > 200 else content
+                                ),
+                            }
+                        )
+                    else:
                         return (
                             jsonify(
                                 {
-                                    "error": "Video transcription failed",
-                                    "message": content,
-                                    "filename": filename,
+                                    "error": f"File type not allowed. Allowed types: {', '.join(allowed_file.__defaults__[0])}"
                                 }
                             ),
                             400,
                         )
-                elif file_extension == "pdf":
-                    # Process PDF
-                    content = extract_text_from_pdf(file_path)
-                elif file_extension in ["doc", "docx"]:
-                    # For simplicity, assuming .doc/.docx files are handled elsewhere or by a library
-                    content = "Document content (processing not shown in this example)"
-                else:
-                    # For text files, read directly
-                    try:
-                        content = extract_text_from_file(file_path)
-                    except:
-                        content = f"Failed to extract content from {filename}"
 
-                file_info.append(
-                    {
-                        "filename": filename,
-                        "path": file_path,
-                        "content": (
-                            content[:200] + "..." if len(content) > 200 else content
-                        ),
-                    }
-                )
-            else:
-                return (
-                    jsonify(
-                        {
-                            "error": f"File type not allowed. Allowed types: {', '.join(allowed_file.__defaults__[0])}"
-                        }
-                    ),
-                    400,
-                )
-
+        # Join all content
+        all_content = "\n\n".join(combined_content)
+        
         return (
-            jsonify({"message": "Files uploaded successfully", "files": file_info}),
+            jsonify({
+                "message": "Files and YouTube URLs processed successfully", 
+                "files": file_info,
+                "combinedContent": all_content
+            }),
             200,
         )
 
