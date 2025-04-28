@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "ef07f760-bc0a-40d4-ade0-b9bef64db67e",
+    "authorName": "Christian Wu",
+    "postTitle": "SE",
+    "bodyText": "sodkmsowm ff ff",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/36.jpg",
+    "timestamp": "2025-04-28T14:03:33.358513",
+    "comments": [
+      {
+        "id": "7ae8e29a-d389-4a3d-bb38-59dd147a9c46",
+        "authorName": "Carsten Blachmann",
+        "bodyText": "fffff eef eofkeo feunf wr fcv",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/42.jpg",
+        "timestamp": "2025-04-28T14:03:50.517871"
+      }
+    ],
+    "moduleId": "module-4"
+  }
+]

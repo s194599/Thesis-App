@@ -1,1 +1,43 @@
-[]
+[
+  {
+    "id": "5f58143e-6ec8-4c81-be84-bc652d1efc43",
+    "authorName": "Carsten Blachmann",
+    "postTitle": "K",
+    "bodyText": "Eender i ham her?+",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/42.jpg",
+    "timestamp": "2025-04-28T14:15:55.643595",
+    "comments": [
+      {
+        "id": "67ae5092-f8d3-4508-8525-0a0b1dccccf7",
+        "authorName": "Christian Wu",
+        "bodyText": "ja ",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/36.jpg",
+        "timestamp": "2025-04-28T14:16:13.766565",
+        "imageAttachment": "/static/images/forum/module-3_096e1bd5-7906-457d-b3d1-b372727af711.jpg"
+      }
+    ],
+    "moduleId": "module-3",
+    "imageAttachment": "/static/images/forum/module-3_5f016497-4162-4a2d-8aa5-88848b94ea02.jpg"
+  },
+  {
+    "id": "24d3802b-698e-4194-b8ab-cf0516a09d7e",
+    "authorName": "Carsten Blachmann",
+    "postTitle": "G\u00e6t en person",
+    "bodyText": "Hvem er personen p\u00e5 billedet?",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/42.jpg",
+    "timestamp": "2025-04-28T14:30:16.235364",
+    "comments": [],
+    "moduleId": "module-3",
+    "imageAttachment": "/static/images/forum/module-3_c88bb1a1-d47c-480b-bdbc-0dcb27cee667.jpg"
+  },
+  {
+    "id": "63f23d7c-4a79-40e2-85f4-470621670280",
+    "authorName": "Carsten Blachmann",
+    "postTitle": "TEST AF NOTI",
+    "bodyText": "NOTI TEST",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/42.jpg",
+    "timestamp": "2025-04-28T14:33:39.675799",
+    "comments": [],
+    "moduleId": "module-3"
+  }
+]

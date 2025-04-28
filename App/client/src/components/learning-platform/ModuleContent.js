@@ -39,6 +39,7 @@ const ModuleContent = ({
   onQuizAccess,
   onUpdateActivities,
   onModuleUpdate,
+  resetTabFn,
   userRole = "teacher", // Default to teacher role if not provided
 }) => {
   // Check if in teacher mode (can edit)
@@ -82,6 +83,13 @@ const ModuleContent = ({
   const [selectedAudioUrl, setSelectedAudioUrl] = useState("");
   const [selectedAudioTitle, setSelectedAudioTitle] = useState("");
   const navigate = useNavigate();
+  
+  // Expose the setActiveTab function through the resetTabFn prop
+  useEffect(() => {
+    if (resetTabFn) {
+      resetTabFn(setActiveTab);
+    }
+  }, [resetTabFn]);
   
   // Initialize activities from module when it changes
   useEffect(() => {
@@ -1198,7 +1206,11 @@ const ModuleContent = ({
   };
 
   const handleImageClick = (e, imageUrl, title) => {
-    e.stopPropagation(); // Prevent triggering the card click
+    // Only call stopPropagation if the event object exists
+    if (e) {
+      e.stopPropagation(); // Prevent triggering the card click
+    }
+    
     if (imageUrl) {
       // Ensure we have the full URL for the image
       let fullImageUrl = imageUrl;

@@ -11,6 +11,11 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
   const [iconFile, setIconFile] = useState(null);
   const [iconPreview, setIconPreview] = useState(null);
   const [activeTab, setActiveTab] = useState('upload');
+  const [renderKey, setRenderKey] = useState(0);
+
+  useEffect(() => {
+    setRenderKey(prevKey => prevKey + 1);
+  }, [userRole]);
 
   // Ensure modules is always an array
   const safeModules = Array.isArray(modules) ? modules : [];
@@ -98,7 +103,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
   };
 
   return (
-    <div className="module-sidebar p-3">
+    <div className="module-sidebar p-3" key={`sidebar-${renderKey}`}>
       <div className="course-header d-flex align-items-center mb-4">
         <div className="course-icon me-3">
           <div className="course-icon-wrapper">
@@ -178,6 +183,13 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                     {userRole === 'student' && totalActivities > 0 && (
                       <small className="text-muted d-block">
                         {completedActivities} af {totalActivities} aktiviteter gennemført
+                      </small>
+                    )}
+                    
+                    {/* Add activity count for teachers */}
+                    {userRole === 'teacher' && totalActivities > 0 && (
+                      <small className="text-muted d-block">
+                        {totalActivities} {totalActivities === 1 ? 'aktivitet' : 'aktiviteter'}
                       </small>
                     )}
                   </div>

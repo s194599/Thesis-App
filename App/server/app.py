@@ -4,6 +4,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from datetime import timedelta
+import json
 
 # Import configuration
 from config.app_config import (
@@ -28,7 +29,7 @@ from routes.completion_routes import completion_routes
 from routes.forum_routes import forum_routes
 
 # Create Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Configure CORS with specific origins
 CORS(
@@ -98,17 +99,16 @@ def add_cors_headers(response):
     return response
 
 
-# This is a catch-all route for SPA, commented out for now
-# @app.route('/', defaults={'path': ''})
-# @app.route('/<path:path>')
-# def catch_all(path):
-#     # Special case for API routes
-#     if path.startswith('api/'):
-#         # Let Flask handle API routes
-#         return "API endpoint not found", 404
-#
-#     # For all non-API routes, send the React app's index.html
-#     return send_from_directory('../client/build', 'index.html')
+# Route to serve static files
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory('static', path)
+
+
+# Handle 404s
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({'error': 'Not found'}), 404
 
 
 @app.route("/uploads/icons/<filename>")
