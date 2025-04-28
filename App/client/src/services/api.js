@@ -233,3 +233,82 @@ export const getQuiz = async (quizId) => {
     throw error;
   }
 };
+
+// Forum API endpoints
+export const getForumPosts = async (moduleId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch forum posts');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching forum posts:', error);
+    throw error;
+  }
+};
+
+export const createForumPost = async (moduleId, postData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to create forum post');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating forum post:', error);
+    throw error;
+  }
+};
+
+export const addForumComment = async (moduleId, postId, commentData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}/post/${postId}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(commentData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to add comment');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw error;
+  }
+};
+
+// Delete a forum post
+export const deleteForumPost = async (moduleId, postId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}/post/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete forum post');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting forum post:', error);
+    throw error;
+  }
+};

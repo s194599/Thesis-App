@@ -30,6 +30,8 @@ import ModuleTabs from "./ModuleTabs";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import Forum from './Forum';
+import '../../styles/Forum.css';
 
 const ModuleContent = ({
   module,
@@ -1582,9 +1584,7 @@ const ModuleContent = ({
       )}
       
       {activeTab === "forum" && (
-        <div className="forum-placeholder p-4 text-center bg-light rounded">
-          <p className="mb-0 text-muted">Forum indhold vil blive vist her</p>
-        </div>
+        <Forum moduleId={module.id} userRole={userRole} />
       )}
       
       {/* Only render modals if in teacher mode */}

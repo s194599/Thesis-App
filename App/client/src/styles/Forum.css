@@ -1,0 +1,63 @@
+.forum-container {
+  padding: 20px 0;
+}
+
+.forum-post {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.forum-post:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.post-body {
+  margin-bottom: 1.5rem;
+  white-space: pre-line;
+}
+
+.comments-section {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 1rem;
+}
+
+.comment-card {
+  background-color: #f8f9fa;
+  border-left: 3px solid #dee2e6;
+  margin-left: 10px;
+}
+
+/* Profile picture styles */
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-pic-sm {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Teams-like styling */
+.forum-post .card-header {
+  border-bottom: none;
+  padding-bottom: 0.5rem;
+}
+
+.comment-card .card-body {
+  padding: 0.75rem 1rem;
+}
+
+/* Animation for new posts/comments */
+@keyframes highlightNew {
+  from { background-color: rgba(13, 110, 253, 0.1); }
+  to { background-color: transparent; }
+}
+
+.new-item {
+  animation: highlightNew 2s ease-out;
+} 
