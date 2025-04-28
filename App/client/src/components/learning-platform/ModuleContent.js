@@ -1376,18 +1376,17 @@ const ModuleContent = ({
         />
         
         {userRole === "student" && (
-        <div className="d-flex justify-content-between align-items-center mb-2 mt-4">
-          <div className="text-muted small">
-              {progressPercentage}% - {completedActivitiesCount} ud af{" "}
-              {totalActivities} aktiviteter gennemført
-          </div>
-          
+          <div className="mb-2 mt-4">
             <ProgressBar
               now={progressPercentage}
               variant="primary"
               style={{ height: "8px" }}
-              className="w-100 mt-2"
+              className="w-100 mb-2"
             />
+            <div className="text-muted small text-center">
+              <span className="fw-bold">{progressPercentage}%</span> - {completedActivitiesCount} ud af{" "}
+              {totalActivities} aktiviteter gennemført
+            </div>
           </div>
         )}
 

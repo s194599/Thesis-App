@@ -755,52 +755,56 @@ const PlatformOverview = () => {
           )}
         </div>
       )}
-      <Row className="g-0 min-vh-100">
-        <Col md={3} className="sidebar-col bg-light border-end">
-          <ModuleSidebar 
-            modules={modules || []} 
-            selectedModuleId={selectedModuleId}
-            onModuleSelect={handleModuleSelect}
-            userRole={userRole}
-            onModuleUpdate={handleModuleUpdate}
-          />
-        </Col>
-        <Col md={9} className="content-col">
-          {selectedModule ? (
-            <ModuleContent 
-              module={selectedModule}
-              onActivityCompletion={handleActivityCompletion}
-              onQuizAccess={handleQuizAccess}
-              onUpdateActivities={updateModuleActivities}
-              onModuleUpdate={handleModuleUpdate}
+      
+      {/* Main content area with sidebar and content */}
+      <div className="platform-content">
+        <Row className="g-0">
+          <Col md={3} className="sidebar-col bg-light border-end">
+            <ModuleSidebar 
+              modules={modules || []} 
+              selectedModuleId={selectedModuleId}
+              onModuleSelect={handleModuleSelect}
               userRole={userRole}
+              onModuleUpdate={handleModuleUpdate}
             />
-          ) : (
-            <div className="p-4 text-center">
-              <p>
-                No module selected or available. Please select a module from the
-                sidebar.
-              </p>
-            </div>
-          )}
-        </Col>
-      </Row>
+          </Col>
+          <Col md={9} className="content-col">
+            {selectedModule ? (
+              <ModuleContent 
+                module={selectedModule}
+                onActivityCompletion={handleActivityCompletion}
+                onQuizAccess={handleQuizAccess}
+                onUpdateActivities={updateModuleActivities}
+                onModuleUpdate={handleModuleUpdate}
+                userRole={userRole}
+              />
+            ) : (
+              <div className="p-4 text-center">
+                <p>
+                  No module selected or available. Please select a module from the
+                  sidebar.
+                </p>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </div>
           
       {/* Overall Progress - Only visible in student mode */}
       {userRole === "student" && (
           <div className="fixed-bottom bg-white border-top py-2 px-3">
-            <div className="d-flex justify-content-between align-items-center mb-1">
-              <small className="text-muted">
-              {overallProgress}% - {completedActivities} ud af {totalActivities}{" "}
-              moduler gennemført
-              </small>
-              <small className="text-muted">Total Fremgang</small>
-            </div>
             <ProgressBar
               now={overallProgress}
               variant="primary"
               style={{ height: "8px" }}
+              className="mb-2"
             />
+            <div className="text-center">
+              <div className="text-muted small">
+                <span className="fw-bold">{overallProgress}%</span> - {completedActivities} ud af {totalActivities}{" "}
+                moduler gennemført
+              </div>
+            </div>
           </div>
       )}
     </Container>
