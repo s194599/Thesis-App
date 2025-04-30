@@ -114,5 +114,48 @@
     "parentId": null,
     "id": "folder_1746013491306",
     "moduleId": "module-3"
+  },
+  {
+    "id": "activity_1746018403078",
+    "title": "2.Verdenskrig.pdf",
+    "description": "L\u00e6s kaptiel 5-7",
+    "type": "pdf",
+    "moduleId": "module-2",
+    "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf"
+  },
+  {
+    "id": "activity_1746018514361",
+    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
+    "moduleId": "module-2"
+  },
+  {
+    "title": "L\u00e6s det her",
+    "description": "kig her",
+    "type": "folder",
+    "isNew": true,
+    "parentId": null,
+    "id": "folder_1746018525236",
+    "moduleId": "module-2"
+  },
+  {
+    "id": "activity_1746018533654",
+    "title": "Sk\u00e6rmbillede 2025-04-28 kl. 14.52.16.png",
+    "description": "",
+    "type": "image",
+    "moduleId": "module-2",
+    "url": "http://localhost:5001/api/uploads/Skrmbillede_2025-04-28_kl._14.52.16_1746018533.png",
+    "parentId": "folder_1746018525236"
+  },
+  {
+    "id": "activity_1746018560984",
+    "title": "Gantt-chart_Thesis-ougiughiuhg.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-2",
+    "url": "http://localhost:5001/api/uploads/Gantt-chart_Thesis-ougiughiuhg_1746018560.pdf",
+    "parentId": "folder_1746018525236"
   }
 ]

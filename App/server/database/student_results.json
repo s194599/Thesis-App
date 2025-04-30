@@ -483,8 +483,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-30T14:18:38.540861",
-      "start_timestamp": "2025-04-30T12:18:28.205Z",
+      "timestamp": "2025-04-30T14:54:00.058301",
+      "start_timestamp": "2025-04-30T12:46:01.325Z",
       "quiz_id": "quiz_1746011919",
       "quiz_title": "Parat viden om 2. Verdenskrig",
       "score": 5,
@@ -508,7 +508,7 @@
         },
         {
           "question_id": "fc4",
-          "question": "[Frits Clausen]",
+          "question": "Frits Clausen",
           "answer": "Knew it",
           "correct": true,
           "is_flashcard": true,
@@ -531,7 +531,7 @@
           "viewed": true
         }
       ],
-      "attempts": 2,
+      "attempts": 3,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

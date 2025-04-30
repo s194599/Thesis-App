@@ -1070,19 +1070,22 @@ const ModuleContent = ({
     // Generate a unique ID for new activities
     const activityId = editActivityId || `activity_${Date.now()}`;
     
-    const updatedActivity = {
-      ...newActivity,
+    // Create a clean object without DOM elements or event references
+    const activityData = {
       id: activityId,
+      title: newActivity.title,
+      description: newActivity.description || "",
+      type: newActivity.type || "text",
+      url: newActivity.url || "",
+      content: newActivity.content || "",
+      moduleId: module?.id
     };
     
-    // Remove the file object before saving to state
-    const { file, ...activityToSave } = updatedActivity;
-    
     // Handle file upload if there's a file
-    if (file) {
+    if (newActivity.file) {
       // Create form data for file upload
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", newActivity.file);
       
       // Upload the file
       fetch("/api/upload", {
@@ -1109,10 +1112,9 @@ const ModuleContent = ({
           
           // Add the URL to the activity
           const fileActivity = {
-            ...activityToSave,
+            ...activityData,
             url: fileUrl,
-            type: data.type || activityToSave.type,
-              moduleId: module.id, // Ensure moduleId is set correctly
+            type: data.type || activityData.type,
           };
           
           // Store the activity on the server for persistence
@@ -1181,20 +1183,15 @@ const ModuleContent = ({
       });
     } else {
       // No file to upload, just update activities
-      // Add moduleId to the activity for server storage
-      const activityWithModule = {
-        ...activityToSave,
-        moduleId: module.id, // Ensure moduleId is set correctly
-      };
       
       // Store activities that have URLs on the server
-      if (activityWithModule.url) {
+      if (activityData.url) {
         fetch("/api/store-activity", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(activityWithModule),
+          body: JSON.stringify(activityData),
         })
           .then((response) => response.json())
           .then((serverData) => {
@@ -1210,11 +1207,11 @@ const ModuleContent = ({
       if (editActivityId) {
         // Update existing activity
         updatedActivities = activities.map((activity) =>
-          activity.id === editActivityId ? activityWithModule : activity
+          activity.id === editActivityId ? activityData : activity
         );
       } else {
         // Add new activity
-        updatedActivities = [...activities, activityWithModule];
+        updatedActivities = [...activities, activityData];
       }
 
       // Update local state first for immediate UI feedback
@@ -1301,13 +1298,15 @@ const ModuleContent = ({
     // Generate a unique ID for new activities
     const activityId = editActivityId || `activity_${Date.now()}`;
 
-    const updatedActivity = {
-      ...newActivity,
+    // Create a clean object without DOM elements or event references
+    const { file } = newActivity;
+    const activityToSave = {
       id: activityId,
+      title: newActivity.title,
+      description: newActivity.description || "",
+      type: newActivity.type || "pdf",
+      moduleId: module?.id
     };
-
-    // Remove the file object before saving to state
-    const { file, ...activityToSave } = updatedActivity;
 
     // Create form data for file upload
     const formData = new FormData();
@@ -1341,7 +1340,6 @@ const ModuleContent = ({
             ...activityToSave,
             url: fileUrl,
             type: data.type || activityToSave.type,
-            moduleId: module.id, // Ensure moduleId is set correctly
           };
 
           // Store the activity on the server for persistence
@@ -1426,30 +1424,30 @@ const ModuleContent = ({
     }
 
     // Use corrected URL if returned
+    let finalUrl = newActivity.url;
     if (typeof validatedUrl === "string") {
-      newActivity.url = validatedUrl;
+      finalUrl = validatedUrl;
     }
 
     // Generate a unique ID for new activities
     const activityId = editActivityId || `activity_${Date.now()}`;
 
-    const activityWithModule = {
-      ...newActivity,
-      id: activityId,
-      moduleId: module.id, // Ensure moduleId is set correctly
-    };
-
-    // Determine activity type based on URL
-    if (
-      newActivity.url.includes("youtube.com") ||
-      newActivity.url.includes("youtu.be")
-    ) {
-      activityWithModule.type = "youtube";
-    } else if (newActivity.url.match(/\.(jpg|jpeg|png|gif)$/i)) {
-      activityWithModule.type = "image";
-    } else {
-      activityWithModule.type = "link";
+    // Create a clean object without DOM elements or event references
+    let activityType = "link";
+    if (finalUrl.includes("youtube.com") || finalUrl.includes("youtu.be")) {
+      activityType = "youtube";
+    } else if (finalUrl.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      activityType = "image";
     }
+    
+    const activityData = {
+      id: activityId,
+      title: newActivity.title,
+      description: newActivity.description || "",
+      type: activityType,
+      url: finalUrl,
+      moduleId: module?.id
+    };
 
     // Store activity on the server
     fetch("/api/store-activity", {
@@ -1457,7 +1455,7 @@ const ModuleContent = ({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(activityWithModule),
+      body: JSON.stringify(activityData),
     })
       .then((response) => {
         if (!response.ok) {
@@ -1477,11 +1475,11 @@ const ModuleContent = ({
     if (editActivityId) {
       // Update existing activity
       updatedActivities = activities.map((activity) =>
-        activity.id === editActivityId ? activityWithModule : activity
+        activity.id === editActivityId ? activityData : activity
       );
     } else {
       // Add new activity
-      updatedActivities = [...activities, activityWithModule];
+      updatedActivities = [...activities, activityData];
     }
 
     // Update local state first for immediate UI feedback
