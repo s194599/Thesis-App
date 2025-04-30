@@ -25,6 +25,10 @@ import {
   BsImage,
   BsCheck,
   BsRobot,
+  BsFolder,
+  BsFolderFill,
+  BsChevronDown,
+  BsChevronRight,
 } from "react-icons/bs";
 import ModuleTabs from "./ModuleTabs";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +59,11 @@ const ModuleContent = ({
   const [showActivityTypeModal, setShowActivityTypeModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showQuizChoiceModal, setShowQuizChoiceModal] = useState(false);
+  const [showFolderModal, setShowFolderModal] = useState(false);
+  const [openFolders, setOpenFolders] = useState({});
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [movingActivity, setMovingActivity] = useState(null);
+  const [showMoveToFolderModal, setShowMoveToFolderModal] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   const [selectedImageTitle, setSelectedImageTitle] = useState("");
   const [newActivity, setNewActivity] = useState({
@@ -82,6 +91,7 @@ const ModuleContent = ({
   const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
   const [selectedAudioUrl, setSelectedAudioUrl] = useState("");
   const [selectedAudioTitle, setSelectedAudioTitle] = useState("");
+  const [targetFolderId, setTargetFolderId] = useState(null);
   const navigate = useNavigate();
   
   // Expose the setActiveTab function through the resetTabFn prop
@@ -147,6 +157,7 @@ const ModuleContent = ({
           return {
             ...activityWithoutCompleted,
             moduleId: module.id,
+            parentId: activity.parentId || null
           };
         });
 
@@ -157,6 +168,15 @@ const ModuleContent = ({
       console.log(
         `Setting ${normalizedActivities.length} activities for module ${module.id}, including ${quizzes.length} quizzes`
       );
+
+      // Initialize open folder state
+      const initialOpenState = {};
+      normalizedActivities.forEach(activity => {
+        if (activity.type === 'folder') {
+          initialOpenState[activity.id] = true; // Default to open
+        }
+      });
+      setOpenFolders(initialOpenState);
 
       // Set the activities state with the normalized data
       setActivities(normalizedActivities);
@@ -263,6 +283,8 @@ const ModuleContent = ({
         return <BsYoutube className="text-info" size={20} />;
       case "audio":
         return <BsFileEarmark className="text-warning" size={20} />;
+      case "folder":
+        return <BsFolderFill className="text-primary" size={20} />;
       default:
         return <BsFileEarmark className="text-secondary" size={20} />;
     }
@@ -510,22 +532,25 @@ const ModuleContent = ({
     }
   };
   
-  const handleAddActivity = () => {
+  const handleAddActivity = (folderId = null) => {
+    // Store the target folder ID if provided
+    setTargetFolderId(folderId);
     setShowActivityTypeModal(true);
   };
-
+  
   const handleActivityTypeSelect = (type) => {
     setShowActivityTypeModal(false);
 
     // Configure the new activity based on the selected type
     if (type === "file") {
-    setNewActivity({
+      setNewActivity({
         title: "",
         description: "",
         type: "pdf", // Default to PDF for file uploads
         url: "",
-      file: null,
-      isNew: true,
+        file: null,
+        isNew: true,
+        parentId: targetFolderId // Use the target folder as parent if set
       });
       setShowFileUploadModal(true);
     } else if (type === "link") {
@@ -536,8 +561,18 @@ const ModuleContent = ({
         url: "",
         file: null,
         isNew: true,
+        parentId: targetFolderId // Use the target folder as parent if set
       });
       setShowUrlModal(true);
+    } else if (type === "folder") {
+      setNewActivity({
+        title: "",
+        description: "",
+        type: "folder",
+        isNew: true,
+        parentId: targetFolderId // Use the target folder as parent if set
+      });
+      setShowFolderModal(true);
     } else if (type === "quiz") {
       // Get all relevant activities from the current module for quiz generation
       // Include pdf, doc, word, video, audio, and youtube files
@@ -1291,6 +1326,546 @@ const ModuleContent = ({
     }
   };
 
+  const handleFolderClick = (e, folderId) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    setOpenFolders(prev => ({
+      ...prev,
+      [folderId]: !prev[folderId]
+    }));
+  };
+  
+  const handleCreateFolder = () => {
+    if (!newActivity.title) {
+      alert("Angiv venligst en titel til mappen");
+      return;
+    }
+
+    // Generate a unique ID for the new folder
+    const folderId = `folder_${Date.now()}`;
+
+    const folderActivity = {
+      ...newActivity,
+      id: folderId,
+      type: "folder",
+      moduleId: module.id,
+      parentId: null
+    };
+
+    // Store the folder activity on the server
+    fetch("/api/store-activity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(folderActivity),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((serverData) => {
+        console.log("Folder created on server:", serverData);
+      })
+      .catch((error) => {
+        console.error(`Error creating folder on server: ${error.message}`);
+      });
+
+    // Add the new folder to the activities list
+    const updatedActivities = [...activities, folderActivity];
+    
+    // Update open folders state
+    setOpenFolders(prev => ({
+      ...prev,
+      [folderId]: true // New folders are open by default
+    }));
+
+    // Update local state
+    setActivities(updatedActivities);
+
+    // Update the parent component
+    if (onUpdateActivities && module) {
+      onUpdateActivities(module.id, updatedActivities);
+    }
+
+    // Close the modal and reset the form
+    setShowFolderModal(false);
+    setNewActivity({
+      title: "",
+      description: "",
+      type: "text",
+      url: "",
+      file: null,
+      content: "",
+    });
+  };
+  
+  const openMoveToFolderModal = (e, activity) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    setMovingActivity(activity);
+    setShowMoveToFolderModal(true);
+  };
+  
+  const handleMoveToFolder = (folderId) => {
+    if (!movingActivity) return;
+    
+    // Update the activity's parentId
+    const updatedActivity = {
+      ...movingActivity,
+      parentId: folderId === "root" ? null : folderId
+    };
+    
+    // Update the activity on the server
+    fetch("/api/store-activity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedActivity),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((serverData) => {
+        console.log("Activity moved on server:", serverData);
+      })
+      .catch((error) => {
+        console.error(`Error moving activity on server: ${error.message}`);
+      });
+    
+    // Update activities in local state
+    const updatedActivities = activities.map(activity => 
+      activity.id === movingActivity.id ? updatedActivity : activity
+    );
+    
+    setActivities(updatedActivities);
+    
+    // Update the parent component
+    if (onUpdateActivities && module) {
+      onUpdateActivities(module.id, updatedActivities);
+    }
+    
+    // Close modal and reset state
+    setShowMoveToFolderModal(false);
+    setMovingActivity(null);
+    setSelectedFolder(null);
+  };
+  
+  // Function to group activities by parentId for rendering folders
+  const getStructuredActivities = () => {
+    // Create a map of all folders
+    const folders = activities
+      .filter(activity => activity.type === 'folder')
+      .reduce((map, folder) => {
+        map[folder.id] = {
+          ...folder,
+          children: []
+        };
+        return map;
+      }, {});
+    
+    // Root level items (parentId is null or not in a folder)
+    const rootItems = [];
+    
+    // Process all activities
+    activities.forEach(activity => {
+      if (activity.type === 'folder') {
+        // Skip folders as we've already processed them
+        return;
+      }
+      
+      if (!activity.parentId) {
+        // This is a root level activity
+        rootItems.push(activity);
+      } else if (folders[activity.parentId]) {
+        // This activity belongs in a folder
+        folders[activity.parentId].children.push(activity);
+      } else {
+        // Parent folder doesn't exist, treat as root item
+        rootItems.push({
+          ...activity,
+          parentId: null
+        });
+      }
+    });
+    
+    // Add folders to root items
+    Object.values(folders).forEach(folder => {
+      if (!folder.parentId) {
+        rootItems.push(folder);
+      } else if (folders[folder.parentId]) {
+        // This folder is nested inside another folder
+        folders[folder.parentId].children.push(folder);
+      } else {
+        // Parent folder doesn't exist, treat as root item
+        rootItems.push({
+          ...folder,
+          parentId: null
+        });
+      }
+    });
+    
+    return rootItems;
+  };
+  
+  // Recursive function to render activities and folders
+  const renderActivityItem = (activity, depth = 0) => {
+    // Check if activity is completed by the current student
+    const completed = isActivityCompleted(activity.id);
+    
+    // For folders, render with children
+    if (activity.type === 'folder') {
+      const isOpen = openFolders[activity.id] || false;
+      const folderChildren = activities.filter(a => a.parentId === activity.id);
+      
+      return (
+        <div key={activity.id} className="folder-container mb-3">
+          <Card 
+            className={`activity-card folder-card ${
+              userRole === "student" && completed ? "completed" : ""
+            }`}
+            style={{ cursor: "pointer" }}
+          >
+            <Card.Body className="p-3">
+              <div className="d-flex align-items-center">
+                <div 
+                  className="me-2 cursor-pointer" 
+                  onClick={(e) => handleFolderClick(e, activity.id)}
+                >
+                  {isOpen ? <BsChevronDown /> : <BsChevronRight />}
+                </div>
+                <div className="activity-icon me-3">
+                  {getIconForType(activity.type)}
+                </div>
+                
+                <div className="activity-content flex-grow-1" onClick={(e) => handleFolderClick(e, activity.id)}>
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h5 className="mb-1">
+                        {activity.title || "Unnamed Folder"}
+                      </h5>
+                      {activity.description && (
+                        <div className="text-muted small">
+                          {activity.description}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="d-flex align-items-center">
+                      {/* Edit and Delete buttons - Only visible in teacher mode */}
+                      {isTeacherMode && (
+                        <div className="edit-delete-buttons d-flex me-2">
+                          <Button
+                            variant="link"
+                            className="p-0 me-2 text-primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddActivity(activity.id);
+                            }}
+                            style={{ fontSize: "1rem" }}
+                            title="Tilføj aktivitet til mappe"
+                          >
+                            <BsPlus />
+                          </Button>
+                          <Button
+                            variant="link"
+                            className="p-0 me-2 text-secondary"
+                            onClick={(e) => handleEditActivity(e, activity)}
+                            style={{ fontSize: "1rem" }}
+                          >
+                            <BsPencil />
+                          </Button>
+                          <Button
+                            variant="link"
+                            className="p-0 text-danger"
+                            onClick={(e) => handleDeleteActivity(e, activity.id)}
+                            style={{ fontSize: "1rem" }}
+                          >
+                            <BsX />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+          
+          {/* Render folder contents if open */}
+          {isOpen && (
+            <div className="folder-contents ms-4 mt-2">
+              {folderChildren.length > 0 ? (
+                folderChildren.map(childActivity => (
+                  <Card 
+                    key={childActivity.id} 
+                    className={`mb-3 activity-card ${
+                      userRole === "student" && isActivityCompleted(childActivity.id)
+                        ? "completed"
+                        : ""
+                    }`}
+                    onClick={() => handleActivityClick(childActivity)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Card.Body className="p-3">
+                      <div className="d-flex align-items-center">
+                        <div className="activity-icon me-3">
+                          {getIconForType(childActivity.type, childActivity.url)}
+                        </div>
+                        
+                        <div className="activity-content flex-grow-1">
+                          <div className="d-flex justify-content-between align-items-start">
+                            <div>
+                              <h5 className="mb-1">
+                                {childActivity.title || "Unnamed Activity"}
+                              </h5>
+                              {childActivity.description && (
+                                <div className="text-muted small">
+                                  {childActivity.description}
+                                </div>
+                              )}
+                              {childActivity.type === "youtube" && childActivity.url && (
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="text-muted small text-truncate"
+                                    style={{ maxWidth: "500px" }}
+                                  >
+                                    {extractYoutubeVideoId(childActivity.url)
+                                      ? "YouTube Video"
+                                      : childActivity.url}
+                                  </div>
+                                  <small className="ms-2 text-primary">
+                                    Klik for at åbne
+                                  </small>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="d-flex align-items-center">
+                              {/* Edit and Delete buttons - Only visible in teacher mode */}
+                              {isTeacherMode && (
+                                <div className="edit-delete-buttons d-flex me-2">
+                                  <Button
+                                    variant="link"
+                                    className="p-0 me-2 text-secondary"
+                                    onClick={(e) => handleEditActivity(e, childActivity)}
+                                    style={{ fontSize: "1rem" }}
+                                  >
+                                    <BsPencil />
+                                  </Button>
+                                  <Button
+                                    variant="link"
+                                    className="p-0 me-2 text-primary"
+                                    onClick={(e) => openMoveToFolderModal(e, childActivity)}
+                                    style={{ fontSize: "1rem" }}
+                                  >
+                                    <BsFolder />
+                                  </Button>
+                                  <Button
+                                    variant="link"
+                                    className="p-0 text-danger"
+                                    onClick={(e) => handleDeleteActivity(e, childActivity.id)}
+                                    style={{ fontSize: "1rem" }}
+                                  >
+                                    <BsX />
+                                  </Button>
+                                </div>
+                              )}
+                              
+                              {/* Completion Status - Only visible in student mode */}
+                              {userRole === "student" && (
+                                <div className="ms-2">
+                                  {isActivityCompleted(childActivity.id) ? (
+                                    <BsCheckCircleFill className="text-success" />
+                                  ) : (
+                                    <BsCircleFill
+                                      className="text-secondary"
+                                      style={{ opacity: 0.3 }}
+                                    />
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {childActivity.type === "image" && childActivity.url && (
+                        <div className="mt-3 activity-image-container">
+                          <img
+                            src={
+                              childActivity.url.startsWith("http")
+                                ? childActivity.url
+                                : `http://localhost:5001${
+                                    childActivity.url.startsWith("/") ? "" : "/"
+                                  }${childActivity.url}`
+                            }
+                            alt={childActivity.title}
+                            className="activity-inline-image"
+                            onClick={(e) =>
+                              handleImageClick(e, childActivity.url, childActivity.title)
+                            }
+                          />
+                        </div>
+                      )}
+                    </Card.Body>
+                  </Card>
+                ))
+              ) : (
+                <div className="text-center p-3 text-muted">
+                  <p>Denne mappe er tom</p>
+                  {isTeacherMode && (
+                    <Button 
+                      variant="outline-primary" 
+                      size="sm" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddActivity(activity.id);
+                      }}
+                      className="d-flex align-items-center mx-auto"
+                    >
+                      <BsPlus className="me-1" /> Tilføj aktivitet
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+    
+    // For normal activities, render standard card
+    return (
+      <Card 
+        key={activity.id || Math.random().toString()} 
+        className={`mb-3 activity-card ${
+          userRole === "student" && completed
+            ? "completed"
+            : ""
+        }`}
+        onClick={() => handleActivityClick(activity)}
+        style={{ cursor: "pointer" }}
+      >
+        <Card.Body className="p-3">
+          <div className="d-flex align-items-center">
+            <div className="activity-icon me-3">
+              {getIconForType(activity.type, activity.url)}
+            </div>
+            
+            <div className="activity-content flex-grow-1">
+              <div className="d-flex justify-content-between align-items-start">
+                <div>
+                  <h5 className="mb-1">
+                    {activity.title || "Unnamed Activity"}
+                  </h5>
+                  {activity.description && (
+                    <div className="text-muted small">
+                      {activity.description}
+                    </div>
+                  )}
+                  {activity.type === "youtube" && activity.url && (
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="text-muted small text-truncate"
+                        style={{ maxWidth: "500px" }}
+                      >
+                        {extractYoutubeVideoId(activity.url)
+                          ? "YouTube Video"
+                          : activity.url}
+                      </div>
+                      <small className="ms-2 text-primary">
+                        Klik for at åbne
+                      </small>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="d-flex align-items-center">
+                  {/* Edit and Delete buttons - Only visible in teacher mode */}
+                  {isTeacherMode && (
+                    <div className="edit-delete-buttons d-flex me-2">
+                      <Button
+                        variant="link"
+                        className="p-0 me-2 text-secondary"
+                        onClick={(e) => handleEditActivity(e, activity)}
+                        style={{ fontSize: "1rem" }}
+                      >
+                        <BsPencil />
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="p-0 me-2 text-primary"
+                        onClick={(e) => openMoveToFolderModal(e, activity)}
+                        style={{ fontSize: "1rem" }}
+                      >
+                        <BsFolder />
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="p-0 text-danger"
+                        onClick={(e) => handleDeleteActivity(e, activity.id)}
+                        style={{ fontSize: "1rem" }}
+                      >
+                        <BsX />
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* Completion Status - Only visible in student mode */}
+                  {userRole === "student" && (
+                    <div className="ms-2">
+                      {completed ? (
+                        <BsCheckCircleFill className="text-success" />
+                      ) : (
+                        <BsCircleFill
+                          className="text-secondary"
+                          style={{ opacity: 0.3 }}
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {activity.type === "image" && activity.url && (
+            <div className="mt-3 activity-image-container">
+              <img
+                src={
+                  activity.url.startsWith("http")
+                    ? activity.url
+                    : `http://localhost:5001${
+                        activity.url.startsWith("/") ? "" : "/"
+                      }${activity.url}`
+                }
+                alt={activity.title}
+                className="activity-inline-image"
+                onClick={(e) =>
+                  handleImageClick(e, activity.url, activity.title)
+                }
+              />
+            </div>
+          )}
+        </Card.Body>
+      </Card>
+    );
+  };
+
+  // When closing a modal, reset the target folder
+  const handleCloseModals = () => {
+    setShowActivityTypeModal(false);
+    setShowFileUploadModal(false);
+    setShowUrlModal(false);
+    setShowFolderModal(false);
+    setTargetFolderId(null);  // Clear target folder when closing modals
+  };
+
   return (
     <div className="module-content p-4">
       <header className="mb-4">
@@ -1467,124 +2042,12 @@ const ModuleContent = ({
       {activeTab === "indhold" && (
         <div className="activities-container">
           {activities.length > 0 ? (
-            activities.map((activity) => {
-              if (!activity) return null;
-              
-              // Check if activity is completed by the current student
-              const completed = isActivityCompleted(activity.id);
-
-              return (
-                <Card 
-                  key={activity.id || Math.random().toString()} 
-                  className={`mb-3 activity-card ${
-                    userRole === "student" && completed
-                      ? "completed"
-                      : ""
-                  }`}
-                  onClick={() => handleActivityClick(activity)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <Card.Body className="p-3">
-                    <div className="d-flex align-items-center">
-                      <div className="activity-icon me-3">
-                        {getIconForType(activity.type, activity.url)}
-                      </div>
-                      
-                      <div className="activity-content flex-grow-1">
-                        <div className="d-flex justify-content-between align-items-start">
-                          <div>
-                            <h5 className="mb-1">
-                              {activity.title || "Unnamed Activity"}
-                            </h5>
-                            {activity.description && (
-                              <div className="text-muted small">
-                                {activity.description}
-                              </div>
-                            )}
-                            {activity.type === "youtube" && activity.url && (
-                              <div className="d-flex align-items-center">
-                                <div
-                                  className="text-muted small text-truncate"
-                                  style={{ maxWidth: "500px" }}
-                                >
-                                  {extractYoutubeVideoId(activity.url)
-                                    ? "YouTube Video"
-                                    : activity.url}
-                                </div>
-                                <small className="ms-2 text-primary">
-                                  Klik for at åbne
-                                </small>
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="d-flex align-items-center">
-                            {/* Edit and Delete buttons - Only visible in teacher mode */}
-                            {isTeacherMode && (
-                            <div className="edit-delete-buttons d-flex me-2">
-                              <Button
-                                variant="link"
-                                className="p-0 me-2 text-secondary"
-                                  onClick={(e) =>
-                                    handleEditActivity(e, activity)
-                                  }
-                                  style={{ fontSize: "1rem" }}
-                              >
-                                <BsPencil />
-                              </Button>
-                              <Button
-                                variant="link"
-                                className="p-0 text-danger"
-                                  onClick={(e) =>
-                                    handleDeleteActivity(e, activity.id)
-                                  }
-                                  style={{ fontSize: "1rem" }}
-                              >
-                                <BsX />
-                              </Button>
-                            </div>
-                            )}
-                            
-                            {/* Completion Status - Only visible in student mode */}
-                            {userRole === "student" && (
-                            <div className="ms-2">
-                              {completed ? (
-                                <BsCheckCircleFill className="text-success" />
-                              ) : (
-                                  <BsCircleFill
-                                    className="text-secondary"
-                                    style={{ opacity: 0.3 }}
-                                  />
-                              )}
-                            </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {activity.type === "image" && activity.url && (
-                      <div className="mt-3 activity-image-container">
-                        <img
-                          src={
-                            activity.url.startsWith("http")
-                              ? activity.url
-                              : `http://localhost:5001${
-                                  activity.url.startsWith("/") ? "" : "/"
-                                }${activity.url}`
-                          }
-                          alt={activity.title}
-                          className="activity-inline-image"
-                          onClick={(e) =>
-                            handleImageClick(e, activity.url, activity.title)
-                          }
-                        />
-                      </div>
-                    )}
-                  </Card.Body>
-                </Card>
-              );
-            })
+            <>
+              {/* Get root level activities and folders */}
+              {activities
+                .filter(activity => !activity.parentId)
+                .map(activity => renderActivityItem(activity))}
+            </>
           ) : (
             <div className="text-center p-4">
               <p className="text-muted">
@@ -1607,7 +2070,7 @@ const ModuleContent = ({
           {/* Activity Type Selection Modal */}
           <Modal
             show={showActivityTypeModal}
-            onHide={() => setShowActivityTypeModal(false)}
+            onHide={handleCloseModals}
           >
             <Modal.Header closeButton>
               <Modal.Title>Vælg aktivitetstype</Modal.Title>
@@ -1645,6 +2108,20 @@ const ModuleContent = ({
                 <Button
                   variant="outline-primary"
                   className="p-3 d-flex align-items-center"
+                  onClick={() => handleActivityTypeSelect("folder")}
+                >
+                  <BsFolder className="me-3 fs-4" />
+                  <div className="text-start">
+                    <h5 className="mb-1">Opret mappe</h5>
+                    <small className="text-muted">
+                      Opret en mappe til at organisere filer
+                    </small>
+                  </div>
+                </Button>
+
+                <Button
+                  variant="outline-primary"
+                  className="p-3 d-flex align-items-center"
                   onClick={() => handleActivityTypeSelect("quiz")}
                 >
                   <BsQuestionCircle className="me-3 fs-4" />
@@ -1659,10 +2136,116 @@ const ModuleContent = ({
             </Modal.Body>
           </Modal>
 
+          {/* Folder Creation Modal */}
+          <Modal
+            show={showFolderModal}
+            onHide={handleCloseModals}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Opret mappe</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Titel</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="title"
+                    value={newActivity.title}
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv et navn til mappen"
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Beskrivelse</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    name="description"
+                    value={newActivity.description}
+                    onChange={handleModalInputChange}
+                    placeholder="Angiv en beskrivelse (valgfrit)"
+                  />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowFolderModal(false)}
+              >
+                Annuller
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleCreateFolder}
+                disabled={!newActivity.title}
+              >
+                Opret mappe
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          
+          {/* Move To Folder Modal */}
+          <Modal
+            show={showMoveToFolderModal}
+            onHide={() => {
+              setShowMoveToFolderModal(false);
+              setMovingActivity(null);
+              setSelectedFolder(null);
+            }}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Flyt til mappe</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Vælg mappe</Form.Label>
+                  <Form.Select
+                    value={selectedFolder || ""}
+                    onChange={(e) => setSelectedFolder(e.target.value)}
+                  >
+                    <option value="root">Rodmappe (øverste niveau)</option>
+                    {activities
+                      .filter(activity => activity.type === 'folder' && activity.id !== movingActivity?.id)
+                      .map(folder => (
+                        <option key={folder.id} value={folder.id}>
+                          {folder.title}
+                        </option>
+                      ))
+                    }
+                  </Form.Select>
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowMoveToFolderModal(false);
+                  setMovingActivity(null);
+                  setSelectedFolder(null);
+                }}
+              >
+                Annuller
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => handleMoveToFolder(selectedFolder || "root")}
+                disabled={!selectedFolder && selectedFolder !== "root"}
+              >
+                Flyt
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          
           {/* File Upload Modal */}
           <Modal
             show={showFileUploadModal}
-            onHide={() => setShowFileUploadModal(false)}
+            onHide={handleCloseModals}
           >
             <Modal.Header closeButton>
               <Modal.Title>Upload fil</Modal.Title>
@@ -1759,7 +2342,10 @@ const ModuleContent = ({
           </Modal>
 
           {/* URL Input Modal */}
-          <Modal show={showUrlModal} onHide={() => setShowUrlModal(false)}>
+          <Modal
+            show={showUrlModal}
+            onHide={handleCloseModals}
+          >
             <Modal.Header closeButton>
               <Modal.Title>Tilføj link (URL)</Modal.Title>
             </Modal.Header>
