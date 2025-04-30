@@ -94,6 +94,9 @@ const ModuleContent = ({
   const [targetFolderId, setTargetFolderId] = useState(null);
   const [draggedActivity, setDraggedActivity] = useState(null);
   const [dragOverFolder, setDragOverFolder] = useState(null);
+  const [activityOrder, setActivityOrder] = useState({});
+  const [isDraggingOver, setIsDraggingOver] = useState(null); // 'before', 'after', or null
+  const [dragTarget, setDragTarget] = useState(null);
   const navigate = useNavigate();
   
   // Expose the setActiveTab function through the resetTabFn prop
@@ -234,6 +237,34 @@ const ModuleContent = ({
     }
   };
 
+  // Initialize activity orders when activities change
+  useEffect(() => {
+    if (activities && activities.length > 0) {
+      // Group activities by parent
+      const groupedActivities = {};
+      
+      // First pass - group by parent ID
+      activities.forEach(activity => {
+        const parentId = activity.parentId || 'root';
+        if (!groupedActivities[parentId]) {
+          groupedActivities[parentId] = [];
+        }
+        groupedActivities[parentId].push(activity);
+      });
+      
+      // Second pass - assign order within each group
+      const orderMap = {};
+      Object.keys(groupedActivities).forEach(parentId => {
+        const group = groupedActivities[parentId];
+        group.forEach((activity, index) => {
+          orderMap[activity.id] = index;
+        });
+      });
+      
+      setActivityOrder(orderMap);
+    }
+  }, [activities]);
+
   // Add CSS for drag and drop in useEffect to avoid conflicts
   useEffect(() => {
     // Add custom CSS for drag and drop
@@ -252,6 +283,25 @@ const ModuleContent = ({
       }
       .activity-card[draggable=true]:active {
         cursor: grabbing;
+      }
+      .drop-indicator {
+        height: 3px;
+        background-color: transparent;
+        margin: 0;
+        transition: all 0.2s;
+      }
+      .drop-indicator.active {
+        background-color: #0d6efd;
+        height: 6px;
+      }
+      .drop-zone {
+        height: 10px;
+        margin: -5px 0;
+        z-index: 10;
+        position: relative;
+      }
+      .drop-zone.drag-over {
+        height: 20px;
       }
     `;
     document.head.appendChild(style);
@@ -1736,6 +1786,7 @@ const ModuleContent = ({
     if (activity.type === 'folder') {
       const isOpen = openFolders[activity.id] || false;
       const folderChildren = activities.filter(a => a.parentId === activity.id);
+      const sortedFolderChildren = sortActivities(folderChildren);
       
       return (
         <div key={activity.id} className="folder-container mb-3">
@@ -1817,125 +1868,158 @@ const ModuleContent = ({
           {/* Render folder contents if open */}
           {isOpen && (
             <div className="folder-contents ms-4 mt-2">
-              {folderChildren.length > 0 ? (
-                folderChildren.map(childActivity => (
-                  <Card 
-                    key={childActivity.id} 
-                    className={`mb-3 activity-card ${
-                      userRole === "student" && isActivityCompleted(childActivity.id)
-                        ? "completed"
-                        : ""
-                    }`}
-                    onClick={() => handleActivityClick(childActivity)}
-                    style={{ cursor: "pointer" }}
-                    draggable={isTeacherMode && childActivity.type !== 'folder'}
-                    onDragStart={(e) => handleDragStart(e, childActivity)}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <Card.Body className="p-3">
-                      <div className="d-flex align-items-center">
-                        <div className="activity-icon me-3">
-                          {getIconForType(childActivity.type, childActivity.url)}
-                        </div>
-                        
-                        <div className="activity-content flex-grow-1">
-                          <div className="d-flex justify-content-between align-items-start">
-                            <div>
-                              <h5 className="mb-1">
-                                {childActivity.title || "Unnamed Activity"}
-                              </h5>
-                              {childActivity.description && (
-                                <div className="text-muted small">
-                                  {childActivity.description}
-                                </div>
-                              )}
-                              {childActivity.type === "youtube" && childActivity.url && (
-                                <div className="d-flex align-items-center">
-                                  <div
-                                    className="text-muted small text-truncate"
-                                    style={{ maxWidth: "500px" }}
-                                  >
-                                    {extractYoutubeVideoId(childActivity.url)
-                                      ? "YouTube Video"
-                                      : childActivity.url}
-                                  </div>
-                                  <small className="ms-2 text-primary">
-                                    Klik for at åbne
-                                  </small>
-                                </div>
-                              )}
+              {sortedFolderChildren.length > 0 ? (
+                <>
+                  {/* Top drop zone for first item */}
+                  {isTeacherMode && (
+                    <div 
+                      className={`drop-zone ${isDraggingOver === 'before' && dragTarget?.id === sortedFolderChildren[0].id ? 'drag-over' : ''}`}
+                      onDragOver={(e) => handleDropZoneDragOver(e, 'before', sortedFolderChildren[0])}
+                      onDragLeave={(e) => handleDropZoneDragLeave(e, 'before', sortedFolderChildren[0])}
+                      onDrop={(e) => handleReorderDrop(e, 'before', sortedFolderChildren[0])}
+                    >
+                      <div 
+                        id={`drop-indicator-before-${sortedFolderChildren[0].id}`}
+                        className="drop-indicator"
+                      ></div>
+                    </div>
+                  )}
+                  
+                  {sortedFolderChildren.map((childActivity, index) => (
+                    <React.Fragment key={childActivity.id}>
+                      <Card  
+                        className={`mb-3 activity-card ${
+                          userRole === "student" && isActivityCompleted(childActivity.id)
+                            ? "completed"
+                            : ""
+                        }`}
+                        onClick={() => handleActivityClick(childActivity)}
+                        style={{ cursor: "pointer" }}
+                        draggable={isTeacherMode && childActivity.type !== 'folder'}
+                        onDragStart={(e) => handleDragStart(e, childActivity)}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <Card.Body className="p-3">
+                          <div className="d-flex align-items-center">
+                            <div className="activity-icon me-3">
+                              {getIconForType(childActivity.type, childActivity.url)}
                             </div>
                             
-                            <div className="d-flex align-items-center">
-                              {/* Edit and Delete buttons - Only visible in teacher mode */}
-                              {isTeacherMode && (
-                                <div className="edit-delete-buttons d-flex me-2">
-                                  <Button
-                                    variant="link"
-                                    className="p-0 me-2 text-secondary"
-                                    onClick={(e) => handleEditActivity(e, childActivity)}
-                                    style={{ fontSize: "1rem" }}
-                                  >
-                                    <BsPencil />
-                                  </Button>
-                                  <Button
-                                    variant="link"
-                                    className="p-0 me-2 text-primary"
-                                    onClick={(e) => openMoveToFolderModal(e, childActivity)}
-                                    style={{ fontSize: "1rem" }}
-                                  >
-                                    <BsFolder />
-                                  </Button>
-                                  <Button
-                                    variant="link"
-                                    className="p-0 text-danger"
-                                    onClick={(e) => handleDeleteActivity(e, childActivity.id)}
-                                    style={{ fontSize: "1rem" }}
-                                  >
-                                    <BsX />
-                                  </Button>
-                                </div>
-                              )}
-                              
-                              {/* Completion Status - Only visible in student mode */}
-                              {userRole === "student" && (
-                                <div className="ms-2">
-                                  {isActivityCompleted(childActivity.id) ? (
-                                    <BsCheckCircleFill className="text-success" />
-                                  ) : (
-                                    <BsCircleFill
-                                      className="text-secondary"
-                                      style={{ opacity: 0.3 }}
-                                    />
+                            <div className="activity-content flex-grow-1">
+                              <div className="d-flex justify-content-between align-items-start">
+                                <div>
+                                  <h5 className="mb-1">
+                                    {childActivity.title || "Unnamed Activity"}
+                                  </h5>
+                                  {childActivity.description && (
+                                    <div className="text-muted small">
+                                      {childActivity.description}
+                                    </div>
+                                  )}
+                                  {childActivity.type === "youtube" && childActivity.url && (
+                                    <div className="d-flex align-items-center">
+                                      <div
+                                        className="text-muted small text-truncate"
+                                        style={{ maxWidth: "500px" }}
+                                      >
+                                        {extractYoutubeVideoId(childActivity.url)
+                                          ? "YouTube Video"
+                                          : childActivity.url}
+                                      </div>
+                                      <small className="ms-2 text-primary">
+                                        Klik for at åbne
+                                      </small>
+                                    </div>
                                   )}
                                 </div>
-                              )}
+                                
+                                <div className="d-flex align-items-center">
+                                  {/* Edit and Delete buttons - Only visible in teacher mode */}
+                                  {isTeacherMode && (
+                                    <div className="edit-delete-buttons d-flex me-2">
+                                      <Button
+                                        variant="link"
+                                        className="p-0 me-2 text-secondary"
+                                        onClick={(e) => handleEditActivity(e, childActivity)}
+                                        style={{ fontSize: "1rem" }}
+                                      >
+                                        <BsPencil />
+                                      </Button>
+                                      <Button
+                                        variant="link"
+                                        className="p-0 me-2 text-primary"
+                                        onClick={(e) => openMoveToFolderModal(e, childActivity)}
+                                        style={{ fontSize: "1rem" }}
+                                      >
+                                        <BsFolder />
+                                      </Button>
+                                      <Button
+                                        variant="link"
+                                        className="p-0 text-danger"
+                                        onClick={(e) => handleDeleteActivity(e, childActivity.id)}
+                                        style={{ fontSize: "1rem" }}
+                                      >
+                                        <BsX />
+                                      </Button>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Completion Status - Only visible in student mode */}
+                                  {userRole === "student" && (
+                                    <div className="ms-2">
+                                      {isActivityCompleted(childActivity.id) ? (
+                                        <BsCheckCircleFill className="text-success" />
+                                      ) : (
+                                        <BsCircleFill
+                                          className="text-secondary"
+                                          style={{ opacity: 0.3 }}
+                                        />
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                          
+                          {childActivity.type === "image" && childActivity.url && (
+                            <div className="mt-3 activity-image-container">
+                              <img
+                                src={
+                                  childActivity.url.startsWith("http")
+                                    ? childActivity.url
+                                    : `http://localhost:5001${
+                                        childActivity.url.startsWith("/") ? "" : "/"
+                                      }${childActivity.url}`
+                                }
+                                alt={childActivity.title}
+                                className="activity-inline-image"
+                                onClick={(e) =>
+                                  handleImageClick(e, childActivity.url, childActivity.title)
+                                }
+                              />
+                            </div>
+                          )}
+                        </Card.Body>
+                      </Card>
                       
-                      {childActivity.type === "image" && childActivity.url && (
-                        <div className="mt-3 activity-image-container">
-                          <img
-                            src={
-                              childActivity.url.startsWith("http")
-                                ? childActivity.url
-                                : `http://localhost:5001${
-                                    childActivity.url.startsWith("/") ? "" : "/"
-                                  }${childActivity.url}`
-                            }
-                            alt={childActivity.title}
-                            className="activity-inline-image"
-                            onClick={(e) =>
-                              handleImageClick(e, childActivity.url, childActivity.title)
-                            }
-                          />
+                      {/* Drop zone after each item */}
+                      {isTeacherMode && (
+                        <div 
+                          className={`drop-zone ${isDraggingOver === 'after' && dragTarget?.id === childActivity.id ? 'drag-over' : ''}`}
+                          onDragOver={(e) => handleDropZoneDragOver(e, 'after', childActivity)}
+                          onDragLeave={(e) => handleDropZoneDragLeave(e, 'after', childActivity)}
+                          onDrop={(e) => handleReorderDrop(e, 'after', childActivity)}
+                        >
+                          <div 
+                            id={`drop-indicator-after-${childActivity.id}`}
+                            className="drop-indicator"
+                          ></div>
                         </div>
                       )}
-                    </Card.Body>
-                  </Card>
-                ))
+                    </React.Fragment>
+                  ))}
+                </>
               ) : (
                 <div className="text-center p-3 text-muted">
                   <p>Denne mappe er tom</p>
@@ -2088,6 +2172,127 @@ const ModuleContent = ({
     setShowUrlModal(false);
     setShowFolderModal(false);
     setTargetFolderId(null);  // Clear target folder when closing modals
+  };
+
+  // Add handlers for reordering
+  const handleDropZoneDragOver = (e, position, targetActivity) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Only allow reordering if the dragged activity has the same parent
+    if (draggedActivity && targetActivity) {
+      const sameParent = 
+        (draggedActivity.parentId === targetActivity.parentId) || 
+        (!draggedActivity.parentId && !targetActivity.parentId);
+        
+      // Don't allow dropping on itself
+      if (draggedActivity.id === targetActivity.id) {
+        return;
+      }
+      
+      if (sameParent) {
+        e.dataTransfer.dropEffect = 'move';
+        setIsDraggingOver(position);
+        setDragTarget(targetActivity);
+        
+        // Add visual feedback
+        const indicator = document.getElementById(`drop-indicator-${position}-${targetActivity.id}`);
+        if (indicator) {
+          indicator.classList.add('active');
+        }
+      }
+    }
+  };
+  
+  const handleDropZoneDragLeave = (e, position, targetActivity) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isDraggingOver === position && dragTarget?.id === targetActivity.id) {
+      setIsDraggingOver(null);
+      setDragTarget(null);
+      
+      // Remove visual feedback
+      const indicator = document.getElementById(`drop-indicator-${position}-${targetActivity.id}`);
+      if (indicator) {
+        indicator.classList.remove('active');
+      }
+    }
+  };
+  
+  const handleReorderDrop = (e, position, targetActivity) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Clear visual state
+    setIsDraggingOver(null);
+    setDragTarget(null);
+    
+    // Get the activity ID from the dragged data
+    const activityId = e.dataTransfer.getData('text/plain');
+    
+    // Find the activity being moved
+    const activity = activities.find(a => a.id === activityId);
+    
+    // Don't process if dropping on itself
+    if (!activity || activity.id === targetActivity.id) {
+      return;
+    }
+    
+    // Clone current activities
+    const updatedActivities = [...activities];
+    
+    // Get activities with same parent
+    const parentId = targetActivity.parentId || 'root';
+    const siblingActivities = updatedActivities.filter(a => 
+      a.parentId === targetActivity.parentId || 
+      (!a.parentId && !targetActivity.parentId)
+    );
+    
+    // Remove the activity from its current position
+    const sourceIndex = siblingActivities.findIndex(a => a.id === activity.id);
+    if (sourceIndex > -1) {
+      siblingActivities.splice(sourceIndex, 1);
+    }
+    
+    // Find the target position
+    const targetIndex = siblingActivities.findIndex(a => a.id === targetActivity.id);
+    
+    // Insert at correct position
+    if (position === 'before') {
+      siblingActivities.splice(targetIndex, 0, activity);
+    } else { // 'after'
+      siblingActivities.splice(targetIndex + 1, 0, activity);
+    }
+    
+    // Create new order map
+    const newOrder = {};
+    siblingActivities.forEach((a, index) => {
+      newOrder[a.id] = index;
+    });
+    
+    // Update activity order
+    setActivityOrder(prevOrder => ({
+      ...prevOrder,
+      ...newOrder
+    }));
+    
+    // Remove visual feedback
+    const indicator = document.getElementById(`drop-indicator-${position}-${targetActivity.id}`);
+    if (indicator) {
+      indicator.classList.remove('active');
+    }
+  };
+  
+  // Helper to sort activities based on order
+  const sortActivities = (activities) => {
+    if (!activities || !activities.length) return [];
+    
+    return [...activities].sort((a, b) => {
+      const orderA = activityOrder[a.id] !== undefined ? activityOrder[a.id] : 999;
+      const orderB = activityOrder[b.id] !== undefined ? activityOrder[b.id] : 999;
+      return orderA - orderB;
+    });
   };
 
   return (
@@ -2275,9 +2480,55 @@ const ModuleContent = ({
           {activities.length > 0 ? (
             <>
               {/* Get root level activities and folders */}
-              {activities
-                .filter(activity => !activity.parentId)
-                .map(activity => renderActivityItem(activity))}
+              {(() => {
+                // Filter root level items
+                const rootItems = activities.filter(activity => !activity.parentId);
+                
+                // Sort by order
+                const sortedRootItems = sortActivities(rootItems);
+                
+                if (sortedRootItems.length === 0) return null;
+                
+                return (
+                  <>
+                    {/* First drop zone */}
+                    {isTeacherMode && (
+                      <div 
+                        className={`drop-zone ${isDraggingOver === 'before' && dragTarget?.id === sortedRootItems[0].id ? 'drag-over' : ''}`}
+                        onDragOver={(e) => handleDropZoneDragOver(e, 'before', sortedRootItems[0])}
+                        onDragLeave={(e) => handleDropZoneDragLeave(e, 'before', sortedRootItems[0])}
+                        onDrop={(e) => handleReorderDrop(e, 'before', sortedRootItems[0])}
+                      >
+                        <div 
+                          id={`drop-indicator-before-${sortedRootItems[0].id}`}
+                          className="drop-indicator"
+                        ></div>
+                      </div>
+                    )}
+                    
+                    {sortedRootItems.map((activity, index) => (
+                      <React.Fragment key={activity.id}>
+                        {renderActivityItem(activity)}
+                        
+                        {/* Drop zone after each item */}
+                        {isTeacherMode && (
+                          <div 
+                            className={`drop-zone ${isDraggingOver === 'after' && dragTarget?.id === activity.id ? 'drag-over' : ''}`}
+                            onDragOver={(e) => handleDropZoneDragOver(e, 'after', activity)}
+                            onDragLeave={(e) => handleDropZoneDragLeave(e, 'after', activity)}
+                            onDrop={(e) => handleReorderDrop(e, 'after', activity)}
+                          >
+                            <div 
+                              id={`drop-indicator-after-${activity.id}`}
+                              className="drop-indicator"
+                            ></div>
+                          </div>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </>
+                );
+              })()}
             </>
           ) : (
             <div className="text-center p-4">
