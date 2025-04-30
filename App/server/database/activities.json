@@ -1,13 +1,14 @@
 [
   {
-    "title": "\ud83d\udcd5\ud83d\udc9aROMANTIKKEN - da forfatterne ble sett p\u00e5 som genier (LITTERATURHISTORIEN 5 av 15)",
     "description": "",
+    "file": null,
+    "id": "activity_1744102687303",
+    "isNew": true,
+    "moduleId": "module-3",
+    "title": "\ud83d\udcd5\ud83d\udc9aROMANTIKKEN - da forfatterne ble sett p\u00e5 som genier (LITTERATURHISTORIEN 5 av 15)",
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=760P94LaNGs&ab_channel=S%C3%B8lvbergetbibliotekogkulturhus",
-    "file": null,
-    "isNew": true,
-    "id": "activity_1744102687303",
-    "moduleId": "module-3"
+    "parentId": null
   },
   {
     "title": "Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner.pdf",
@@ -46,45 +47,72 @@
     "moduleId": "module-3"
   },
   {
-    "moduleId": "module-3",
     "id": "activity_quiz_quiz_1744279908_module-3_1745324825187",
-    "title": "Romantikken Quiz",
-    "type": "quiz",
-    "quizId": "quiz_1744279908",
-    "moduleSpecific": true
-  },
-  {
+    "isNew": false,
     "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1745233680_module-3_1745233681971",
-    "title": "Lang Romantikken Quiz",
-    "type": "quiz",
-    "quizId": "quiz_1745233680",
     "moduleSpecific": true,
-    "quizScore": 67
+    "parentId": null,
+    "quizId": "quiz_1744279908",
+    "title": "Romantikken Quiz",
+    "type": "quiz"
   },
   {
+    "id": "activity_quiz_quiz_1745233680_module-3_1745233681971",
+    "isNew": false,
     "moduleId": "module-3",
+    "moduleSpecific": true,
+    "parentId": "folder_1746011993284",
+    "quizId": "quiz_1745233680",
+    "quizScore": 67,
+    "title": "Lang Romantikken Quiz",
+    "type": "quiz"
+  },
+  {
     "id": "activity_quiz_quiz_1745846997_module-3_1745847000215",
+    "moduleId": "module-3",
+    "moduleSpecific": true,
+    "quizId": "quiz_1745846997",
     "title": "Romantikken Samlet",
     "type": "quiz",
-    "quizId": "quiz_1745846997",
-    "moduleSpecific": true
+    "isNew": false,
+    "parentId": "folder_1746011993284"
   },
   {
-    "title": "Introduktion-til-2.Verdenskrig.pdf",
-    "description": "L\u00e6s kapitel 2-5",
-    "type": "pdf",
-    "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746011304.pdf",
+    "id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
+    "isNew": false,
+    "moduleId": "module-3",
+    "moduleSpecific": true,
+    "parentId": "folder_1746013491306",
+    "quizId": "quiz_1745999926",
+    "title": "Flashcards",
+    "type": "quiz"
+  },
+  {
+    "title": "Quizzer",
+    "description": "",
+    "type": "folder",
     "isNew": true,
-    "id": "activity_1746011304309",
-    "moduleId": "module-2"
+    "parentId": null,
+    "id": "folder_1746011993284",
+    "moduleId": "module-3"
   },
   {
-    "moduleId": "module-2",
-    "id": "activity_quiz_quiz_1746011919_module-2_1746015505024",
-    "title": "Parat viden om 2. Verdenskrig",
-    "type": "quiz",
-    "quizId": "quiz_1746011919",
-    "moduleSpecific": true
+    "title": "App_design_thesis.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/App_design_thesis_1746012586.pdf",
+    "isNew": true,
+    "parentId": "folder_1746013491306",
+    "id": "activity_1746012586884",
+    "moduleId": "module-3"
+  },
+  {
+    "title": "Nyt",
+    "description": "",
+    "type": "folder",
+    "isNew": true,
+    "parentId": null,
+    "id": "folder_1746013491306",
+    "moduleId": "module-3"
   }
 ]
