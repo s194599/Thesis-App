@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
-import { BsListCheck, BsToggleOn, BsTextLeft } from "react-icons/bs";
+import { BsListCheck, BsToggleOn, BsTextLeft, BsCardText } from "react-icons/bs";
 
 const QuestionTypeSelector = () => {
   const { formData, updateFormData } = useQuizContext();
@@ -12,6 +12,12 @@ const QuestionTypeSelector = () => {
       label: "Multiple Choice",
       icon: <BsListCheck />,
       description: "Spørgsmål med flere muligheder og ét korrekt svar",
+    },
+    {
+      value: "flashcards",
+      label: "Flashcards",
+      icon: <BsCardText />,
+      description: "Spørgsmål og svar præsenteret som interaktive kort",
     },
     {
       value: "trueFalse",
@@ -80,7 +86,7 @@ const QuestionTypeSelector = () => {
           ))}
         </div>
         <Form.Text className="text-muted">
-          Bemærk: I MVP'en er kun multiple choice tilgængelige.
+          Bemærk: I MVP'en er kun multiple choice og flashcards tilgængelige.
         </Form.Text>
       </Form.Group>
     </div>

@@ -71,7 +71,17 @@ const TakeQuiz = () => {
 
         // Randomize options for each question and store in state
         const shuffledOptions = shuffledQuestions.map((question) => {
-          const options = [...question.options];
+          // Check if this is a flashcard (which doesn't have options)
+          if (question.type === "flashcard") {
+            return {
+              questionIndex: question.originalIndex,
+              options: [], // Empty array for flashcards
+              isFlashcard: true
+            };
+          }
+          
+          // For multiple choice questions, shuffle the options
+          const options = question.options ? [...question.options] : [];
           return {
             questionIndex: question.originalIndex,
             options: shuffleArray(options),
@@ -108,18 +118,36 @@ const TakeQuiz = () => {
         try {
           console.log("Saving quiz result for student...");
           
+          // For flashcards, we don't have traditional right/wrong answers
+          // We'll record a different format for results
           const quizResult = {
             quiz_id: quizId,
             quiz_title: quiz.title,
             score: score,
             total_questions: randomizedQuestions.length,
             start_timestamp: quizStartTime, // Include the quiz start time
-            answers: answers.map((answer, index) => ({
-              question_id: quiz.questions[index].id,
-              question: quiz.questions[index].question,
-              answer: answer,
-              correct: answer === quiz.questions[index].correctAnswer,
-            })),
+            answers: answers.map((answer, index) => {
+              const question = quiz.questions[index];
+              
+              // Handle flashcards differently - they're always "correct" since the student just flips them
+              if (question.type === "flashcard") {
+                return {
+                  question_id: question.id,
+                  question: question.question,
+                  answer: "Flashcard viewed",
+                  correct: true,
+                  is_flashcard: true
+                };
+              } else {
+                // Regular multiple choice question
+                return {
+                  question_id: question.id,
+                  question: question.question,
+                  answer: answer,
+                  correct: answer === question.correctAnswer,
+                };
+              }
+            }),
           };
 
           const response = await fetch("/api/student/save-quiz-result", {
@@ -270,11 +298,83 @@ const TakeQuiz = () => {
   };
 
   const renderQuestion = () => {
-    if (!randomizedQuestions.length) return null;
+    if (!quiz || randomizedQuestions.length === 0) return null;
 
     const currentQuestion = randomizedQuestions[currentQuestionIndex];
-    const currentOptions = randomizedOptions[currentQuestionIndex].options;
+    
+    // Handle flashcards differently
+    if (currentQuestion.type === "flashcard") {
+      return (
+        <Card className="quiz-card mb-4">
+          <Card.Body>
+            <div className="mb-4">
+              <h4>Flashcard {currentQuestionIndex + 1} of {randomizedQuestions.length}</h4>
+            </div>
+            
+            <div className="flashcard-container">
+              <div 
+                className={`flashcard ${showAnswer ? "flipped" : ""}`}
+                onClick={() => setShowAnswer(!showAnswer)}
+              >
+                <div className="flashcard-front">
+                  <p>{currentQuestion.question}</p>
+                </div>
+                <div className="flashcard-back">
+                  <p>{currentQuestion.correctAnswer}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flashcard-flip-hint">
+              {showAnswer ? "Click to see the question" : "Click to reveal the answer"}
+            </div>
+            
+            <div className="d-flex justify-content-between mt-4">
+              <Button
+                variant="outline-secondary"
+                disabled={currentQuestionIndex === 0}
+                onClick={() => {
+                  setShowAnswer(false);
+                  setCurrentQuestionIndex(currentQuestionIndex - 1);
+                }}
+              >
+                <BsArrowLeft className="me-1" /> Forrige
+              </Button>
+              
+              <Button
+                variant={
+                  currentQuestionIndex < randomizedQuestions.length - 1
+                    ? "primary"
+                    : "success"
+                }
+                onClick={() => {
+                  if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                    setShowAnswer(false);
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                  } else {
+                    // Complete the quiz on the last card
+                    setQuizCompleted(true);
+                  }
+                }}
+              >
+                {currentQuestionIndex < randomizedQuestions.length - 1 ? (
+                  <>
+                    Næste <BsArrowRight className="ms-1" />
+                  </>
+                ) : (
+                  "Afslut Quiz"
+                )}
+              </Button>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+    }
 
+    // Handle multiple choice questions (original code)
+    // Get the randomized options for the current question
+    const currentOptions = randomizedOptions[currentQuestionIndex]?.options || currentQuestion.options;
+    
     return (
       <Card className="shadow quiz-question-card">
         <Card.Header className="bg-primary text-white">
@@ -296,7 +396,7 @@ const TakeQuiz = () => {
               <Button
                 key={index}
                 variant={getAnswerButtonVariant(option)}
-                className="text-start py-3 position-relative"
+                className="text-start p-3 d-flex align-items-center"
                 onClick={() => handleAnswerSelect(option)}
                 disabled={showAnswer}
               >

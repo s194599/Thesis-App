@@ -30,6 +30,22 @@ const QuizIntro = () => {
         setLoading(true);
         // Fetch quiz data
         const quizData = await getQuiz(quizId);
+        
+        // Process questions to ensure compatibility with flashcards
+        if (quizData && quizData.questions) {
+          // Make sure all questions have the necessary properties
+          quizData.questions = quizData.questions.map(question => {
+            // For flashcard type questions, ensure they have an empty options array
+            if (question.type === "flashcard" && !question.options) {
+              return {
+                ...question,
+                options: [] // Add an empty options array to prevent errors
+              };
+            }
+            return question;
+          });
+        }
+        
         setQuiz(quizData);
 
         // Fetch student's previous attempts (if any)

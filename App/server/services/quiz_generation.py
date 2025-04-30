@@ -17,7 +17,7 @@ def generate_quiz_with_ollama(
         content (str): Content to base the quiz on
         num_questions (int): Number of questions to generate
         model (str): LLM model to use
-        question_type (str): Type of questions (multipleChoice, trueFalse, shortAnswer)
+        question_type (str): Type of questions (multipleChoice, trueFalse, shortAnswer, flashcards)
         additional_instructions (str): Additional instructions for the LLM
 
     Returns:
@@ -59,6 +59,26 @@ def generate_quiz_with_ollama(
         - Ensure there is only ONE correct answer
         - Format the options exactly as shown with A), B), C), D)
         - End each question with "Correct answer: X" where X is the letter
+        """
+    elif question_type == "flashcards":
+        format_instructions = f"""
+        Generate a set of flashcards based on this content:
+        {content}
+
+        The flashcards should have {num_questions} cards and follow EXACTLY this format:
+
+        1. [Front side - Term or question]
+        Flip side: [Back side - Definition or answer]
+
+        2. [Front side - Term or question]
+        Flip side: [Back side - Definition or answer]
+
+        And so on. IMPORTANT:
+        - Number the cards starting with 1.
+        - Make each flashcard cover important concepts or terminology from the content
+        - Format exactly as shown with "Flip side:" marking the answer
+        - Front sides should be concise questions, terms, or concepts
+        - Back sides should provide clear, helpful explanations or definitions
         """
     elif question_type == "trueFalse":
         format_instructions = f"""

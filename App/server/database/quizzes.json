@@ -448,5 +448,31 @@
     "title": "Romantikken Samlet",
     "timestamp": "2025-04-28T13:29:57.302Z",
     "id": "quiz_1745846997"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "[back side - the romantics were a group of writers and artists who lived during the late eighteenth and early nineteenth centuries. they rejected the rationalism, order, and classical themes of the enlightenment and instead celebrated emotion, individuality, and the beauty of nature.]",
+        "id": "fc1",
+        "question": "[Front side - Who were the Romantics?]",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "[back side - some key characteristics of romantic literature include an emphasis on emotion, the imagination, the supernatural, and the individual; a focus on nature as a source of inspiration; and a rejection of reason and rationality.]",
+        "id": "fc2",
+        "question": "[Front side - What were some key characteristics of Romantic literature?]",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "[back side - the romantic movement influenced all of the arts, including music (such as romantic opera), painting, sculpture, architecture, and even social movements like utopian colonies.]",
+        "id": "fc3",
+        "question": "[Front side - How did the Romantic Movement influence other art forms?]",
+        "type": "flashcard"
+      }
+    ],
+    "title": "Flashcards",
+    "timestamp": "2025-04-30T07:58:46.231Z",
+    "id": "quiz_1745999926"
   }
 ]

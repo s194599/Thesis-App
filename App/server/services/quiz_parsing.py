@@ -16,7 +16,77 @@ def parse_quiz(raw_quiz, question_type="multipleChoice"):
     logger.info("Starting to parse quiz text")
     questions = []
 
-    if question_type == "multipleChoice":
+    if question_type == "flashcards":
+        # Split by numbered flashcards (1., 2., etc.)
+        raw_flashcards = []
+        current_flashcard = ""
+
+        # Split up all flashcards line by line
+        lines = raw_quiz.split("\n")
+        logger.info(f"Raw quiz has {len(lines)} lines")
+
+        for line in lines:
+            line = line.strip()
+
+            # Check if this is a new flashcard (starts with a number followed by a period)
+            if line and line[0].isdigit() and ". " in line[:10]:
+                if current_flashcard:  # Save the previous flashcard if it exists
+                    raw_flashcards.append(current_flashcard)
+                current_flashcard = line
+            elif current_flashcard:  # Append to the current flashcard
+                current_flashcard += "\n" + line
+
+        # Add the last flashcard
+        if current_flashcard:
+            raw_flashcards.append(current_flashcard)
+
+        logger.info(f"Found {len(raw_flashcards)} raw flashcards")
+
+        # Process each flashcard
+        for i, fc in enumerate(raw_flashcards):
+            if not fc.strip():
+                continue
+
+            logger.info(f"Processing flashcard {i+1}")
+
+            # Initialize flashcard object
+            flashcard = {
+                "id": f"fc{i+1}",  # Start from fc1 instead of fc0
+                "question": "",  # Front side of the card
+                "correctAnswer": "",  # Back side of the card
+                "type": "flashcard"  # Indicate this is a flashcard
+            }
+
+            # Split the flashcard into lines for processing
+            lines = fc.strip().split("\n")
+            logger.info(f"Flashcard {i+1} has {len(lines)} lines")
+
+            # Extract front side (first line)
+            front_side = ""
+            if lines:
+                # Remove the flashcard number (e.g., "1. ")
+                first_line = lines[0]
+                dot_index = first_line.find(". ")
+                if dot_index != -1:
+                    front_side = first_line[dot_index + 2:].strip()
+                else:
+                    front_side = first_line.strip()
+
+                flashcard["question"] = front_side
+                logger.info(f"Front side: {front_side[:50]}...")
+
+            # Find the back side ("Flip side:" content)
+            for line in lines[1:]:  # Skip the first line (front side)
+                line = line.strip().lower()
+                if "flip side:" in line:
+                    back_side = line[line.find("flip side:") + 10:].strip()
+                    flashcard["correctAnswer"] = back_side
+                    logger.info(f"Back side: {back_side[:50]}...")
+                    break
+
+            questions.append(flashcard)
+
+    elif question_type == "multipleChoice":
         # Split by numbered questions (1., 2., etc.)
         raw_questions = []
         current_question = ""

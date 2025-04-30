@@ -55,6 +55,13 @@
       "student_id": "1",
       "student_name": "Christian Wu",
       "timestamp": "2025-04-28T15:08:01.821157"
+    },
+    {
+      "activity_id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
+      "module_id": "module-3",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "timestamp": "2025-04-30T10:06:37.059021"
     }
   ]
 }

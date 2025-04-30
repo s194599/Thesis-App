@@ -99,69 +99,105 @@ const QuizOutput = () => {
   };
 
   const renderQuizQuestions = () => {
-    return generatedQuiz.questions.map((question, questionIndex) => (
-      <div
-        className="bg-white rounded shadow-sm mb-4 overflow-hidden question-item"
-        key={question.id || questionIndex}
-      >
-        {/* Question header with number */}
-        <div className="d-flex align-items-center py-2 px-3 bg-light border-bottom">
+    return generatedQuiz.questions.map((question, questionIndex) => {
+      // Handle flashcard type questions differently
+      if (question.type === "flashcard") {
+        return (
           <div
-            className="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3"
-            style={{ width: "32px", height: "32px", minWidth: "32px" }}
+            className="bg-white rounded shadow-sm mb-4 overflow-hidden question-item"
+            key={question.id || questionIndex}
           >
-            <span className="text-white fw-bold">{questionIndex + 1}</span>
-          </div>
-          <div className="fw-normal">{question.question}</div>
-        </div>
-
-        {/* Options with letters */}
-        <div className="p-3 options-list">
-          {question.options.map((option, optionIndex) => {
-            const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
-            const letter =
-              optionIndex < letters.length
-                ? letters[optionIndex]
-                : `Option ${optionIndex + 1}`;
-            const isCorrect = option === question.correctAnswer;
-
-            return (
+            {/* Question header with number */}
+            <div className="d-flex align-items-center py-2 px-3 bg-light border-bottom">
               <div
-                key={optionIndex}
-                className={`d-flex align-items-center mb-2 py-2 px-3 rounded option-item ${
-                  showAnswers && isCorrect ? "bg-light" : ""
-                }`}
+                className="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3"
+                style={{ width: "32px", height: "32px", minWidth: "32px" }}
               >
-                <div
-                  className={`rounded-circle d-flex justify-content-center align-items-center me-3 ${
-                    showAnswers && isCorrect ? "bg-success" : "bg-light border"
-                  }`}
-                  style={{ width: "28px", height: "28px", minWidth: "28px" }}
-                >
-                  <span
-                    className={showAnswers && isCorrect ? "text-white" : "text-secondary"}
-                    style={{ fontSize: "14px" }}
-                  >
-                    {letter}
-                  </span>
-                </div>
-                <div>{option}</div>
+                <span className="text-white fw-bold">{questionIndex + 1}</span>
               </div>
-            );
-          })}
-        </div>
+              <div className="fw-normal">Flashcard</div>
+            </div>
 
-        {/* Explanation section - only show when answers are visible */}
-        {showAnswers && question.explanation && (
-          <div className="bg-light p-3 border-top">
-            <p className="mb-0">
-              <strong>Forklaring</strong>
-            </p>
-            <p className="mb-0 text-secondary">{question.explanation}</p>
+            {/* Flashcard front and back */}
+            <div className="p-3">
+              <div className="mb-3">
+                <strong>Front (Question):</strong>
+                <div className="p-3 bg-light rounded mt-1">{question.question}</div>
+              </div>
+              <div>
+                <strong>Back (Answer):</strong>
+                <div className="p-3 bg-light rounded mt-1">{question.correctAnswer}</div>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    ));
+        );
+      }
+
+      // Original rendering for multiple choice questions
+      return (
+        <div
+          className="bg-white rounded shadow-sm mb-4 overflow-hidden question-item"
+          key={question.id || questionIndex}
+        >
+          {/* Question header with number */}
+          <div className="d-flex align-items-center py-2 px-3 bg-light border-bottom">
+            <div
+              className="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3"
+              style={{ width: "32px", height: "32px", minWidth: "32px" }}
+            >
+              <span className="text-white fw-bold">{questionIndex + 1}</span>
+            </div>
+            <div className="fw-normal">{question.question}</div>
+          </div>
+
+          {/* Options with letters */}
+          <div className="p-3 options-list">
+            {question.options && question.options.map((option, optionIndex) => {
+              const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+              const letter =
+                optionIndex < letters.length
+                  ? letters[optionIndex]
+                  : `Option ${optionIndex + 1}`;
+              const isCorrect = option === question.correctAnswer;
+
+              return (
+                <div
+                  key={optionIndex}
+                  className={`d-flex align-items-center mb-2 py-2 px-3 rounded option-item ${
+                    showAnswers && isCorrect ? "bg-light" : ""
+                  }`}
+                >
+                  <div
+                    className={`rounded-circle d-flex justify-content-center align-items-center me-3 ${
+                      showAnswers && isCorrect ? "bg-success" : "bg-light border"
+                    }`}
+                    style={{ width: "28px", height: "28px", minWidth: "28px" }}
+                  >
+                    <span
+                      className={showAnswers && isCorrect ? "text-white" : "text-secondary"}
+                      style={{ fontSize: "14px" }}
+                    >
+                      {letter}
+                    </span>
+                  </div>
+                  <div>{option}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Explanation section - only show when answers are visible */}
+          {showAnswers && question.explanation && (
+            <div className="bg-light p-3 border-top">
+              <p className="mb-0">
+                <strong>Forklaring</strong>
+              </p>
+              <p className="mb-0 text-secondary">{question.explanation}</p>
+            </div>
+          )}
+        </div>
+      );
+    });
   };
 
   // Handle PDF generation
@@ -220,97 +256,130 @@ const QuizOutput = () => {
         // Question number and text
         pdf.setFontSize(12);
         pdf.setFont(undefined, 'bold');
-        pdf.text(`Spørgsmål ${i + 1}`, margin, yPosition);
-        yPosition += 7;
         
-        // Question text with wrap
-        pdf.setFont(undefined, 'normal');
-        const questionLines = pdf.splitTextToSize(question.question, contentWidth);
-        pdf.text(questionLines, margin, yPosition);
-        yPosition += 6 * questionLines.length;
-        
-        // Loop through options
-        const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
-        for (let j = 0; j < question.options.length; j++) {
-          // Check if we need a new page
-          if (yPosition > pageHeight - 60) {
-            pdf.addPage();
-            pageNum++;
-            yPosition = margin;
-            
-            // Add header on new page
-            pdf.setFontSize(10);
-            pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
-            yPosition += 7;
-            
-            // Remind the question number
-            pdf.setFontSize(10);
-            pdf.setFont(undefined, 'italic');
-            pdf.text(`(Spørgsmål ${i + 1} fortsat)`, margin, yPosition);
-            pdf.setFont(undefined, 'normal');
-            yPosition += 7;
-          }
+        // Handle flashcards differently
+        if (question.type === "flashcard") {
+          pdf.text(`Flashcard ${i + 1}`, margin, yPosition);
+          yPosition += 7;
           
-          const option = question.options[j];
-          const letter = j < letters.length ? letters[j] : `Option ${j + 1}`;
-          const isCorrect = option === question.correctAnswer;
+          pdf.setFont(undefined, 'normal');
           
-          // Highlight correct answer if showing answers
-          if (showAnswers && isCorrect) {
-            // Draw a light green background for correct answer
-            pdf.setFillColor(230, 248, 230); // Light green
-            pdf.rect(margin - 2, yPosition - 5, contentWidth + 4, 10, 'F');
-          }
-          
-          // Draw the option letter in a circle
-          pdf.setDrawColor(100, 100, 100);
-          pdf.setFillColor(isCorrect && showAnswers ? 40 : 255, isCorrect && showAnswers ? 167 : 255, isCorrect && showAnswers ? 69 : 255); // Green for correct, white for others
-          pdf.circle(margin + 4, yPosition - 1, 3, isCorrect && showAnswers ? 'F' : 'FD');
-          
-          // Add letter
-          pdf.setTextColor(isCorrect && showAnswers ? 255 : 0, 0, 0); // White for correct, black for others
-          pdf.setFontSize(8);
-          pdf.text(letter, margin + 4, yPosition, { align: 'center' });
-          
-          // Reset text color
-          pdf.setTextColor(0, 0, 0);
-          
-          // Add option text with wrap
-          pdf.setFontSize(10);
-          const optionLines = pdf.splitTextToSize(option, contentWidth - 12);
-          pdf.text(optionLines, margin + 10, yPosition);
-          
-          yPosition += 6 * optionLines.length + 3; // Add extra space between options
-        }
-        
-        // Add explanation if showing answers
-        if (showAnswers && question.explanation) {
-          // Check if we need a new page for explanation
-          if (yPosition > pageHeight - 80) {
-            pdf.addPage();
-            pageNum++;
-            yPosition = margin;
-            
-            // Add header on new page
-            pdf.setFontSize(10);
-            pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
-            yPosition += 7;
-          }
-          
-          // Explanation header
-          pdf.setFontSize(10);
-          pdf.setFont(undefined, 'bold');
-          pdf.text('Forklaring:', margin, yPosition);
+          // Front side
+          pdf.text("Front (Question):", margin, yPosition);
           yPosition += 5;
           
-          // Explanation text with wrap
+          // Question text with wrap
+          const frontLines = pdf.splitTextToSize(question.question, contentWidth - 10);
+          pdf.text(frontLines, margin + 5, yPosition);
+          yPosition += 6 * frontLines.length + 5;
+          
+          // Back side
+          pdf.text("Back (Answer):", margin, yPosition);
+          yPosition += 5;
+          
+          // Answer text with wrap
+          const backLines = pdf.splitTextToSize(question.correctAnswer, contentWidth - 10);
+          pdf.text(backLines, margin + 5, yPosition);
+          yPosition += 6 * backLines.length + 10; // Extra spacing after the flashcard
+        } else {
+          // Regular multiple choice question
+          pdf.text(`Spørgsmål ${i + 1}`, margin, yPosition);
+          yPosition += 7;
+          
+          // Question text with wrap
           pdf.setFont(undefined, 'normal');
-          const explanationLines = pdf.splitTextToSize(question.explanation, contentWidth);
-          pdf.text(explanationLines, margin, yPosition);
-          yPosition += 6 * explanationLines.length;
+          const questionLines = pdf.splitTextToSize(question.question, contentWidth);
+          pdf.text(questionLines, margin, yPosition);
+          yPosition += 6 * questionLines.length;
+          
+          // Loop through options
+          const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+          
+          // Only process options if they exist
+          if (question.options && question.options.length > 0) {
+            for (let j = 0; j < question.options.length; j++) {
+              // Check if we need a new page
+              if (yPosition > pageHeight - 60) {
+                pdf.addPage();
+                pageNum++;
+                yPosition = margin;
+                
+                // Add header on new page
+                pdf.setFontSize(10);
+                pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
+                yPosition += 7;
+                
+                // Remind the question number
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'italic');
+                pdf.text(`(Spørgsmål ${i + 1} fortsat)`, margin, yPosition);
+                pdf.setFont(undefined, 'normal');
+                yPosition += 7;
+              }
+              
+              // Get the current option
+              const option = question.options[j];
+              const letter = j < letters.length ? letters[j] : `Option ${j + 1}`;
+              const isCorrect = option === question.correctAnswer;
+              
+              // Highlight correct answer if showing answers
+              if (showAnswers && isCorrect) {
+                // Draw a light green background for correct answer
+                pdf.setFillColor(230, 248, 230); // Light green
+                pdf.rect(margin - 2, yPosition - 5, contentWidth + 4, 10, 'F');
+              }
+              
+              // Draw the option letter in a circle
+              pdf.setDrawColor(100, 100, 100);
+              pdf.setFillColor(isCorrect && showAnswers ? 40 : 255, isCorrect && showAnswers ? 167 : 255, isCorrect && showAnswers ? 69 : 255); // Green for correct, white for others
+              pdf.circle(margin + 4, yPosition - 1, 3, isCorrect && showAnswers ? 'F' : 'FD');
+              
+              // Add letter
+              pdf.setTextColor(isCorrect && showAnswers ? 255 : 0, 0, 0); // White for correct, black for others
+              pdf.setFontSize(8);
+              pdf.text(letter, margin + 4, yPosition, { align: 'center' });
+              
+              // Reset text color
+              pdf.setTextColor(0, 0, 0);
+              
+              // Add option text with wrap
+              pdf.setFontSize(10);
+              const optionLines = pdf.splitTextToSize(option, contentWidth - 12);
+              pdf.text(optionLines, margin + 10, yPosition);
+              
+              yPosition += 6 * optionLines.length + 3; // Add extra space between options
+            }
+            
+            // Add explanation if showing answers
+            if (showAnswers && question.explanation) {
+              // Check if we need a new page for explanation
+              if (yPosition > pageHeight - 80) {
+                pdf.addPage();
+                pageNum++;
+                yPosition = margin;
+                
+                // Add header on new page
+                pdf.setFontSize(10);
+                pdf.text(`${title} - fortsat`, pageWidth / 2, margin, { align: 'center' });
+                yPosition += 7;
+              }
+              
+              // Explanation header
+              pdf.setFontSize(10);
+              pdf.setFont(undefined, 'bold');
+              pdf.text('Forklaring:', margin, yPosition);
+              yPosition += 5;
+              
+              // Explanation text with wrap
+              pdf.setFont(undefined, 'normal');
+              const explanationLines = pdf.splitTextToSize(question.explanation, contentWidth);
+              pdf.text(explanationLines, margin, yPosition);
+              yPosition += 6 * explanationLines.length;
+            }
+          }
         }
         
-        // Add space between questions
+        // Extra space after the question
         yPosition += 10;
       }
       

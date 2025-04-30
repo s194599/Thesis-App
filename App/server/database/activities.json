@@ -69,5 +69,13 @@
     "type": "quiz",
     "quizId": "quiz_1745846997",
     "moduleSpecific": true
+  },
+  {
+    "moduleId": "module-3",
+    "id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
+    "title": "Flashcards",
+    "type": "quiz",
+    "quizId": "quiz_1745999926",
+    "moduleSpecific": true
   }
 ]
