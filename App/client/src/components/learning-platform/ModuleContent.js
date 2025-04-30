@@ -295,13 +295,15 @@ const ModuleContent = ({
         height: 6px;
       }
       .drop-zone {
-        height: 10px;
-        margin: -5px 0;
+        height: 20px;
+        margin: -10px 0;
         z-index: 10;
         position: relative;
+        transition: all 0.2s;
       }
       .drop-zone.drag-over {
-        height: 20px;
+        height: 30px;
+        background-color: transparent;
       }
     `;
     document.head.appendChild(style);
