@@ -92,6 +92,8 @@ const ModuleContent = ({
   const [selectedAudioUrl, setSelectedAudioUrl] = useState("");
   const [selectedAudioTitle, setSelectedAudioTitle] = useState("");
   const [targetFolderId, setTargetFolderId] = useState(null);
+  const [draggedActivity, setDraggedActivity] = useState(null);
+  const [dragOverFolder, setDragOverFolder] = useState(null);
   const navigate = useNavigate();
   
   // Expose the setActiveTab function through the resetTabFn prop
@@ -230,6 +232,219 @@ const ModuleContent = ({
     } catch (error) {
       console.error("Error fetching activity completions:", error);
     }
+  };
+
+  // Add CSS for drag and drop in useEffect to avoid conflicts
+  useEffect(() => {
+    // Add custom CSS for drag and drop
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .activity-card.dragging {
+        opacity: 0.5;
+        border: 2px dashed #999;
+      }
+      .folder-card.drag-over {
+        background-color: rgba(13, 110, 253, 0.1);
+        border: 2px dashed #0d6efd;
+      }
+      .activity-card[draggable=true]:hover {
+        cursor: grab;
+      }
+      .activity-card[draggable=true]:active {
+        cursor: grabbing;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+  
+  // Handle dragging activities
+  const handleDragStart = (e, activity) => {
+    // Only allow dragging if in teacher mode and not a folder itself
+    if (!isTeacherMode || activity.type === 'folder') {
+      e.preventDefault();
+      return;
+    }
+
+    // Set data for the drag operation
+    e.dataTransfer.setData('text/plain', activity.id);
+    e.dataTransfer.effectAllowed = 'move';
+    
+    // Track the dragged activity
+    setDraggedActivity(activity);
+    
+    // Add a class to the dragged element
+    e.target.closest('.activity-card').classList.add('dragging');
+  };
+  
+  const handleDragEnd = (e) => {
+    // Reset the dragged state
+    setDraggedActivity(null);
+    setDragOverFolder(null);
+    
+    // Remove the dragging class
+    document.querySelectorAll('.activity-card.dragging').forEach(el => {
+      el.classList.remove('dragging');
+    });
+    
+    // Remove drag-over class from all folders
+    document.querySelectorAll('.folder-card.drag-over').forEach(el => {
+      el.classList.remove('drag-over');
+    });
+  };
+  
+  // Handle folder drop targets
+  const handleDragOver = (e, folderId) => {
+    // Prevent default to allow drop
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Set the drag effect
+    e.dataTransfer.dropEffect = 'move';
+    
+    // Track which folder we're hovering over
+    setDragOverFolder(folderId);
+    
+    // Add visual feedback to the folder
+    const folderCard = e.currentTarget.closest('.folder-card');
+    if (folderCard) {
+      folderCard.classList.add('drag-over');
+    }
+  };
+  
+  const handleDragLeave = (e, folderId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Remove highlighting when dragging out of a folder
+    if (dragOverFolder === folderId) {
+      setDragOverFolder(null);
+      
+      // Remove visual feedback
+      const folderCard = e.currentTarget.closest('.folder-card');
+      if (folderCard) {
+        folderCard.classList.remove('drag-over');
+      }
+    }
+  };
+  
+  // Handle drop
+  const handleActivityDrop = (e, folderId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Get the activity ID from the dragged data
+    const activityId = e.dataTransfer.getData('text/plain');
+    
+    // Remove drag-over class
+    const folderCard = e.currentTarget.closest('.folder-card');
+    if (folderCard) {
+      folderCard.classList.remove('drag-over');
+    }
+    
+    // Find the activity being moved
+    const activity = activities.find(a => a.id === activityId);
+    
+    // Don't process if this is a self-drop or no activity found
+    if (!activity || activity.parentId === folderId) {
+      return;
+    }
+    
+    // Use the existing move function
+    const updatedActivity = {
+      ...activity,
+      parentId: folderId
+    };
+    
+    // Update the activity on the server
+    fetch("/api/store-activity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedActivity),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((serverData) => {
+        console.log("Activity moved on server:", serverData);
+      })
+      .catch((error) => {
+        console.error(`Error moving activity on server: ${error.message}`);
+      });
+    
+    // Update activities in local state
+    const updatedActivities = activities.map(a => 
+      a.id === activity.id ? updatedActivity : a
+    );
+    
+    setActivities(updatedActivities);
+    
+    // Update the parent component
+    if (onUpdateActivities && module) {
+      onUpdateActivities(module.id, updatedActivities);
+    }
+    
+    // Reset drag states
+    setDraggedActivity(null);
+    setDragOverFolder(null);
+  };
+  
+  // Add a function to handle drag operation for root level drop
+  const handleRootDrop = (e) => {
+    e.preventDefault();
+    
+    // Only process if we have a dragged activity
+    if (!draggedActivity) return;
+    
+    // Get the activity ID from the dragged data
+    const activityId = e.dataTransfer.getData('text/plain');
+    
+    // Find the activity
+    const activity = activities.find(a => a.id === activityId);
+    
+    // Only process if activity has a parent (is not already at root)
+    if (!activity || !activity.parentId) return;
+    
+    // Update to move to root level
+    const updatedActivity = {
+      ...activity,
+      parentId: null // null parentId = root level
+    };
+    
+    // Save to server
+    fetch("/api/store-activity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedActivity),
+    })
+      .then(response => response.json())
+      .then(data => console.log("Moved to root:", data))
+      .catch(error => console.error("Error moving to root:", error));
+    
+    // Update local state
+    const updatedActivities = activities.map(a => 
+      a.id === activity.id ? updatedActivity : a
+    );
+    
+    setActivities(updatedActivities);
+    
+    // Update parent component
+    if (onUpdateActivities && module) {
+      onUpdateActivities(module.id, updatedActivities);
+    }
+    
+    // Reset states
+    setDraggedActivity(null);
   };
 
   if (!module) return <div className="p-4">No module selected</div>;
@@ -1529,6 +1744,9 @@ const ModuleContent = ({
               userRole === "student" && completed ? "completed" : ""
             }`}
             style={{ cursor: "pointer" }}
+            onDragOver={(e) => handleDragOver(e, activity.id)}
+            onDragLeave={(e) => handleDragLeave(e, activity.id)}
+            onDrop={(e) => handleActivityDrop(e, activity.id)}
           >
             <Card.Body className="p-3">
               <div className="d-flex align-items-center">
@@ -1610,6 +1828,9 @@ const ModuleContent = ({
                     }`}
                     onClick={() => handleActivityClick(childActivity)}
                     style={{ cursor: "pointer" }}
+                    draggable={isTeacherMode && childActivity.type !== 'folder'}
+                    onDragStart={(e) => handleDragStart(e, childActivity)}
+                    onDragEnd={handleDragEnd}
                   >
                     <Card.Body className="p-3">
                       <div className="d-flex align-items-center">
@@ -1739,7 +1960,7 @@ const ModuleContent = ({
       );
     }
     
-    // For normal activities, render standard card
+    // For normal activities, render standard card with drag capability
     return (
       <Card 
         key={activity.id || Math.random().toString()} 
@@ -1750,6 +1971,9 @@ const ModuleContent = ({
         }`}
         onClick={() => handleActivityClick(activity)}
         style={{ cursor: "pointer" }}
+        draggable={isTeacherMode && activity.type !== 'folder'}
+        onDragStart={(e) => handleDragStart(e, activity)}
+        onDragEnd={handleDragEnd}
       >
         <Card.Body className="p-3">
           <div className="d-flex align-items-center">
@@ -2040,7 +2264,14 @@ const ModuleContent = ({
       </header>
       
       {activeTab === "indhold" && (
-        <div className="activities-container">
+        <div 
+          className="activities-container"
+          onDragOver={(e) => {
+            // Allow dropping at root level
+            e.preventDefault();
+          }}
+          onDrop={handleRootDrop}
+        >
           {activities.length > 0 ? (
             <>
               {/* Get root level activities and folders */}

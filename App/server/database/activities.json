@@ -46,39 +46,45 @@
     "moduleId": "module-3"
   },
   {
-    "moduleId": "module-3",
     "id": "activity_quiz_quiz_1744279908_module-3_1745324825187",
-    "title": "Romantikken Quiz",
-    "type": "quiz",
+    "moduleId": "module-3",
+    "moduleSpecific": true,
     "quizId": "quiz_1744279908",
-    "moduleSpecific": true
-  },
-  {
-    "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1745233680_module-3_1745233681971",
-    "title": "Lang Romantikken Quiz",
-    "type": "quiz",
-    "quizId": "quiz_1745233680",
-    "moduleSpecific": true,
-    "quizScore": 67
-  },
-  {
-    "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1745846997_module-3_1745847000215",
-    "title": "Romantikken Samlet",
-    "type": "quiz",
-    "quizId": "quiz_1745846997",
-    "moduleSpecific": true
-  },
-  {
-    "id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
-    "moduleId": "module-3",
-    "moduleSpecific": true,
-    "quizId": "quiz_1745999926",
-    "title": "Flashcards",
+    "title": "Romantikken Quiz",
     "type": "quiz",
     "isNew": false,
     "parentId": "folder_1746011993284"
+  },
+  {
+    "id": "activity_quiz_quiz_1745233680_module-3_1745233681971",
+    "moduleId": "module-3",
+    "moduleSpecific": true,
+    "quizId": "quiz_1745233680",
+    "quizScore": 67,
+    "title": "Lang Romantikken Quiz",
+    "type": "quiz",
+    "isNew": false,
+    "parentId": "folder_1746011993284"
+  },
+  {
+    "id": "activity_quiz_quiz_1745846997_module-3_1745847000215",
+    "moduleId": "module-3",
+    "moduleSpecific": true,
+    "quizId": "quiz_1745846997",
+    "title": "Romantikken Samlet",
+    "type": "quiz",
+    "isNew": false,
+    "parentId": "folder_1746011993284"
+  },
+  {
+    "id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
+    "isNew": false,
+    "moduleId": "module-3",
+    "moduleSpecific": true,
+    "parentId": "folder_1746013491306",
+    "quizId": "quiz_1745999926",
+    "title": "Flashcards",
+    "type": "quiz"
   },
   {
     "title": "Quizzer",
@@ -95,7 +101,7 @@
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/App_design_thesis_1746012586.pdf",
     "isNew": true,
-    "parentId": "folder_1746011993284",
+    "parentId": "folder_1746013491306",
     "id": "activity_1746012586884",
     "moduleId": "module-3"
   },
