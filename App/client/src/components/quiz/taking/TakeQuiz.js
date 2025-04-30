@@ -49,6 +49,7 @@ const TakeQuiz = () => {
   const [randomizedQuestions, setRandomizedQuestions] = useState([]);
   const [randomizedOptions, setRandomizedOptions] = useState([]);
   const [quizStartTime, setQuizStartTime] = useState(null);
+  const [flashcardResponse, setFlashcardResponse] = useState(null);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -118,36 +119,51 @@ const TakeQuiz = () => {
         try {
           console.log("Saving quiz result for student...");
           
-          // For flashcards, we don't have traditional right/wrong answers
-          // We'll record a different format for results
+          // Process answers and calculate final score for both flashcards and multiple choice questions
+          const processedAnswers = answers.map((answer, index) => {
+            const question = quiz.questions[index];
+            
+            // Handle flashcards differently based on student self-assessment
+            if (question.type === "flashcard") {
+              // Check if this flashcard was answered (some might be skipped)
+              if (!answer || typeof answer !== 'object') {
+                return {
+                  question_id: question.id,
+                  question: question.question,
+                  answer: "Flashcard not assessed",
+                  correct: false,
+                  is_flashcard: true,
+                  viewed: false
+                };
+              }
+              
+              // Return flashcard with student's self-assessment
+              return {
+                question_id: question.id,
+                question: question.question,
+                answer: answer.flashcardResponse ? "Knew it" : "Didn't know it",
+                correct: answer.flashcardResponse === true,
+                is_flashcard: true,
+                viewed: answer.viewed === true
+              };
+            } else {
+              // Regular multiple choice question
+              return {
+                question_id: question.id,
+                question: question.question,
+                answer: answer,
+                correct: answer === question.correctAnswer,
+              };
+            }
+          });
+          
           const quizResult = {
             quiz_id: quizId,
             quiz_title: quiz.title,
             score: score,
             total_questions: randomizedQuestions.length,
-            start_timestamp: quizStartTime, // Include the quiz start time
-            answers: answers.map((answer, index) => {
-              const question = quiz.questions[index];
-              
-              // Handle flashcards differently - they're always "correct" since the student just flips them
-              if (question.type === "flashcard") {
-                return {
-                  question_id: question.id,
-                  question: question.question,
-                  answer: "Flashcard viewed",
-                  correct: true,
-                  is_flashcard: true
-                };
-              } else {
-                // Regular multiple choice question
-                return {
-                  question_id: question.id,
-                  question: question.question,
-                  answer: answer,
-                  correct: answer === question.correctAnswer,
-                };
-              }
-            }),
+            start_timestamp: quizStartTime,
+            answers: processedAnswers,
           };
 
           const response = await fetch("/api/student/save-quiz-result", {
@@ -326,7 +342,7 @@ const TakeQuiz = () => {
             </div>
             
             <div className="flashcard-flip-hint">
-              {showAnswer ? "Click to see the question" : "Click to reveal the answer"}
+              {showAnswer ? "Klik for at se spørgsmålet" : "Klik for at se svaret"}
             </div>
             
             <div className="d-flex justify-content-between mt-4">
@@ -335,36 +351,75 @@ const TakeQuiz = () => {
                 disabled={currentQuestionIndex === 0}
                 onClick={() => {
                   setShowAnswer(false);
+                  setFlashcardResponse(null);
                   setCurrentQuestionIndex(currentQuestionIndex - 1);
                 }}
               >
                 <BsArrowLeft className="me-1" /> Forrige
               </Button>
               
-              <Button
-                variant={
-                  currentQuestionIndex < randomizedQuestions.length - 1
-                    ? "primary"
-                    : "success"
-                }
-                onClick={() => {
-                  if (currentQuestionIndex < randomizedQuestions.length - 1) {
-                    setShowAnswer(false);
-                    setCurrentQuestionIndex(currentQuestionIndex + 1);
-                  } else {
-                    // Complete the quiz on the last card
-                    setQuizCompleted(true);
-                  }
-                }}
-              >
-                {currentQuestionIndex < randomizedQuestions.length - 1 ? (
-                  <>
-                    Næste <BsArrowRight className="ms-1" />
-                  </>
-                ) : (
-                  "Afslut Quiz"
-                )}
-              </Button>
+              {!showAnswer ? (
+                // When card is not flipped, show a single button to flip it
+                <Button
+                  variant="primary"
+                  onClick={() => setShowAnswer(true)}
+                >
+                  Vis svar
+                </Button>
+              ) : (
+                // When card is flipped and showing the answer, show self-assessment buttons
+                <div className="d-flex gap-2">
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      // Record that the student didn't know the answer
+                      const newAnswers = [...answers];
+                      newAnswers[currentQuestion.originalIndex] = {
+                        flashcardResponse: false,
+                        viewed: true
+                      };
+                      setAnswers(newAnswers);
+                      setFlashcardResponse(false);
+                      
+                      // Move to next card or finish quiz
+                      if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                        setShowAnswer(false);
+                        setFlashcardResponse(null);
+                        setCurrentQuestionIndex(currentQuestionIndex + 1);
+                      } else {
+                        setQuizCompleted(true);
+                      }
+                    }}
+                  >
+                    Det vidste jeg ikke
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={() => {
+                      // Record that the student knew the answer and increment score
+                      const newAnswers = [...answers];
+                      newAnswers[currentQuestion.originalIndex] = {
+                        flashcardResponse: true,
+                        viewed: true
+                      };
+                      setAnswers(newAnswers);
+                      setScore(prevScore => prevScore + 1);
+                      setFlashcardResponse(true);
+                      
+                      // Move to next card or finish quiz
+                      if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                        setShowAnswer(false);
+                        setFlashcardResponse(null);
+                        setCurrentQuestionIndex(currentQuestionIndex + 1);
+                      } else {
+                        setQuizCompleted(true);
+                      }
+                    }}
+                  >
+                    Det vidste jeg godt
+                  </Button>
+                </div>
+              )}
             </div>
           </Card.Body>
         </Card>

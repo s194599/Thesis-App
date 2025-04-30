@@ -483,36 +483,39 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-30T10:06:37.059021",
-      "start_timestamp": "2025-04-30T08:05:04.812Z",
+      "timestamp": "2025-04-30T10:49:14.257423",
+      "start_timestamp": "2025-04-30T08:48:53.828Z",
       "quiz_id": "quiz_1745999926",
       "quiz_title": "Flashcards",
-      "score": 0,
+      "score": 1,
       "total_questions": 3,
       "answers": [
         {
           "question_id": "fc1",
           "question": "[Front side - Who were the Romantics?]",
-          "answer": "Flashcard viewed",
+          "answer": "Knew it",
           "correct": true,
-          "is_flashcard": true
+          "is_flashcard": true,
+          "viewed": true
         },
         {
           "question_id": "fc2",
           "question": "[Front side - What were some key characteristics of Romantic literature?]",
-          "answer": "Flashcard viewed",
-          "correct": true,
-          "is_flashcard": true
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
         },
         {
           "question_id": "fc3",
           "question": "[Front side - How did the Romantic Movement influence other art forms?]",
-          "answer": "Flashcard viewed",
-          "correct": true,
-          "is_flashcard": true
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
         }
       ],
-      "attempts": 1,
+      "attempts": 3,
       "student_id": "1",
       "student_name": "Christian Wu"
     }
