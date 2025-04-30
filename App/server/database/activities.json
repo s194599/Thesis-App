@@ -71,11 +71,20 @@
     "moduleSpecific": true
   },
   {
-    "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
-    "title": "Flashcards",
+    "title": "Introduktion-til-2.Verdenskrig.pdf",
+    "description": "L\u00e6s kapitel 2-5",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746011304.pdf",
+    "isNew": true,
+    "id": "activity_1746011304309",
+    "moduleId": "module-2"
+  },
+  {
+    "moduleId": "module-2",
+    "id": "activity_quiz_quiz_1746011919_module-2_1746015505024",
+    "title": "Parat viden om 2. Verdenskrig",
     "type": "quiz",
-    "quizId": "quiz_1745999926",
+    "quizId": "quiz_1746011919",
     "moduleSpecific": true
   }
 ]

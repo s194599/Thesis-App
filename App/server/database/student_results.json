@@ -25,18 +25,18 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-24T13:26:10.461924",
-      "start_timestamp": "2025-04-24T11:26:01.380Z",
+      "timestamp": "2025-04-30T14:42:57.987348",
+      "start_timestamp": "2025-04-30T12:42:48.631Z",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 1,
+      "score": 3,
       "total_questions": 3,
       "answers": [
         {
           "question_id": "q1",
           "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
           "answer": "A style of music that focuses on harmony and melody.",
-          "correct": false
+          "correct": true
         },
         {
           "question_id": "q2",
@@ -47,11 +47,11 @@
         {
           "question_id": "q1745254179199",
           "question": "AI Generated Question: What is the main function of DNA?",
-          "answer": "Transport oxygen",
-          "correct": false
+          "answer": "Store genetic information",
+          "correct": true
         }
       ],
-      "attempts": 10,
+      "attempts": 11,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -483,39 +483,55 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-30T10:49:14.257423",
-      "start_timestamp": "2025-04-30T08:48:53.828Z",
-      "quiz_id": "quiz_1745999926",
-      "quiz_title": "Flashcards",
-      "score": 1,
-      "total_questions": 3,
+      "timestamp": "2025-04-30T14:18:38.540861",
+      "start_timestamp": "2025-04-30T12:18:28.205Z",
+      "quiz_id": "quiz_1746011919",
+      "quiz_title": "Parat viden om 2. Verdenskrig",
+      "score": 5,
+      "total_questions": 5,
       "answers": [
         {
-          "question_id": "fc1",
-          "question": "[Front side - Who were the Romantics?]",
+          "question_id": "fc2",
+          "question": "Den danske nazistparti",
           "answer": "Knew it",
           "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
         {
-          "question_id": "fc2",
-          "question": "[Front side - What were some key characteristics of Romantic literature?]",
-          "answer": "Didn't know it",
-          "correct": false,
+          "question_id": "fc3",
+          "question": "[DNSAP]",
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
         {
-          "question_id": "fc3",
-          "question": "[Front side - How did the Romantic Movement influence other art forms?]",
-          "answer": "Didn't know it",
-          "correct": false,
+          "question_id": "fc4",
+          "question": "[Frits Clausen]",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc5",
+          "question": "[Regeringsstorm]",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "q1746015479847",
+          "question": "Front (Question)",
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 3,
+      "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

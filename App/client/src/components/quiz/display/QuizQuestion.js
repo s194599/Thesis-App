@@ -14,13 +14,13 @@ const QuizQuestion = ({ question, index, onDelete }) => {
 
   // Local values for controlled inputs
   const [questionText, setQuestionText] = useState(question.question);
-  const [options, setOptions] = useState([...question.options]);
+  const [options, setOptions] = useState(question.options || []);
   const [correctAnswer, setCorrectAnswer] = useState(question.correctAnswer);
   const [explanation, setExplanation] = useState(question.explanation || "");
 
   useEffect(() => {
     setQuestionText(question.question);
-    setOptions(question.options);
+    setOptions(question.options || []);
     setCorrectAnswer(question.correctAnswer);
   }, [question]);
 
@@ -99,10 +99,109 @@ const QuizQuestion = ({ question, index, onDelete }) => {
 
   const handleCancel = () => {
     setQuestionText(question.question);
-    setOptions(question.options);
+    setOptions(question.options || []);
     setCorrectAnswer(question.correctAnswer);
     setIsEditingQuestion(false);
   };
+
+  // Special handling for flashcard type questions
+  if (question.type === "flashcard") {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-start mb-3">
+            <h5 className="mb-0">Flashcard {index + 1}</h5>
+            <div>
+              {!isEditingQuestion ? (
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => setIsEditingQuestion(true)}
+                >
+                  Rediger
+                </Button>
+              ) : (
+                <div>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="me-2"
+                    onClick={handleCancel}
+                  >
+                    <BsX /> Annuller
+                  </Button>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => {
+                      console.log("Saving flashcard with values:", {
+                        id: question.id,
+                        question: questionText,
+                        correctAnswer: correctAnswer,
+                        type: "flashcard"
+                      });
+                      
+                      // Pass the object directly as the second parameter
+                      updateQuestion(question.id, {
+                        question: questionText,
+                        correctAnswer: correctAnswer,
+                        type: "flashcard"
+                      });
+                      
+                      setIsEditingQuestion(false);
+                    }}
+                  >
+                    <BsCheck /> Gem
+                  </Button>
+                </div>
+              )}
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => deleteQuestion(question.id)}
+              >
+                <BsTrash />
+              </Button>
+            </div>
+          </div>
+
+          {isEditingQuestion ? (
+            <div>
+              <Form.Group className="mb-3">
+                <Form.Label>Front (Question)</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  value={questionText}
+                  onChange={(e) => setQuestionText(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Back (Answer)</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  value={correctAnswer}
+                  onChange={(e) => setCorrectAnswer(e.target.value)}
+                />
+              </Form.Group>
+            </div>
+          ) : (
+            <div>
+              <p className="mb-3">
+                <strong>Front:</strong> {questionText}
+              </p>
+              <p className="mb-0">
+                <strong>Back:</strong> {correctAnswer}
+              </p>
+            </div>
+          )}
+        </Card.Body>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mb-4">

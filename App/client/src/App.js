@@ -128,7 +128,7 @@ function App() {
             <>
               <TopBar />
               <div className="flex-grow-1">
-                <QuizPreview />
+                <QuizPreviewComponent />
               </div>
             </>
           }
@@ -154,7 +154,7 @@ function App() {
 }
 
 // Quiz Preview component to display and manage quizzes for teachers
-const QuizPreview = () => {
+const QuizPreviewComponent = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -167,6 +167,10 @@ const QuizPreview = () => {
       try {
         setLoading(true);
         const data = await getQuiz(quizId);
+        // Ensure the quiz has a title if it's undefined or empty
+        if (!data.title || data.title.trim() === '') {
+          data.title = "Flashcard Quiz"; // Default title if none exists
+        }
         setQuiz(data);
         setGeneratedQuiz(data); // Set the quiz in context for the QuizOutput component
       } catch (err) {

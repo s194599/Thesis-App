@@ -137,10 +137,10 @@
     "id": "quiz_1744279908",
     "questions": [
       {
-        "correctAnswer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
+        "correctAnswer": "A style of music that focuses on harmony and melody.",
         "id": "q1",
         "options": [
-          "An artistic and literary movement characterized by emotion, individualism, and nature.",
+          "An artistic and literary movement characterized by emotion, individualism, and nature .",
           "A style of music that focuses on harmony and melody.",
           "A political ideology advocating for democracy and social equality.",
           "A philosophical approach emphasizing rationality and empiricism."
@@ -171,7 +171,8 @@
         "question": "AI Generated Question: What is the main function of DNA?"
       }
     ],
-    "timestamp": "2025-04-21T16:50:32.482Z",
+    "quizId": "quiz_1744279908",
+    "timestamp": "2025-04-30T12:38:42.497Z",
     "title": "Romantikken Quiz"
   },
   {
@@ -451,28 +452,42 @@
   },
   {
     "description": "Quiz generated from your content",
+    "id": "quiz_1746011919",
     "questions": [
       {
-        "correctAnswer": "[back side - the romantics were a group of writers and artists who lived during the late eighteenth and early nineteenth centuries. they rejected the rationalism, order, and classical themes of the enlightenment and instead celebrated emotion, individuality, and the beauty of nature.]",
-        "id": "fc1",
-        "question": "[Front side - Who were the Romantics?]",
-        "type": "flashcard"
-      },
-      {
-        "correctAnswer": "[back side - some key characteristics of romantic literature include an emphasis on emotion, the imagination, the supernatural, and the individual; a focus on nature as a source of inspiration; and a rejection of reason and rationality.]",
+        "correctAnswer": "det politiske parti, der stod bag den tyske bes\u00e6ttelsesmagt i danmark og arbejdede for at overtage regeringsmagten i danmark i k\u00f8lvandet p\u00e5 den tyske fremgang.",
         "id": "fc2",
-        "question": "[Front side - What were some key characteristics of Romantic literature?]",
+        "question": "Den danske nazistparti",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "[back side - the romantic movement influenced all of the arts, including music (such as romantic opera), painting, sculpture, architecture, and even social movements like utopian colonies.]",
+        "correctAnswer": "akronym for dansk nationalsocialistisk arbejderparti, det danske nazistparti under bes\u00e6ttelsen.",
         "id": "fc3",
-        "question": "[Front side - How did the Romantic Movement influence other art forms?]",
+        "question": "[DNSAP]",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "partileder for dnsap i 1940'erne og en af de mest prominente nazisternes i danmark under den tyske bes\u00e6ttelse.",
+        "id": "fc4",
+        "question": "Frits Clausen",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "en politisk bev\u00e6gelse eller initiativ, der g\u00e5r ud p\u00e5 at overtage regeringsmagten i en stat. i dette tilf\u00e6lde omhandler det den danske nazistparti dnsap's fors\u00f8g p\u00e5 at styrte den danske regering i 1940 og overtage magten.",
+        "id": "fc5",
+        "question": "[Regeringsstorm]",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "Back (Answer)",
+        "id": "q1746015479847",
+        "options": [],
+        "question": "Front (Question)",
         "type": "flashcard"
       }
     ],
-    "title": "Flashcards",
-    "timestamp": "2025-04-30T07:58:46.231Z",
-    "id": "quiz_1745999926"
+    "quizId": "quiz_1746011919",
+    "timestamp": "2025-04-30T12:39:11.283Z",
+    "title": "Parat viden om 2. Verdenskrig"
   }
 ]

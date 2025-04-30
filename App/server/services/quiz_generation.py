@@ -67,11 +67,11 @@ def generate_quiz_with_ollama(
 
         The flashcards should have {num_questions} cards and follow EXACTLY this format:
 
-        1. [Front side - Term or question]
-        Flip side: [Back side - Definition or answer]
+        1. Term or question
+        Flip side: [Definition or answer]
 
-        2. [Front side - Term or question]
-        Flip side: [Back side - Definition or answer]
+        2. Term or question
+        Flip side: [Definition or answer]
 
         And so on. IMPORTANT:
         - Number the cards starting with 1.

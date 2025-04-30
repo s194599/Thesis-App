@@ -50,7 +50,62 @@ const QuizEditor = ({ quizId }) => {
     setIsEditingTitle(false);
   };
 
-  // ... existing code ...
+  const handleAddQuestion = () => {
+    // Determine if this is a flashcard quiz by checking the first question
+    let isFlashcardQuiz = false;
+    
+    if (quiz.questions && quiz.questions.length > 0) {
+      // Check if the first question is a flashcard - assume quiz is consistent
+      isFlashcardQuiz = quiz.questions[0].type === "flashcard";
+    }
+    
+    let newQuestion;
+    
+    if (isFlashcardQuiz) {
+      // Create a flashcard-type question
+      newQuestion = {
+        id: `q${Date.now()}`,
+        question: "Front (Question)",
+        correctAnswer: "Back (Answer)",
+        type: "flashcard",
+        options: [] // Empty options array for flashcards
+      };
+    } else {
+      // Create a standard multiple-choice question
+      newQuestion = {
+        id: `q${Date.now()}`,
+        question: "New Question",
+        options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+        correctAnswer: "Option 1",
+        explanation: "Add explanation here",
+      };
+    }
+    
+    setQuiz(prev => ({
+      ...prev,
+      questions: [...prev.questions, newQuestion]
+    }));
+  };
+
+  const handleDeleteQuestion = (index) => {
+    setQuiz(prev => ({
+      ...prev,
+      questions: prev.questions.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      await updateQuiz(quizId, quiz);
+      navigate(`/quiz/preview/${quizId}`);
+    } catch (err) {
+      console.error("Error saving quiz:", err);
+      setError("Failed to save quiz. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Container className="mt-4 mb-5">

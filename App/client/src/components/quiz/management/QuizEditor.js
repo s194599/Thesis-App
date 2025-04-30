@@ -55,12 +55,12 @@ const QuizEditor = () => {
   }, [isEditing, generatedQuiz, startEditing]);
 
   // Update local state when editingQuiz changes
-  // useEffect(() => {
-  //   if (editingQuiz) {
-  //     setTitle(editingQuiz.title || "");
-  //     setDescription(editingQuiz.description || "");
-  //   }
-  // }, [editingQuiz]);
+  useEffect(() => {
+    if (editingQuiz) {
+      setTitle(editingQuiz.title || "");
+      // setDescription(editingQuiz.description || "");
+    }
+  }, [editingQuiz]);
 
   // Save title changes
   const saveTitle = () => {

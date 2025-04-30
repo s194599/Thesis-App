@@ -109,9 +109,17 @@ export const QuizProvider = ({ children }) => {
   const updateQuestion = (questionId, field, value) => {
     setEditingQuiz((prev) => ({
       ...prev,
-      questions: prev.questions.map((q) =>
-        q.id === questionId ? { ...q, [field]: value } : q
-      ),
+      questions: prev.questions.map((q) => {
+        if (q.id === questionId) {
+          // If field is an object, spread it to update multiple properties
+          if (typeof field === 'object' && field !== null && value === undefined) {
+            return { ...q, ...field };
+          }
+          // Otherwise update a single field
+          return { ...q, [field]: value };
+        }
+        return q;
+      }),
     }));
   };
 
@@ -142,13 +150,35 @@ export const QuizProvider = ({ children }) => {
 
   // Add a new question manually
   const addQuestionManually = () => {
-    const newQuestion = {
-      id: `q${Date.now()}`,
-      question: "New Question",
-      options: ["Option 1", "Option 2", "Option 3", "Option 4"],
-      correctAnswer: "Option 1",
-      explanation: "Add explanation here",
-    };
+    // Determine the question type based on existing questions
+    let isFlashcardQuiz = false;
+    
+    if (editingQuiz && editingQuiz.questions && editingQuiz.questions.length > 0) {
+      // Check if the first question is a flashcard - assume quiz is consistent
+      isFlashcardQuiz = editingQuiz.questions[0].type === "flashcard";
+    }
+    
+    let newQuestion;
+    
+    if (isFlashcardQuiz) {
+      // Create a flashcard-type question
+      newQuestion = {
+        id: `q${Date.now()}`,
+        question: "Front (Question)",
+        correctAnswer: "Back (Answer)",
+        type: "flashcard",
+        options: [] // Empty options array for flashcards
+      };
+    } else {
+      // Create a standard multiple-choice question
+      newQuestion = {
+        id: `q${Date.now()}`,
+        question: "New Question",
+        options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+        correctAnswer: "Option 1",
+        explanation: "Add explanation here",
+      };
+    }
 
     setEditingQuiz((prev) => ({
       ...prev,
@@ -351,6 +381,21 @@ export const QuizProvider = ({ children }) => {
         timestamp: new Date().toISOString(),
       };
       
+      // Ensure each question has the required properties based on type
+      if (quizToSave.questions) {
+        quizToSave.questions = quizToSave.questions.map(question => {
+          if (question.type === "flashcard") {
+            // For flashcards, ensure they have the proper structure
+            return {
+              ...question,
+              options: [], // Empty options array for flashcards
+              type: "flashcard"
+            };
+          }
+          return question;
+        });
+      }
+      
       // If updating, make sure the ID is set correctly
       if (isUpdate) {
         quizToSave.id = quizId;
@@ -372,7 +417,7 @@ export const QuizProvider = ({ children }) => {
       // Update the quiz with the returned ID if needed
       if (result.quizId && !isUpdate) {
         setGeneratedQuiz({
-          ...generatedQuiz,
+          ...quizToSave, // Use quizToSave instead of generatedQuiz to retain the latest changes
           id: result.quizId,
           quizId: result.quizId
         });
@@ -381,6 +426,9 @@ export const QuizProvider = ({ children }) => {
         const savedTitles = JSON.parse(localStorage.getItem('savedQuizzesTitles') || '{}');
         savedTitles[result.quizId] = quizToSave.title;
         localStorage.setItem('savedQuizzesTitles', JSON.stringify(savedTitles));
+      } else if (isUpdate) {
+        // Also update generatedQuiz when updating an existing quiz
+        setGeneratedQuiz(quizToSave);
       }
       
       // If the title changed and we have a quiz ID, update the activity title

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Card, Button, Form, Spinner, Modal } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
 import {
@@ -59,6 +59,13 @@ const QuizOutput = () => {
   const [showAnswers, setShowAnswers] = useState(true);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const [showPdfOptions, setShowPdfOptions] = useState(false);
+  
+  // Initialize editedTitle when generatedQuiz changes
+  useEffect(() => {
+    if (generatedQuiz && generatedQuiz.title) {
+      setEditedTitle(generatedQuiz.title);
+    }
+  }, [generatedQuiz]);
 
   // If in editing mode, show the QuizEditor component
   if (isEditing) {
@@ -419,6 +426,27 @@ const QuizOutput = () => {
 
   // Handle the save quiz action
   const handleSaveQuiz = async () => {
+    console.log("Saving quiz with data:", generatedQuiz);
+    
+    // Ensure all flashcards have the proper type set
+    const updatedQuiz = {
+      ...generatedQuiz,
+      questions: generatedQuiz.questions.map(question => {
+        if (question.type === "flashcard") {
+          return {
+            ...question,
+            type: "flashcard",
+            options: [] // Ensure options is an empty array for flashcards
+          };
+        }
+        return question;
+      })
+    };
+    
+    // Update the generatedQuiz in context
+    setGeneratedQuiz(updatedQuiz);
+    
+    // Save to backend
     await saveQuizToBackend();
   };
 
