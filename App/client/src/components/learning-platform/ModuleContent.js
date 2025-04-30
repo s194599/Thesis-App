@@ -926,27 +926,118 @@ const ModuleContent = ({
   
   const handleDeleteActivity = (e, activityId) => {
     e.stopPropagation(); // Prevent triggering the card click
-    if (window.confirm("Er du sikker på, at du vil slette denne aktivitet?")) {
-      // Find the activity to get its details before deleting
-      const activityToDelete = activities.find(
-        (activity) => activity.id === activityId
-      );
-
-      // Filter out the deleted activity from local state
-      const updatedActivities = activities.filter(
-        (activity) => activity.id !== activityId
-      );
-
-      // Update local state first for immediate UI feedback
-      setActivities(updatedActivities);
-
-      // Update the parent component to persist the change
-      if (onUpdateActivities && module) {
-        onUpdateActivities(module.id, updatedActivities);
+    
+    // Find the activity to get its details before deleting
+    const activityToDelete = activities.find(
+      (activity) => activity.id === activityId
+    );
+    
+    if (!activityToDelete) return;
+    
+    let deleteMessage = "Er du sikker på, at du vil slette denne aktivitet?";
+    
+    // If it's a folder, warn about deleting contents too
+    if (activityToDelete.type === 'folder') {
+      const childActivities = activities.filter(a => a.parentId === activityId);
+      if (childActivities.length > 0) {
+        deleteMessage = `Er du sikker på, at du vil slette denne mappe? Den indeholder ${childActivities.length} aktiviteter, som også vil blive slettet.`;
       }
-      
-      // Delete from server storage for all activity types
-      if (activityToDelete) {
+    }
+    
+    if (window.confirm(deleteMessage)) {
+      // First update the UI for immediate feedback
+      if (activityToDelete.type === 'folder') {
+        // Find all activities that have this folder as parent
+        const childActivities = activities.filter(a => a.parentId === activityId);
+        console.log(`Folder "${activityToDelete.title}" has ${childActivities.length} child activities to delete`, childActivities);
+        
+        // Get all IDs to delete (folder + children)
+        const childIds = childActivities.map(a => a.id);
+        const allIdsToDelete = [activityId, ...childIds];
+        
+        // Update local state to remove the folder and its contents
+        const updatedActivities = activities.filter(
+          (activity) => !allIdsToDelete.includes(activity.id)
+        );
+        
+        setActivities(updatedActivities);
+        
+        // Update the parent component
+        if (onUpdateActivities && module) {
+          onUpdateActivities(module.id, updatedActivities);
+        }
+        
+        // Now handle the actual server-side deletion with a sequential approach
+        // First delete all child activities, then delete the folder itself
+        const deleteChildrenSequentially = async () => {
+          console.log(`Starting deletion of ${childIds.length} children of folder ${activityId}`);
+          
+          // Delete children first
+          for (const childId of childIds) {
+            console.log(`Deleting child activity ${childId}...`);
+            try {
+              const response = await fetch("/api/delete-activity", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  id: childId,
+                  moduleId: module.id,
+                }),
+              });
+              
+              if (!response.ok) {
+                console.error(`Failed to delete child ${childId}: ${response.status}`);
+              } else {
+                const data = await response.json();
+                console.log(`Successfully deleted child ${childId}`, data);
+              }
+            } catch (error) {
+              console.error(`Error deleting child ${childId}:`, error);
+            }
+          }
+          
+          // Finally delete the folder itself
+          console.log(`Deleting folder ${activityId}...`);
+          try {
+            const response = await fetch("/api/delete-activity", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: activityId,
+                moduleId: module.id,
+              }),
+            });
+            
+            if (!response.ok) {
+              console.error(`Failed to delete folder ${activityId}: ${response.status}`);
+            } else {
+              const data = await response.json();
+              console.log(`Successfully deleted folder ${activityId}`, data);
+            }
+          } catch (error) {
+            console.error(`Error deleting folder ${activityId}:`, error);
+          }
+          
+          console.log("Folder deletion process complete");
+        };
+        
+        // Start the deletion process
+        deleteChildrenSequentially();
+      } else {
+        // For non-folder activities, just delete the single activity
+        // Update UI first
+        const updatedActivities = activities.filter(a => a.id !== activityId);
+        setActivities(updatedActivities);
+        
+        if (onUpdateActivities && module) {
+          onUpdateActivities(module.id, updatedActivities);
+        }
+        
+        // Then delete from server
         fetch("/api/delete-activity", {
           method: "POST",
           headers: {
@@ -957,20 +1048,18 @@ const ModuleContent = ({
             moduleId: module.id,
           }),
         })
-          .then((response) => {
+          .then(response => {
             if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
+              throw new Error(`Failed to delete ${activityId}: ${response.status}`);
             }
             return response.json();
           })
-          .then((data) => {
-            console.log("Activity deleted from server:", data);
+          .then(data => {
+            console.log(`Successfully deleted ${activityId}:`, data);
           })
-          .catch((error) => {
-            console.error(
-              `Error deleting activity from server: ${error.message}`
-            );
-        });
+          .catch(error => {
+            console.error(`Error deleting ${activityId}:`, error);
+          });
       }
     }
   };
