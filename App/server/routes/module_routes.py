@@ -108,4 +108,106 @@ def update_module():
         
     except Exception as e:
         logger.error(f"Error updating module: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@module_routes.route("/create-module", methods=["POST"])
+def create_module():
+    """
+    Creates a new module
+    """
+    try:
+        module_data = request.json
+        if not module_data or "title" not in module_data:
+            return jsonify({"success": False, "message": "Module title is required"}), 400
+        
+        # Load existing modules
+        modules_file = os.path.join(DATABASE_FOLDER, "modules.json")
+        modules = load_json_file(modules_file, [])
+        
+        # Generate a new module ID
+        new_id = module_data.get("id")
+        if not new_id:
+            # Generate an ID based on title if not provided
+            base_id = f"module-{len(modules) + 1}"
+            new_id = base_id
+            
+            # Ensure ID is unique
+            existing_ids = [m.get("id") for m in modules]
+            counter = 1
+            while new_id in existing_ids:
+                new_id = f"{base_id}-{counter}"
+                counter += 1
+        
+        # Create the new module object
+        new_module = {
+            "id": new_id,
+            "title": module_data.get("title"),
+            "date": module_data.get("date", ""),
+            "description": module_data.get("description", "")
+        }
+        
+        # Add optional fields if provided
+        if "subtitle" in module_data:
+            new_module["subtitle"] = module_data["subtitle"]
+        
+        if "icon" in module_data:
+            new_module["icon"] = module_data["icon"]
+        
+        # Add the new module to the list
+        modules.append(new_module)
+        
+        # Save the updated modules back to file
+        if save_json_file(modules_file, modules):
+            return jsonify({
+                "success": True,
+                "message": "Module created successfully",
+                "module": new_module
+            })
+        else:
+            return jsonify({"success": False, "message": "Failed to save module data"}), 500
+        
+    except Exception as e:
+        logger.error(f"Error creating module: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@module_routes.route("/delete-module/<module_id>", methods=["DELETE"])
+def delete_module(module_id):
+    """
+    Deletes a module by ID
+    """
+    try:
+        if not module_id:
+            return jsonify({"success": False, "message": "Module ID is required"}), 400
+        
+        # Load existing modules
+        modules_file = os.path.join(DATABASE_FOLDER, "modules.json")
+        modules = load_json_file(modules_file, [])
+        
+        # Find the module to delete
+        module_index = None
+        for i, module in enumerate(modules):
+            if module.get("id") == module_id:
+                module_index = i
+                break
+        
+        if module_index is None:
+            return jsonify({"success": False, "message": f"Module with ID {module_id} not found"}), 404
+        
+        # Remove the module
+        deleted_module = modules.pop(module_index)
+        
+        # Save the updated modules back to file
+        if save_json_file(modules_file, modules):
+            return jsonify({
+                "success": True,
+                "message": "Module deleted successfully",
+                "deleted_module": deleted_module
+            })
+        else:
+            return jsonify({"success": False, "message": "Failed to save module data"}), 500
+        
+    except Exception as e:
+        logger.error(f"Error deleting module: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500 
