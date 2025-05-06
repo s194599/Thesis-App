@@ -9,6 +9,7 @@ import {
   BsListCheck,
   BsFileEarmark,
   BsImage,
+  BsBook,
 } from "react-icons/bs";
 
 const ModuleOverview = () => {
@@ -62,30 +63,11 @@ const ModuleOverview = () => {
           moduleData = modules.find(m => m.id === moduleId);
         }
         
-        // If module not found in localStorage, fetch from server
         if (moduleData) {
           setModule(moduleData);
         } else {
-          // Fetch all modules from server and find the one with matching ID
-          const modulesResponse = await fetch('/api/modules');
-          if (modulesResponse.ok) {
-            const data = await modulesResponse.json();
-            if (data.success && Array.isArray(data.modules)) {
-              const foundModule = data.modules.find(m => m.id === moduleId);
-              if (foundModule) {
-                setModule(foundModule);
-              } else {
-                // Fallback if module not found
-                setModule({ id: moduleId, title: `Module ${moduleId}` });
-              }
-            } else {
-              // Fallback if no modules returned or invalid response
-              setModule({ id: moduleId, title: `Module ${moduleId}` });
-            }
-          } else {
-            // Fallback if API request fails
-            setModule({ id: moduleId, title: `Module ${moduleId}` });
-          }
+          // Set a default module object with at least the ID
+          setModule({ id: moduleId, title: `Module ${moduleId}` });
         }
         
         // Fetch activities for this module
@@ -299,6 +281,8 @@ const ModuleOverview = () => {
           return <BsListCheck className="text-warning" size={20} />;
         case "image":
           return <BsImage className="text-success" size={20} />;
+        case "book":
+          return <BsBook className="text-success" size={20} />;
         default:
           return <BsFileEarmark className="text-secondary" size={20} />;
       }

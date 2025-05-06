@@ -25,18 +25,18 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-04-30T14:42:57.987348",
-      "start_timestamp": "2025-04-30T12:42:48.631Z",
+      "timestamp": "2025-05-06T13:44:42.965307",
+      "start_timestamp": "2025-05-06T11:44:34.687Z",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 3,
+      "score": 2,
       "total_questions": 3,
       "answers": [
         {
           "question_id": "q1",
           "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "A style of music that focuses on harmony and melody.",
-          "correct": true
+          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature .",
+          "correct": false
         },
         {
           "question_id": "q2",
@@ -51,7 +51,7 @@
           "correct": true
         }
       ],
-      "attempts": 11,
+      "attempts": 12,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
