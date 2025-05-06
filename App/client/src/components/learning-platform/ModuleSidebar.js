@@ -136,12 +136,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         </div>
         <div>
           <h5 className="mb-0">Dansk 2.A</h5>
-          <small className="text-muted">Klasseliste</small>
         </div>
-      </div>
-      
-      <div className="text-muted mb-3">
-        <small>Undervisningsbeskrivelse</small>
       </div>
       
       <ListGroup variant="flush" className="module-list">
