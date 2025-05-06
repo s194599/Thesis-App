@@ -501,7 +501,7 @@ const ModuleContent = ({
 
   if (!module) return <div className="p-4">No module selected</div>;
 
-  const totalActivities = activities.length;
+  const totalActivities = activities.filter(activity => activity.type !== 'folder').length;
   const completedActivitiesCount = activities.filter(activity => 
     completedActivities.includes(activity.id)
   ).length;
