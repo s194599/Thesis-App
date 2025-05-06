@@ -277,8 +277,10 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
             if (!module) return null;
             
             const moduleActivities = Array.isArray(module.activities) ? module.activities : [];
-            const totalActivities = moduleActivities.length;
-            const completedActivities = moduleActivities.filter(act => act && act.completed).length;
+            // Filter out folder-type activities
+            const nonFolderActivities = moduleActivities.filter(act => act && act.type !== 'folder');
+            const totalActivities = nonFolderActivities.length;
+            const completedActivities = nonFolderActivities.filter(act => act && act.completed).length;
             const allCompleted = totalActivities > 0 && completedActivities === totalActivities;
             
             return (

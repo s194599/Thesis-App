@@ -178,7 +178,7 @@ const ModuleContent = ({
       const initialOpenState = {};
       normalizedActivities.forEach(activity => {
         if (activity.type === 'folder') {
-          initialOpenState[activity.id] = true; // Default to open
+          initialOpenState[activity.id] = false; // Default to closed
         }
       });
       setOpenFolders(initialOpenState);
@@ -1732,7 +1732,7 @@ const ModuleContent = ({
     // Update open folders state
     setOpenFolders(prev => ({
       ...prev,
-      [folderId]: true // New folders are open by default
+      [folderId]: false // New folders are closed by default
     }));
 
     // Update local state
