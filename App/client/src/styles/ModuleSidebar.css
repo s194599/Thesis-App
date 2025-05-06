@@ -89,4 +89,38 @@
   height: 100%;
   object-fit: contain;
   padding: 4px;
+}
+
+/* Module delete button */
+.module-item {
+  position: relative;
+}
+
+.module-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: none;
+  color: #dc3545;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.module-item:hover .module-delete-btn {
+  opacity: 0.8;
+  display: flex;
+}
+
+.module-delete-btn:hover {
+  opacity: 1 !important;
+  background-color: #f8d7da;
 } 

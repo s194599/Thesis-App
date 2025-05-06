@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ListGroup, Card, Button, Modal, Form, Tab, Tabs, Image } from 'react-bootstrap';
-import { BsCheckCircleFill, BsCircleFill, BsPencil, BsUpload, BsImage } from 'react-icons/bs';
+import { BsCheckCircleFill, BsCircleFill, BsPencil, BsUpload, BsImage, BsPlusCircle, BsX } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/ModuleSidebar.css';
+import { createModule, deleteModule } from '../../services/moduleService';
 
 const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRole = 'teacher', onModuleUpdate }) => {
   const navigate = useNavigate();
@@ -12,6 +13,17 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
   const [iconPreview, setIconPreview] = useState(null);
   const [activeTab, setActiveTab] = useState('upload');
   const [renderKey, setRenderKey] = useState(0);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newModule, setNewModule] = useState({
+    title: '',
+    date: new Date().toLocaleDateString('da-DK'), // Default to today's date in Danish format
+    description: ''
+  });
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [moduleToDelete, setModuleToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setRenderKey(prevKey => prevKey + 1);
@@ -102,6 +114,113 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
     }
   };
 
+  const handleCreateModuleChange = (e) => {
+    const { name, value } = e.target;
+    setNewModule(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Function to format date from numeric format to Danish format with month name
+  const formatDanishDate = (dateString) => {
+    // Check if the date is in a numeric format like "6.5.2025" or "6-5-2025"
+    const numericDateRegex = /^(\d{1,2})[.\-\/](\d{1,2})[.\-\/](\d{4})$/;
+    const match = dateString.match(numericDateRegex);
+    
+    if (!match) {
+      // If it's not in numeric format, return as is
+      return dateString;
+    }
+    
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = match[3];
+    
+    // Danish month names
+    const danishMonths = [
+      'Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 
+      'Juli', 'August', 'September', 'Oktober', 'November', 'December'
+    ];
+    
+    // Month index is 0-based in arrays
+    const monthName = danishMonths[month - 1];
+    
+    // Return formatted date: "6. Maj 2025"
+    return `${day}. ${monthName} ${year}`;
+  };
+
+  const handleCreateModule = async () => {
+    try {
+      setIsCreating(true);
+      setError(null);
+      
+      // Validate required fields
+      if (!newModule.title.trim()) {
+        setError('Module title is required');
+        setIsCreating(false);
+        return;
+      }
+      
+      // Format the date before creating the module
+      const formattedModule = {
+        ...newModule,
+        date: formatDanishDate(newModule.date)
+      };
+      
+      // Create the module with formatted date
+      const createdModule = await createModule(formattedModule);
+      
+      // Close the modal and reset form
+      setShowCreateModal(false);
+      setNewModule({
+        title: '',
+        date: new Date().toLocaleDateString('da-DK'),
+        description: ''
+      });
+      
+      // Reload the modules or add the newly created module to the list
+      // This depends on how the parent component handles module updates
+      if (createdModule && onModuleUpdate) {
+        // If the parent component provides a way to refresh modules, use it
+        window.location.reload(); // Force a reload to refresh modules
+      }
+      
+      setIsCreating(false);
+    } catch (err) {
+      setError(err.message || 'Failed to create module');
+      setIsCreating(false);
+    }
+  };
+
+  // Handler for initiating module deletion
+  const handleDeleteClick = (e, module) => {
+    e.stopPropagation(); // Prevent module selection when clicking the delete button
+    setModuleToDelete(module);
+    setShowDeleteModal(true);
+  };
+
+  // Handler for confirming module deletion
+  const handleConfirmDelete = async () => {
+    if (!moduleToDelete) return;
+    
+    try {
+      setIsDeleting(true);
+      await deleteModule(moduleToDelete.id);
+      
+      // Close the modal
+      setShowDeleteModal(false);
+      setModuleToDelete(null);
+      
+      // Reload the page to refresh the module list
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to delete module:', error);
+      alert(`Failed to delete module: ${error.message}`);
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="module-sidebar p-3" key={`sidebar-${renderKey}`}>
       <div className="course-header d-flex align-items-center mb-4">
@@ -118,10 +237,10 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                 '/abc-icon.svg'
               } 
               alt="Course Icon" 
-              style={{ width: '40px', height: '40px' }}
+              style={{ width: '55px', height: '55px' }}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = 'https://via.placeholder.com/40?text=ABC';
+                e.target.src = 'https://via.placeholder.com/55?text=ABC';
               }}
             />
             {userRole === 'teacher' && (
@@ -135,7 +254,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
           </div>
         </div>
         <div>
-          <h5 className="mb-0">Dansk 2.A</h5>
+          <h4 className="mb-0">Dansk 2.A</h4>
         </div>
       </div>
       
@@ -155,7 +274,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                 action
                 active={module.id === selectedModuleId}
                 onClick={() => onModuleSelect && onModuleSelect(module.id)}
-                className="d-flex justify-content-between align-items-center border-start-0 border-end-0"
+                className="d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item"
               >
                 <div className="d-flex flex-column w-100">
                   <div className="d-flex justify-content-between align-items-center mb-1">
@@ -189,6 +308,17 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                     )}
                   </div>
                 </div>
+                
+                {/* Delete button (only visible for teachers on hover) */}
+                {userRole === 'teacher' && (
+                  <div 
+                    className="module-delete-btn"
+                    onClick={(e) => handleDeleteClick(e, module)}
+                    title="Slet modul"
+                  >
+                    <BsX size={20} />
+                  </div>
+                )}
               </ListGroup.Item>
             );
           })
@@ -198,6 +328,20 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
           </div>
         )}
       </ListGroup>
+      
+      {/* Create Module Button (only for teachers) */}
+      {userRole === 'teacher' && (
+        <div className="mt-3 mb-3">
+          <Button 
+            variant="outline-primary" 
+            size="sm" 
+            className="w-100 d-flex align-items-center justify-content-center"
+            onClick={() => setShowCreateModal(true)}
+          >
+            <BsPlusCircle className="me-2" /> Opret nyt modul
+          </Button>
+        </div>
+      )}
 
       {/* Icon Selection Modal */}
       <Modal show={showIconModal} onHide={() => setShowIconModal(false)}>
@@ -250,6 +394,101 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
           </Button>
           <Button variant="primary" onClick={handleSaveIcon}>
             Save Icon
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Create Module Modal */}
+      <Modal show={showCreateModal} onHide={() => !isCreating && setShowCreateModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Opret nyt modul</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <div className="alert alert-danger">{error}</div>}
+          
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Titel*</Form.Label>
+              <Form.Control 
+                type="text" 
+                name="title"
+                value={newModule.title}
+                onChange={handleCreateModuleChange}
+                placeholder="Indtast modultitel"
+                required
+              />
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Dato</Form.Label>
+              <Form.Control 
+                type="text" 
+                name="date"
+                value={newModule.date}
+                onChange={handleCreateModuleChange}
+                placeholder="f.eks. 15. Februar 2023"
+              />
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Beskrivelse</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                name="description"
+                value={newModule.description}
+                onChange={handleCreateModuleChange}
+                placeholder="Indtast modulbeskrivelse"
+                rows={3}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button 
+            variant="secondary" 
+            onClick={() => !isCreating && setShowCreateModal(false)}
+            disabled={isCreating}
+          >
+            Annuller
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={handleCreateModule}
+            disabled={isCreating}
+          >
+            {isCreating ? 'Opretter...' : 'Opret modul'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => !isDeleting && setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Slet modul</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {moduleToDelete && (
+            <p>
+              Er du sikker på, at du vil slette modulet "<strong>{moduleToDelete.title}</strong>"?
+              <br />
+              <small className="text-danger">Denne handling kan ikke fortrydes.</small>
+            </p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button 
+            variant="secondary" 
+            onClick={() => !isDeleting && setShowDeleteModal(false)}
+            disabled={isDeleting}
+          >
+            Annuller
+          </Button>
+          <Button 
+            variant="danger" 
+            onClick={handleConfirmDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? 'Sletter...' : 'Slet modul'}
           </Button>
         </Modal.Footer>
       </Modal>
