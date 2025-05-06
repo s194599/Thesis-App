@@ -3,7 +3,7 @@ import { BeatLoader } from "react-spinners";
 import { Button } from "react-bootstrap";
 import { useQuizContext } from "../../context/QuizContext";
 
-const LoadingSpinner = ({ loading, message = "Generating quiz..." }) => {
+const LoadingSpinner = ({ loading, message = "Genererer quiz..." }) => {
   const { cancelQuizGeneration } = useQuizContext();
 
   if (!loading) return null;
@@ -22,8 +22,7 @@ const LoadingSpinner = ({ loading, message = "Generating quiz..." }) => {
         </div>
         <div className="d-flex justify-content-between align-items-center mt-2">
           <p className="small text-muted mb-0">
-            This may take up to a minute depending on the complexity and length
-            of the content.
+            Dette kan tage et par minutter afhængig af materialet og antallet af spørgsmål.
           </p>
           <Button
             variant="outline-secondary"
