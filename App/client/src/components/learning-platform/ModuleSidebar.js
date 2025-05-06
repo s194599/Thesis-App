@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ListGroup, Card, Button, Modal, Form, Tab, Tabs, Image } from 'react-bootstrap';
-import { BsCheckCircleFill, BsCircleFill, BsPencil, BsUpload, BsImage, BsPlusCircle, BsX } from 'react-icons/bs';
+import { BsCheckCircleFill, BsCircleFill, BsPencil, BsUpload, BsImage, BsPlusCircle, BsX, BsCalendar } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import '../../styles/ModuleSidebar.css';
 import { createModule, deleteModule } from '../../services/moduleService';
 
@@ -16,7 +18,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newModule, setNewModule] = useState({
     title: '',
-    date: new Date().toLocaleDateString('da-DK'), // Default to today's date in Danish format
+    date: new Date(),
     description: ''
   });
   const [isCreating, setIsCreating] = useState(false);
@@ -121,6 +123,14 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
       [name]: value
     }));
   };
+  
+  // Date change handler for DatePicker
+  const handleDateChange = (date) => {
+    setNewModule(prev => ({
+      ...prev,
+      date: date
+    }));
+  };
 
   // Function to format date from numeric format to Danish format with month name
   const formatDanishDate = (dateString) => {
@@ -162,10 +172,13 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         return;
       }
       
-      // Format the date before creating the module
+      // Format the date from Date object to Danish format
       const formattedModule = {
         ...newModule,
-        date: formatDanishDate(newModule.date)
+        date: formatDanishDate(newModule.date instanceof Date 
+          ? `${newModule.date.getDate()}.${newModule.date.getMonth() + 1}.${newModule.date.getFullYear()}`
+          : newModule.date
+        )
       };
       
       // Create the module with formatted date
@@ -175,7 +188,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
       setShowCreateModal(false);
       setNewModule({
         title: '',
-        date: new Date().toLocaleDateString('da-DK'),
+        date: new Date(),
         description: ''
       });
       
@@ -421,13 +434,21 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
             
             <Form.Group className="mb-3">
               <Form.Label>Dato</Form.Label>
-              <Form.Control 
-                type="text" 
-                name="date"
-                value={newModule.date}
-                onChange={handleCreateModuleChange}
-                placeholder="f.eks. 15. Februar 2023"
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={newModule.date instanceof Date ? newModule.date : new Date()}
+                  onChange={handleDateChange}
+                  dateFormat="dd/MM/yyyy"
+                  className="form-control"
+                  showMonthDropdown
+                  showYearDropdown
+                  dropdownMode="select"
+                  placeholderText="Vælg dato"
+                />
+                <div className="date-picker-icon">
+                  <BsCalendar />
+                </div>
+              </div>
             </Form.Group>
             
             <Form.Group className="mb-3">
