@@ -225,9 +225,21 @@ const QuizPreviewComponent = () => {
     <Container className="mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Quiz Preview</h2>
-        <Button variant="outline-primary" onClick={() => navigate("/platform")}>
-          Back to Platform
-        </Button>
+        <div>
+          <Button 
+            variant="outline-success" 
+            className="me-2"
+            onClick={() => navigate(`/quiz/${quizId}/results`)}
+          >
+            View Results
+          </Button>
+          <Button 
+            variant="outline-primary" 
+            onClick={() => navigate("/platform")}
+          >
+            Back to Platform
+          </Button>
+        </div>
       </div>
       <QuizOutput />
     </Container>

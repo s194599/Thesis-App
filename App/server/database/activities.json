@@ -51,7 +51,7 @@
     "isNew": false,
     "moduleId": "module-3",
     "moduleSpecific": true,
-    "parentId": null,
+    "parentId": "folder_1746011993284",
     "quizId": "quiz_1744279908",
     "title": "Romantikken Quiz",
     "type": "quiz"
@@ -69,13 +69,13 @@
   },
   {
     "id": "activity_quiz_quiz_1745846997_module-3_1745847000215",
+    "isNew": false,
     "moduleId": "module-3",
     "moduleSpecific": true,
+    "parentId": null,
     "quizId": "quiz_1745846997",
     "title": "Romantikken Samlet",
-    "type": "quiz",
-    "isNew": false,
-    "parentId": "folder_1746011993284"
+    "type": "quiz"
   },
   {
     "id": "activity_quiz_quiz_1745999926_module-3_1745999927341",
@@ -124,14 +124,6 @@
     "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf"
   },
   {
-    "id": "activity_1746018514361",
-    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
-    "description": "",
-    "type": "youtube",
-    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
-    "moduleId": "module-2"
-  },
-  {
     "title": "L\u00e6s det her",
     "description": "kig her",
     "type": "folder",
@@ -139,15 +131,6 @@
     "parentId": null,
     "id": "folder_1746018525236",
     "moduleId": "module-2"
-  },
-  {
-    "id": "activity_1746018533654",
-    "title": "Sk\u00e6rmbillede 2025-04-28 kl. 14.52.16.png",
-    "description": "",
-    "type": "image",
-    "moduleId": "module-2",
-    "url": "http://localhost:5001/api/uploads/Skrmbillede_2025-04-28_kl._14.52.16_1746018533.png",
-    "parentId": "folder_1746018525236"
   },
   {
     "id": "activity_1746018560984",
@@ -159,11 +142,36 @@
     "parentId": "folder_1746018525236"
   },
   {
-    "id": "activity_1746604704316",
-    "title": "A Brief Overview of World War II",
-    "description": "",
-    "type": "youtube",
-    "url": "https://www.youtube.com/watch?v=HUqy-OQvVtI&t=5s",
-    "moduleId": "module-3"
+    "id": "book_1746535522030",
+    "title": "rrr",
+    "description": "lo\u00e6u",
+    "type": "book",
+    "moduleId": "module-1",
+    "parentId": "[object Object]"
+  },
+  {
+    "id": "activity_1746536749566",
+    "title": "\u00d8ehalf",
+    "description": "L\u00e6s kap. 4-5",
+    "type": "book",
+    "url": "",
+    "content": "",
+    "moduleId": "module-1"
+  },
+  {
+    "moduleId": "module-2",
+    "id": "activity_quiz_quiz_1746692398_module-2_1746692400413",
+    "title": "Hurtigt viden - 2. verdenskrig",
+    "type": "quiz",
+    "quizId": "quiz_1746692398",
+    "moduleSpecific": true
+  },
+  {
+    "id": "activity_1746702245912",
+    "title": "Flere f\u00f8lgere p\u00e5 instagram",
+    "description": "L\u00e6s hele artiklen og reflekter om I er enige med hvad der er skrevet.",
+    "type": "link",
+    "url": "https://helpdesken.dk/flere-foelgere-paa-instagram-profiltekst/",
+    "moduleId": "module-1"
   }
 ]

@@ -164,4 +164,13 @@
 .react-datepicker__year-dropdown {
   background-color: white !important;
   border: 1px solid #dee2e6 !important;
+}
+
+/* Module title styling */
+.module-title {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  max-width: 100%;
+  display: block;
 } 

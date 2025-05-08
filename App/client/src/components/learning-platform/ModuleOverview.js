@@ -9,6 +9,7 @@ import {
   BsListCheck,
   BsFileEarmark,
   BsImage,
+  BsBook,
 } from "react-icons/bs";
 
 const ModuleOverview = () => {
@@ -53,39 +54,36 @@ const ModuleOverview = () => {
         setLoading(true);
         setError(null);
         
-        // Find the module from localStorage first
-        const savedModules = localStorage.getItem("learningModules");
+        // First try to fetch modules from the server API
         let moduleData = null;
-        
-        if (savedModules) {
-          const modules = JSON.parse(savedModules);
-          moduleData = modules.find(m => m.id === moduleId);
+        try {
+          const modulesResponse = await fetch('/api/modules');
+          if (modulesResponse.ok) {
+            const modulesData = await modulesResponse.json();
+            if (modulesData.success && Array.isArray(modulesData.modules)) {
+              moduleData = modulesData.modules.find(m => m.id === moduleId);
+            }
+          }
+        } catch (moduleErr) {
+          console.error('Error fetching module from API:', moduleErr);
+          // Continue to fallback method
         }
         
-        // If module not found in localStorage, fetch from server
+        // If we couldn't get the module from the API, try localStorage as fallback
+        if (!moduleData) {
+          const savedModules = localStorage.getItem("learningModules");
+          
+          if (savedModules) {
+            const modules = JSON.parse(savedModules);
+            moduleData = modules.find(m => m.id === moduleId);
+          }
+        }
+        
         if (moduleData) {
           setModule(moduleData);
         } else {
-          // Fetch all modules from server and find the one with matching ID
-          const modulesResponse = await fetch('/api/modules');
-          if (modulesResponse.ok) {
-            const data = await modulesResponse.json();
-            if (data.success && Array.isArray(data.modules)) {
-              const foundModule = data.modules.find(m => m.id === moduleId);
-              if (foundModule) {
-                setModule(foundModule);
-              } else {
-                // Fallback if module not found
-                setModule({ id: moduleId, title: `Module ${moduleId}` });
-              }
-            } else {
-              // Fallback if no modules returned or invalid response
-              setModule({ id: moduleId, title: `Module ${moduleId}` });
-            }
-          } else {
-            // Fallback if API request fails
-            setModule({ id: moduleId, title: `Module ${moduleId}` });
-          }
+          // Set a default module object with at least the ID
+          setModule({ id: moduleId, title: `Module ${moduleId}` });
         }
         
         // Fetch activities for this module
@@ -299,6 +297,8 @@ const ModuleOverview = () => {
           return <BsListCheck className="text-warning" size={20} />;
         case "image":
           return <BsImage className="text-success" size={20} />;
+        case "book":
+          return <BsBook className="text-success" size={20} />;
         default:
           return <BsFileEarmark className="text-secondary" size={20} />;
       }
