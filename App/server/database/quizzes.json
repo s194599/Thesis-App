@@ -2,6 +2,7 @@
   {
     "description": "Quiz generated from your content",
     "id": "quiz_1744030473",
+    "type": "multiple_choice",
     "questions": [
       {
         "correctAnswer": "Love",
@@ -44,6 +45,7 @@
   },
   {
     "description": "Quiz generated from your content",
+    "type": "multiple_choice",
     "questions": [
       {
         "correctAnswer": "Slots- og Kulturstyrelsen",
@@ -51,19 +53,19 @@
         "options": [
           "Slots- og Kulturstyrelsen",
           "Statsforvaltningens Medieuddanske",
-          "Dansk Medieh\u00e5ndtering",
+          "Dansk Mediehåndtering",
           "Medieselskabernes Landsforening"
         ],
         "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?"
       },
       {
-        "correctAnswer": "Samlingen af apps og netv\u00e6rk for socialisering via internettet",
+        "correctAnswer": "Samlingen af apps og netværk for socialisering via internettet",
         "id": "q2",
         "options": [
-          "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "En del af det traditionelle medieområde, som inkluderer radio og tv",
           "Internethjemmesider",
-          "Samlingen af apps og netv\u00e6rk for socialisering via internettet",
-          "Alle af ovenst\u00e5ende begreber"
+          "Samlingen af apps og netværk for socialisering via internettet",
+          "Alle af ovenstående begreber"
         ],
         "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?"
       }
@@ -74,6 +76,7 @@
   },
   {
     "description": "Quiz generated from your content",
+    "type": "multiple_choice",
     "questions": [
       {
         "correctAnswer": "It is an artistic, literary, and intellectual movement that originated in Europe around the end of the 18th century and emphasized emotion, individualism, and freedom.",
@@ -104,6 +107,7 @@
   },
   {
     "description": "Quiz generated from your content",
+    "type": "multiple_choice",
     "questions": [
       {
         "correctAnswer": "A literary and artistic movement that began in the late eighteenth century and emphasized emotion, individualism, and the beauty of nature.",
@@ -135,6 +139,7 @@
   {
     "description": "Quiz generated from your content",
     "id": "quiz_1744279908",
+    "type": "multiple_choice",
     "questions": [
       {
         "correctAnswer": "A style of music that focuses on harmony and melody.",
@@ -178,6 +183,7 @@
   {
     "title": "Quiz",
     "description": "Test your knowledge of basic biology concepts",
+    "type": "multiple_choice",
     "questions": [
       {
         "id": "q1",
@@ -222,6 +228,7 @@
   {
     "title": "2",
     "description": "Test your knowledge of basic biology concepts",
+    "type": "multiple_choice",
     "questions": [
       {
         "id": "q1",
@@ -266,6 +273,7 @@
   },
   {
     "title": "Unavngiven Quiz test",
+    "type": "multiple_choice",
     "questions": [
       {
         "id": 1,
@@ -285,28 +293,29 @@
   },
   {
     "description": "Quiz generated from your content",
+    "type": "multiple_choice",
     "questions": [
       {
-        "correctAnswer": "En social bev\u00e6gelse fra det 18. \u00e5rhundredes slutning og det 19. \u00e5rhundredes begyndelse, der er pr\u00e6get af en st\u00e6rk fokus p\u00e5 naturen, fantasy, emotioner og idealisme",
+        "correctAnswer": "En social bevægelse fra det 18. århundredes slutning og det 19. århundredes begyndelse, der er præget af en stærk fokus på naturen, fantasy, emotioner og idealisme",
         "id": "q1",
         "options": [
-          "En k\u00e6rlighedsromance i en film",
+          "En kærlighedsromance i en film",
           "En form for kunst der ofte handler om elskov",
-          "Et livsf\u00f8lge som er fyldt med ros og solskin",
-          "En social bev\u00e6gelse fra det 18. \u00e5rhundredes slutning og det 19. \u00e5rhundredes begyndelse, der er pr\u00e6get af en st\u00e6rk fokus p\u00e5 naturen, fantasy, emotioner og idealisme"
+          "Et livsfølge som er fyldt med ros og solskin",
+          "En social bevægelse fra det 18. århundredes slutning og det 19. århundredes begyndelse, der er præget af en stærk fokus på naturen, fantasy, emotioner og idealisme"
         ],
         "question": "Hvad er Romantik?"
       },
       {
-        "correctAnswer": "At v\u00e6re romantisk i dagligtlivet",
+        "correctAnswer": "At være romantisk i dagligtlivet",
         "id": "q2",
         "options": [
-          "At v\u00e6re romantisk i dagligtlivet",
+          "At være romantisk i dagligtlivet",
           "At vise en rosig og lykkelig billede af livet",
-          "At handle om k\u00e6rlighed i kunstv\u00e6rker",
-          "At fokuserer p\u00e5 praktiske og realistiske ting"
+          "At handle om kærlighed i kunstværker",
+          "At fokuserer på praktiske og realistiske ting"
         ],
-        "question": "Hvad g\u00f8r Romantik i alt virkelig ikke?"
+        "question": "Hvad gør Romantik i alt virkelig ikke?"
       }
     ],
     "title": "Quiz",
@@ -316,37 +325,33 @@
   {
     "description": "Quiz generated from your content",
     "id": "quiz_1746011919",
+    "type": "flashcard",
     "questions": [
       {
-        "correctAnswer": "det politiske parti, der stod bag den tyske bes\u00e6ttelsesmagt i danmark og arbejdede for at overtage regeringsmagten i danmark i k\u00f8lvandet p\u00e5 den tyske fremgang.",
+        "correctAnswer": "det politiske parti, der stod bag den tyske besættelsesmagt i danmark og arbejdede for at overtage regeringsmagten i danmark i kølvandet på den tyske fremgang.",
         "id": "fc2",
-        "question": "Den danske nazistparti",
-        "type": "flashcard"
+        "question": "Den danske nazistparti"
       },
       {
-        "correctAnswer": "akronym for dansk nationalsocialistisk arbejderparti, det danske nazistparti under bes\u00e6ttelsen.",
+        "correctAnswer": "akronym for dansk nationalsocialistisk arbejderparti, det danske nazistparti under besættelsen.",
         "id": "fc3",
-        "question": "[DNSAP]",
-        "type": "flashcard"
+        "question": "[DNSAP]"
       },
       {
-        "correctAnswer": "partileder for dnsap i 1940'erne og en af de mest prominente nazisternes i danmark under den tyske bes\u00e6ttelse.",
+        "correctAnswer": "partileder for dnsap i 1940'erne og en af de mest prominente nazisternes i danmark under den tyske besættelse.",
         "id": "fc4",
-        "question": "Frits Clausen",
-        "type": "flashcard"
+        "question": "Frits Clausen"
       },
       {
-        "correctAnswer": "en politisk bev\u00e6gelse eller initiativ, der g\u00e5r ud p\u00e5 at overtage regeringsmagten i en stat. i dette tilf\u00e6lde omhandler det den danske nazistparti dnsap's fors\u00f8g p\u00e5 at styrte den danske regering i 1940 og overtage magten.",
+        "correctAnswer": "en politisk bevægelse eller initiativ, der går ud på at overtage regeringsmagten i en stat. i dette tilfælde omhandler det den danske nazistparti dnsap's forsøg på at styrte den danske regering i 1940 og overtage magten.",
         "id": "fc5",
-        "question": "[Regeringsstorm]",
-        "type": "flashcard"
+        "question": "[Regeringsstorm]"
       },
       {
         "correctAnswer": "Back (Answer)",
         "id": "q1746015479847",
         "options": [],
-        "question": "Front (Question)",
-        "type": "flashcard"
+        "question": "Front (Question)"
       }
     ],
     "quizId": "quiz_1746011919",
@@ -355,40 +360,189 @@
   },
   {
     "description": "Quiz generated from your content",
+    "type": "flashcard",
     "questions": [
       {
-        "correctAnswer": "politikkens form\u00e5l var at finde danmark en plads i et n\u00f8dvendigt og gensidigt aktivt samarbejde med stor-tyskland for at bevare landets demokratiske samfundsform.",
+        "correctAnswer": "politikkens formål var at finde danmark en plads i et nødvendigt og gensidigt aktivt samarbejde med stor-tyskland for at bevare landets demokratiske samfundsform.",
         "id": "fc1",
-        "question": "Term: Samarbejdspolitik (Cooperation policy)",
-        "type": "flashcard"
+        "question": "Term: Samarbejdspolitik (Cooperation policy)"
       },
       {
-        "correctAnswer": "dnsap-leder, der h\u00e5bede p\u00e5 at overtage regeringsmagten i danmark i k\u00f8lvandet af den tyske fremgang i 1940.",
+        "correctAnswer": "dnsap-leder, der håbede på at overtage regeringsmagten i danmark i kølvandet af den tyske fremgang i 1940.",
         "id": "fc2",
-        "question": "Term: Frits Clausen",
-        "type": "flashcard"
+        "question": "Term: Frits Clausen"
       },
       {
-        "correctAnswer": "en procesion med b\u00e5de nazister og modstandere, som marcherede gennem k\u00f8benhavn til r\u00e5dhuspladsen den 17. november 1940.",
+        "correctAnswer": "en procesion med både nazister og modstandere, som marcherede gennem københavn til rådhuspladsen den 17. november 1940.",
         "id": "fc3",
-        "question": "Term: Demonstrationstog (Demo train)",
-        "type": "flashcard"
+        "question": "Term: Demonstrationstog (Demo train)"
       },
       {
         "correctAnswer": "en gruppe, der meldte sig hos kong christian 10 og foreslog en ny regering uden om folkettinget og de politiske partier den 14. november.",
         "id": "fc4",
-        "question": "Term: H\u00f8jgaard-kreds (Highgaard group)",
-        "type": "flashcard"
+        "question": "Term: Højgaard-kreds (Highgaard group)"
       },
       {
         "correctAnswer": "kampe mellem modstandere og nazister i forbindelse med demonstrationstoget den 17. november 1940.",
         "id": "fc5",
-        "question": "Term: Slagsm\u00e5l (Fight)",
-        "type": "flashcard"
+        "question": "Term: Slagsmål (Fight)"
       }
     ],
     "title": "Hurtigt viden - 2. verdenskrig",
     "timestamp": "2025-05-08T08:19:58.165Z",
     "id": "quiz_1746692398"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "type": "multiple_choice",
+    "questions": [
+      {
+        "correctAnswer": "Selvstændig kunstnerisk genius",
+        "id": "q1",
+        "options": [
+          "Intertekstualitet",
+          "Arkiv",
+          "Selvstændig kunstnerisk genius",
+          "Institutionsmagtstrukturer"
+        ],
+        "question": "Hvilket begreb beskriver en litterær tekst, der betragtes som et selvstændigt og individuelt livende \"organisme\"?"
+      },
+      {
+        "correctAnswer": "Selvstændig kunstnerisk genius",
+        "id": "q2",
+        "options": [
+          "Intertekstualitet",
+          "Arkiv",
+          "Selvstændig kunstnerisk genius",
+          "Institutionsmagtstrukturer"
+        ],
+        "question": "Hvilket begreb beskriver, at forfatteren er en selvstændig og bevidst skabende kraft?"
+      },
+      {
+        "correctAnswer": "Arkiv",
+        "id": "q3",
+        "options": [
+          "Intertekstualitet",
+          "Arkiv",
+          "Selvstændig kunstnerisk genius",
+          "Institutionsmagtstrukturer"
+        ],
+        "question": "Hvilket begreb beskriver den samling af forskellige slags diskurser, der er en del af enhver culture?"
+      },
+      {
+        "correctAnswer": "Intertekstualitet",
+        "id": "q4",
+        "options": [
+          "Intertekstualitet",
+          "Arkiv",
+          "Selvstændig kunstnerisk genius",
+          "Institutionsmagtstrukturer"
+        ],
+        "question": "Hvilket begreb betegner de samme mennesker, der har skabt tekster, intertekstualiteten og et arkiv?"
+      },
+      {
+        "correctAnswer": "Institutionsmagtstrukturer",
+        "id": "q5",
+        "options": [
+          "Intertekstualitet",
+          "Arkiv",
+          "Selvstændig kunstnerisk genius",
+          "Institutionsmagtstrukturer"
+        ],
+        "question": "Hvilket begreb beskriver, at teksten er en samling af muligheder, der er bestemt ved sprog-, konvencion- og institutionelle magtstrukturer?"
+      },
+      {
+        "correctAnswer": "Institutionsmagtstrukturers stemmer",
+        "id": "q6",
+        "options": [
+          "Intertekstualitet",
+          "Arkiv",
+          "Selvstændig kunstnerisk genius",
+          "Institutionsmagtstrukturers stemmer"
+        ],
+        "question": "Hvilket begreb betegner de grupper, der er kontrolleret af forskellige sprog-, konvention- og institutionelle magtstrukturer?"
+      }
+    ],
+    "title": "Quiz om Romantikken",
+    "timestamp": "2025-05-08T11:56:54.668Z",
+    "id": "quiz_1746705406",
+    "quizId": "quiz_1746705406"
+  },
+  {
+    "title": "Quiz om Romantikken",
+    "description": "Test your knowledge of basic biology concepts",
+    "type": "multiple_choice",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "What is the green pigment in plants that absorbs sunlight called?",
+        "options": [
+          "Chlorophyll",
+          "Carotene",
+          "Xanthophyll",
+          "Melanin"
+        ],
+        "correctAnswer": "Chlorophyll",
+        "explanation": "Chlorophyll is the green pigment in plants that captures sunlight for photosynthesis."
+      },
+      {
+        "id": "q2",
+        "question": "What is the process by which plants make their own food using sunlight?",
+        "options": [
+          "Photosynthesis",
+          "Respiration",
+          "Transpiration",
+          "Germination"
+        ],
+        "correctAnswer": "Photosynthesis",
+        "explanation": "Photosynthesis is the process where plants convert light energy into chemical energy to fuel their activities."
+      },
+      {
+        "id": "q3",
+        "question": "Which organelle is known as the 'powerhouse' of the cell?",
+        "options": [
+          "Mitochondria",
+          "Nucleus",
+          "Chloroplast",
+          "Endoplasmic reticulum"
+        ],
+        "correctAnswer": "Mitochondria",
+        "explanation": "Mitochondria generate most of the cell's supply of ATP, used as a source of chemical energy."
+      }
+    ],
+    "timestamp": "2025-05-08T11:57:43.273Z",
+    "id": "quiz_1746705463"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "id": "quiz_1746705584",
+    "type": "multiple_choice",
+    "questions": [
+      {
+        "correctAnswer": "The idealization of nature and the supernatural",
+        "id": "q1",
+        "options": [
+          "The importance of reason over emotion",
+          "The need for absolute systems of philosophy or religion",
+          "The idealization of nature and the supernatural",
+          "The cult of the noble savage"
+        ],
+        "question": "Which of the following best describes one of the key themes in Romantic literature?"
+      },
+      {
+        "correctAnswer": "The growth of abstract art",
+        "id": "q2",
+        "options": [
+          "The rise of Romantic opera",
+          "The transformation of landscape painting",
+          "The development of Utopian social colonies in America",
+          "The growth of abstract art"
+        ],
+        "question": "According to the text, which of the following is not a way that Romanticism affected the arts?"
+      }
+    ],
+    "quizId": "quiz_1746705584",
+    "timestamp": "2025-05-08T12:13:50.465Z",
+    "title": "Quiz om Romantikken"
   }
 ]

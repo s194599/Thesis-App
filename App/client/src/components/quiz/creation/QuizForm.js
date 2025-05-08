@@ -420,6 +420,8 @@ const QuizForm = () => {
                     >
                       {formData.useSampleQuiz
                         ? "Opret Eksempelquiz"
+                        : formData.questionType === "flashcards"
+                        ? "Opret Flashcards"
                         : "Opret Quiz"}
                     </Button>
                   </div>

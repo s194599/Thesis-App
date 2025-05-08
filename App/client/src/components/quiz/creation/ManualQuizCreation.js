@@ -113,6 +113,7 @@ const ManualQuizCreation = () => {
     // Create a properly formatted quiz object
     const quiz = {
       title: quizTitle,
+      type: "multiple_choice", // Add type at quiz level
       questions: questions.map((q, index) => ({
         id: q.id || `q${index + 1}`,
         question: q.question,

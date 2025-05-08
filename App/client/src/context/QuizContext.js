@@ -150,13 +150,8 @@ export const QuizProvider = ({ children }) => {
 
   // Add a new question manually
   const addQuestionManually = () => {
-    // Determine the question type based on existing questions
-    let isFlashcardQuiz = false;
-    
-    if (editingQuiz && editingQuiz.questions && editingQuiz.questions.length > 0) {
-      // Check if the first question is a flashcard - assume quiz is consistent
-      isFlashcardQuiz = editingQuiz.questions[0].type === "flashcard";
-    }
+    // Determine the question type based on quiz type
+    let isFlashcardQuiz = editingQuiz.type === "flashcard";
     
     let newQuestion;
     
@@ -166,7 +161,6 @@ export const QuizProvider = ({ children }) => {
         id: `q${Date.now()}`,
         question: "Front (Question)",
         correctAnswer: "Back (Answer)",
-        type: "flashcard",
         options: [] // Empty options array for flashcards
       };
     } else {

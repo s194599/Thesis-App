@@ -85,6 +85,34 @@ const QuizEditor = () => {
     }
   };
 
+  const handleAddQuestion = () => {
+    // Determine if this is a flashcard quiz by checking the quiz type
+    let isFlashcardQuiz = editingQuiz.type === "flashcard";
+    
+    let newQuestion;
+    
+    if (isFlashcardQuiz) {
+      // Create a flashcard-type question
+      newQuestion = {
+        id: `q${Date.now()}`,
+        question: "Front (Question)",
+        correctAnswer: "Back (Answer)",
+        options: [] // Empty options array for flashcards
+      };
+    } else {
+      // Create a standard multiple-choice question
+      newQuestion = {
+        id: `q${Date.now()}`,
+        question: "New Question",
+        options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+        correctAnswer: "Option 1",
+        explanation: "Add explanation here",
+      };
+    }
+    
+    editingQuiz.questions = [...editingQuiz.questions, newQuestion];
+  };
+
   // If not editing yet, show loading
   if (!isEditing || !editingQuiz) {
     return (

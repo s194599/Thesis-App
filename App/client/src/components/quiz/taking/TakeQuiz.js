@@ -72,8 +72,8 @@ const TakeQuiz = () => {
 
         // Randomize options for each question and store in state
         const shuffledOptions = shuffledQuestions.map((question) => {
-          // Check if this is a flashcard (which doesn't have options)
-          if (question.type === "flashcard") {
+          // Check if this is a flashcard quiz
+          if (data.type === "flashcard") {
             return {
               questionIndex: question.originalIndex,
               options: [], // Empty array for flashcards
@@ -123,8 +123,8 @@ const TakeQuiz = () => {
           const processedAnswers = answers.map((answer, index) => {
             const question = quiz.questions[index];
             
-            // Handle flashcards differently based on student self-assessment
-            if (question.type === "flashcard") {
+            // Handle flashcards differently based on quiz type
+            if (quiz.type === "flashcard") {
               // Check if this flashcard was answered (some might be skipped)
               if (!answer || typeof answer !== 'object') {
                 return {
@@ -146,15 +146,14 @@ const TakeQuiz = () => {
                 is_flashcard: true,
                 viewed: answer.viewed === true
               };
-            } else {
-              // Regular multiple choice question
-              return {
-                question_id: question.id,
-                question: question.question,
-                answer: answer,
-                correct: answer === question.correctAnswer,
-              };
             }
+            // Regular multiple choice question
+            return {
+              question_id: question.id,
+              question: question.question,
+              answer: answer,
+              correct: answer === question.correctAnswer,
+            };
           });
           
           const quizResult = {
@@ -318,8 +317,8 @@ const TakeQuiz = () => {
 
     const currentQuestion = randomizedQuestions[currentQuestionIndex];
     
-    // Handle flashcards differently
-    if (currentQuestion.type === "flashcard") {
+    // Handle flashcards differently based on quiz type
+    if (quiz.type === "flashcard") {
       return (
         <Card className="quiz-card mb-4">
           <Card.Body>
