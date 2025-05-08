@@ -759,6 +759,21 @@ const ModuleContent = ({
           window.open(activity.url, "_blank");
         }
         break;
+      case "link":
+        if (activity.url && window) {
+          window.open(activity.url, "_blank");
+        }
+        break;
+      case "video":
+        if (activity.url && window) {
+          window.open(activity.url, "_blank");
+        }
+        break;
+      case "audio":
+        if (activity.url && window) {
+          window.open(activity.url, "_blank");
+        }
+        break;
       case "image":
         if (activity.url) {
           handleImageClick(null, activity.url, activity.title);
@@ -770,6 +785,10 @@ const ModuleContent = ({
         break;
       default:
         console.log("Opening activity:", activity.title);
+        // Try to open the URL if available
+        if (activity.url && window) {
+          window.open(activity.url, "_blank");
+        }
     }
   };
   
@@ -2000,6 +2019,45 @@ const ModuleContent = ({
                                       </small>
                                     </div>
                                   )}
+                                  {childActivity.type === "link" && childActivity.url && (
+                                    <div className="d-flex align-items-center">
+                                      <div
+                                        className="text-muted small text-truncate"
+                                        style={{ maxWidth: "500px" }}
+                                      >
+                                        {childActivity.url}
+                                      </div>
+                                      <small className="ms-2 text-primary">
+                                        Klik for at åbne
+                                      </small>
+                                    </div>
+                                  )}
+                                  {childActivity.type === "video" && childActivity.url && (
+                                    <div className="d-flex align-items-center">
+                                      <div
+                                        className="text-muted small text-truncate"
+                                        style={{ maxWidth: "500px" }}
+                                      >
+                                        Video
+                                      </div>
+                                      <small className="ms-2 text-primary">
+                                        Klik for at åbne
+                                      </small>
+                                    </div>
+                                  )}
+                                  {childActivity.type === "audio" && childActivity.url && (
+                                    <div className="d-flex align-items-center">
+                                      <div
+                                        className="text-muted small text-truncate"
+                                        style={{ maxWidth: "500px" }}
+                                      >
+                                        Lydfil
+                                      </div>
+                                      <small className="ms-2 text-primary">
+                                        Klik for at åbne
+                                      </small>
+                                    </div>
+                                  )}
                                   {childActivity.type === "book" && (
                                     <div className="text-muted small mt-1 fst-italic">
                                       Dette er en fysisk bog – ikke en digital aktivitet.
@@ -2159,6 +2217,45 @@ const ModuleContent = ({
                         {extractYoutubeVideoId(activity.url)
                           ? "YouTube Video"
                           : activity.url}
+                      </div>
+                      <small className="ms-2 text-primary">
+                        Klik for at åbne
+                      </small>
+                    </div>
+                  )}
+                  {activity.type === "link" && activity.url && (
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="text-muted small text-truncate"
+                        style={{ maxWidth: "500px" }}
+                      >
+                        {activity.url}
+                      </div>
+                      <small className="ms-2 text-primary">
+                        Klik for at åbne
+                      </small>
+                    </div>
+                  )}
+                  {activity.type === "video" && activity.url && (
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="text-muted small text-truncate"
+                        style={{ maxWidth: "500px" }}
+                      >
+                        Video
+                      </div>
+                      <small className="ms-2 text-primary">
+                        Klik for at åbne
+                      </small>
+                    </div>
+                  )}
+                  {activity.type === "audio" && activity.url && (
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="text-muted small text-truncate"
+                        style={{ maxWidth: "500px" }}
+                      >
+                        Lydfil
                       </div>
                       <small className="ms-2 text-primary">
                         Klik for at åbne

@@ -165,5 +165,13 @@
     "type": "quiz",
     "quizId": "quiz_1746692398",
     "moduleSpecific": true
+  },
+  {
+    "id": "activity_1746702245912",
+    "title": "Flere f\u00f8lgere p\u00e5 instagram",
+    "description": "L\u00e6s hele artiklen og reflekter om I er enige med hvad der er skrevet.",
+    "type": "link",
+    "url": "https://helpdesken.dk/flere-foelgere-paa-instagram-profiltekst/",
+    "moduleId": "module-1"
   }
 ]
