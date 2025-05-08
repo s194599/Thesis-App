@@ -176,7 +176,7 @@ const ModuleContent = ({
       const initialOpenState = {};
       normalizedActivities.forEach(activity => {
         if (activity.type === 'folder') {
-          initialOpenState[activity.id] = true; // Default to open
+          initialOpenState[activity.id] = false; // Default to closed
         }
       });
       setOpenFolders(initialOpenState);
@@ -1977,7 +1977,7 @@ const ModuleContent = ({
                             <div className="activity-content flex-grow-1">
                               <div className="d-flex justify-content-between align-items-start">
                                 <div>
-                                  <h5 className="mb-1">
+                                  <h5 className="mb-1 module-title">
                                     {childActivity.title || "Unnamed Activity"}
                                   </h5>
                                   {childActivity.description && (
@@ -2142,7 +2142,7 @@ const ModuleContent = ({
             <div className="activity-content flex-grow-1">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
-                  <h5 className="mb-1">
+                  <h5 className="mb-1 module-title">
                     {activity.title || "Unnamed Activity"}
                   </h5>
                   {activity.description && (
@@ -2378,7 +2378,7 @@ const ModuleContent = ({
     <div className="module-content p-4">
       <header className="mb-4">
         <div className="d-flex align-items-center mb-3">
-          <div>
+          <div style={{ width: "100%", minWidth: 0 }}> {/* Add minWidth: 0 to allow children to shrink below content size */}
             {editingDate && isTeacherMode ? (
               <div className="d-flex align-items-center mb-1">
                 <Form.Control
@@ -2422,10 +2422,15 @@ const ModuleContent = ({
                   onChange={(e) => setEditedTitle(e.target.value)}
                   onKeyDown={handleTitleKeyPress}
                   autoFocus
-                  style={{ minWidth: "300px" }}
+                  style={{ 
+                    minWidth: "300px",
+                    maxWidth: "100%",
+                    wordWrap: "break-word",
+                    overflowWrap: "break-word"
+                  }}
                 />
                 <BsCheck
-                  className="text-success ms-2 clickable"
+                  className="text-success ms-2 clickable flex-shrink-0"
                   size={24}
                   onClick={handleTitleSave}
                   style={{ cursor: "pointer" }}
@@ -2433,11 +2438,17 @@ const ModuleContent = ({
               </div>
             ) : (
               <div className="d-flex align-items-center">
-                <h1 className="h3 mb-0">{module.title || "Unnamed Module"}</h1>
+                <h1 className="h3 mb-0 module-title" style={{ 
+                  wordWrap: "break-word", 
+                  overflowWrap: "break-word",
+                  maxWidth: "calc(100% - 30px)" // Leave space for the edit icon
+                }}>
+                  {module.title || "Unnamed Module"}
+                </h1>
                 {isTeacherMode && (
                   <BsPencil
                     size={16}
-                    className="ms-3 text-muted edit-icon"
+                    className="ms-3 text-muted edit-icon flex-shrink-0"
                     onClick={handleTitleEdit}
                     style={{ cursor: "pointer" }}
                   />

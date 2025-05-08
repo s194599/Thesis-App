@@ -16,6 +16,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
   const [activeTab, setActiveTab] = useState('upload');
   const [renderKey, setRenderKey] = useState(0);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [courseTitle, setCourseTitle] = useState('Dansk 2.A'); // Default value
   const [newModule, setNewModule] = useState({
     title: '',
     date: new Date(),
@@ -30,6 +31,24 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
   useEffect(() => {
     setRenderKey(prevKey => prevKey + 1);
   }, [userRole]);
+
+  // Load course title from localStorage
+  useEffect(() => {
+    const loadCourseTitle = () => {
+      const selectedCourse = localStorage.getItem('selectedCourse');
+      if (selectedCourse) {
+        // Map ID to a display name with grade
+        const courseMap = {
+          'dansk': 'Dansk 2.A',
+          'historie': 'Historie 2.A',
+          'engelsk': 'Engelsk 2.A',
+          'samfundsfag': 'Samfundsfag 2.A'
+        };
+        setCourseTitle(courseMap[selectedCourse] || 'Dansk 2.A');
+      }
+    };
+    loadCourseTitle();
+  }, []);
 
   // Ensure modules is always an array
   const safeModules = Array.isArray(modules) ? modules : [];
@@ -267,7 +286,7 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
           </div>
         </div>
         <div>
-          <h4 className="mb-0">Dansk 2.A</h4>
+          <h4 className="mb-0 module-title">{courseTitle}</h4>
         </div>
       </div>
       
@@ -290,8 +309,9 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                 active={module.id === selectedModuleId}
                 onClick={() => onModuleSelect && onModuleSelect(module.id)}
                 className="d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item"
+                style={{ overflow: "hidden" }}
               >
-                <div className="d-flex flex-column w-100">
+                <div className="d-flex flex-column w-100" style={{ minWidth: 0 }}>
                   <div className="d-flex justify-content-between align-items-center mb-1">
                     <div className="text-nowrap small text-muted" style={{ fontSize: '0.8rem' }}>{module.date || 'No date'}</div>
                     
@@ -305,7 +325,11 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                   </div>
                   
                   <div>
-                    <span className="text-truncate fw-medium">{module.title}</span>
+                    <span 
+                      className="fw-medium module-title"
+                    >
+                      {module.title}
+                    </span>
                     {module.subtitle && <small className="text-muted d-block">{module.subtitle}</small>}
                     
                     {/* Add progress indicator for students */}
