@@ -62,7 +62,13 @@ const QuizForm = () => {
     const quizDocuments = localStorage.getItem("quizDocuments");
     if (quizDocuments) {
       try {
-        const { moduleId, documents } = JSON.parse(quizDocuments);
+        const { moduleId, moduleName, documents } = JSON.parse(quizDocuments);
+        
+        // Set a default quiz title based on the module name
+        if (moduleName) {
+          updateFormData("quizTitle", `Quiz om ${moduleName}`);
+        }
+        
         if (documents && documents.length > 0) {
           // Set input type to document
           updateFormData("inputType", "document");
@@ -281,6 +287,9 @@ const QuizForm = () => {
 
       // Update the state with the generated quiz
       setGeneratedQuiz(finalQuizData);
+      
+      // Clear the quizDocuments from localStorage after successful generation
+      localStorage.removeItem("quizDocuments");
     } catch (err) {
       console.error("Error generating quiz:", err);
       setError(

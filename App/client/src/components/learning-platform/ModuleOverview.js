@@ -54,13 +54,29 @@ const ModuleOverview = () => {
         setLoading(true);
         setError(null);
         
-        // Find the module from localStorage first
-        const savedModules = localStorage.getItem("learningModules");
+        // First try to fetch modules from the server API
         let moduleData = null;
+        try {
+          const modulesResponse = await fetch('/api/modules');
+          if (modulesResponse.ok) {
+            const modulesData = await modulesResponse.json();
+            if (modulesData.success && Array.isArray(modulesData.modules)) {
+              moduleData = modulesData.modules.find(m => m.id === moduleId);
+            }
+          }
+        } catch (moduleErr) {
+          console.error('Error fetching module from API:', moduleErr);
+          // Continue to fallback method
+        }
         
-        if (savedModules) {
-          const modules = JSON.parse(savedModules);
-          moduleData = modules.find(m => m.id === moduleId);
+        // If we couldn't get the module from the API, try localStorage as fallback
+        if (!moduleData) {
+          const savedModules = localStorage.getItem("learningModules");
+          
+          if (savedModules) {
+            const modules = JSON.parse(savedModules);
+            moduleData = modules.find(m => m.id === moduleId);
+          }
         }
         
         if (moduleData) {

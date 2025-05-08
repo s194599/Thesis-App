@@ -25,11 +25,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-06T13:44:42.965307",
-      "start_timestamp": "2025-05-06T11:44:34.687Z",
+      "timestamp": "2025-05-08T09:57:00.968305",
+      "start_timestamp": "2025-05-08T07:56:53.116Z",
       "quiz_id": "quiz_1744279908",
       "quiz_title": "Romantikken Quiz",
-      "score": 2,
+      "score": 1,
       "total_questions": 3,
       "answers": [
         {
@@ -41,8 +41,8 @@
         {
           "question_id": "q2",
           "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Love and romance",
-          "correct": true
+          "answer": "Politics and social issues",
+          "correct": false
         },
         {
           "question_id": "q1745254179199",
@@ -51,7 +51,7 @@
           "correct": true
         }
       ],
-      "attempts": 12,
+      "attempts": 13,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -291,6 +291,59 @@
         }
       ],
       "attempts": 3,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-05-08T10:20:26.103095",
+      "start_timestamp": "2025-05-08T08:20:15.958Z",
+      "quiz_id": "quiz_1746692398",
+      "quiz_title": "Hurtigt viden - 2. verdenskrig",
+      "score": 2,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "fc1",
+          "question": "Term: Samarbejdspolitik (Cooperation policy)",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc2",
+          "question": "Term: Frits Clausen",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc3",
+          "question": "Term: Demonstrationstog (Demo train)",
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc4",
+          "question": "Term: H\u00f8jgaard-kreds (Highgaard group)",
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc5",
+          "question": "Term: Slagsm\u00e5l (Fight)",
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
+        }
+      ],
+      "attempts": 1,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

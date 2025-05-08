@@ -124,14 +124,6 @@
     "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf"
   },
   {
-    "id": "activity_1746018514361",
-    "title": "I Played FIFA 08 on FC25, It\u2019s INSANE",
-    "description": "",
-    "type": "youtube",
-    "url": "https://www.youtube.com/watch?v=jFkCVTOR_uo&ab_channel=NickRTFM",
-    "moduleId": "module-2"
-  },
-  {
     "title": "L\u00e6s det her",
     "description": "kig her",
     "type": "folder",
@@ -165,5 +157,13 @@
     "url": "",
     "content": "",
     "moduleId": "module-1"
+  },
+  {
+    "moduleId": "module-2",
+    "id": "activity_quiz_quiz_1746692398_module-2_1746692400413",
+    "title": "Hurtigt viden - 2. verdenskrig",
+    "type": "quiz",
+    "quizId": "quiz_1746692398",
+    "moduleSpecific": true
   }
 ]

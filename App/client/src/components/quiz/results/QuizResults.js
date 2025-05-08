@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Table, Badge, Button, Spinner, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { BsPencil } from 'react-icons/bs';
 
 const QuizResults = () => {
   const { quizId } = useParams();
@@ -51,8 +52,8 @@ const QuizResults = () => {
         const studentsData = await studentsResponse.json();
         setAllStudents(studentsData.students || []);
         
-        // Fetch quiz results
-        const resultsResponse = await fetch(`/api/student/quiz/${quizId}/results`);
+        // Fetch quiz results - Always pass userRole=teacher for this page
+        const resultsResponse = await fetch(`/api/student/quiz/${quizId}/results?userRole=teacher`);
         if (!resultsResponse.ok) {
           throw new Error('Kunne ikke hente quiz resultater');
         }
@@ -243,13 +244,22 @@ const QuizResults = () => {
     <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Quiz Resultater: {quizTitle}</h2>
-        <Button 
-          variant="outline-primary" 
-          onClick={() => navigate("/platform")}
-          className="d-flex align-items-center"
-        >
-          <FaArrowLeft className="me-2" /> Tilbage til platformen
-        </Button>
+        <div className="d-flex">
+          <Button 
+            variant="outline-secondary" 
+            onClick={() => navigate(`/quiz/preview/${quizId}`)}
+            className="d-flex align-items-center me-2"
+          >
+            <BsPencil className="me-2" /> Rediger Quiz
+          </Button>
+          <Button 
+            variant="outline-primary" 
+            onClick={() => navigate("/platform")}
+            className="d-flex align-items-center"
+          >
+            <FaArrowLeft className="me-2" /> Tilbage til platformen
+          </Button>
+        </div>
       </div>
       
       {allStudents.length === 0 ? (

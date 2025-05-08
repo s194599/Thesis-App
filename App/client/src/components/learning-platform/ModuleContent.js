@@ -754,7 +754,7 @@ const ModuleContent = ({
       case "quiz":
         // Already handled for students above
         if (userRole === "teacher") {
-          navigate(`/quiz/edit/${activity.quizId}`);
+          navigate(`/quiz/${activity.quizId}/results`);
         }
         break;
       case "youtube":
@@ -838,6 +838,28 @@ const ModuleContent = ({
   // Handle quiz creation method selection
   const handleQuizMethodSelect = (method) => {
     setShowQuizChoiceModal(false);
+    
+    // Collect module documents to pass to quiz generator
+    const moduleDocuments = activities
+      .filter(activity => 
+        // Only include certain content types that can be used for quiz generation
+        ['pdf', 'youtube', 'word', 'text', 'link', 'image', 'video', 'audio'].includes(activity.type) &&
+        // Must have a URL to be useful
+        activity.url
+      )
+      .map(activity => ({
+        id: activity.id,
+        title: activity.title || 'Unnamed Activity',
+        type: activity.type,
+        url: activity.url
+      }));
+    
+    // Store in localStorage to be picked up by the quiz form
+    localStorage.setItem('quizDocuments', JSON.stringify({
+      moduleId: module.id,
+      moduleName: module.title,
+      documents: moduleDocuments
+    }));
     
     if (method === "ai") {
       // Navigate to AI quiz generation page

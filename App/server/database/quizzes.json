@@ -352,5 +352,43 @@
     "quizId": "quiz_1746011919",
     "timestamp": "2025-04-30T12:39:11.283Z",
     "title": "Parat viden om 2. Verdenskrig"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "politikkens form\u00e5l var at finde danmark en plads i et n\u00f8dvendigt og gensidigt aktivt samarbejde med stor-tyskland for at bevare landets demokratiske samfundsform.",
+        "id": "fc1",
+        "question": "Term: Samarbejdspolitik (Cooperation policy)",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "dnsap-leder, der h\u00e5bede p\u00e5 at overtage regeringsmagten i danmark i k\u00f8lvandet af den tyske fremgang i 1940.",
+        "id": "fc2",
+        "question": "Term: Frits Clausen",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "en procesion med b\u00e5de nazister og modstandere, som marcherede gennem k\u00f8benhavn til r\u00e5dhuspladsen den 17. november 1940.",
+        "id": "fc3",
+        "question": "Term: Demonstrationstog (Demo train)",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "en gruppe, der meldte sig hos kong christian 10 og foreslog en ny regering uden om folkettinget og de politiske partier den 14. november.",
+        "id": "fc4",
+        "question": "Term: H\u00f8jgaard-kreds (Highgaard group)",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "kampe mellem modstandere og nazister i forbindelse med demonstrationstoget den 17. november 1940.",
+        "id": "fc5",
+        "question": "Term: Slagsm\u00e5l (Fight)",
+        "type": "flashcard"
+      }
+    ],
+    "title": "Hurtigt viden - 2. verdenskrig",
+    "timestamp": "2025-05-08T08:19:58.165Z",
+    "id": "quiz_1746692398"
   }
 ]
