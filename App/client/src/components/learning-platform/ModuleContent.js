@@ -2740,81 +2740,83 @@ const ModuleContent = ({
           <Modal
             show={showActivityTypeModal}
             onHide={handleCloseModals}
+            size="md" 
+            centered
           >
             <Modal.Header closeButton>
               <Modal.Title>Vælg aktivitetstype</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <div className="d-flex flex-column gap-3">
-                <Button
-                  variant="outline-primary"
-                  className="p-3 d-flex align-items-center"
-                  onClick={() => handleActivityTypeSelect("file")}
-                >
-                  <BsFileEarmark className="me-3 fs-4" />
-                  <div className="text-start">
-                    <h5 className="mb-1">Upload fil</h5>
-                    <small className="text-muted">
-                      Upload et PDF eller Word dokument
-                    </small>
+              <div className="row row-cols-2 g-3">
+                <div className="col">
+                  <div 
+                    className="card h-100 shadow-sm border-primary activity-type-card" 
+                    onClick={() => handleActivityTypeSelect("file")}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="card-body p-3 text-center">
+                      <BsFileEarmark className="fs-3 mb-2 text-primary" />
+                      <h6 className="mb-1">Upload fil</h6>
+                      <small className="text-muted d-block">PDF, Word, m.m.</small>
+                    </div>
                   </div>
-                </Button>
-
-                <Button
-                  variant="outline-primary"
-                  className="p-3 d-flex align-items-center"
-                  onClick={() => handleActivityTypeSelect("link")}
-                >
-                  <BsLink45Deg className="me-3 fs-4" />
-                  <div className="text-start">
-                    <h5 className="mb-1">Upload link (URL)</h5>
-                    <small className="text-muted">
-                      Tilføj et link til en ekstern webside eller video
-                    </small>
+                </div>
+                
+                <div className="col">
+                  <div 
+                    className="card h-100 shadow-sm border-primary activity-type-card" 
+                    onClick={() => handleActivityTypeSelect("link")}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="card-body p-3 text-center">
+                      <BsLink45Deg className="fs-3 mb-2 text-primary" />
+                      <h6 className="mb-1">Upload link</h6>
+                      <small className="text-muted d-block">Webside eller video</small>
+                    </div>
                   </div>
-                </Button>
-
-                <Button
-                  variant="outline-primary"
-                  className="p-3 d-flex align-items-center"
-                  onClick={() => handleActivityTypeSelect("folder")}
-                >
-                  <BsFolder className="me-3 fs-4" />
-                  <div className="text-start">
-                    <h5 className="mb-1">Opret mappe</h5>
-                    <small className="text-muted">
-                      Opret en mappe til at organisere filer
-                    </small>
+                </div>
+                
+                <div className="col">
+                  <div 
+                    className="card h-100 shadow-sm border-primary activity-type-card" 
+                    onClick={() => handleActivityTypeSelect("folder")}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="card-body p-3 text-center">
+                      <BsFolder className="fs-3 mb-2 text-primary" />
+                      <h6 className="mb-1">Opret mappe</h6>
+                      <small className="text-muted d-block">Organisér indhold</small>
+                    </div>
                   </div>
-                </Button>
-
-                <Button
-                  variant="outline-primary"
-                  className="p-3 d-flex align-items-center"
-                  onClick={() => handleActivityTypeSelect("quiz")}
-                >
-                  <BsQuestionCircle className="me-3 fs-4" />
-                  <div className="text-start">
-                    <h5 className="mb-1">Opret quiz</h5>
-                    <small className="text-muted">
-                      Opret en interaktiv quiz
-                    </small>
+                </div>
+                
+                <div className="col">
+                  <div 
+                    className="card h-100 shadow-sm border-primary activity-type-card" 
+                    onClick={() => handleActivityTypeSelect("quiz")}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="card-body p-3 text-center">
+                      <BsQuestionCircle className="fs-3 mb-2 text-primary" />
+                      <h6 className="mb-1">Opret quiz</h6>
+                      <small className="text-muted d-block">Test elevernes viden</small>
+                    </div>
                   </div>
-                </Button>
-
-                <Button
-                  variant="outline-primary"
-                  className="p-3 d-flex align-items-center"
-                  onClick={() => handleActivityTypeSelect("book")}
-                >
-                  <BsBook className="me-3 fs-4" />
-                  <div className="text-start">
-                    <h5 className="mb-1">Fysisk bog</h5>
-                    <small className="text-muted">
-                      Tilføj en fysisk bog som aktivitet
-                    </small>
+                </div>
+                
+                <div className="col">
+                  <div 
+                    className="card h-100 shadow-sm border-primary activity-type-card" 
+                    onClick={() => handleActivityTypeSelect("book")}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="card-body p-3 text-center">
+                      <BsBook className="fs-3 mb-2 text-primary" />
+                      <h6 className="mb-1">Fysisk bog</h6>
+                      <small className="text-muted d-block">Læsemateriale</small>
+                    </div>
                   </div>
-                </Button>
+                </div>
               </div>
             </Modal.Body>
           </Modal>
