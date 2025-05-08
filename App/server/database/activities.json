@@ -157,5 +157,13 @@
     "moduleId": "module-2",
     "url": "http://localhost:5001/api/uploads/Gantt-chart_Thesis-ougiughiuhg_1746018560.pdf",
     "parentId": "folder_1746018525236"
+  },
+  {
+    "id": "activity_1746604704316",
+    "title": "A Brief Overview of World War II",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=HUqy-OQvVtI&t=5s",
+    "moduleId": "module-3"
   }
 ]

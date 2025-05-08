@@ -10,7 +10,7 @@ const LandingPage = () => {
         <Col>
           <h1 className="display-4">Quiz Generator</h1>
           <p className="lead text-muted">
-            Generate quizzes from your content or explore previously saved quizzes
+            Generer quizzer fra dit indhold eller udforsk tidligere gemte quizzer
           </p>
         </Col>
       </Row>
@@ -22,14 +22,14 @@ const LandingPage = () => {
               <div className="icon-container mb-3">
                 <BsCollection size={50} className="text-primary" />
               </div>
-              <Card.Title>Saved Quizzes</Card.Title>
+              <Card.Title>Gemte quizzer</Card.Title>
               <Card.Text>
-                Browse and take quizzes you've previously created and saved.
+                Gennemse og tag quizzer, du tidligere har oprettet og gemt.
               </Card.Text>
               <div className="mt-auto">
                 <Link to="/saved-quizzes">
                   <Button variant="outline-primary" size="lg" className="w-100">
-                    View Saved Quizzes
+                    Se Gemte Quizzer
                   </Button>
                 </Link>
               </div>
@@ -43,14 +43,14 @@ const LandingPage = () => {
               <div className="icon-container mb-3">
                 <BsFileEarmarkPlus size={50} className="text-success" />
               </div>
-              <Card.Title>Create a Quiz</Card.Title>
+              <Card.Title>Opret en Quiz</Card.Title>
               <Card.Text>
-                Generate a new quiz from a topic, text, webpage, or document.
+                Generer en ny quiz fra et emne, tekst, hjemmeside eller dokument.
               </Card.Text>
               <div className="mt-auto">
                 <Link to="/create-quiz">
                   <Button variant="outline-success" size="lg" className="w-100">
-                    Create New Quiz
+                    Opret Ny Quiz
                   </Button>
                 </Link>
               </div>
