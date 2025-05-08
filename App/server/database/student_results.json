@@ -1,26 +1,27 @@
 {
   "quiz_history": [
     {
-      "timestamp": "2025-04-22T15:10:52.635421",
+      "timestamp": "2025-05-08T14:02:06.678863",
+      "start_timestamp": "2025-05-08T12:02:02.474Z",
       "quiz_id": "quiz_1744270236",
       "quiz_title": "Sociale medier quiz",
-      "score": 1,
+      "score": 0,
       "total_questions": 2,
       "answers": [
         {
           "question_id": "q1",
           "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
-          "answer": "Slots- og Kulturstyrelsen",
-          "correct": true
+          "answer": "Medieselskabernes Landsforening",
+          "correct": false
         },
         {
           "question_id": "q2",
           "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
-          "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
+          "answer": "Internethjemmesider",
           "correct": false
         }
       ],
-      "attempts": 3,
+      "attempts": 4,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -295,11 +296,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-08T10:20:26.103095",
-      "start_timestamp": "2025-05-08T08:20:15.958Z",
+      "timestamp": "2025-05-08T14:01:29.932284",
+      "start_timestamp": "2025-05-08T12:01:02.508Z",
       "quiz_id": "quiz_1746692398",
       "quiz_title": "Hurtigt viden - 2. verdenskrig",
-      "score": 2,
+      "score": 3,
       "total_questions": 5,
       "answers": [
         {
@@ -321,8 +322,8 @@
         {
           "question_id": "fc3",
           "question": "Term: Demonstrationstog (Demo train)",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
@@ -343,7 +344,7 @@
           "viewed": true
         }
       ],
-      "attempts": 1,
+      "attempts": 7,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

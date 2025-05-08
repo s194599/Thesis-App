@@ -50,6 +50,7 @@ const TakeQuiz = () => {
   const [randomizedOptions, setRandomizedOptions] = useState([]);
   const [quizStartTime, setQuizStartTime] = useState(null);
   const [flashcardResponse, setFlashcardResponse] = useState(null);
+  const [swipeDirection, setSwipeDirection] = useState(null);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -247,6 +248,79 @@ const TakeQuiz = () => {
     quiz,
   ]);
 
+  // Add a useEffect for keyboard event listeners
+  useEffect(() => {
+    // Only add keyboard navigation for flashcards and when not completed
+    if (quiz && !quizCompleted && randomizedQuestions.length > 0) {
+      const currentQuestion = randomizedQuestions[currentQuestionIndex];
+      
+      // Only proceed if this is a flashcard
+      if (currentQuestion?.type === "flashcard") {
+        const handleKeyDown = (e) => {
+          // Space key to flip card
+          if (e.code === 'Space') {
+            e.preventDefault(); // Prevent page scrolling
+            setShowAnswer(!showAnswer);
+          }
+          
+          // Only process left/right arrows when the card is flipped (showing answer)
+          if (showAnswer) {
+            // Left arrow Det vidste jeg ikke
+            if (e.code === 'ArrowLeft') {
+              // Record that the student didn't know the answer
+              const newAnswers = [...answers];
+              newAnswers[currentQuestion.originalIndex] = {
+                flashcardResponse: false,
+                viewed: true
+              };
+              setAnswers(newAnswers);
+              setFlashcardResponse(false);
+              
+              // Move to next card or finish quiz
+              if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                setShowAnswer(false);
+                setFlashcardResponse(null);
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+              } else {
+                setQuizCompleted(true);
+              }
+            }
+            
+            // Right arrow Det vidste jeg godt
+            if (e.code === 'ArrowRight') {
+              // Record that the student knew the answer and increment score
+              const newAnswers = [...answers];
+              newAnswers[currentQuestion.originalIndex] = {
+                flashcardResponse: true,
+                viewed: true
+              };
+              setAnswers(newAnswers);
+              setScore(prevScore => prevScore + 1);
+              setFlashcardResponse(true);
+              
+              // Move to next card or finish quiz
+              if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                setShowAnswer(false);
+                setFlashcardResponse(null);
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+              } else {
+                setQuizCompleted(true);
+              }
+            }
+          }
+        };
+        
+        // Add event listener
+        window.addEventListener('keydown', handleKeyDown);
+        
+        // Cleanup
+        return () => {
+          window.removeEventListener('keydown', handleKeyDown);
+        };
+      }
+    }
+  }, [quiz, quizCompleted, randomizedQuestions, currentQuestionIndex, showAnswer, answers, setAnswers, setShowAnswer, setScore, setFlashcardResponse, setCurrentQuestionIndex, setQuizCompleted]);
+
   const handleAnswerSelect = (answer) => {
     if (showAnswer) return; // Prevent changing answer after submission
     setSelectedAnswer(answer);
@@ -324,7 +398,7 @@ const TakeQuiz = () => {
         <Card className="quiz-card mb-4">
           <Card.Body>
             <div className="mb-4">
-              <h4>Flashcard {currentQuestionIndex + 1} of {randomizedQuestions.length}</h4>
+              <h4>Flashcard {currentQuestionIndex + 1} af {randomizedQuestions.length}</h4>
             </div>
             
             <div className="flashcard-container">
@@ -345,32 +419,41 @@ const TakeQuiz = () => {
               {showAnswer ? "Klik for at se spørgsmålet" : "Klik for at se svaret"}
             </div>
             
-            <div className="d-flex justify-content-between mt-4">
-              <Button
-                variant="outline-secondary"
-                disabled={currentQuestionIndex === 0}
-                onClick={() => {
-                  setShowAnswer(false);
-                  setFlashcardResponse(null);
-                  setCurrentQuestionIndex(currentQuestionIndex - 1);
-                }}
-              >
-                <BsArrowLeft className="me-1" /> Forrige
-              </Button>
-              
+            {/* Keyboard shortcuts instructions */}
+            <div className="text-center text-muted mb-3 small">
               {!showAnswer ? (
-                // When card is not flipped, show a single button to flip it
-                <Button
-                  variant="primary"
-                  onClick={() => setShowAnswer(true)}
-                >
-                  Vis svar
-                </Button>
+                <p className="mb-1"><kbd>Mellemrum</kbd> for at vende kort</p>
               ) : (
-                // When card is flipped and showing the answer, show self-assessment buttons
-                <div className="d-flex gap-2">
+                <p className="mb-0">
+                  <kbd className="kbd-left"><span className="text-danger">←</span></kbd> Det vidste jeg ikke &nbsp;eller &nbsp; 
+                  <kbd className="kbd-right"><span className="text-success">→</span></kbd> Det vidste jeg godt
+                </p>
+              )}
+            </div>
+            
+            {/* Navigation and assessment buttons */}
+            <div className="mt-4">
+              {/* Top row with navigation buttons */}
+              <div className="d-flex justify-content-center mb-3">
+                {!showAnswer ? (
+                  // When card is not flipped, show the flip button
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={() => setShowAnswer(true)}
+                  >
+                    Vis svar
+                  </Button>
+                ) : null}
+              </div>
+              
+              {/* Self-assessment buttons in centered container when card is flipped */}
+              {showAnswer && (
+                <div className="d-flex justify-content-center gap-3 mt-4">
                   <Button
                     variant="danger"
+                    size="lg"
+                    className="px-4"
                     onClick={() => {
                       // Record that the student didn't know the answer
                       const newAnswers = [...answers];
@@ -391,10 +474,12 @@ const TakeQuiz = () => {
                       }
                     }}
                   >
-                    Det vidste jeg ikke
+                    <BsArrowLeft className="me-2" /> Det vidste jeg ikke
                   </Button>
                   <Button
                     variant="success"
+                    size="lg"
+                    className="px-4"
                     onClick={() => {
                       // Record that the student knew the answer and increment score
                       const newAnswers = [...answers];
@@ -416,7 +501,7 @@ const TakeQuiz = () => {
                       }
                     }}
                   >
-                    Det vidste jeg godt
+                    Det vidste jeg godt <BsArrowRight className="ms-2" />
                   </Button>
                 </div>
               )}
@@ -679,6 +764,25 @@ const TakeQuiz = () => {
             <div className="text-center text-muted small mb-4">
               <span className="fw-bold">{Math.round((currentQuestionIndex / randomizedQuestions.length) * 100)}%</span>
             </div>
+            
+            {/* Previous button moved to header section */}
+            {randomizedQuestions.length > 0 && 
+             randomizedQuestions[currentQuestionIndex]?.type === "flashcard" && (
+              <div className="d-flex mb-3">
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  disabled={currentQuestionIndex === 0}
+                  onClick={() => {
+                    setShowAnswer(false);
+                    setFlashcardResponse(null);
+                    setCurrentQuestionIndex(currentQuestionIndex - 1);
+                  }}
+                >
+                  <BsArrowLeft className="me-1" /> Forrige
+                </Button>
+              </div>
+            )}
           </>
         )}
       </div>
