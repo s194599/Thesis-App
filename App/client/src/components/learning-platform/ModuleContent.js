@@ -76,9 +76,6 @@ const ModuleContent = ({
     content: "",
   });
   const [editActivityId, setEditActivityId] = useState(null);
-  const [showPdfModal, setShowPdfModal] = useState(false);
-  const [selectedPdfUrl, setSelectedPdfUrl] = useState("");
-  const [pdfLoading, setPdfLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
   const [editingDescription, setEditingDescription] = useState(false);
   const [moduleDescription, setModuleDescription] = useState("");
@@ -86,8 +83,6 @@ const ModuleContent = ({
   const [editedTitle, setEditedTitle] = useState("");
   const [editingDate, setEditingDate] = useState(false);
   const [editedDate, setEditedDate] = useState("");
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [showAudioModal, setShowAudioModal] = useState(false);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
   const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
   const [selectedAudioUrl, setSelectedAudioUrl] = useState("");
@@ -98,6 +93,8 @@ const ModuleContent = ({
   const [activityOrder, setActivityOrder] = useState({});
   const [isDraggingOver, setIsDraggingOver] = useState(null); // 'before', 'after', or null
   const [dragTarget, setDragTarget] = useState(null);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showAudioModal, setShowAudioModal] = useState(false);
   const navigate = useNavigate();
   
   // Expose the setActiveTab function through the resetTabFn prop
@@ -196,8 +193,9 @@ const ModuleContent = ({
       setShowFileUploadModal(false);
       setShowUrlModal(false);
       setShowActivityTypeModal(false);
-      setShowPdfModal(false);
-      setEditActivityId(null);
+      setShowImageModal(false);
+      setShowQuizChoiceModal(false);
+      setShowFolderModal(false);
       setNewActivity({
         title: "",
         description: "",
@@ -662,9 +660,8 @@ const ModuleContent = ({
   };
 
   const handleOpenPdf = (url) => {
-    setSelectedPdfUrl(url);
-    setPdfLoading(true);
-    setShowPdfModal(true);
+    // Open PDF in a new tab instead of showing a modal
+    window.open(url, '_blank');
   };
 
   // Validate and potentially fix URL format
@@ -3177,42 +3174,6 @@ const ModuleContent = ({
       )}
       
       {/* These modals are always available as they're for viewing content, not editing */}
-      {/* PDF Viewer Modal */}
-      <Modal 
-        show={showPdfModal} 
-        onHide={() => setShowPdfModal(false)}
-        size="lg"
-        centered
-        className="pdf-viewer-modal"
-        contentClassName="h-100"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="d-flex align-items-center">
-            <BsFileEarmarkPdf className="text-danger me-2" />
-            PDF Dokument
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0 position-relative">
-          {pdfLoading && (
-            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-light">
-              <div className="text-center">
-                <Spinner animation="border" variant="primary" />
-                <div className="mt-2">Indlæser PDF...</div>
-              </div>
-            </div>
-          )}
-          <div className="ratio ratio-16x9" style={{ minHeight: "80vh" }}>
-            <iframe 
-              src={selectedPdfUrl} 
-              title="PDF Dokument" 
-              allowFullScreen
-              className="w-100 h-100 border-0"
-              onLoad={() => setPdfLoading(false)}
-            />
-          </div>
-        </Modal.Body>
-      </Modal>
-
       {/* Image Viewer Modal */}
       <Modal
         show={showImageModal}
