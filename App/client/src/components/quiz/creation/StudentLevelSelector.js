@@ -5,6 +5,9 @@ import { useQuizContext } from "../../../context/QuizContext";
 const StudentLevelSelector = () => {
   const { formData, updateFormData } = useQuizContext();
 
+  // Mark the component as disabled
+  const isDisabled = true;
+
   const studentLevels = [
     { value: "1", label: "1.g" },
     { value: "2", label: "2.g" },
@@ -18,7 +21,10 @@ const StudentLevelSelector = () => {
         <Form.Select
           value={formData.studentLevel}
           onChange={(e) => updateFormData("studentLevel", e.target.value)}
+          disabled={isDisabled}
+          className={isDisabled ? "text-muted opacity-50" : ""}
         >
+          <option value="">Vælg niveau</option>
           {studentLevels.map((level) => (
             <option key={level.value} value={level.value}>
               {level.label}
@@ -26,7 +32,7 @@ const StudentLevelSelector = () => {
           ))}
         </Form.Select>
         <Form.Text className="text-muted">
-          Vælg det uddannelsesniveau, som quizzen er beregnet til.
+          {isDisabled ? "Niveauvalg er ikke tilgængeligt i denne version." : "Vælg det uddannelsesniveau, som quizzen er beregnet til."}
         </Form.Text>
       </Form.Group>
     </div>
