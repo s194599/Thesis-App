@@ -61,5 +61,13 @@
     "type": "multiple_choice",
     "quizId": "quiz_1747041853",
     "moduleSpecific": true
+  },
+  {
+    "moduleId": "module-3",
+    "id": "activity_quiz_quiz_1747042463_module-3_1747042464678",
+    "title": "Flashcard om Romantikken",
+    "type": "flashcard",
+    "quizId": "quiz_1747042463",
+    "moduleSpecific": true
   }
 ]

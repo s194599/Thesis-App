@@ -121,7 +121,7 @@ const ModuleContent = ({
           if (!activity) return false;
 
           // If this is a quiz activity, manage it specially to avoid duplicates
-          if (activity.type === "quiz") {
+          if (activity.type === "quiz" || activity.type === "multiple_choice" || activity.type === "flashcard" || activity.type === "flashcards") {
             // Ensure quiz activity has necessary fields
             if (!activity.id && activity.quizId) {
               activity.id = `activity_quiz_${activity.quizId}`;
@@ -166,7 +166,7 @@ const ModuleContent = ({
 
       // Count and log quizzes for debugging
       const quizzes = normalizedActivities.filter(
-        (a) => a && a.type === "quiz"
+        (a) => a && (a.type === "quiz" || a.type === "multiple_choice" || a.type === "flashcard" || a.type === "flashcards")
       );
       console.log(
         `Setting ${normalizedActivities.length} activities for module ${module.id}, including ${quizzes.length} quizzes`
@@ -542,7 +542,11 @@ const ModuleContent = ({
       case "word":
         return <BsFileEarmarkWord className="text-primary" size={20} />;
       case "quiz":
+      case "multiple_choice":
         return <BsListCheck className="text-warning" size={20} />;
+      case "flashcard":
+      case "flashcards":  
+        return <BsListCheck className="text-info" size={20} />;
       case "image":
         return <BsImage className="text-success" size={20} />;
       case "video":
@@ -699,7 +703,7 @@ const ModuleContent = ({
 
   const handleActivityClick = async (activity) => {
     if (userRole === "student") {
-      if (activity.type === "quiz") {
+      if (activity.type === "quiz" || activity.type === "multiple_choice" || activity.type === "flashcard" || activity.type === "flashcards") {
         // Navigate to quiz intro view with the quiz ID and activity/module IDs as query params
         navigate(
           `/quiz/intro/${activity.quizId}?activityId=${activity.id}&moduleId=${module.id}`
@@ -749,6 +753,9 @@ const ModuleContent = ({
         // Just toggle the folder - handled by the folder click handler
         return;
       case "quiz":
+      case "multiple_choice":
+      case "flashcard":
+      case "flashcards":
         // Already handled for students above
         if (userRole === "teacher") {
           navigate(`/quiz/${activity.quizId}/results`);
@@ -910,7 +917,7 @@ const ModuleContent = ({
         file: null, // Don't pass the file object when editing
       });
       setShowUrlModal(true);
-    } else if (activity.type === "quiz") {
+    } else if (activity.type === "quiz" || activity.type === "multiple_choice" || activity.type === "flashcard" || activity.type === "flashcards") {
       // For quizzes, navigate to the quiz editing page
       navigate(`/quiz/preview/${activity.quizId}`);
     } else {

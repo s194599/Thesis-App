@@ -29,5 +29,49 @@
     "timestamp": "2025-05-12T09:24:13.249Z",
     "id": "quiz_1747041853",
     "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "a literary and artistic cultural movement that originated in europe during the late 18th and early 19th centuries, characterized by strong emotional expression, subjectivity, and a focus on individualism and imagination.",
+        "id": "fc1",
+        "question": "Term: Romantic Movement",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "although often viewed as separate movements following romanticism, some critics argue that they represent the opposite tendencies that were reconciled within romanticism itself. while romanticism unified emotions and reason, symbolism and realism may have taken these opposites to extremes in their subsequent developments.",
+        "id": "fc2",
+        "question": "Term: Romanticism vs. Realism",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "the spirit of rebellion or change that was a defining characteristic of the romantic movement, evident in its focus on social and political consciousness and its challenge to established norms.",
+        "id": "fc3",
+        "question": "Term: Revolutionary energy",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "a contemporary literary theory that posits the separate work of literature as a dissolved sea of interconnected texts, derived from various cultural discourses and part of an archival network.",
+        "id": "fc4",
+        "question": "Term: Intertextuality",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "in current literary theory, the conception of the artist as a fiercely independent genius who creates original works of art has been demoted to that of a collective \"voice\" influenced by various texts, language systems, conventions, and power structures. this notion was subverted in a dramatic, romantic fashion when radical manifestoes were delivered by linguistically powerful individuals, recapitulating the revolutionary spirit and events of the romantic movement itself.",
+        "id": "fc5",
+        "question": "Term: Sovereign artist",
+        "type": "flashcard",
+        "options": []
+      }
+    ],
+    "title": "Flashcard om Romantikken",
+    "timestamp": "2025-05-12T09:34:23.885Z",
+    "id": "quiz_1747042463",
+    "type": "flashcard"
   }
 ]
