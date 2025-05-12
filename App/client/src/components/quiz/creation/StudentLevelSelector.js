@@ -31,9 +31,9 @@ const StudentLevelSelector = () => {
             </option>
           ))}
         </Form.Select>
-        <Form.Text className="text-muted">
+        {/* <Form.Text className="text-muted">
           {isDisabled ? "Niveauvalg er ikke tilgængeligt i denne version." : "Vælg det uddannelsesniveau, som quizzen er beregnet til."}
-        </Form.Text>
+        </Form.Text> */}
       </Form.Group>
     </div>
   );

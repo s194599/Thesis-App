@@ -299,11 +299,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T13:46:03.488768",
-      "start_timestamp": "2025-05-12T11:45:52.304Z",
+      "timestamp": "2025-05-12T15:02:52.237698",
+      "start_timestamp": "2025-05-12T13:02:39.306Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
-      "score": 0,
+      "score": 1,
       "total_questions": 2,
       "answers": [
         {
@@ -315,11 +315,11 @@
         {
           "question_id": "q2",
           "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
-          "answer": "The artist is a passive recipient of external influences.",
-          "correct": false
+          "answer": "The artist is a fiercely independent genius who creates original works of art.",
+          "correct": true
         }
       ],
-      "attempts": 1,
+      "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

@@ -36,7 +36,7 @@ const InputTypeSelector = () => {
                 label={
                   <div className="d-flex align-items-center">
                     <BsFileEarmarkPdf className="me-2" />
-                    <span>Dokument</span>
+                    <span>Dokumenter</span>
                   </div>
                 }
                 value="document"

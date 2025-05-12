@@ -24,9 +24,9 @@ const NumQuestionsSelector = () => {
             </option>
           ))}
         </Form.Select>
-        <Form.Text className="text-muted">
+        {/* <Form.Text className="text-muted">
           Vælg hvor mange quizspørgsmål der skal genereres.
-        </Form.Text>
+        </Form.Text> */}
       </Form.Group>
     </div>
   );
