@@ -458,65 +458,90 @@ const QuizOutput = () => {
       const isSavedQuiz = !!generatedQuiz.quizId || !!generatedQuiz.id;
       let savedQuiz = null;
 
+      console.log("Adding quiz to module. Quiz already saved:", isSavedQuiz);
+
       if (!isSavedQuiz) {
         // Save the quiz first if not already saved
+        console.log("Saving quiz before adding to module...");
         savedQuiz = await saveQuizToBackend();
         if (!savedQuiz) {
           throw new Error("Failed to save quiz");
         }
+        console.log("Quiz saved successfully with ID:", savedQuiz.quizId);
       } else {
         // Quiz is already saved
         savedQuiz = {
           quizId: generatedQuiz.quizId || generatedQuiz.id,
         };
+        console.log("Using existing quiz ID:", savedQuiz.quizId);
       }
 
       const quizDocuments = localStorage.getItem("quizDocuments");
+      console.log("quizDocuments from localStorage:", quizDocuments);
+      
       if (quizDocuments) {
-        const { moduleId } = JSON.parse(quizDocuments);
+        try {
+          const parsedData = JSON.parse(quizDocuments);
+          console.log("Parsed quiz documents:", parsedData);
+          const { moduleId } = parsedData;
 
-        // Generate a unique ID for this activity instance
-        const activityId = `activity_quiz_${
-          savedQuiz.quizId
-        }_${moduleId}_${Date.now()}`;
+          if (!moduleId) {
+            console.error("No moduleId found in quizDocuments");
+            throw new Error("No module ID found");
+          }
 
-        // Create a new activity for the module
-        const response = await fetch("/api/store-activity", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            moduleId: moduleId,
-            id: activityId, // Use our generated unique ID
-            title: generatedQuiz.title,
-            type: "quiz",
-            quizId: savedQuiz.quizId,
-            completed: false,
-            // Mark this activity as belonging specifically to this module
-            // to prevent showing in other modules
-            moduleSpecific: true,
-          }),
-        });
+          // Generate a unique ID for this activity instance
+          const activityId = `activity_quiz_${
+            savedQuiz.quizId
+          }_${moduleId}_${Date.now()}`;
 
-        if (response.ok) {
-          console.log(
-            `Added quiz ${savedQuiz.quizId} to module ${moduleId} with activity ID ${activityId}`
-          );
-          // Clear the stored documents
-          localStorage.removeItem("quizDocuments");
-          // Navigate back to the module
-          navigate("/platform");
-        } else {
-          throw new Error("Failed to add quiz to module");
+          console.log(`Adding quiz ${savedQuiz.quizId} to module ${moduleId}`);
+
+          // Create a new activity for the module
+          const response = await fetch("/api/store-activity", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              moduleId: moduleId,
+              id: activityId, // Use our generated unique ID
+              title: generatedQuiz.title,
+              type: "quiz",
+              quizId: savedQuiz.quizId,
+              completed: false,
+              // Mark this activity as belonging specifically to this module
+              // to prevent showing in other modules
+              moduleSpecific: true,
+            }),
+          });
+
+          if (response.ok) {
+            console.log(
+              `Added quiz ${savedQuiz.quizId} to module ${moduleId} with activity ID ${activityId}`
+            );
+            // Clear the stored documents
+            localStorage.removeItem("quizDocuments");
+            // Navigate back to the module
+            navigate("/platform");
+          } else {
+            const errorText = await response.text();
+            console.error("API error adding quiz to module:", errorText);
+            throw new Error(`Failed to add quiz to module: ${errorText}`);
+          }
+        } catch (error) {
+          console.error("Error parsing quizDocuments:", error);
+          throw error;
         }
       } else {
+        console.warn("No quizDocuments found in localStorage");
         // If no module ID found, just redirect to platform
         navigate("/platform");
       }
     } catch (error) {
       console.error("Error adding quiz to module:", error);
       // You may want to show an error message to the user here
+      alert(`Der opstod en fejl: ${error.message}`);
     } finally {
       setIsAddingToModule(false);
     }

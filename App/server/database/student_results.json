@@ -1,8 +1,8 @@
 {
   "quiz_history": [
     {
-      "timestamp": "2025-05-08T14:02:06.678863",
-      "start_timestamp": "2025-05-08T12:02:02.474Z",
+      "timestamp": "2025-05-08T16:09:55.775052",
+      "start_timestamp": "2025-05-08T14:09:49.344Z",
       "quiz_id": "quiz_1744270236",
       "quiz_title": "Sociale medier quiz",
       "score": 0,
@@ -11,48 +11,17 @@
         {
           "question_id": "q1",
           "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?",
-          "answer": "Medieselskabernes Landsforening",
+          "answer": "Statsforvaltningens Medieuddanske",
           "correct": false
         },
         {
           "question_id": "q2",
           "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
-          "answer": "Internethjemmesider",
+          "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
           "correct": false
         }
       ],
-      "attempts": 4,
-      "student_id": "1",
-      "student_name": "Christian Wu"
-    },
-    {
-      "timestamp": "2025-05-08T09:57:00.968305",
-      "start_timestamp": "2025-05-08T07:56:53.116Z",
-      "quiz_id": "quiz_1744279908",
-      "quiz_title": "Romantikken Quiz",
-      "score": 1,
-      "total_questions": 3,
-      "answers": [
-        {
-          "question_id": "q1",
-          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature .",
-          "correct": false
-        },
-        {
-          "question_id": "q2",
-          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Politics and social issues",
-          "correct": false
-        },
-        {
-          "question_id": "q1745254179199",
-          "question": "AI Generated Question: What is the main function of DNA?",
-          "answer": "Store genetic information",
-          "correct": true
-        }
-      ],
-      "attempts": 13,
+      "attempts": 5,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -81,30 +50,6 @@
       "student_name": "Maria Jensen"
     },
     {
-      "timestamp": "2025-04-08T14:22:33.123456",
-      "quiz_id": "quiz_1744279908",
-      "quiz_title": "Romantikken Quiz",
-      "score": 2,
-      "total_questions": 2,
-      "answers": [
-        {
-          "question_id": "q1",
-          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
-          "correct": true
-        },
-        {
-          "question_id": "q2",
-          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Nature and landscapes",
-          "correct": true
-        }
-      ],
-      "attempts": 1,
-      "student_id": "2",
-      "student_name": "Maria Jensen"
-    },
-    {
       "timestamp": "2025-04-07T09:30:45.654321",
       "quiz_id": "quiz_1744270236",
       "quiz_title": "Sociale medier quiz",
@@ -125,30 +70,6 @@
         }
       ],
       "attempts": 3,
-      "student_id": "3",
-      "student_name": "Peter Nielsen"
-    },
-    {
-      "timestamp": "2025-04-09T16:42:18.785412",
-      "quiz_id": "quiz_1744279908",
-      "quiz_title": "Romantikken Quiz",
-      "score": 0,
-      "total_questions": 2,
-      "answers": [
-        {
-          "question_id": "q1",
-          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "A political movement seeking to restore traditional monarchies.",
-          "correct": false
-        },
-        {
-          "question_id": "q2",
-          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Politics and social issues",
-          "correct": false
-        }
-      ],
-      "attempts": 1,
       "student_id": "3",
       "student_name": "Peter Nielsen"
     },
@@ -194,30 +115,6 @@
           "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?",
           "answer": "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
           "correct": false
-        }
-      ],
-      "attempts": 2,
-      "student_id": "5",
-      "student_name": "Frederik Barba"
-    },
-    {
-      "timestamp": "2025-04-09T15:33:27.896541",
-      "quiz_id": "quiz_1744279908",
-      "quiz_title": "Romantikken Quiz",
-      "score": 2,
-      "total_questions": 2,
-      "answers": [
-        {
-          "question_id": "q1",
-          "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?",
-          "answer": "An artistic and literary movement characterized by emotion, individualism, and nature.",
-          "correct": true
-        },
-        {
-          "question_id": "q2",
-          "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?",
-          "answer": "Nature and landscapes",
-          "correct": true
         }
       ],
       "attempts": 2,
@@ -296,11 +193,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-08T14:01:29.932284",
-      "start_timestamp": "2025-05-08T12:01:02.508Z",
+      "timestamp": "2025-05-08T16:01:39.182134",
+      "start_timestamp": "2025-05-08T14:01:14.991Z",
       "quiz_id": "quiz_1746692398",
       "quiz_title": "Hurtigt viden - 2. verdenskrig",
-      "score": 3,
+      "score": 5,
       "total_questions": 5,
       "answers": [
         {
@@ -330,21 +227,21 @@
         {
           "question_id": "fc4",
           "question": "Term: H\u00f8jgaard-kreds (Highgaard group)",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc5",
           "question": "Term: Slagsm\u00e5l (Fight)",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 7,
+      "attempts": 8,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

@@ -53,19 +53,19 @@
         "options": [
           "Slots- og Kulturstyrelsen",
           "Statsforvaltningens Medieuddanske",
-          "Dansk Mediehåndtering",
+          "Dansk Medieh\u00e5ndtering",
           "Medieselskabernes Landsforening"
         ],
         "question": "Hvem er udgiveren af mediernes udvikling i Danmark-rapportagen fra 2020?"
       },
       {
-        "correctAnswer": "Samlingen af apps og netværk for socialisering via internettet",
+        "correctAnswer": "Samlingen af apps og netv\u00e6rk for socialisering via internettet",
         "id": "q2",
         "options": [
-          "En del af det traditionelle medieområde, som inkluderer radio og tv",
+          "En del af det traditionelle medieomr\u00e5de, som inkluderer radio og tv",
           "Internethjemmesider",
-          "Samlingen af apps og netværk for socialisering via internettet",
-          "Alle af ovenstående begreber"
+          "Samlingen af apps og netv\u00e6rk for socialisering via internettet",
+          "Alle af ovenst\u00e5ende begreber"
         ],
         "question": "Hvad beskriver begrebet \"Sociale medier\" i rapportagen fra 2020?"
       }
@@ -135,50 +135,6 @@
     "title": "Romantikken Quiz",
     "timestamp": "2025-04-10T09:07:21.257Z",
     "id": "quiz_1744276041"
-  },
-  {
-    "description": "Quiz generated from your content",
-    "id": "quiz_1744279908",
-    "type": "multiple_choice",
-    "questions": [
-      {
-        "correctAnswer": "A style of music that focuses on harmony and melody.",
-        "id": "q1",
-        "options": [
-          "An artistic and literary movement characterized by emotion, individualism, and nature .",
-          "A style of music that focuses on harmony and melody.",
-          "A political ideology advocating for democracy and social equality.",
-          "A philosophical approach emphasizing rationality and empiricism."
-        ],
-        "question": "What best describes Romanticism, which is not closely related to popular conceptions of love or romance?"
-      },
-      {
-        "correctAnswer": "Love and romance",
-        "id": "q2",
-        "options": [
-          "Love and romance",
-          "War and violence",
-          "Politics and social issues",
-          "Mathematics and science"
-        ],
-        "question": "In the context of Romanticism, what is considered as a common subject in Romantic art?"
-      },
-      {
-        "correctAnswer": "Store genetic information",
-        "explanation": "DNA (deoxyribonucleic acid) stores genetic information in the form of genes.",
-        "id": "q1745254179199",
-        "options": [
-          "Store genetic information",
-          "Produce energy",
-          "Break down nutrients",
-          "Transport oxygen"
-        ],
-        "question": "AI Generated Question: What is the main function of DNA?"
-      }
-    ],
-    "quizId": "quiz_1744279908",
-    "timestamp": "2025-04-30T12:38:42.497Z",
-    "title": "Romantikken Quiz"
   },
   {
     "title": "Quiz",
@@ -296,26 +252,26 @@
     "type": "multiple_choice",
     "questions": [
       {
-        "correctAnswer": "En social bevægelse fra det 18. århundredes slutning og det 19. århundredes begyndelse, der er præget af en stærk fokus på naturen, fantasy, emotioner og idealisme",
+        "correctAnswer": "En social bev\u00e6gelse fra det 18. \u00e5rhundredes slutning og det 19. \u00e5rhundredes begyndelse, der er pr\u00e6get af en st\u00e6rk fokus p\u00e5 naturen, fantasy, emotioner og idealisme",
         "id": "q1",
         "options": [
-          "En kærlighedsromance i en film",
+          "En k\u00e6rlighedsromance i en film",
           "En form for kunst der ofte handler om elskov",
-          "Et livsfølge som er fyldt med ros og solskin",
-          "En social bevægelse fra det 18. århundredes slutning og det 19. århundredes begyndelse, der er præget af en stærk fokus på naturen, fantasy, emotioner og idealisme"
+          "Et livsf\u00f8lge som er fyldt med ros og solskin",
+          "En social bev\u00e6gelse fra det 18. \u00e5rhundredes slutning og det 19. \u00e5rhundredes begyndelse, der er pr\u00e6get af en st\u00e6rk fokus p\u00e5 naturen, fantasy, emotioner og idealisme"
         ],
         "question": "Hvad er Romantik?"
       },
       {
-        "correctAnswer": "At være romantisk i dagligtlivet",
+        "correctAnswer": "At v\u00e6re romantisk i dagligtlivet",
         "id": "q2",
         "options": [
-          "At være romantisk i dagligtlivet",
+          "At v\u00e6re romantisk i dagligtlivet",
           "At vise en rosig og lykkelig billede af livet",
-          "At handle om kærlighed i kunstværker",
-          "At fokuserer på praktiske og realistiske ting"
+          "At handle om k\u00e6rlighed i kunstv\u00e6rker",
+          "At fokuserer p\u00e5 praktiske og realistiske ting"
         ],
-        "question": "Hvad gør Romantik i alt virkelig ikke?"
+        "question": "Hvad g\u00f8r Romantik i alt virkelig ikke?"
       }
     ],
     "title": "Quiz",
@@ -328,22 +284,22 @@
     "type": "flashcard",
     "questions": [
       {
-        "correctAnswer": "det politiske parti, der stod bag den tyske besættelsesmagt i danmark og arbejdede for at overtage regeringsmagten i danmark i kølvandet på den tyske fremgang.",
+        "correctAnswer": "det politiske parti, der stod bag den tyske bes\u00e6ttelsesmagt i danmark og arbejdede for at overtage regeringsmagten i danmark i k\u00f8lvandet p\u00e5 den tyske fremgang.",
         "id": "fc2",
         "question": "Den danske nazistparti"
       },
       {
-        "correctAnswer": "akronym for dansk nationalsocialistisk arbejderparti, det danske nazistparti under besættelsen.",
+        "correctAnswer": "akronym for dansk nationalsocialistisk arbejderparti, det danske nazistparti under bes\u00e6ttelsen.",
         "id": "fc3",
         "question": "[DNSAP]"
       },
       {
-        "correctAnswer": "partileder for dnsap i 1940'erne og en af de mest prominente nazisternes i danmark under den tyske besættelse.",
+        "correctAnswer": "partileder for dnsap i 1940'erne og en af de mest prominente nazisternes i danmark under den tyske bes\u00e6ttelse.",
         "id": "fc4",
         "question": "Frits Clausen"
       },
       {
-        "correctAnswer": "en politisk bevægelse eller initiativ, der går ud på at overtage regeringsmagten i en stat. i dette tilfælde omhandler det den danske nazistparti dnsap's forsøg på at styrte den danske regering i 1940 og overtage magten.",
+        "correctAnswer": "en politisk bev\u00e6gelse eller initiativ, der g\u00e5r ud p\u00e5 at overtage regeringsmagten i en stat. i dette tilf\u00e6lde omhandler det den danske nazistparti dnsap's fors\u00f8g p\u00e5 at styrte den danske regering i 1940 og overtage magten.",
         "id": "fc5",
         "question": "[Regeringsstorm]"
       },
@@ -360,63 +316,63 @@
   },
   {
     "description": "Quiz generated from your content",
-    "type": "flashcard",
+    "id": "quiz_1746692398",
     "questions": [
       {
-        "correctAnswer": "politikkens formål var at finde danmark en plads i et nødvendigt og gensidigt aktivt samarbejde med stor-tyskland for at bevare landets demokratiske samfundsform.",
+        "correctAnswer": "politikkens form\u00e5l var at finde danmark en plads i et n\u00f8dvendigt og gensidigt aktivt samarbejde med stor-tyskland for at bevare landets demokratiske samfundsform.",
         "id": "fc1",
         "question": "Term: Samarbejdspolitik (Cooperation policy)"
       },
       {
-        "correctAnswer": "dnsap-leder, der håbede på at overtage regeringsmagten i danmark i kølvandet af den tyske fremgang i 1940.",
+        "correctAnswer": "dnsap-leder, der h\u00e5bede p\u00e5 at overtage regeringsmagten i danmark i k\u00f8lvandet af den tyske fremgang i 1940.",
         "id": "fc2",
         "question": "Term: Frits Clausen"
       },
       {
-        "correctAnswer": "en procesion med både nazister og modstandere, som marcherede gennem københavn til rådhuspladsen den 17. november 1940.",
+        "correctAnswer": "en procesion med b\u00e5de nazister og modstandere, som marcherede gennem k\u00f8benhavn til r\u00e5dhuspladsen den 17. november 1940.",
         "id": "fc3",
         "question": "Term: Demonstrationstog (Demo train)"
       },
       {
         "correctAnswer": "en gruppe, der meldte sig hos kong christian 10 og foreslog en ny regering uden om folkettinget og de politiske partier den 14. november.",
         "id": "fc4",
-        "question": "Term: Højgaard-kreds (Highgaard group)"
+        "question": "Term: H\u00f8jgaard-kreds (Highgaard group)"
       },
       {
         "correctAnswer": "kampe mellem modstandere og nazister i forbindelse med demonstrationstoget den 17. november 1940.",
         "id": "fc5",
-        "question": "Term: Slagsmål (Fight)"
+        "question": "Term: Slagsm\u00e5l (Fight)"
       }
     ],
+    "timestamp": "2025-05-08T14:03:25.936Z",
     "title": "Hurtigt viden - 2. verdenskrig",
-    "timestamp": "2025-05-08T08:19:58.165Z",
-    "id": "quiz_1746692398"
+    "type": "flashcard"
   },
   {
     "description": "Quiz generated from your content",
     "type": "multiple_choice",
     "questions": [
       {
-        "correctAnswer": "Selvstændig kunstnerisk genius",
+        "correctAnswer": "Selvst\u00e6ndig kunstnerisk genius",
         "id": "q1",
         "options": [
           "Intertekstualitet",
           "Arkiv",
-          "Selvstændig kunstnerisk genius",
+          "Selvst\u00e6ndig kunstnerisk genius",
           "Institutionsmagtstrukturer"
         ],
-        "question": "Hvilket begreb beskriver en litterær tekst, der betragtes som et selvstændigt og individuelt livende \"organisme\"?"
+        "question": "Hvilket begreb beskriver en litter\u00e6r tekst, der betragtes som et selvst\u00e6ndigt og individuelt livende \"organisme\"?"
       },
       {
-        "correctAnswer": "Selvstændig kunstnerisk genius",
+        "correctAnswer": "Selvst\u00e6ndig kunstnerisk genius",
         "id": "q2",
         "options": [
           "Intertekstualitet",
           "Arkiv",
-          "Selvstændig kunstnerisk genius",
+          "Selvst\u00e6ndig kunstnerisk genius",
           "Institutionsmagtstrukturer"
         ],
-        "question": "Hvilket begreb beskriver, at forfatteren er en selvstændig og bevidst skabende kraft?"
+        "question": "Hvilket begreb beskriver, at forfatteren er en selvst\u00e6ndig og bevidst skabende kraft?"
       },
       {
         "correctAnswer": "Arkiv",
@@ -424,7 +380,7 @@
         "options": [
           "Intertekstualitet",
           "Arkiv",
-          "Selvstændig kunstnerisk genius",
+          "Selvst\u00e6ndig kunstnerisk genius",
           "Institutionsmagtstrukturer"
         ],
         "question": "Hvilket begreb beskriver den samling af forskellige slags diskurser, der er en del af enhver culture?"
@@ -435,7 +391,7 @@
         "options": [
           "Intertekstualitet",
           "Arkiv",
-          "Selvstændig kunstnerisk genius",
+          "Selvst\u00e6ndig kunstnerisk genius",
           "Institutionsmagtstrukturer"
         ],
         "question": "Hvilket begreb betegner de samme mennesker, der har skabt tekster, intertekstualiteten og et arkiv?"
@@ -446,7 +402,7 @@
         "options": [
           "Intertekstualitet",
           "Arkiv",
-          "Selvstændig kunstnerisk genius",
+          "Selvst\u00e6ndig kunstnerisk genius",
           "Institutionsmagtstrukturer"
         ],
         "question": "Hvilket begreb beskriver, at teksten er en samling af muligheder, der er bestemt ved sprog-, konvencion- og institutionelle magtstrukturer?"
@@ -457,7 +413,7 @@
         "options": [
           "Intertekstualitet",
           "Arkiv",
-          "Selvstændig kunstnerisk genius",
+          "Selvst\u00e6ndig kunstnerisk genius",
           "Institutionsmagtstrukturers stemmer"
         ],
         "question": "Hvilket begreb betegner de grupper, der er kontrolleret af forskellige sprog-, konvention- og institutionelle magtstrukturer?"
@@ -544,5 +500,97 @@
     "quizId": "quiz_1746705584",
     "timestamp": "2025-05-08T12:13:50.465Z",
     "title": "Quiz om Romantikken"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Adolf Hitler",
+        "id": "q1",
+        "options": [
+          "Adolf Hitler",
+          "Benito Mussolini",
+          "Emperor Hirohito",
+          "Joseph Stalin"
+        ],
+        "question": "Who was the leader of the Axis Powers during World War II?"
+      },
+      {
+        "correctAnswer": "The D-Day Invasion",
+        "id": "q2",
+        "options": [
+          "The Battle of Berlin",
+          "The bombing of Pearl Harbor",
+          "The D-Day Invasion",
+          "The dropping of the atomic bomb on Hiroshima and Nagasaki"
+        ],
+        "question": "What event marked the end of World War II in Europe?"
+      }
+    ],
+    "title": "Quiz [NY]",
+    "timestamp": "2025-05-08T14:07:38.111Z",
+    "id": "quiz_1746713258"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Lord Byron",
+        "id": "q1",
+        "options": [
+          "William Shakespeare",
+          "Jane Austen",
+          "Lord Byron",
+          "Charles Dickens"
+        ],
+        "question": "Hvem var en af de f\u00f8rste st\u00f8rre forfattere, der fandtes i den Romantiske bev\u00e6gelse?"
+      },
+      {
+        "correctAnswer": "At skabe et idealistisk verdensbillede i litteraturen",
+        "id": "q2",
+        "options": [
+          "At vise, at kunstneren er selvst\u00e6ndig og uafh\u00e6ngig",
+          "At l\u00f8srive kunstneren fra det bourgeoisiske samfund",
+          "At skabe et idealistisk verdensbillede i litteraturen",
+          "At vise, at der ikke findes en selvst\u00e6ndig og levende tekst"
+        ],
+        "question": "Hvilken af disse var en central ide i Romantismen?"
+      }
+    ],
+    "title": "Quiz om Romantikken",
+    "timestamp": "2025-05-12T07:35:10.634Z",
+    "id": "quiz_1747035303",
+    "quizId": "quiz_1747035303"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Oscar Wilde",
+        "id": "q1",
+        "options": [
+          "Emily Dickinson",
+          "William Shakespeare",
+          "Oscar Wilde",
+          "Jane Austen"
+        ],
+        "question": "Who can be considered a partial inheritor of Romantic tendencies who seemed to enjoy shocking the bourgeois, both in his literary and life styles?"
+      },
+      {
+        "correctAnswer": "The gulf between odd artists and their sometimes shocked, often uncomprehending audience",
+        "id": "q2",
+        "options": [
+          "The gulf between odd artists and their sometimes shocked, often uncomprehending audience",
+          "The harmony between artists and the general public",
+          "The superiority of artists over the general public",
+          "The need for artists to educate the general public"
+        ],
+        "question": "What was a significant Romantic theme that became the contrast between artist and middle-class \"Philistine\"?"
+      }
+    ],
+    "title": "Quiz om Romantikken [NY 2]",
+    "timestamp": "2025-05-12T07:43:48.082Z",
+    "id": "quiz_1747035791",
+    "quizId": "quiz_1747035791"
   }
 ]

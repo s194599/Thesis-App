@@ -288,8 +288,20 @@ const QuizForm = () => {
       // Update the state with the generated quiz
       setGeneratedQuiz(finalQuizData);
       
-      // Clear the quizDocuments from localStorage after successful generation
-      localStorage.removeItem("quizDocuments");
+      // Instead of completely removing quizDocuments, preserve the moduleId for later use
+      const quizDocuments = localStorage.getItem("quizDocuments");
+      if (quizDocuments) {
+        try {
+          const { moduleId, moduleName } = JSON.parse(quizDocuments);
+          // Keep only the moduleId and moduleName for later module association
+          localStorage.setItem("quizDocuments", JSON.stringify({
+            moduleId,
+            moduleName
+          }));
+        } catch (error) {
+          console.error("Error preserving module information:", error);
+        }
+      }
     } catch (err) {
       console.error("Error generating quiz:", err);
       setError(
