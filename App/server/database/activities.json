@@ -63,11 +63,29 @@
     "moduleSpecific": true
   },
   {
-    "moduleId": "module-3",
     "id": "activity_quiz_quiz_1747042463_module-3_1747042464678",
+    "moduleId": "module-3",
+    "moduleSpecific": true,
+    "quizId": "quiz_1747042463",
     "title": "Flashcard om Romantikken",
     "type": "flashcard",
-    "quizId": "quiz_1747042463",
+    "isNew": false,
+    "parentId": null
+  },
+  {
+    "moduleId": "module-2",
+    "id": "activity_quiz_quiz_1747057433_module-2_1747057434463",
+    "title": "Quiz om 2. Verdenskrig",
+    "type": "multiple_choice",
+    "quizId": "quiz_1747057433",
+    "moduleSpecific": true
+  },
+  {
+    "moduleId": "module-2",
+    "id": "activity_quiz_quiz_1747057854_module-2_1747057854715",
+    "title": "Quiz om 2. Verdenskrig",
+    "type": "flashcard",
+    "quizId": "quiz_1747057854",
     "moduleSpecific": true
   }
 ]

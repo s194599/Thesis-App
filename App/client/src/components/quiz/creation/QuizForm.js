@@ -66,7 +66,8 @@ const QuizForm = () => {
         
         // Set a default quiz title based on the module name
         if (moduleName) {
-          updateFormData("quizTitle", `Quiz om ${moduleName}`);
+          const titlePrefix = formData.questionType === "flashcards" ? "Flashcards" : "Quiz";
+          updateFormData("quizTitle", `${titlePrefix} om ${moduleName}`);
         }
         
         if (documents && documents.length > 0) {
@@ -311,6 +312,19 @@ const QuizForm = () => {
       setLoading(false);
     }
   };
+
+  // Effect to update quiz title when question type changes
+  useEffect(() => {
+    // Only update if we have a title that follows the pattern
+    if (formData.quizTitle) {
+      const titleMatch = formData.quizTitle.match(/^(Quiz|Flashcards) om (.+)$/);
+      if (titleMatch) {
+        const moduleName = titleMatch[2];
+        const titlePrefix = formData.questionType === "flashcards" ? "Flashcards" : "Quiz";
+        updateFormData("quizTitle", `${titlePrefix} om ${moduleName}`);
+      }
+    }
+  }, [formData.questionType]);
 
   return (
     <div className="container mt-4">

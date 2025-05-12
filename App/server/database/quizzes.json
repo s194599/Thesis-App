@@ -73,5 +73,113 @@
     "timestamp": "2025-05-12T09:34:23.885Z",
     "id": "quiz_1747042463",
     "type": "flashcard"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "De f\u00f8rste tyske tropper tr\u00e6nger ind i Danmark",
+        "id": "q1",
+        "options": [
+          "Den danske regering giver oplysninger om at den vil blive en del af det tyske rigsf\u00e6llesskab",
+          "De f\u00f8rste tyske tropper tr\u00e6nger ind i Danmark",
+          "Der udkommer et ny \u00e5rsskrift fra Det Danske Arbejderparti",
+          "Der er generale valg i Danmark"
+        ],
+        "question": "Hvilken af f\u00f8lgende begivenheder fandt sted den 9. april 1940?"
+      },
+      {
+        "correctAnswer": "Den danske nazistgruppe DNSAP",
+        "id": "q2",
+        "options": [
+          "Det Radikale Venstreparti",
+          "Det Konservative Parti",
+          "Den danske nazistgruppe DNSAP",
+          "Socialdemokratiet"
+        ],
+        "question": "Hvilken af f\u00f8lgende partier var en af de mest modsatte til den danske regering under bes\u00e6ttelsen?"
+      },
+      {
+        "correctAnswer": "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
+        "id": "q3",
+        "options": [
+          "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "Den danske regering tilbyder at danser til tysk musik",
+          "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
+          "Der findes ingen af disse begivenheder, der er en af de vigtigste i den danske bes\u00e6ttelse"
+        ],
+        "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?"
+      },
+      {
+        "correctAnswer": "Positivt svar",
+        "id": "q4",
+        "options": [
+          "Positivt svar",
+          "Negativt svar",
+          "Politisk uafh\u00e6ngighed",
+          "Krigsberedskab"
+        ],
+        "question": "Hvilken af f\u00f8lgende betegnelser kendetegner den tidlige begyndelse p\u00e5 samarbejdspolitikken?"
+      },
+      {
+        "correctAnswer": "Der er et store nazistm\u00f8de i K\u00f8benhavn, der slutter med slagsm\u00e5l og arrestationer",
+        "id": "q5",
+        "options": [
+          "Der er et store nazistm\u00f8de i K\u00f8benhavn, der slutter med slagsm\u00e5l og arrestationer",
+          "Den danske regering giver oplysninger om at den vil blive en del af det tyske rigsf\u00e6llesskab",
+          "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "Der er generale valg i Danmark"
+        ],
+        "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?"
+      }
+    ],
+    "title": "Quiz om 2. Verdenskrig",
+    "timestamp": "2025-05-12T13:43:53.982Z",
+    "id": "quiz_1747057433",
+    "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "politik der fors\u00f8gte at bevare danmarks demokratiske samfundsform under den tyske bes\u00e6ttelse i 1940-erne.",
+        "id": "fc1",
+        "question": "Term: Samarbejdspolitikken (Samarbejdspolitik)",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "det danske nazistparti, der blev ledet af frits clausen og havde til form\u00e5l at overtage magten i danmark i k\u00f8lvandet p\u00e5 tysklands fremgang.",
+        "id": "fc2",
+        "question": "Term: DNSAP (Dansk Socialistisk Parti)",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "en r\u00e6kke folkelige arrangementer, der samlede mange danskere for at synges patriotiske sange i protest mod den tyske bes\u00e6ttelse.",
+        "id": "fc3",
+        "question": "Term: Alsangsbev\u00e6gelsen (Alsangsst\u00e6vnerne)",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "den danske modstandsbev\u00e6gelse var en gruppe af mennesker, der arbejdede for at fjerne den tyske bes\u00e6ttelse fra danmark.",
+        "id": "fc4",
+        "question": "Term: Modstandsbev\u00e6gelsen (Modstand)",
+        "type": "flashcard",
+        "options": []
+      },
+      {
+        "correctAnswer": "statue i k\u00f8benhavn, der symboliserer en af de vigtigste kampagner under den danske modstandsbev\u00e6gelse.",
+        "id": "fc5",
+        "question": "Term: Den lille Hornbl\u00e6ser (Den lille hornbl\u00e6ser)",
+        "type": "flashcard",
+        "options": []
+      }
+    ],
+    "title": "Quiz om 2. Verdenskrig",
+    "timestamp": "2025-05-12T13:50:54.283Z",
+    "id": "quiz_1747057854",
+    "type": "flashcard"
   }
 ]

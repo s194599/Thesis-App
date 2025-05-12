@@ -34,7 +34,12 @@ def generate_quiz_with_ollama(
     if question_type == "multipleChoice":
         format_instructions = f"""
         Generate a multiple-choice quiz based on this content:
+        
+        CONTENT START
+
         {content}
+
+        CONTENT END
 
         The quiz should have {num_questions} questions and follow EXACTLY this format:
 
@@ -54,16 +59,18 @@ def generate_quiz_with_ollama(
     
 
         And so on. IMPORTANT: 
-        - Number the questions starting with 1.
-        - Make each question challenging but fair
         - Ensure there is only ONE correct answer
-        - Format the options exactly as shown with A), B), C), D)
-        - End each question with "Correct answer: X" where X is the letter
+        - Every question should be based on the content
         """
     elif question_type == "flashcards":
         format_instructions = f"""
         Generate a set of flashcards based on this content:
+
+        CONTENT START
+
         {content}
+
+        CONTENT END
 
         The flashcards should have {num_questions} cards and follow EXACTLY this format:
 
@@ -74,11 +81,7 @@ def generate_quiz_with_ollama(
         Flip side: [Definition or answer]
 
         And so on. IMPORTANT:
-        - Number the cards starting with 1.
-        - Make each flashcard cover important concepts or terminology from the content
-        - Format exactly as shown with "Flip side:" marking the answer
-        - Front sides should be concise questions, terms, or concepts
-        - Back sides should provide clear, helpful explanations or definitions
+        - Every flashcard should be based on the content
         """
     elif question_type == "trueFalse":
         format_instructions = f"""
