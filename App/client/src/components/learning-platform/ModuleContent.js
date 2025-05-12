@@ -539,6 +539,8 @@ const ModuleContent = ({
         }
         // Fallback to default YouTube icon
         return <BsYoutube className="text-danger" size={20} />;
+      case "link":
+        return <BsLink45Deg className="text-primary" size={20} />;
       case "word":
         return <BsFileEarmarkWord className="text-primary" size={20} />;
       case "quiz":
@@ -566,7 +568,22 @@ const ModuleContent = ({
     if (!filename) return "pdf"; // Default
     
     const lowerFilename = filename.toLowerCase();
+    const isUrl = 
+      lowerFilename.startsWith("http://") || 
+      lowerFilename.startsWith("https://") ||
+      lowerFilename.includes("www.") ||
+      lowerFilename.match(/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/);
     
+    // Check for YouTube/Vimeo URLs first
+    if (
+      lowerFilename.includes("youtube.com") ||
+      lowerFilename.includes("youtu.be") ||
+      lowerFilename.includes("vimeo.com")
+    ) {
+      return "youtube";
+    }
+    
+    // Check for file extensions
     if (lowerFilename.endsWith(".pdf")) {
       return "pdf";
     } else if (
@@ -574,12 +591,6 @@ const ModuleContent = ({
       lowerFilename.endsWith(".docx")
     ) {
       return "word";
-    } else if (
-      lowerFilename.includes("youtube.com") ||
-      lowerFilename.includes("youtu.be") ||
-      lowerFilename.includes("vimeo.com")
-    ) {
-      return "youtube";
     } else if (
       lowerFilename.endsWith(".jpg") ||
       lowerFilename.endsWith(".jpeg") ||
@@ -601,10 +612,15 @@ const ModuleContent = ({
       lowerFilename.endsWith(".m4a")
     ) {
       return "audio";
-    } else {
-      // Default to generic file
-      return "file";
+    } 
+    
+    // If it's a URL and doesn't match any of the above types, it's a general web link
+    if (isUrl) {
+      return "link";
     }
+    
+    // Default to generic file for non-URLs
+    return "file";
   };
 
   // Function to extract YouTube video ID from different URL formats
@@ -2632,7 +2648,7 @@ const ModuleContent = ({
           moduleId={module.id}
         />
         
-        {userRole === "student" && (
+        {userRole === "student" && activeTab !== "forum" && (
           <div className="mb-2 mt-4">
             <ProgressBar
               now={progressPercentage}
