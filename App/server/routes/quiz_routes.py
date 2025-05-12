@@ -173,6 +173,24 @@ def save_quiz():
         # Add timestamp if not present
         if "timestamp" not in quiz_data:
             quiz_data["timestamp"] = time.time()
+            
+        # Automatically determine and set quiz type if not present
+        if "type" not in quiz_data and "questions" in quiz_data and len(quiz_data["questions"]) > 0:
+            # Check if first question has a type field
+            first_question = quiz_data["questions"][0]
+            
+            # Determine if this is a flashcard quiz
+            if "type" in first_question and first_question["type"] == "flashcard":
+                quiz_data["type"] = "flashcard"
+            else:
+                # Check if it has options (multiple choice)
+                if "options" in first_question and len(first_question["options"]) > 0:
+                    quiz_data["type"] = "multiple_choice"
+                else:
+                    # Default to multiple_choice if can't determine
+                    quiz_data["type"] = "multiple_choice"
+            
+            logger.info(f"Automatically determined quiz type: {quiz_data['type']}")
 
         # Load existing quizzes
         quizzes_file = os.path.join(DATABASE_FOLDER, "quizzes.json")

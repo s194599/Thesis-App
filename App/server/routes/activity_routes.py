@@ -37,14 +37,52 @@ def store_activity():
         activities = load_json_file(activities_file, [])
 
         # Special handling for quiz activities to prevent duplication across modules
-        if activity_data.get("type") == "quiz" and activity_data.get("quizId"):
+        if (activity_data.get("type") == "quiz" or 
+            activity_data.get("type") == "flashcards" or
+            activity_data.get("type") == "multiple_choice" or
+            activity_data.get("type") == "flashcard") and activity_data.get("quizId"):
+            
             quiz_id = activity_data.get("quizId")
             module_id = activity_data.get("moduleId")
+            
+            # Automatically determine the correct type based on the quiz type
+            try:
+                quizzes_file = os.path.join(DATABASE_FOLDER, "quizzes.json")
+                quizzes = load_json_file(quizzes_file, [])
+                
+                # Find the quiz with matching ID
+                quiz_item = next((q for q in quizzes if q.get("id") == quiz_id), None)
+                
+                # If the quiz is found, set the activity type based on the quiz type
+                if quiz_item:
+                    # Check quiz-level type first
+                    if quiz_item.get("type") == "flashcard":
+                        activity_data["type"] = "flashcard"
+                    elif quiz_item.get("type") == "multiple_choice":
+                        activity_data["type"] = "multiple_choice"
+                    # If no quiz-level type, check the first question's type
+                    elif quiz_item.get("questions") and len(quiz_item.get("questions", [])) > 0:
+                        first_question = quiz_item["questions"][0]
+                        if first_question.get("type") == "flashcard":
+                            activity_data["type"] = "flashcard"
+                        else:
+                            activity_data["type"] = "multiple_choice"
+                    else:
+                        # Default to multiple_choice if can't determine
+                        activity_data["type"] = "multiple_choice"
+                        
+                    # Log the activity type set
+                    logger.info(f"Set activity type for quiz {quiz_id} to {activity_data['type']}")
+            except Exception as e:
+                logger.error(f"Error determining quiz type: {str(e)}")
             
             # Check if this quiz already exists in any module
             existing_quiz_indices = []
             for i, activity in enumerate(activities):
-                if (activity.get("type") == "quiz" and 
+                if ((activity.get("type") == "quiz" or 
+                     activity.get("type") == "flashcards" or
+                     activity.get("type") == "multiple_choice" or
+                     activity.get("type") == "flashcard") and 
                     activity.get("quizId") == quiz_id):
                     existing_quiz_indices.append(i)
                     

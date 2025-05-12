@@ -19,15 +19,6 @@
     "moduleId": "module-4"
   },
   {
-    "moduleId": "module-4",
-    "id": "activity_quiz_quiz_1744270236_module-4_1744270238462",
-    "title": "Sociale medier quiz",
-    "type": "quiz",
-    "quizId": "quiz_1744270236",
-    "moduleSpecific": true,
-    "quizScore": 0
-  },
-  {
     "title": "Unges brug af sociale medier - konsekvenesr",
     "description": "",
     "type": "youtube",
@@ -64,11 +55,11 @@
     "moduleId": "module-1"
   },
   {
-    "moduleId": "module-2",
-    "id": "activity_quiz_quiz_1746692398_module-2_1746692400413",
-    "title": "Hurtigt viden - 2. verdenskrig",
-    "type": "quiz",
-    "quizId": "quiz_1746692398",
+    "moduleId": "module-3",
+    "id": "activity_quiz_quiz_1747041853_module-3_1747041855736",
+    "title": "Quiz om Romantikken",
+    "type": "multiple_choice",
+    "quizId": "quiz_1747041853",
     "moduleSpecific": true
   }
 ]
