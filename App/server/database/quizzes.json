@@ -140,46 +140,80 @@
   },
   {
     "description": "Quiz generated from your content",
+    "id": "quiz_1747057854",
     "questions": [
       {
         "correctAnswer": "politik der fors\u00f8gte at bevare danmarks demokratiske samfundsform under den tyske bes\u00e6ttelse i 1940-erne.",
         "id": "fc1",
+        "options": [],
         "question": "Term: Samarbejdspolitikken (Samarbejdspolitik)",
-        "type": "flashcard",
-        "options": []
+        "type": "flashcard"
       },
       {
         "correctAnswer": "det danske nazistparti, der blev ledet af frits clausen og havde til form\u00e5l at overtage magten i danmark i k\u00f8lvandet p\u00e5 tysklands fremgang.",
         "id": "fc2",
+        "options": [],
         "question": "Term: DNSAP (Dansk Socialistisk Parti)",
-        "type": "flashcard",
-        "options": []
+        "type": "flashcard"
       },
       {
         "correctAnswer": "en r\u00e6kke folkelige arrangementer, der samlede mange danskere for at synges patriotiske sange i protest mod den tyske bes\u00e6ttelse.",
         "id": "fc3",
+        "options": [],
         "question": "Term: Alsangsbev\u00e6gelsen (Alsangsst\u00e6vnerne)",
-        "type": "flashcard",
-        "options": []
+        "type": "flashcard"
       },
       {
         "correctAnswer": "den danske modstandsbev\u00e6gelse var en gruppe af mennesker, der arbejdede for at fjerne den tyske bes\u00e6ttelse fra danmark.",
         "id": "fc4",
+        "options": [],
         "question": "Term: Modstandsbev\u00e6gelsen (Modstand)",
-        "type": "flashcard",
-        "options": []
+        "type": "flashcard"
       },
       {
         "correctAnswer": "statue i k\u00f8benhavn, der symboliserer en af de vigtigste kampagner under den danske modstandsbev\u00e6gelse.",
         "id": "fc5",
+        "options": [],
         "question": "Term: Den lille Hornbl\u00e6ser (Den lille hornbl\u00e6ser)",
-        "type": "flashcard",
-        "options": []
+        "type": "flashcard"
       }
     ],
-    "title": "Quiz om 2. Verdenskrig",
-    "timestamp": "2025-05-12T13:50:54.283Z",
-    "id": "quiz_1747057854",
+    "timestamp": "2025-05-12T14:13:13.545Z",
+    "title": "Flashcards om 2. Verdenskrig",
+    "type": "flashcard",
+    "quizId": "quiz_1747057854"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "f\u00e6llessangbev\u00e6gelse der startede i \u00e5lborg i juli m\u00e5ned og kulminerede i f\u00e6lledparken i k\u00f8benhavn den 1. september 1940, hvor over 700.000 mennesker deltog",
+        "id": "fc1",
+        "question": "Alsangsst\u00e6vner",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "udenrigsminister fra den 8. juli 1940 og blev kritiseret for at f\u00f8re en passiv politik mod bes\u00e6ttelsesmagten, som han i sin tiltr\u00e6delseserkl\u00e6ring udtalte: \"ved de store sejre, der har sl\u00e5et verden med forbavselse og beundring, er en ny tid oprundet i europa, der vil medf\u00f8re en nyordning i politisk og \u00f8konomisk henseende under tysklands f\u00f8rerskab.\"",
+        "id": "fc2",
+        "question": "Erik Scavenius",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "dansk national socialistiske arbejderparti (dnsap), danske nazister der havde h\u00e5bet p\u00e5 at overtage regeringsmagten i danmark i k\u00f8lvandet af den tyske fremgang",
+        "id": "fc3",
+        "question": "DNSAP",
+        "type": "flashcard"
+      },
+      {
+        "correctAnswer": "en repr\u00e6sentant for den s\u00e5kaldte h\u00f8jgaard-kreds m\u00f8dte privataudiens hos christian 10 den 14. november og foreslog kongen at udn\u00e6vne en ny regering uden om folketinget og de politiske partier, kongen afviste forslaget",
+        "id": "fc4",
+        "question": "H\u00f8jgaard-kreds",
+        "type": "flashcard"
+      }
+    ],
+    "title": "Flashcards om 2. Verdenskrig",
+    "timestamp": "2025-05-12T14:21:29.402Z",
+    "id": "quiz_1747059689",
     "type": "flashcard"
   }
 ]

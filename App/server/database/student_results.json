@@ -322,6 +322,51 @@
       "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-05-12T16:22:31.977570",
+      "start_timestamp": "2025-05-12T14:21:42.979Z",
+      "quiz_id": "quiz_1747059689",
+      "quiz_title": "Flashcards om 2. Verdenskrig",
+      "score": 2,
+      "total_questions": 4,
+      "answers": [
+        {
+          "question_id": "fc1",
+          "question": "Alsangsst\u00e6vner",
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc2",
+          "question": "Erik Scavenius",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc3",
+          "question": "DNSAP",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc4",
+          "question": "H\u00f8jgaard-kreds",
+          "answer": "Didn't know it",
+          "correct": false,
+          "is_flashcard": true,
+          "viewed": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
     }
   ]
 }

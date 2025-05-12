@@ -74,14 +74,18 @@ def generate_quiz_with_ollama(
 
         The flashcards should have {num_questions} cards and follow EXACTLY this format:
 
-        1. Term or question
+        1. [Term or question]
         Flip side: [Definition or answer]
 
-        2. Term or question
+        2. [Term or question]
         Flip side: [Definition or answer]
 
         And so on. IMPORTANT:
-        - Every flashcard should be based on the content
+        - Number the cards starting with 1.
+        - Make each flashcard cover important concepts or terminology from the content
+        - Format exactly as shown with "Flip side:" marking the answer
+        - Front sides should be concise questions, terms, or concepts
+        - Back sides should provide clear, helpful explanations or definitions
         """
     elif question_type == "trueFalse":
         format_instructions = f"""
