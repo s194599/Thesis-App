@@ -25,17 +25,26 @@ const ModuleOverview = () => {
 
   // Profile image URLs (open source)
   const profileImages = {
-    // Default profile images from UI Faces (open source)
+    // Default profile images of young people (around 18) from randomuser.me
     default: [
-      "https://randomuser.me/api/portraits/men/1.jpg",
-      "https://randomuser.me/api/portraits/women/2.jpg",
-      "https://randomuser.me/api/portraits/men/3.jpg",
-      "https://randomuser.me/api/portraits/women/4.jpg",
-      "https://randomuser.me/api/portraits/men/5.jpg",
-      "https://randomuser.me/api/portraits/women/6.jpg",
+      "https://randomuser.me/api/portraits/men/18.jpg", // Young male
+      "https://randomuser.me/api/portraits/women/9.jpg", // Young female
+      "https://randomuser.me/api/portraits/men/53.jpg", // Young male
+      "https://randomuser.me/api/portraits/women/46.jpg", // Young female
+      "https://randomuser.me/api/portraits/men/61.jpg", // Young male
+      "https://randomuser.me/api/portraits/women/72.jpg", // Young female
     ],
-    // Known student IDs with specific images
-    "1": "https://randomuser.me/api/portraits/men/41.jpg", // Christian Wu
+    // Unique images for all 10 students matching their gender and appropriate age (high school)
+    "1": "https://randomuser.me/api/portraits/men/18.jpg", // Christian Wu
+    "2": "https://randomuser.me/api/portraits/women/9.jpg", // Maria Jensen
+    "3": "https://randomuser.me/api/portraits/men/53.jpg", // Peter Nielsen
+    "4": "https://randomuser.me/api/portraits/women/46.jpg", // Sofie Hansen
+    "5": "https://randomuser.me/api/portraits/men/61.jpg", // Frederik Barba
+    "6": "https://randomuser.me/api/portraits/women/72.jpg", // Emma Christensen
+    "7": "https://randomuser.me/api/portraits/men/65.jpg", // Mikkel Pedersen
+    "8": "https://randomuser.me/api/portraits/women/31.jpg", // Ida Larsen
+    "9": "https://randomuser.me/api/portraits/men/19.jpg", // Alexander Schmidt
+    "10": "https://randomuser.me/api/portraits/women/89.jpg", // Laura Andersen
   };
 
   // Get profile image for a student

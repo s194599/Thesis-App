@@ -11,11 +11,11 @@ const DEFAULT_PROFILE_PICTURE = 'https://images.unsplash.com/photo-1511367461989
 const USER_PROFILES = {
   student: {
     name: 'Christian Wu',
-    profilePictureUrl: 'https://randomuser.me/api/portraits/men/36.jpg'
+    profilePictureUrl: 'https://randomuser.me/api/portraits/men/18.jpg'
   },
   teacher: {
     name: 'Carsten Blachmann',
-    profilePictureUrl: 'https://randomuser.me/api/portraits/men/42.jpg'
+    profilePictureUrl: 'https://randomuser.me/api/portraits/men/76.jpg'
   }
 };
 
