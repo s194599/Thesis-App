@@ -28,9 +28,9 @@ const LanguageSelector = () => {
             />
           ))}
         </div>
-        <Form.Text className="text-muted">
+       {/*  <Form.Text className="text-muted">
           Vælg det sprog, som quizspørgsmålene skal genereres på.
-        </Form.Text>
+        </Form.Text> */}
       </Form.Group>
     </div>
   );

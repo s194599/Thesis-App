@@ -85,9 +85,9 @@ const QuestionTypeSelector = () => {
             </div>
           ))}
         </div>
-        <Form.Text className="text-muted">
+        {/* <Form.Text className="text-muted">
           Bemærk: I MVP'en er kun multiple choice og flashcards tilgængelige.
-        </Form.Text>
+        </Form.Text> */}
       </Form.Group>
     </div>
   );

@@ -156,7 +156,7 @@ const FileUploader = () => {
             : "Træk og slip filer her, eller klik for at vælge filer"}
         </p>
         <p className="text-muted small">
-          Accepterede formater: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM, MP3, WAV, OGG, M4A
+          Accepterede formater: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM, MP3, WAV, M4A
           (Maksimal størrelse: 50MB per fil)
         </p>
       </div>
@@ -181,9 +181,9 @@ const FileUploader = () => {
           </Button>
         </InputGroup>
         {youtubeError && <div className="text-danger small mb-2">{youtubeError}</div>}
-        <p className="text-muted small">
+        {/* <p className="text-muted small">
           Tilføj YouTube videoer til at generere quiz-spørgsmål baseret på videoindholdet.
-        </p>
+        </p> */}
       </div>
 
       {formData.files && formData.files.length > 0 && (
@@ -197,7 +197,7 @@ const FileUploader = () => {
             </span>
           </div>
 
-          {(hasVideoFiles || hasYoutubeVideos) && (
+          {/* {(hasVideoFiles || hasYoutubeVideos) && (
             <div className="mt-3">
               <Alert variant="info">
                 <strong>Bemærk:</strong> {hasVideoFiles ? "Videoer vil blive transskriberet automatisk ved hjælp af AI-talegenkendelse." : ""} 
@@ -206,7 +206,7 @@ const FileUploader = () => {
                 <strong>Tips:</strong> Brug videoer med tydelig lyd eller undertekster for de bedste resultater.
               </Alert>
             </div>
-          )}
+          )} */}
 
           <div className="border rounded">
             {formData.files.map((file, index) => (

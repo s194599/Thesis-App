@@ -68,8 +68,23 @@ const QuizResults = () => {
         }
         const resultsData = await resultsResponse.json();
         
+        // Fetch the quiz data directly from quizzes.json to get correct answers
+        const quizResponse = await fetch(`/api/quizzes/${quizId}`);
+        if (!quizResponse.ok) {
+          throw new Error('Kunne ikke hente quiz detaljer');
+        }
+        const quizData = await quizResponse.json();
+        setQuizDetails(quizData);
+        
+        // Create a map of question IDs to correct answers
+        const correctAnswersMap = {};
+        if (quizData && quizData.questions) {
+          quizData.questions.forEach(question => {
+            correctAnswersMap[question.id] = question.correctAnswer;
+          });
+        }
+        
         // Update the results to include full question and answer data
-        // This is an enhanced version of what the backend might provide
         if (Array.isArray(resultsData)) {
           // Enhance the results with detailed info where available
           const enhancedResults = resultsData.map(result => {
@@ -77,12 +92,17 @@ const QuizResults = () => {
               return {
                 ...result,
                 answers: result.answers.map(answer => {
-                  // For each answer, add the question text if available
+                  // For each answer, add the question text and correct answer from quizzes.json if available
+                  const questionId = answer.question_id;
+                  const correctAnswer = correctAnswersMap[questionId] || 
+                                        answer.correct_answer || 
+                                        (answer.correct ? answer.answer : "Ukendt svar");
+                  
                   return {
                     ...answer,
                     question_text: answer.question || `Spørgsmål ${answer.question_id}`,
                     student_answer: answer.answer || "Intet svar",
-                    correct_answer: answer.correct_answer || (answer.correct ? answer.answer : "Ukendt svar")
+                    correct_answer: correctAnswer
                   };
                 })
               };
@@ -92,18 +112,6 @@ const QuizResults = () => {
           setQuizResults(enhancedResults);
         } else {
           setQuizResults(resultsData);
-        }
-        
-        try {
-          // Try to fetch quiz details, but continue if it fails
-          const quizResponse = await fetch(`/api/quizzes/${quizId}`);
-          if (quizResponse.ok) {
-            const quizData = await quizResponse.json();
-            setQuizDetails(quizData);
-          }
-        } catch (quizErr) {
-          console.error('Error fetching quiz details:', quizErr);
-          // We don't set an error here since we can still show results without quiz details
         }
         
         setLoading(false);
@@ -207,10 +215,8 @@ const QuizResults = () => {
     // Get the student's answer
     const studentAnswer = answer.student_answer || answer.answer || "Intet svar";
     
-    // For the correct answer, we rely on what was provided or mark it as unknown
-    // In a real app, we would fetch this from the quiz questions data
-    const correctAnswer = answer.correct_answer || 
-                          (isCorrect ? studentAnswer : "Se facitliste");
+    // Get the correct answer from our enhanced data
+    const correctAnswer = answer.correct_answer || "Se facitliste";
     
     return (
       <OverlayTrigger

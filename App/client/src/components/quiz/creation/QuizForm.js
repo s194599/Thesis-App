@@ -405,7 +405,7 @@ const QuizForm = () => {
                   </div>
 
                   {/* Sample Quiz Toggle */}
-                  <div className="mb-4">
+                 {/*  <div className="mb-4">
                     <Form.Check
                       type="switch"
                       id="sample-quiz-toggle"
@@ -420,7 +420,7 @@ const QuizForm = () => {
                       Aktiver denne mulighed for hurtigt at teste med en
                       eksempelquiz i stedet for at bruge AI-modellen.
                     </Form.Text>
-                  </div>
+                  </div> */}
 
                   {/* Submit button */}
                   <div className="d-grid gap-2 mt-4">
