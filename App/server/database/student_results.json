@@ -244,6 +244,84 @@
       "attempts": 8,
       "student_id": "1",
       "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-05-12T13:42:47.693500",
+      "start_timestamp": "2025-05-12T09:34:39.996Z",
+      "quiz_id": "quiz_1747042463",
+      "quiz_title": "Flashcard om Romantikken",
+      "score": 5,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "fc1",
+          "question": "Term: Romantic Movement",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc2",
+          "question": "Term: Romanticism vs. Realism",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc3",
+          "question": "Term: Revolutionary energy",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc4",
+          "question": "Term: Intertextuality",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        },
+        {
+          "question_id": "fc5",
+          "question": "Term: Sovereign artist",
+          "answer": "Knew it",
+          "correct": true,
+          "is_flashcard": true,
+          "viewed": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-05-12T13:46:03.488768",
+      "start_timestamp": "2025-05-12T11:45:52.304Z",
+      "quiz_id": "quiz_1747041853",
+      "quiz_title": "Quiz om Romantikken",
+      "score": 0,
+      "total_questions": 2,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "According to the text, which of the following best describes the attitude of many Romantics towards the everyday social world around them?",
+          "answer": "They showed no interest in it at all.",
+          "correct": false
+        },
+        {
+          "question_id": "q2",
+          "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
+          "answer": "The artist is a passive recipient of external influences.",
+          "correct": false
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
     }
   ]
 }

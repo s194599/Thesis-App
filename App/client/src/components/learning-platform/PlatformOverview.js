@@ -464,7 +464,7 @@ const PlatformOverview = () => {
       <div 
         className="position-fixed d-flex" 
         style={{ 
-          top: "20px", 
+          bottom: "20px", 
           right: "20px", 
           zIndex: 1030,
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",

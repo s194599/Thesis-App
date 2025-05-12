@@ -6,11 +6,6 @@ const ModuleTabs = ({ moduleId, activeTab = 'indhold', onTabChange, userRole = '
   const navigate = useNavigate();
   const isTeacher = userRole === 'teacher';
   
-  const handleQuizTabClick = () => {
-    // Navigate to the saved quizzes page when Quiz tab is clicked
-    navigate('/saved-quizzes');
-  };
-  
   const handleOverviewTabClick = () => {
     // Navigate to the module overview page when Overblik tab is clicked
     if (moduleId) {
@@ -52,14 +47,6 @@ const ModuleTabs = ({ moduleId, activeTab = 'indhold', onTabChange, userRole = '
           </Nav.Link>
         </Nav.Item>
       )}
-      <Nav.Item>
-        <Nav.Link 
-          active={activeTab === 'quiz'} 
-          onClick={handleQuizTabClick}
-        >
-          Quiz
-        </Nav.Link>
-      </Nav.Item>
     </Nav>
   );
 };
