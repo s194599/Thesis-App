@@ -87,5 +87,24 @@
     "type": "flashcard",
     "quizId": "quiz_1747059689",
     "moduleSpecific": true
+  },
+  {
+    "title": "Test mappe",
+    "description": "",
+    "type": "folder",
+    "url": "",
+    "file": null,
+    "isNew": true,
+    "parentId": null,
+    "id": "folder_1747299681360",
+    "moduleId": "module-4"
+  },
+  {
+    "id": "activity_1747299892099",
+    "title": "linkedin",
+    "description": "",
+    "type": "link",
+    "url": "https://www.linkedin.com/in/oliver-theva/",
+    "moduleId": "module-4"
   }
 ]

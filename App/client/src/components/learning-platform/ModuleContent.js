@@ -539,8 +539,6 @@ const ModuleContent = ({
         }
         // Fallback to default YouTube icon
         return <BsYoutube className="text-danger" size={20} />;
-      case "link":
-        return <BsLink45Deg className="text-primary" size={20} />;
       case "word":
         return <BsFileEarmarkWord className="text-primary" size={20} />;
       case "quiz":
@@ -559,6 +557,8 @@ const ModuleContent = ({
         return <BsFolderFill className="text-primary" size={20} />;
       case "book":
         return <BsBook className="text-success" size={20} />;
+      case "link":
+        return <BsLink45Deg className="text-primary" size={20} />;
       default:
         return <BsFileEarmark className="text-secondary" size={20} />;
     }
@@ -568,22 +568,7 @@ const ModuleContent = ({
     if (!filename) return "pdf"; // Default
     
     const lowerFilename = filename.toLowerCase();
-    const isUrl = 
-      lowerFilename.startsWith("http://") || 
-      lowerFilename.startsWith("https://") ||
-      lowerFilename.includes("www.") ||
-      lowerFilename.match(/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/);
     
-    // Check for YouTube/Vimeo URLs first
-    if (
-      lowerFilename.includes("youtube.com") ||
-      lowerFilename.includes("youtu.be") ||
-      lowerFilename.includes("vimeo.com")
-    ) {
-      return "youtube";
-    }
-    
-    // Check for file extensions
     if (lowerFilename.endsWith(".pdf")) {
       return "pdf";
     } else if (
@@ -591,6 +576,12 @@ const ModuleContent = ({
       lowerFilename.endsWith(".docx")
     ) {
       return "word";
+    } else if (
+      lowerFilename.includes("youtube.com") ||
+      lowerFilename.includes("youtu.be") ||
+      lowerFilename.includes("vimeo.com")
+    ) {
+      return "youtube";
     } else if (
       lowerFilename.endsWith(".jpg") ||
       lowerFilename.endsWith(".jpeg") ||
@@ -612,15 +603,20 @@ const ModuleContent = ({
       lowerFilename.endsWith(".m4a")
     ) {
       return "audio";
-    } 
-    
-    // If it's a URL and doesn't match any of the above types, it's a general web link
-    if (isUrl) {
+    } else if (
+      lowerFilename.startsWith("http://") || 
+      lowerFilename.startsWith("https://") ||
+      lowerFilename.includes(".com") ||
+      lowerFilename.includes(".org") ||
+      lowerFilename.includes(".net") ||
+      lowerFilename.includes(".io") ||
+      lowerFilename.includes(".dk")
+    ) {
       return "link";
+    } else {
+      // Default to generic file
+      return "file";
     }
-    
-    // Default to generic file for non-URLs
-    return "file";
   };
 
   // Function to extract YouTube video ID from different URL formats
@@ -1110,8 +1106,8 @@ const ModuleContent = ({
       const isYoutubeUrl =
         finalUrl.includes("youtube.com") || finalUrl.includes("youtu.be");
       
-      // Auto-detect file type based on URL
-      const fileType = isYoutubeUrl ? "youtube" : detectFileType(finalUrl);
+      // Set type based on URL - either YouTube or link
+      const fileType = isYoutubeUrl ? "youtube" : "link";
       
       setNewActivity({
         ...newActivity,
