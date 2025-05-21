@@ -31,6 +31,7 @@ const PlatformOverview = () => {
     return savedRole || "teacher"; // Default to teacher if no saved role
   });
   const resetTabRef = useRef(null);
+  const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
 
   // Load data from server or localStorage
   useEffect(() => {
@@ -447,6 +448,19 @@ const PlatformOverview = () => {
     }
   };
 
+  // Load sidebar state on component mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('sidebarMinimized');
+    if (savedState) {
+      setIsSidebarMinimized(savedState === 'true');
+    }
+  }, []);
+  
+  // Handle sidebar state change
+  const handleSidebarStateChange = (isMinimized) => {
+    setIsSidebarMinimized(isMinimized);
+  };
+
   if (loading) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
@@ -498,16 +512,17 @@ const PlatformOverview = () => {
       </div>
 
       <Row className="g-0">
-        <Col md={3} className="sidebar-col bg-light border-end">
+        <Col md={isSidebarMinimized ? 1 : 3} className="sidebar-col bg-light border-end" style={{ transition: 'flex 0.3s ease, max-width 0.3s ease' }}>
           <ModuleSidebar 
             modules={modules || []} 
             selectedModuleId={selectedModuleId}
             onModuleSelect={handleModuleSelect}
             userRole={userRole}
             onModuleUpdate={handleModuleUpdate}
+            onSidebarStateChange={handleSidebarStateChange}
           />
         </Col>
-        <Col md={9} className="content-col">
+        <Col md={isSidebarMinimized ? 11 : 9} className="content-col" style={{ transition: 'flex 0.3s ease, max-width 0.3s ease' }}>
           {selectedModule ? (
             <ModuleContent 
               module={selectedModule}
