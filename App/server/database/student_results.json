@@ -246,20 +246,20 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T11:06:36.088924",
-      "start_timestamp": "2025-05-26T09:06:28.103Z",
+      "timestamp": "2025-05-26T11:31:45.995736",
+      "start_timestamp": "2025-05-26T09:31:30.482Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
-      "score": 2,
+      "score": 3,
       "total_questions": 5,
       "answers": [
         {
           "question_id": "fc1",
           "question": "Term: Romantic Movement",
-          "answer": "Didn't know it",
+          "answer": "Flashcard not assessed",
           "correct": false,
           "is_flashcard": true,
-          "viewed": true
+          "viewed": false
         },
         {
           "question_id": "fc2",
@@ -272,16 +272,16 @@
         {
           "question_id": "fc3",
           "question": "Term: Revolutionary energy",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc4",
           "question": "Term: Intertextuality",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
@@ -294,7 +294,7 @@
           "viewed": true
         }
       ],
-      "attempts": 3,
+      "attempts": 4,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

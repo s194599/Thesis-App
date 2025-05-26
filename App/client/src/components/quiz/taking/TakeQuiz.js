@@ -472,7 +472,7 @@ const TakeQuiz = () => {
                       }
                     }}
                   >
-                    <BsArrowLeft className="me-2" /> Det vidste jeg ikke
+                    Det vidste jeg ikke
                   </Button>
                   <Button
                     variant="success"
@@ -499,7 +499,7 @@ const TakeQuiz = () => {
                       }
                     }}
                   >
-                    Det vidste jeg godt <BsArrowRight className="ms-2" />
+                    Det vidste jeg godt
                   </Button>
                 </div>
               )}
