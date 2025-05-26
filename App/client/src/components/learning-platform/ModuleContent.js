@@ -2098,14 +2098,14 @@ const ModuleContent = ({
                                       </Button>
                                       <Button
                                         variant="link"
-                                        className="p-0 me-2 text-primary"
+                                        /* className="p-0 me-2 text-primary"
                                         onClick={(e) => openMoveToFolderModal(e, childActivity)}
                                         style={{ fontSize: "1rem" }}
                                       >
                                         <BsFolder />
                                       </Button>
                                       <Button
-                                        variant="link"
+                                        variant="link" */
                                         className="p-0 text-danger"
                                         onClick={(e) => handleDeleteActivity(e, childActivity.id)}
                                         style={{ fontSize: "1rem" }}
@@ -2302,14 +2302,14 @@ const ModuleContent = ({
                       </Button>
                       <Button
                         variant="link"
-                        className="p-0 me-2 text-primary"
+                        /* className="p-0 me-2 text-primary"
                         onClick={(e) => openMoveToFolderModal(e, activity)}
                         style={{ fontSize: "1rem" }}
                       >
                         <BsFolder />
                       </Button>
                       <Button
-                        variant="link"
+                        variant="link" */
                         className="p-0 text-danger"
                         onClick={(e) => handleDeleteActivity(e, activity.id)}
                         style={{ fontSize: "1rem" }}
