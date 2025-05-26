@@ -16,6 +16,7 @@ import {
   BsXCircleFill,
   BsTrophyFill,
   BsHouseDoor,
+  BsStarFill,
 } from "react-icons/bs";
 import { getQuiz } from "../../../services/api";
 import confetti from "canvas-confetti";
@@ -634,38 +635,67 @@ const TakeQuiz = () => {
 
       // Determine the result message based on performance
       const totalQuestions = randomizedQuestions.length;
+      const percentageKnown = totalQuestions === 0 ? 0 : Math.round((knewCount / totalQuestions) * 100);
       let resultMessage = "";
+      let starRating = 0;
 
       if (totalQuestions === 0) {
         resultMessage = "Ingen kort at sortere.";
+        starRating = 0;
       } else if (knewCount === totalQuestions) {
         resultMessage = "Fantastisk! Du vidste alt!";
-      } else if (knewCount / totalQuestions >= 0.8) {
+        starRating = 4; // 4 stars for 100%
+      } else if (percentageKnown >= 80) {
         resultMessage = "Fremragende! Du har godt styr på kortene.";
-      } else if (knewCount / totalQuestions >= 0.6) {
+        starRating = 3; // 3 stars for 80-99%
+      } else if (percentageKnown >= 60) {
         resultMessage = "Godt arbejde! Du kender de fleste kort.";
+        starRating = 2; // 2 stars for 60-79%
+      } else if (percentageKnown >= 40) {
+        resultMessage = "God indsats! Bliv ved med at øve.";
+        starRating = 1; // 1 star for 40-59%
       } else {
         resultMessage = "Bliv ved med at øve! Repeter kortene for at forbedre dig.";
+        starRating = 0; // 0 stars for < 40%
       }
 
       return (
         <div className="text-center mb-4">
-          <h1 className="mb-3 text-center">{resultMessage}</h1>
+          <h1 className="mb-3 text-center">
+            {knewCount === totalQuestions && totalQuestions > 0 && <BsTrophyFill className="me-3 text-warning" />}
+            {resultMessage}
+          </h1>
+
+          {totalQuestions > 0 && (
+            <div className="mb-4">
+              {[...Array(4)].map((_, i) => (
+                <BsStarFill
+                  key={i}
+                  className={`me-1 ${i < starRating ? 'text-warning' : 'text-muted'}`}
+                  size={24}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-5 mb-4">
+            <h3>Hvordan det gik</h3>
+          </div>
 
           <div className="d-flex justify-content-center gap-4 mb-5">
             {/* Knew count */}
-            <Card className="flex-fill" style={{ maxWidth: '200px' }}>
+            <Card className="flex-fill bg-success text-white" style={{ maxWidth: '200px' }}>
               <Card.Body>
-                <Card.Title className="text-success">Vidste jeg</Card.Title>
-                <Card.Text className="display-4">{knewCount}</Card.Text>
+                <Card.Title className="text-white">Vidste jeg</Card.Title>
+                <Card.Text className="display-4 text-white">{knewCount}</Card.Text>
               </Card.Body>
             </Card>
 
             {/* Still learning count */}
-            <Card className="flex-fill" style={{ maxWidth: '200px' }}>
+            <Card className="flex-fill bg-danger text-white" style={{ maxWidth: '200px' }}>
               <Card.Body>
-                <Card.Title className="text-danger">Skal øve mere</Card.Title>
-                <Card.Text className="display-4">{stillLearningCount}</Card.Text>
+                <Card.Title className="text-white">Skal øve mere</Card.Title>
+                <Card.Text className="display-4 text-white">{stillLearningCount}</Card.Text>
               </Card.Body>
             </Card>
           </div>
@@ -704,22 +734,29 @@ const TakeQuiz = () => {
 
     // Existing code for multiple choice results
     const percentage = Math.round((score / randomizedQuestions.length) * 100);
+    const totalQuestions = randomizedQuestions.length;
 
-    let resultMessage = "Prøv igen!";
-    let resultVariant = "danger";
+    let resultMessage = "Bliv ved med at øve!";
+    let messageVariant = "danger";
 
-    if (percentage >= 80) {
-      resultMessage = "Fremragende!";
-      resultVariant = "success";
+    if (percentage === 100) {
+      resultMessage = "Fantastisk! Du har fuldstændig styr på det!";
+      messageVariant = "success";
+    } else if (percentage >= 80) {
+      resultMessage = "Fremragende! Du har godt styr på emnet.";
+      messageVariant = "success";
     } else if (percentage >= 60) {
-      resultMessage = "Godt arbejde!";
-      resultVariant = "primary";
+      resultMessage = "Godt arbejde! Du er godt på vej.";
+      messageVariant = "warning";
     } else if (percentage >= 40) {
-      resultMessage = "God indsats!";
-      resultVariant = "info";
+      resultMessage = "God indsats! Bliv ved med at øve dig.";
+      messageVariant = "warning";
     } else if (percentage >= 20) {
+      resultMessage = "Bliv ved med at øve! Du er på rette spor.";
+      messageVariant = "warning";
+    } else {
       resultMessage = "Bliv ved med at øve!";
-      resultVariant = "warning";
+      messageVariant = "danger";
     }
 
     return (
@@ -728,28 +765,27 @@ const TakeQuiz = () => {
           <h4 className="mb-0">Quiz resultat</h4>
         </Card.Header>
         <Card.Body className="text-center">
-          <div className="display-1 mb-3">
-            <BsTrophyFill className="text-warning" />
-          </div>
-
-          <h2 className="mb-3">
-            Du scorede {score} ud af {randomizedQuestions.length}
+          {/* Dynamic Message */}
+          <h2 className={`mb-4 text-${messageVariant}`}>
+            {percentage === 100 && <BsTrophyFill className="me-3 text-warning" />}
+            {resultMessage}
           </h2>
 
-          <ProgressBar
-            variant={resultVariant}
-            now={percentage}
-            className="mb-2"
-            style={{ height: "2rem" }}
-          />
-          <div className="text-center mb-4">
-            <span className={`text-${resultVariant} fw-bold`}>{percentage}%</span>
+          {/* Score and Percentage */}
+          <div className="mb-4">
+            <div className="display-4 fw-bold mb-1">{percentage}%</div>
+            <div className="text-muted">{score} ud af {totalQuestions} spørgsmål besvaret korrekt</div>
           </div>
 
-          <Alert variant={resultVariant} className="mb-4 py-2">
-            <h5 className="mb-0">{resultMessage}</h5>
-          </Alert>
+          {/* Progress Bar */}
+          <ProgressBar
+            variant={messageVariant}
+            now={percentage}
+            className="mb-4"
+            style={{ height: "2rem" }}
+          />
 
+          {/* Buttons */}
           <div className="d-flex justify-content-center gap-3">
             <Button
               variant="primary"

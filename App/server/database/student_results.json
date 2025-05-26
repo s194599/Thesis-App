@@ -246,11 +246,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T14:30:20.130814",
-      "start_timestamp": "2025-05-26T12:30:14.959Z",
+      "timestamp": "2025-05-26T15:27:16.659560",
+      "start_timestamp": "2025-05-26T13:27:15.092Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
-      "score": 6,
+      "score": 5,
       "total_questions": 5,
       "answers": [
         {
@@ -294,32 +294,32 @@
           "viewed": true
         }
       ],
-      "attempts": 9,
+      "attempts": 20,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T14:04:11.123592",
-      "start_timestamp": "2025-05-26T12:03:59.798Z",
+      "timestamp": "2025-05-26T15:29:11.865965",
+      "start_timestamp": "2025-05-26T13:28:58.339Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
-      "score": 0,
+      "score": 2,
       "total_questions": 2,
       "answers": [
         {
           "question_id": "q1",
           "question": "According to the text, which of the following best describes the attitude of many Romantics towards the everyday social world around them?",
-          "answer": "They focused exclusively on it, eschewing the exotic.",
-          "correct": false
+          "answer": "They were completely indifferent to it.",
+          "correct": true
         },
         {
           "question_id": "q2",
           "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
-          "answer": "The artist is a socially and politically disengaged individual.",
-          "correct": false
+          "answer": "The artist is a fiercely independent genius who creates original works of art.",
+          "correct": true
         }
       ],
-      "attempts": 15,
+      "attempts": 30,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
