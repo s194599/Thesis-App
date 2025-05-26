@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListGroup, Card, Button, Modal, Form, Tab, Tabs, Image } from 'react-bootstrap';
+import { ListGroup, Card, Button, Modal, Form, Tab, Tabs, Image, Alert } from 'react-bootstrap';
 import { BsCheckCircleFill, BsCircleFill, BsPencil, BsUpload, BsImage, BsPlusCircle, BsX, BsCalendar, BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -419,20 +419,10 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         </>
       )}
 
-      {isMinimized && (
-        <div className="minimized-content">
-          {selectedModuleId && (
-            <div className="vertical-text">
-              {courseTitle}
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Icon Selection Modal */}
       <Modal show={showIconModal} onHide={() => setShowIconModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Customize Course Icon</Modal.Title>
+          <Modal.Title>Vælg kursusikon</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Tabs
@@ -442,32 +432,28 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
           >
             <Tab eventKey="upload" title="Upload">
               <Form.Group className="mb-3">
-                <Form.Label>Upload Custom Icon</Form.Label>
+                <Form.Label>Upload et billede</Form.Label>
                 <Form.Control
                   type="file"
                   accept="image/*"
                   onChange={handleIconFileChange}
                 />
                 {iconPreview && (
-                  <div className="mt-3">
-                    <Image src={iconPreview} thumbnail style={{ maxWidth: '100px' }} />
+                  <div className="mt-2">
+                    <Image src={iconPreview} alt="Preview" fluid />
                   </div>
                 )}
               </Form.Group>
             </Tab>
-            <Tab eventKey="gallery" title="Gallery">
-              <div className="d-flex flex-wrap gap-2 mt-3">
+            <Tab eventKey="gallery" title="Galleri">
+              <div className="icon-gallery">
                 {predefinedIcons.map((icon, index) => (
                   <div
                     key={index}
-                    className={`icon-preview ${selectedIcon === icon.url ? 'selected' : ''}`}
+                    className={`icon-item ${selectedIcon === icon.url ? 'selected' : ''}`}
                     onClick={() => handleIconSelect(icon.url)}
                   >
-                    <img
-                      src={icon.url}
-                      alt={icon.name}
-                      style={{ width: '40px', height: '40px' }}
-                    />
+                    <img src={icon.url} alt={icon.name} />
                   </div>
                 ))}
               </div>
@@ -476,58 +462,45 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowIconModal(false)}>
-            Cancel
+            Annuller
           </Button>
           <Button variant="primary" onClick={handleSaveIcon}>
-            Save Icon
+            Gem
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Create Module Modal */}
-      <Modal show={showCreateModal} onHide={() => !isCreating && setShowCreateModal(false)}>
+      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Opret nyt modul</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <div className="alert alert-danger">{error}</div>}
-          
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Titel*</Form.Label>
-              <Form.Control 
-                type="text" 
+              <Form.Label>Titel</Form.Label>
+              <Form.Control
+                type="text"
                 name="title"
                 value={newModule.title}
                 onChange={handleCreateModuleChange}
                 placeholder="Indtast modultitel"
-                required
               />
             </Form.Group>
-            
             <Form.Group className="mb-3">
               <Form.Label>Dato</Form.Label>
-              <div className="date-picker-container">
-                <DatePicker
-                  selected={newModule.date instanceof Date ? newModule.date : new Date()}
-                  onChange={handleDateChange}
-                  dateFormat="dd/MM/yyyy"
-                  className="form-control"
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  placeholderText="Vælg dato"
-                />
-                <div className="date-picker-icon">
-                  <BsCalendar />
-                </div>
-              </div>
+              <DatePicker
+                selected={newModule.date}
+                onChange={handleDateChange}
+                dateFormat="dd. MMMM yyyy"
+                locale="da"
+                className="form-control"
+              />
             </Form.Group>
-            
             <Form.Group className="mb-3">
-              <Form.Label>Beskrivelse</Form.Label>
-              <Form.Control 
-                as="textarea" 
+              <Form.Label>Beskrivelse (valgfrit)</Form.Label>
+              <Form.Control
+                as="textarea"
                 name="description"
                 value={newModule.description}
                 onChange={handleCreateModuleChange}
@@ -535,14 +508,11 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                 rows={3}
               />
             </Form.Group>
+            {error && <Alert variant="danger">{error}</Alert>}
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button 
-            variant="secondary" 
-            onClick={() => !isCreating && setShowCreateModal(false)}
-            disabled={isCreating}
-          >
+          <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
             Annuller
           </Button>
           <Button 
@@ -555,26 +525,17 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
         </Modal.Footer>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={() => !isDeleting && setShowDeleteModal(false)}>
+      {/* Delete Module Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Slet modul</Modal.Title>
+          <Modal.Title>Bekræft sletning</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {moduleToDelete && (
-            <p>
-              Er du sikker på, at du vil slette modulet "<strong>{moduleToDelete.title}</strong>"?
-              <br />
-              <small className="text-danger">Denne handling kan ikke fortrydes.</small>
-            </p>
-          )}
+          <p>Er du sikker på, at du vil slette modulet "{moduleToDelete?.title}"?</p>
+          <p className="text-danger">Denne handling kan ikke fortrydes.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button 
-            variant="secondary" 
-            onClick={() => !isDeleting && setShowDeleteModal(false)}
-            disabled={isDeleting}
-          >
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Annuller
           </Button>
           <Button 
