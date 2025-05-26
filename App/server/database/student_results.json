@@ -246,26 +246,26 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T11:31:45.995736",
-      "start_timestamp": "2025-05-26T09:31:30.482Z",
+      "timestamp": "2025-05-26T14:30:20.130814",
+      "start_timestamp": "2025-05-26T12:30:14.959Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
-      "score": 3,
+      "score": 6,
       "total_questions": 5,
       "answers": [
         {
           "question_id": "fc1",
           "question": "Term: Romantic Movement",
-          "answer": "Flashcard not assessed",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
-          "viewed": false
+          "viewed": true
         },
         {
           "question_id": "fc2",
           "question": "Term: Romanticism vs. Realism",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
@@ -280,8 +280,8 @@
         {
           "question_id": "fc4",
           "question": "Term: Intertextuality",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
@@ -294,48 +294,48 @@
           "viewed": true
         }
       ],
-      "attempts": 4,
+      "attempts": 9,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T13:53:42.724399",
-      "start_timestamp": "2025-05-26T11:53:42.714Z",
+      "timestamp": "2025-05-26T14:04:11.123592",
+      "start_timestamp": "2025-05-26T12:03:59.798Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
-      "score": 1,
+      "score": 0,
       "total_questions": 2,
       "answers": [
         {
           "question_id": "q1",
           "question": "According to the text, which of the following best describes the attitude of many Romantics towards the everyday social world around them?",
-          "answer": null,
+          "answer": "They focused exclusively on it, eschewing the exotic.",
           "correct": false
         },
         {
           "question_id": "q2",
           "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
-          "answer": null,
+          "answer": "The artist is a socially and politically disengaged individual.",
           "correct": false
         }
       ],
-      "attempts": 12,
+      "attempts": 15,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T16:22:31.977570",
-      "start_timestamp": "2025-05-12T14:21:42.979Z",
+      "timestamp": "2025-05-26T14:19:25.576826",
+      "start_timestamp": "2025-05-26T12:19:21.309Z",
       "quiz_id": "quiz_1747059689",
       "quiz_title": "Flashcards om 2. Verdenskrig",
-      "score": 2,
+      "score": 3,
       "total_questions": 4,
       "answers": [
         {
           "question_id": "fc1",
           "question": "Alsangsst\u00e6vner",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
@@ -350,21 +350,64 @@
         {
           "question_id": "fc3",
           "question": "DNSAP",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc4",
           "question": "H\u00f8jgaard-kreds",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 1,
+      "attempts": 8,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-05-26T14:15:08.707085",
+      "start_timestamp": "2025-05-26T12:14:58.812Z",
+      "quiz_id": "quiz_1747057433",
+      "quiz_title": "Quiz om 2. Verdenskrig",
+      "score": 2,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "Hvilken af f\u00f8lgende begivenheder fandt sted den 9. april 1940?",
+          "answer": "De f\u00f8rste tyske tropper tr\u00e6nger ind i Danmark",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "Hvilken af f\u00f8lgende partier var en af de mest modsatte til den danske regering under bes\u00e6ttelsen?",
+          "answer": "Den danske nazistgruppe DNSAP",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?",
+          "answer": "Den danske regering tilbyder at danser til tysk musik",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "Hvilken af f\u00f8lgende betegnelser kendetegner den tidlige begyndelse p\u00e5 samarbejdspolitikken?",
+          "answer": "Politisk uafh\u00e6ngighed",
+          "correct": false
+        },
+        {
+          "question_id": "q5",
+          "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?",
+          "answer": "Der er generale valg i Danmark",
+          "correct": false
+        }
+      ],
+      "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
     }
