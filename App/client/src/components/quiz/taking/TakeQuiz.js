@@ -641,14 +641,23 @@ const TakeQuiz = () => {
             <span className={`text-${resultVariant} fw-bold`}>{percentage}%</span>
           </div>
 
-          <Alert variant={resultVariant} className="mb-4">
-            <h4>{resultMessage}</h4>
+          <Alert variant={resultVariant} className="mb-4 py-2">
+            <h5 className="mb-0">{resultMessage}</h5>
           </Alert>
 
-          <div className="d-grid gap-3">
+          <div className="d-flex justify-content-center gap-3">
             <Button
               variant="primary"
-              size="lg"
+              size="md"
+              onClick={() => navigate("/platform")}
+            >
+              <BsArrowLeft className="me-2" />
+              Tilbage til læringsplatform
+            </Button>
+
+            <Button
+              variant="outline-primary"
+              size="md"
               onClick={() => {
                 // Reset all state variables to start a new attempt
                 setCurrentQuestionIndex(0);
@@ -662,15 +671,6 @@ const TakeQuiz = () => {
               }}
             >
               Prøv igen
-            </Button>
-
-            <Button
-              variant="outline-secondary"
-              size="lg"
-              onClick={() => navigate("/platform")}
-            >
-              <BsArrowLeft className="me-2" />
-              Tilbage til læringsplatform
             </Button>
           </div>
         </Card.Body>

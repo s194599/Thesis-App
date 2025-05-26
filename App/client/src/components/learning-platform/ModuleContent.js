@@ -2648,7 +2648,7 @@ const ModuleContent = ({
           <div className="mb-2 mt-4">
             <ProgressBar
               now={progressPercentage}
-              variant="primary"
+              variant={progressPercentage === 100 ? "success" : "primary"}
               style={{ height: "8px" }}
               className="w-100 mb-2"
             />

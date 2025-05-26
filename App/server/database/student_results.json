@@ -299,8 +299,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T15:02:52.237698",
-      "start_timestamp": "2025-05-12T13:02:39.306Z",
+      "timestamp": "2025-05-26T13:53:42.724399",
+      "start_timestamp": "2025-05-26T11:53:42.714Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
       "score": 1,
@@ -309,17 +309,17 @@
         {
           "question_id": "q1",
           "question": "According to the text, which of the following best describes the attitude of many Romantics towards the everyday social world around them?",
-          "answer": "They showed no interest in it at all.",
+          "answer": null,
           "correct": false
         },
         {
           "question_id": "q2",
           "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
-          "answer": "The artist is a fiercely independent genius who creates original works of art.",
-          "correct": true
+          "answer": null,
+          "correct": false
         }
       ],
-      "attempts": 2,
+      "attempts": 12,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
