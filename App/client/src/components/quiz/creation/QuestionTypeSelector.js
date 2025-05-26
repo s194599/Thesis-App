@@ -9,7 +9,7 @@ const QuestionTypeSelector = () => {
   const questionTypes = [
     {
       value: "multipleChoice",
-      label: "Multiple Choice",
+      label: "Multiple choice",
       icon: <BsListCheck />,
       description: "Spørgsmål med flere muligheder og ét korrekt svar",
     },
@@ -21,14 +21,14 @@ const QuestionTypeSelector = () => {
     },
     {
       value: "trueFalse",
-      label: "Sand/Falsk",
+      label: "Sand/falsk",
       icon: <BsToggleOn />,
       description: "Spørgsmål med sand eller falsk svar",
       disabled: true,
     },
     {
       value: "shortAnswer",
-      label: "Kort Svar",
+      label: "Kort svar",
       icon: <BsTextLeft />,
       description: "Spørgsmål der kræver korte tekstsvar",
       disabled: true,

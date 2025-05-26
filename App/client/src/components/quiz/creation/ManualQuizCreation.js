@@ -145,7 +145,7 @@ const ManualQuizCreation = () => {
     <Container className="my-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <Link to="/platform" className="text-decoration-none">
-          <BsArrowLeft className="me-2" /> Tilbage til Modul
+          <BsArrowLeft className="me-2" /> Tilbage til modul
         </Link>
         <Button variant="success" onClick={handleSaveQuiz}>
           Save

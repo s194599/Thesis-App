@@ -258,14 +258,14 @@ const QuizResults = () => {
   return (
     <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Quiz Resultater: {quizTitle}</h2>
+        <h2>Quiz resultater: {quizTitle}</h2>
         <div className="d-flex">
           <Button 
             variant="outline-secondary" 
             onClick={() => navigate(`/quiz/preview/${quizId}`)}
             className="d-flex align-items-center me-2"
           >
-            <BsPencil className="me-2" /> Rediger Quiz
+            <BsPencil className="me-2" /> Rediger quiz
           </Button>
           <Button 
             variant="outline-primary" 

@@ -246,34 +246,34 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T13:42:47.693500",
-      "start_timestamp": "2025-05-12T09:34:39.996Z",
+      "timestamp": "2025-05-26T11:06:36.088924",
+      "start_timestamp": "2025-05-26T09:06:28.103Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
-      "score": 5,
+      "score": 2,
       "total_questions": 5,
       "answers": [
         {
           "question_id": "fc1",
           "question": "Term: Romantic Movement",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc2",
           "question": "Term: Romanticism vs. Realism",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc3",
           "question": "Term: Revolutionary energy",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
@@ -294,7 +294,7 @@
           "viewed": true
         }
       ],
-      "attempts": 1,
+      "attempts": 3,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

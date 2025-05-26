@@ -12,7 +12,7 @@ const QuizInputSection = () => {
       case "topic":
         return (
           <Form.Group className="mb-3">
-            <Form.Label>Indtast Emne</Form.Label>
+            <Form.Label>Indtast emne</Form.Label>
             <Form.Control
               type="text"
               placeholder="F.eks., Fotosyntese, 2. Verdenskrig, Lineær Algebra..."
@@ -28,7 +28,7 @@ const QuizInputSection = () => {
       case "text":
         return (
           <Form.Group className="mb-3">
-            <Form.Label>Indtast Tekst</Form.Label>
+            <Form.Label>Indtast tekst</Form.Label>
             <Form.Control
               as="textarea"
               rows={6}
@@ -62,7 +62,7 @@ const QuizInputSection = () => {
       case "document":
         return (
           <Form.Group className="mb-3">
-            <Form.Label className="fw-bold">Upload Dokumenter</Form.Label>
+            <Form.Label className="fw-bold">Upload dokumenter</Form.Label>
             <FileUploader />
             {/* <Form.Text className="text-muted">
               Upload et dokument (PDF, DOC, DOCX, TXT) for at generere

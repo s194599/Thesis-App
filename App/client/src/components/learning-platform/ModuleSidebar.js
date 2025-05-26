@@ -352,9 +352,9 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                         
                         {userRole === 'student' && (
                           allCompleted ? (
-                            <BsCheckCircleFill className="text-success" />
+                            <BsCheckCircleFill className="text-success" style={{ fontSize: '1.5rem' }} />
                           ) : (
-                            <BsCircleFill className={completedActivities > 0 ? "text-warning" : "text-secondary"} style={{ opacity: 0.5 }} />
+                            <BsCircleFill className={completedActivities > 0 ? "text-warning" : "text-secondary"} style={{ opacity: 0.5, fontSize: '1.5rem' }} />
                           )
                         )}
                       </div>

@@ -2117,13 +2117,13 @@ const ModuleContent = ({
                                   
                                   {/* Completion Status - Only visible in student mode */}
                                   {userRole === "student" && (
-                                    <div className="ms-2">
-                                      {isActivityCompleted(childActivity.id) ? (
-                                        <BsCheckCircleFill className="text-success" />
+                                    <div className="ms-2 d-flex align-items-center">
+                                      {completed ? (
+                                        <BsCheckCircleFill className="text-success" style={{ fontSize: '1.5rem' }} />
                                       ) : (
                                         <BsCircleFill
                                           className="text-secondary"
-                                          style={{ opacity: 0.3 }}
+                                          style={{ opacity: 0.3, fontSize: '1.5rem' }}
                                         />
                                       )}
                                     </div>
@@ -2321,13 +2321,13 @@ const ModuleContent = ({
                   
                   {/* Completion Status - Only visible in student mode */}
                   {userRole === "student" && (
-                    <div className="ms-2">
+                    <div className="ms-2 d-flex align-items-center">
                       {completed ? (
-                        <BsCheckCircleFill className="text-success" />
+                        <BsCheckCircleFill className="text-success" style={{ fontSize: '1.5rem' }} />
                       ) : (
                         <BsCircleFill
                           className="text-secondary"
-                          style={{ opacity: 0.3 }}
+                          style={{ opacity: 0.3, fontSize: '1.5rem' }}
                         />
                       )}
                     </div>
@@ -2512,21 +2512,21 @@ const ModuleContent = ({
                   onClick={handleDateSave}
                   style={{ cursor: "pointer" }}
                 />
-          </div>
+              </div>
             ) : (
               <div className="d-flex align-items-center">
-                <small className="text-muted d-block">
+                <small className="text-muted d-flex align-items-center">
                   {module.date || "Ingen dato"}
+                  {isTeacherMode && (
+                    <BsPencil
+                      size={12}
+                      className="ms-1 text-muted"
+                      onClick={handleDateEdit}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
                 </small>
-                {isTeacherMode && (
-                  <BsPencil
-                    size={12}
-                    className="ms-2 text-muted edit-icon"
-                    onClick={handleDateEdit}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-        </div>
+              </div>
             )}
 
             {editingTitle && isTeacherMode ? (
@@ -2554,21 +2554,21 @@ const ModuleContent = ({
               </div>
             ) : (
               <div className="d-flex align-items-center">
-                <h1 className="h3 mb-0 module-title" style={{ 
+                <h1 className="h3 mb-0 module-title d-flex align-items-center" style={{ 
                   wordWrap: "break-word", 
                   overflowWrap: "break-word",
-                  maxWidth: "calc(100% - 30px)" // Leave space for the edit icon
+                  maxWidth: "100%"
                 }}>
                   {module.title || "Unnamed Module"}
+                  {isTeacherMode && (
+                    <BsPencil
+                      size={16}
+                      className="ms-2 text-muted"
+                      onClick={handleTitleEdit}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
                 </h1>
-                {isTeacherMode && (
-                  <BsPencil
-                    size={16}
-                    className="ms-3 text-muted edit-icon flex-shrink-0"
-                    onClick={handleTitleEdit}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
               </div>
             )}
           </div>
@@ -2631,7 +2631,7 @@ const ModuleContent = ({
                 className="position-absolute top-0 end-0 p-0 text-muted"
                 onClick={() => setEditingDescription(true)}
               >
-                <BsPencilSquare />
+                <BsPencil />
               </Button>
             )}
           </div>

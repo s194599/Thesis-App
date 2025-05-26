@@ -17,7 +17,7 @@ const StudentLevelSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Niveau (Valgfrit)</Form.Label>
+        <Form.Label className="fw-bold">Niveau (valgfrit)</Form.Label>
         <Form.Select
           value={formData.studentLevel}
           onChange={(e) => updateFormData("studentLevel", e.target.value)}

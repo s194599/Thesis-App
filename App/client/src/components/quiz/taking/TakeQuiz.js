@@ -424,8 +424,7 @@ const TakeQuiz = () => {
                 <p className="mb-1"><kbd>Mellemrum</kbd> for at vende kort</p>
               ) : (
                 <p className="mb-0">
-                  <kbd className="kbd-left"><span className="text-danger">←</span></kbd> Det vidste jeg ikke &nbsp;eller &nbsp; 
-                  <kbd className="kbd-right"><span className="text-success">→</span></kbd> Det vidste jeg godt
+                  Det vidste jeg ikke <kbd>←</kbd> eller <kbd>→</kbd> Det vidste jeg godt
                 </p>
               )}
             </div>
@@ -621,7 +620,7 @@ const TakeQuiz = () => {
     return (
       <Card className="shadow quiz-results-card">
         <Card.Header className="bg-primary text-white">
-          <h4 className="mb-0">Quiz Resultat</h4>
+          <h4 className="mb-0">Quiz resultat</h4>
         </Card.Header>
         <Card.Body className="text-center">
           <div className="display-1 mb-3">
@@ -662,7 +661,7 @@ const TakeQuiz = () => {
                 setAlreadyMarkedComplete(false);
               }}
             >
-              Prøv Igen
+              Prøv igen
             </Button>
 
             <Button
@@ -671,7 +670,7 @@ const TakeQuiz = () => {
               onClick={() => navigate("/platform")}
             >
               <BsArrowLeft className="me-2" />
-              Tilbage
+              Tilbage til læringsplatform
             </Button>
           </div>
         </Card.Body>

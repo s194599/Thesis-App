@@ -184,7 +184,7 @@ const QuizIntro = () => {
               className="px-5 py-3 d-flex align-items-center mx-auto"
               onClick={handleStartQuiz}
             >
-              <BsPlay size={24} className="me-2" /> Start Quiz
+              <BsPlay size={24} className="me-2" /> Start quiz
             </Button>
           </div>
         </Card.Body>
