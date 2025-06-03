@@ -375,11 +375,11 @@ const ModuleSidebar = ({ modules = [], selectedModuleId, onModuleSelect, userRol
                     )}
                     
                     {/* Add activity count for teachers */}
-                    {userRole === 'teacher' && totalActivities > 0 && (
+                    {/* {userRole === 'teacher' && totalActivities > 0 && (
                       <small className="text-muted d-block">
                         {totalActivities} {totalActivities === 1 ? 'aktivitet' : 'aktiviteter'}
                       </small>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 
