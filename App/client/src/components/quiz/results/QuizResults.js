@@ -288,9 +288,9 @@ const QuizResults = () => {
               <tr>
                 <th>Elever</th>
                 <th>Klasse</th>
-                <th>Forsøg</th>
-                <th className="text-center">Dato</th>
-                <th className="text-center">Besvarelsestid</th>
+                <th>Antal forsøg</th>
+                <th className="text-center">Dato (sidste forsøg)</th>
+                <th className="text-center">Besvarelsestid (sidste forsøg)</th>
                 {Array.from({ length: maxQuestions }).map((_, i) => (
                   <th key={i} className="text-center" style={{ width: '70px' }}>
                     Spg. {i + 1}
