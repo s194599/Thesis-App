@@ -21,6 +21,7 @@ import {
   BsStarFill,
   BsVolumeUp,
   BsVolumeMute,
+  BsLightningChargeFill,
 } from "react-icons/bs";
 import { getQuiz } from "../../../services/api";
 import confetti from "canvas-confetti";
@@ -62,6 +63,11 @@ const TakeQuiz = () => {
   const [flashcardResponse, setFlashcardResponse] = useState(null);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Add streak counter state
+  const [streak, setStreak] = useState(0);
+  const [streakMessage, setStreakMessage] = useState("");
+  const [showStreakMessage, setShowStreakMessage] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -258,7 +264,7 @@ const TakeQuiz = () => {
     quiz,
   ]);
 
-  // Effect to trigger confetti when the quiz is completed with 100% score
+  // Effect to trigger confetti when the quiz is completed
   useEffect(() => {
     if (quizCompleted) {
       confetti({
@@ -266,6 +272,10 @@ const TakeQuiz = () => {
         spread: 70,
         origin: { y: 0.6 },
       });
+      
+      // Reset streak when quiz is completed
+      setStreak(0);
+      setShowStreakMessage(false);
     }
   }, [quizCompleted]);
 
@@ -302,6 +312,19 @@ const TakeQuiz = () => {
               setAnswers(newAnswers);
               setFlashcardResponse(false);
               
+              // Only show streak reset message if streak is 2 or higher
+              if (streak >= 2) {
+                setStreakMessage("Streak nulstillet!");
+                setShowStreakMessage(true);
+                // Hide message after a delay
+                setTimeout(() => {
+                  setShowStreakMessage(false);
+                }, 2000);
+              }
+              
+              // Reset streak counter
+              setStreak(0);
+              
               // Move to next card or finish quiz with proper transition
               if (currentQuestionIndex < randomizedQuestions.length - 1) {
                 setIsTransitioning(true);
@@ -335,6 +358,21 @@ const TakeQuiz = () => {
               setScore(prevScore => prevScore + 1);
               setFlashcardResponse(true);
               
+              // Increase streak counter
+              const newStreak = streak + 1;
+              setStreak(newStreak);
+              
+              // Show streak message for impressive streaks
+              const message = getStreakMessage(newStreak);
+              if (message) {
+                setStreakMessage(message);
+                setShowStreakMessage(true);
+                // Hide message after a delay
+                setTimeout(() => {
+                  setShowStreakMessage(false);
+                }, 2000);
+              }
+              
               // Move to next card or finish quiz with proper transition
               if (currentQuestionIndex < randomizedQuestions.length - 1) {
                 setIsTransitioning(true);
@@ -364,13 +402,34 @@ const TakeQuiz = () => {
         };
       }
     }
-  }, [quiz, quizCompleted, randomizedQuestions, currentQuestionIndex, showAnswer, answers, setAnswers, setShowAnswer, setScore, setFlashcardResponse, setCurrentQuestionIndex, setQuizCompleted, playSound, isTransitioning]);
+  }, [quiz, quizCompleted, randomizedQuestions, currentQuestionIndex, showAnswer, answers, setAnswers, setShowAnswer, setScore, setFlashcardResponse, setCurrentQuestionIndex, setQuizCompleted, playSound, isTransitioning, streak]);
 
   const handleAnswerSelect = (answer) => {
     if (showAnswer) return; // Prevent changing answer after submission
     setSelectedAnswer(answer);
   };
 
+  // Function to get streak message based on streak count
+  const getStreakMessage = (streakCount) => {
+    if (streakCount === 0) {
+      return ""; // Empty message for streak 0
+    } else if (streakCount === 3) {
+      return "🔥 3 korrekte i streg!";
+    } else if (streakCount === 5) {
+      return "🔥 5 korrekte i streg!";
+    } else if (streakCount === 7) {
+      return "🔥 Fantastisk stime!";
+    } else if (streakCount === 10) {
+      return "💯 Du er i topform!";
+    } else if (streakCount >= 15) {
+      return "🏆 Ustoppelig!";
+    } else if (streakCount > 1) {
+      return `🔥 ${streakCount} korrekte i streg!`;
+    }
+    return "";
+  };
+
+  // Update handleCheckAnswer for multiple choice quizzes
   const handleCheckAnswer = () => {
     if (!selectedAnswer) return; // Require an answer to be selected
 
@@ -388,9 +447,37 @@ const TakeQuiz = () => {
       setScore((prevScore) => prevScore + 1);
       // Play correct sound
       playSound('correct');
+      
+      // Increase streak counter
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      
+      // Show streak message for impressive streaks
+      const message = getStreakMessage(newStreak);
+      if (message) {
+        setStreakMessage(message);
+        setShowStreakMessage(true);
+        // Hide message after a delay
+        setTimeout(() => {
+          setShowStreakMessage(false);
+        }, 2000);
+      }
     } else {
       // Play wrong sound
       playSound('wrong');
+      
+      // Only show streak reset message if streak is 2 or higher
+      if (streak >= 2) {
+        setStreakMessage("Streak nulstillet!");
+        setShowStreakMessage(true);
+        // Hide message after a delay
+        setTimeout(() => {
+          setShowStreakMessage(false);
+        }, 2000);
+      }
+      
+      // Reset streak counter
+      setStreak(0);
     }
 
     setShowAnswer(true);
@@ -444,6 +531,7 @@ const TakeQuiz = () => {
     setShowAnswer(!showAnswer);
   };
 
+  // Update handleFlashcardResponse for flashcards
   const handleFlashcardResponse = (knew) => {
     if (isTransitioning) return; // Prevent responses during transitions
     
@@ -456,12 +544,40 @@ const TakeQuiz = () => {
     };
     setAnswers(newAnswers);
     
-    // Play appropriate sound
+    // Play appropriate sound and update streak
     if (knew) {
       playSound('correct');
       setScore(prevScore => prevScore + 1);
+      
+      // Increase streak counter
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      
+      // Show streak message for impressive streaks
+      const message = getStreakMessage(newStreak);
+      if (message) {
+        setStreakMessage(message);
+        setShowStreakMessage(true);
+        // Hide message after a delay
+        setTimeout(() => {
+          setShowStreakMessage(false);
+        }, 2000);
+      }
     } else {
       playSound('wrong');
+      
+      // Only show streak reset message if streak is 2 or higher
+      if (streak >= 2) {
+        setStreakMessage("Streak nulstillet!");
+        setShowStreakMessage(true);
+        // Hide message after a delay
+        setTimeout(() => {
+          setShowStreakMessage(false);
+        }, 2000);
+      }
+      
+      // Reset streak counter
+      setStreak(0);
     }
     
     setFlashcardResponse(knew);
@@ -766,6 +882,9 @@ const TakeQuiz = () => {
                 setAnswers(new Array(randomizedQuestions.length).fill(null));
                 // Reset alreadyMarkedComplete so activity will be marked as completed again
                 setAlreadyMarkedComplete(false);
+                // Add streak reset here
+                setStreak(0);
+                setShowStreakMessage(false);
               }}
             >
               Prøv igen
@@ -852,6 +971,9 @@ const TakeQuiz = () => {
                 setAnswers(new Array(randomizedQuestions.length).fill(null));
                 // Reset alreadyMarkedComplete so activity will be marked as completed again
                 setAlreadyMarkedComplete(false);
+                // Add streak reset here
+                setStreak(0);
+                setShowStreakMessage(false);
               }}
             >
               Prøv igen
@@ -928,6 +1050,16 @@ const TakeQuiz = () => {
           </Button>
           
           <div className="d-flex align-items-center">
+            {/* Streak counter */}
+            {!quizCompleted && streak > 0 && (
+              <div className="me-3 d-flex align-items-center">
+                <Badge bg="warning" className="streak-badge px-2 py-1">
+                  <BsLightningChargeFill className="me-1" />
+                  <span>{streak}</span>
+                </Badge>
+              </div>
+            )}
+            
             {/* Sound toggle button */}
             <OverlayTrigger
               placement="top"
@@ -951,8 +1083,15 @@ const TakeQuiz = () => {
           </div>
         </div>
 
-        <h1 className="mb-2">{quiz.title || "Untitled Quiz"}</h1>
-        {/* {quiz.description && <p className="text-muted">{quiz.description}</p>} */}
+        <h1 className="mb-2">{quiz?.title || "Untitled Quiz"}</h1>
+        {/* {quiz?.description && <p className="text-muted">{quiz.description}</p>} */}
+
+        {/* Streak message */}
+        {showStreakMessage && (
+          <div className={`streak-message text-center mb-3 ${streak === 0 ? 'streak-reset' : 'streak-active'}`}>
+            <span>{streakMessage}</span>
+          </div>
+        )}
 
         {!quizCompleted && (
           <>

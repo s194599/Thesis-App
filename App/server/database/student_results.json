@@ -246,8 +246,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T13:38:36.341671",
-      "start_timestamp": "2025-06-03T11:38:09.147Z",
+      "timestamp": "2025-06-03T14:01:24.881393",
+      "start_timestamp": "2025-06-03T12:01:02.840Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
       "score": 5,
@@ -294,7 +294,7 @@
           "viewed": true
         }
       ],
-      "attempts": 26,
+      "attempts": 28,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -369,8 +369,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T13:23:15.063317",
-      "start_timestamp": "2025-06-03T11:19:30.735Z",
+      "timestamp": "2025-06-03T13:59:26.036664",
+      "start_timestamp": "2025-06-03T11:57:57.361Z",
       "quiz_id": "quiz_1747057433",
       "quiz_title": "Quiz om 2. Verdenskrig",
       "score": 5,
@@ -407,7 +407,7 @@
           "correct": true
         }
       ],
-      "attempts": 6,
+      "attempts": 16,
       "student_id": "1",
       "student_name": "Christian Wu"
     }
