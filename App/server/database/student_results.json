@@ -246,11 +246,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T13:35:51.764341",
-      "start_timestamp": "2025-06-03T11:34:14.464Z",
+      "timestamp": "2025-06-03T13:38:36.341671",
+      "start_timestamp": "2025-06-03T11:38:09.147Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
-      "score": 3,
+      "score": 5,
       "total_questions": 5,
       "answers": [
         {
@@ -280,27 +280,27 @@
         {
           "question_id": "fc4",
           "question": "Term: Intertextuality",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc5",
           "question": "Term: Sovereign artist",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 24,
+      "attempts": 26,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T13:12:20.756493",
-      "start_timestamp": "2025-06-03T11:12:14.290Z",
+      "timestamp": "2025-06-03T13:36:51.180517",
+      "start_timestamp": "2025-06-03T11:36:46.239Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
       "score": 2,
@@ -319,7 +319,7 @@
           "correct": true
         }
       ],
-      "attempts": 44,
+      "attempts": 45,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

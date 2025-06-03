@@ -684,19 +684,22 @@ const TakeQuiz = () => {
         starRating = 0;
       } else if (knewCount === totalQuestions) {
         resultMessage = "Fantastisk! Du vidste alt!";
-        starRating = 4; // 4 stars for 100%
+        starRating = 5; // 5 stars for 100%
       } else if (percentageKnown >= 80) {
         resultMessage = "Fremragende! Du har godt styr på kortene.";
-        starRating = 3; // 3 stars for 80-99%
+        starRating = 4; // 4 stars for 80-99%
       } else if (percentageKnown >= 60) {
         resultMessage = "Godt arbejde! Du kender de fleste kort.";
-        starRating = 2; // 2 stars for 60-79%
+        starRating = 3; // 3 stars for 60-79%
       } else if (percentageKnown >= 40) {
         resultMessage = "God indsats! Bliv ved med at øve.";
-        starRating = 1; // 1 star for 40-59%
+        starRating = 2; // 2 stars for 40-59%
+      } else if (percentageKnown >= 20) {
+        resultMessage = "Bliv ved med at øve! Repeter kortene for at forbedre dig.";
+        starRating = 1; // 1 star for 20-39%
       } else {
         resultMessage = "Bliv ved med at øve! Repeter kortene for at forbedre dig.";
-        starRating = 0; // 0 stars for < 40%
+        starRating = 0; // 0 stars for < 20%
       }
 
       return (
@@ -708,7 +711,7 @@ const TakeQuiz = () => {
 
           {totalQuestions > 0 && (
             <div className="mb-4">
-              {[...Array(4)].map((_, i) => (
+              {[...Array(5)].map((_, i) => (
                 <BsStarFill
                   key={i}
                   className={`me-1 ${i < starRating ? 'text-warning' : 'text-muted'}`}
