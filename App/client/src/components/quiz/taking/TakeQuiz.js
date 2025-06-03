@@ -16,6 +16,7 @@ import {
   BsXCircleFill,
   BsTrophyFill,
   BsHouseDoor,
+  BsStarFill,
 } from "react-icons/bs";
 import { getQuiz } from "../../../services/api";
 import confetti from "canvas-confetti";
@@ -247,6 +248,17 @@ const TakeQuiz = () => {
     quiz,
   ]);
 
+  // Effect to trigger confetti when the quiz is completed
+  useEffect(() => {
+    if (quizCompleted) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    }
+  }, [quizCompleted]);
+
   // Add a useEffect for keyboard event listeners
   useEffect(() => {
     // Only add keyboard navigation for flashcards and when not completed
@@ -424,8 +436,7 @@ const TakeQuiz = () => {
                 <p className="mb-1"><kbd>Mellemrum</kbd> for at vende kort</p>
               ) : (
                 <p className="mb-0">
-                  <kbd className="kbd-left"><span className="text-danger">←</span></kbd> Det vidste jeg ikke &nbsp;eller &nbsp; 
-                  <kbd className="kbd-right"><span className="text-success">→</span></kbd> Det vidste jeg godt
+                  Det vidste jeg ikke <kbd>←</kbd> eller <kbd>→</kbd> Det vidste jeg godt
                 </p>
               )}
             </div>
@@ -473,7 +484,7 @@ const TakeQuiz = () => {
                       }
                     }}
                   >
-                    <BsArrowLeft className="me-2" /> Det vidste jeg ikke
+                    Det vidste jeg ikke
                   </Button>
                   <Button
                     variant="success"
@@ -500,7 +511,7 @@ const TakeQuiz = () => {
                       }
                     }}
                   >
-                    Det vidste jeg godt <BsArrowRight className="ms-2" />
+                    Det vidste jeg godt
                   </Button>
                 </div>
               )}
@@ -599,57 +610,109 @@ const TakeQuiz = () => {
   };
 
   const renderResults = () => {
-    const percentage = Math.round((score / randomizedQuestions.length) * 100);
+    // Check if it's a flashcard quiz
+    if (quiz.type === "flashcard") {
+      // Calculate 'Knew' and 'Still learning' counts
+      let knewCount = 0;
+      let stillLearningCount = 0;
 
-    let resultMessage = "Prøv igen!";
-    let resultVariant = "danger";
+      randomizedQuestions.forEach((question) => {
+        const originalIndex = question.originalIndex;
+        const answer = answers[originalIndex];
 
-    if (percentage >= 80) {
-      resultMessage = "Fremragende!";
-      resultVariant = "success";
-    } else if (percentage >= 60) {
-      resultMessage = "Godt arbejde!";
-      resultVariant = "primary";
-    } else if (percentage >= 40) {
-      resultMessage = "God indsats!";
-      resultVariant = "info";
-    } else if (percentage >= 20) {
-      resultMessage = "Bliv ved med at øve!";
-      resultVariant = "warning";
-    }
+        // If the flashcard was assessed
+        if (answer && typeof answer === 'object' && answer.viewed) {
+          if (answer.flashcardResponse === true) {
+            knewCount++;
+          } else if (answer.flashcardResponse === false) {
+            stillLearningCount++;
+          }
+        } else {
+           // If the flashcard was not viewed or not assessed after viewing, count as still learning
+           stillLearningCount++;
+        }
+      });
 
-    return (
-      <Card className="shadow quiz-results-card">
-        <Card.Header className="bg-primary text-white">
-          <h4 className="mb-0">Quiz Resultat</h4>
-        </Card.Header>
-        <Card.Body className="text-center">
-          <div className="display-1 mb-3">
-            <BsTrophyFill className="text-warning" />
+      // Determine the result message based on performance
+      const totalQuestions = randomizedQuestions.length;
+      const percentageKnown = totalQuestions === 0 ? 0 : Math.round((knewCount / totalQuestions) * 100);
+      let resultMessage = "";
+      let starRating = 0;
+
+      if (totalQuestions === 0) {
+        resultMessage = "Ingen kort at sortere.";
+        starRating = 0;
+      } else if (knewCount === totalQuestions) {
+        resultMessage = "Fantastisk! Du vidste alt!";
+        starRating = 4; // 4 stars for 100%
+      } else if (percentageKnown >= 80) {
+        resultMessage = "Fremragende! Du har godt styr på kortene.";
+        starRating = 3; // 3 stars for 80-99%
+      } else if (percentageKnown >= 60) {
+        resultMessage = "Godt arbejde! Du kender de fleste kort.";
+        starRating = 2; // 2 stars for 60-79%
+      } else if (percentageKnown >= 40) {
+        resultMessage = "God indsats! Bliv ved med at øve.";
+        starRating = 1; // 1 star for 40-59%
+      } else {
+        resultMessage = "Bliv ved med at øve! Repeter kortene for at forbedre dig.";
+        starRating = 0; // 0 stars for < 40%
+      }
+
+      return (
+        <div className="text-center mb-4">
+          <h1 className="mb-3 text-center">
+            {knewCount === totalQuestions && totalQuestions > 0 && <BsTrophyFill className="me-3 text-warning" />}
+            {resultMessage}
+          </h1>
+
+          {totalQuestions > 0 && (
+            <div className="mb-4">
+              {[...Array(4)].map((_, i) => (
+                <BsStarFill
+                  key={i}
+                  className={`me-1 ${i < starRating ? 'text-warning' : 'text-muted'}`}
+                  size={24}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-5 mb-4">
+            <h3>Hvordan det gik</h3>
           </div>
 
-          <h2 className="mb-3">
-            Du scorede {score} ud af {randomizedQuestions.length}
-          </h2>
+          <div className="d-flex justify-content-center gap-4 mb-5">
+            {/* Knew count */}
+            <Card className="flex-fill bg-success text-white" style={{ maxWidth: '200px' }}>
+              <Card.Body>
+                <Card.Title className="text-white">Vidste jeg</Card.Title>
+                <Card.Text className="display-4 text-white">{knewCount}</Card.Text>
+              </Card.Body>
+            </Card>
 
-          <ProgressBar
-            variant={resultVariant}
-            now={percentage}
-            className="mb-2"
-            style={{ height: "2rem" }}
-          />
-          <div className="text-center mb-4">
-            <span className={`text-${resultVariant} fw-bold`}>{percentage}%</span>
+            {/* Still learning count */}
+            <Card className="flex-fill bg-danger text-white" style={{ maxWidth: '200px' }}>
+              <Card.Body>
+                <Card.Title className="text-white">Skal øve mere</Card.Title>
+                <Card.Text className="display-4 text-white">{stillLearningCount}</Card.Text>
+              </Card.Body>
+            </Card>
           </div>
 
-          <Alert variant={resultVariant} className="mb-4">
-            <h4>{resultMessage}</h4>
-          </Alert>
-
-          <div className="d-grid gap-3">
+          <div className="d-flex justify-content-center gap-3">
             <Button
               variant="primary"
-              size="lg"
+              size="md"
+              onClick={() => navigate("/platform")}
+            >
+              <BsArrowLeft className="me-2" />
+              Tilbage til læringsplatform
+            </Button>
+
+            <Button
+              variant="outline-primary"
+              size="md"
               onClick={() => {
                 // Reset all state variables to start a new attempt
                 setCurrentQuestionIndex(0);
@@ -662,16 +725,93 @@ const TakeQuiz = () => {
                 setAlreadyMarkedComplete(false);
               }}
             >
-              Prøv Igen
+              Prøv igen
             </Button>
+          </div>
+        </div>
+      );
+    }
 
+    // Existing code for multiple choice results
+    const percentage = Math.round((score / randomizedQuestions.length) * 100);
+    const totalQuestions = randomizedQuestions.length;
+
+    let resultMessage = "Bliv ved med at øve!";
+    let messageVariant = "danger";
+
+    if (percentage === 100) {
+      resultMessage = "Fantastisk! Du har fuldstændig styr på det!";
+      messageVariant = "success";
+    } else if (percentage >= 80) {
+      resultMessage = "Fremragende! Du har godt styr på emnet.";
+      messageVariant = "success";
+    } else if (percentage >= 60) {
+      resultMessage = "Godt arbejde! Du er godt på vej.";
+      messageVariant = "warning";
+    } else if (percentage >= 40) {
+      resultMessage = "God indsats! Bliv ved med at øve dig.";
+      messageVariant = "warning";
+    } else if (percentage >= 20) {
+      resultMessage = "Bliv ved med at øve! Du er på rette spor.";
+      messageVariant = "warning";
+    } else {
+      resultMessage = "Bliv ved med at øve!";
+      messageVariant = "danger";
+    }
+
+    return (
+      <Card className="shadow quiz-results-card">
+        <Card.Header className="bg-primary text-white">
+          <h4 className="mb-0">Quiz resultat</h4>
+        </Card.Header>
+        <Card.Body className="text-center">
+          {/* Dynamic Message */}
+          <h2 className={`mb-4 text-${messageVariant}`}>
+            {percentage === 100 && <BsTrophyFill className="me-3 text-warning" />}
+            {resultMessage}
+          </h2>
+
+          {/* Score and Percentage */}
+          <div className="mb-4">
+            <div className="display-4 fw-bold mb-1">{percentage}%</div>
+            <div className="text-muted">{score} ud af {totalQuestions} spørgsmål besvaret korrekt</div>
+          </div>
+
+          {/* Progress Bar */}
+          <ProgressBar
+            variant={messageVariant}
+            now={percentage}
+            className="mb-4"
+            style={{ height: "2rem" }}
+          />
+
+          {/* Buttons */}
+          <div className="d-flex justify-content-center gap-3">
             <Button
-              variant="outline-secondary"
-              size="lg"
+              variant="primary"
+              size="md"
               onClick={() => navigate("/platform")}
             >
               <BsArrowLeft className="me-2" />
-              Tilbage
+              Tilbage til læringsplatform
+            </Button>
+
+            <Button
+              variant="outline-primary"
+              size="md"
+              onClick={() => {
+                // Reset all state variables to start a new attempt
+                setCurrentQuestionIndex(0);
+                setSelectedAnswer(null);
+                setShowAnswer(false);
+                setQuizCompleted(false);
+                setScore(0);
+                setAnswers(new Array(randomizedQuestions.length).fill(null));
+                // Reset alreadyMarkedComplete so activity will be marked as completed again
+                setAlreadyMarkedComplete(false);
+              }}
+            >
+              Prøv igen
             </Button>
           </div>
         </Card.Body>

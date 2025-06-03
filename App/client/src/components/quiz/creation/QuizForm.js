@@ -341,7 +341,7 @@ const QuizForm = () => {
                   to="/platform"
                   className="d-flex align-items-center"
                 >
-                  <BsArrowLeft className="me-1" /> Tilbage til Modul
+                  <BsArrowLeft className="me-1" /> Tilbage til modul
                 </Button>
               </div>
 
@@ -352,7 +352,7 @@ const QuizForm = () => {
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                   {/* Quiz Title */}
                   <Form.Group className="mb-4">
-                    <Form.Label className="fw-bold">Quiz Titel</Form.Label>
+                    <Form.Label className="fw-bold">Quiz titel</Form.Label>
                     <Form.Control
                       type="text"
                       value={formData.quizTitle}
@@ -401,7 +401,7 @@ const QuizForm = () => {
                   <div className="mb-4">
                     <Form.Group>
                       <Form.Label className="fw-bold">
-                        Yderligere Instruktioner (Valgfrit)
+                        Yderligere instruktioner (valgfrit)
                       </Form.Label>
                       <Form.Control
                         as="textarea"
@@ -445,10 +445,10 @@ const QuizForm = () => {
                       disabled={loading || !isFormValid()}
                     >
                       {formData.useSampleQuiz
-                        ? "Opret Eksempelquiz"
+                        ? "Opret eksempelquiz"
                         : formData.questionType === "flashcards"
-                        ? "Opret Flashcards"
-                        : "Opret Quiz"}
+                        ? "Opret flashcards"
+                        : "Opret quiz"}
                     </Button>
                   </div>
 

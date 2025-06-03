@@ -246,8 +246,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T13:42:47.693500",
-      "start_timestamp": "2025-05-12T09:34:39.996Z",
+      "timestamp": "2025-06-03T12:21:58.673647",
+      "start_timestamp": "2025-06-03T10:21:56.745Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
       "score": 5,
@@ -294,23 +294,23 @@
           "viewed": true
         }
       ],
-      "attempts": 1,
+      "attempts": 23,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T15:02:52.237698",
-      "start_timestamp": "2025-05-12T13:02:39.306Z",
+      "timestamp": "2025-06-03T12:22:43.434214",
+      "start_timestamp": "2025-06-03T10:22:38.319Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
-      "score": 1,
+      "score": 2,
       "total_questions": 2,
       "answers": [
         {
           "question_id": "q1",
           "question": "According to the text, which of the following best describes the attitude of many Romantics towards the everyday social world around them?",
-          "answer": "They showed no interest in it at all.",
-          "correct": false
+          "answer": "They were completely indifferent to it.",
+          "correct": true
         },
         {
           "question_id": "q2",
@@ -319,23 +319,23 @@
           "correct": true
         }
       ],
-      "attempts": 2,
+      "attempts": 33,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-12T16:22:31.977570",
-      "start_timestamp": "2025-05-12T14:21:42.979Z",
+      "timestamp": "2025-05-26T14:19:25.576826",
+      "start_timestamp": "2025-05-26T12:19:21.309Z",
       "quiz_id": "quiz_1747059689",
       "quiz_title": "Flashcards om 2. Verdenskrig",
-      "score": 2,
+      "score": 3,
       "total_questions": 4,
       "answers": [
         {
           "question_id": "fc1",
           "question": "Alsangsst\u00e6vner",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
@@ -350,21 +350,64 @@
         {
           "question_id": "fc3",
           "question": "DNSAP",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc4",
           "question": "H\u00f8jgaard-kreds",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 1,
+      "attempts": 8,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-05-26T14:15:08.707085",
+      "start_timestamp": "2025-05-26T12:14:58.812Z",
+      "quiz_id": "quiz_1747057433",
+      "quiz_title": "Quiz om 2. Verdenskrig",
+      "score": 2,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "Hvilken af f\u00f8lgende begivenheder fandt sted den 9. april 1940?",
+          "answer": "De f\u00f8rste tyske tropper tr\u00e6nger ind i Danmark",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "Hvilken af f\u00f8lgende partier var en af de mest modsatte til den danske regering under bes\u00e6ttelsen?",
+          "answer": "Den danske nazistgruppe DNSAP",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?",
+          "answer": "Den danske regering tilbyder at danser til tysk musik",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "Hvilken af f\u00f8lgende betegnelser kendetegner den tidlige begyndelse p\u00e5 samarbejdspolitikken?",
+          "answer": "Politisk uafh\u00e6ngighed",
+          "correct": false
+        },
+        {
+          "question_id": "q5",
+          "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?",
+          "answer": "Der er generale valg i Danmark",
+          "correct": false
+        }
+      ],
+      "attempts": 2,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

@@ -163,7 +163,7 @@ const FileUploader = () => {
 
       {/* YouTube URL input section */}
       <div className="mt-3">
-        <Form.Label className="fw-bold">YouTube Video URL</Form.Label>
+        <Form.Label className="fw-bold">YouTube video URL</Form.Label>
         <InputGroup className="mb-2">
           <Form.Control
             type="text"
@@ -190,7 +190,7 @@ const FileUploader = () => {
         <div className="mt-3">
           <div className="d-flex justify-content-between align-items-center mb-2">
             <h6 className="mb-0 fw-bold">
-              Valgte Filer ({formData.files.length})
+              Valgte filer ({formData.files.length})
             </h6>
             <span className="text-muted small">
               Samlet størrelse: {totalFileSize.toFixed(2)} MB

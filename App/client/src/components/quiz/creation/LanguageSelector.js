@@ -13,7 +13,7 @@ const LanguageSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Output Sprog</Form.Label>
+        <Form.Label className="fw-bold">Output sprog</Form.Label>
         <div className="d-flex gap-3">
           {languages.map((lang) => (
             <Form.Check

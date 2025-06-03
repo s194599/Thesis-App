@@ -11,7 +11,7 @@ const NumQuestionsSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Antal Spørgsmål</Form.Label>
+        <Form.Label className="fw-bold">Antal spørgsmål</Form.Label>
         <Form.Select
           value={formData.numQuestions}
           onChange={(e) =>

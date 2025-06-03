@@ -75,14 +75,16 @@
       "module_id": "module-3",
       "student_id": "1",
       "student_name": "Christian Wu",
-      "timestamp": "2025-05-12T13:42:47.694495"
+      "timestamp": "2025-05-12T13:42:47.694495",
+      "quiz_score": 100
     },
     {
       "activity_id": "activity_quiz_quiz_1747041853_module-3_1747041855736",
       "module_id": "module-3",
       "student_id": "1",
       "student_name": "Christian Wu",
-      "timestamp": "2025-05-12T13:46:03.488768"
+      "timestamp": "2025-05-12T13:46:03.488768",
+      "quiz_score": 100
     },
     {
       "activity_id": "activity_quiz_quiz_1747059689_module-2_1747059692754",
@@ -90,6 +92,20 @@
       "student_id": "1",
       "student_name": "Christian Wu",
       "timestamp": "2025-05-12T16:22:31.977570"
+    },
+    {
+      "activity_id": "activity_1746018403078",
+      "module_id": "module-2",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "timestamp": "2025-05-26T11:40:09.603075"
+    },
+    {
+      "activity_id": "activity_quiz_quiz_1747057433_module-2_1747057434463",
+      "module_id": "module-2",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "timestamp": "2025-05-26T14:13:22.683173"
     }
   ]
 }

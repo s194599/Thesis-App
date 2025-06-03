@@ -30,6 +30,7 @@ import {
   BsChevronDown,
   BsChevronRight,
   BsBook,
+  BsTrophy
 } from "react-icons/bs";
 import ModuleTabs from "./ModuleTabs";
 import { useNavigate } from "react-router-dom";
@@ -52,6 +53,7 @@ const ModuleContent = ({
 
   const [activities, setActivities] = useState([]);
   const [completedActivities, setCompletedActivities] = useState([]);
+  const [completionData, setCompletionData] = useState({});
   const [activeTab, setActiveTab] = useState("indhold");
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -222,11 +224,33 @@ const ModuleContent = ({
   // Function to fetch student activity completions
   const fetchStudentCompletions = async () => {
     try {
-      const response = await fetch("/api/student-activity-completions?studentId=1");
+      // Add a timestamp to prevent caching
+      const response = await fetch(`/api/student-activity-completions?studentId=1&_t=${Date.now()}`);
       if (response.ok) {
         const data = await response.json();
         if (data.success && Array.isArray(data.completed_activities)) {
           setCompletedActivities(data.completed_activities);
+          console.log(`Loaded ${data.completed_activities.length} completed activities`);
+          
+          // Also store completion data with scores if available
+          if (Array.isArray(data.completed_activities_data)) {
+            const scoresMap = {};
+            
+            data.completed_activities_data.forEach(activityData => {
+              if (activityData.id) {
+                // Store the score (even if null)
+                scoresMap[activityData.id] = activityData.score;
+                
+                // Log when a 100% score is found
+                if (activityData.score === 100) {
+                  console.log(`Trophy eligible: ${activityData.id} has score of 100%`);
+                }
+              }
+            });
+            
+            setCompletionData(scoresMap);
+            console.log('Completion data with scores:', scoresMap);
+          }
         }
       } else {
         console.error("Error fetching activity completions");
@@ -512,6 +536,17 @@ const ModuleContent = ({
   // Check if an activity is completed by the current student
   const isActivityCompleted = (activityId) => {
     return completedActivities.includes(activityId);
+  };
+
+  // Check if an activity should display a trophy (perfect score)
+  const isPerfectScore = (activityId) => {
+    // First check if the activity is completed
+    if (!completedActivities.includes(activityId)) {
+      return false;
+    }
+    
+    // Check if the activity has a score of 100
+    return completionData[activityId] === 100;
   };
 
   const getIconForType = (type, url = null) => {
@@ -1888,6 +1923,7 @@ const ModuleContent = ({
   const renderActivityItem = (activity, depth = 0) => {
     // Check if activity is completed by the current student
     const completed = isActivityCompleted(activity.id);
+    const perfect = isPerfectScore(activity.id);
     
     // For folders, render with children
     if (activity.type === 'folder') {
@@ -2017,6 +2053,9 @@ const ModuleContent = ({
                                 <div>
                                   <h5 className="mb-1 module-title">
                                     {childActivity.title || "Unnamed Activity"}
+                                    {userRole === "student" && isPerfectScore(childActivity.id) && (
+                                      <BsTrophy className="text-warning ms-2" style={{ fontSize: '1.2em' }} title="Perfekt score!" />
+                                    )}
                                   </h5>
                                   {childActivity.description && (
                                     <div className="text-muted small">
@@ -2117,13 +2156,13 @@ const ModuleContent = ({
                                   
                                   {/* Completion Status - Only visible in student mode */}
                                   {userRole === "student" && (
-                                    <div className="ms-2">
-                                      {isActivityCompleted(childActivity.id) ? (
-                                        <BsCheckCircleFill className="text-success" />
+                                    <div className="ms-2 d-flex align-items-center">
+                                      {completed ? (
+                                        <BsCheckCircleFill className="text-success" style={{ fontSize: '1.5rem' }} />
                                       ) : (
                                         <BsCircleFill
                                           className="text-secondary"
-                                          style={{ opacity: 0.3 }}
+                                          style={{ opacity: 0.3, fontSize: '1.5rem' }}
                                         />
                                       )}
                                     </div>
@@ -2221,6 +2260,9 @@ const ModuleContent = ({
                 <div>
                   <h5 className="mb-1 module-title">
                     {activity.title || "Unnamed Activity"}
+                    {userRole === "student" && isPerfectScore(activity.id) && (
+                      <BsTrophy className="text-warning ms-2" style={{ fontSize: '1.2em' }} title="Perfekt score!" />
+                    )}
                   </h5>
                   {activity.description && (
                     <div className="text-muted small">
@@ -2321,13 +2363,13 @@ const ModuleContent = ({
                   
                   {/* Completion Status - Only visible in student mode */}
                   {userRole === "student" && (
-                    <div className="ms-2">
+                    <div className="ms-2 d-flex align-items-center">
                       {completed ? (
-                        <BsCheckCircleFill className="text-success" />
+                        <BsCheckCircleFill className="text-success" style={{ fontSize: '1.5rem' }} />
                       ) : (
                         <BsCircleFill
                           className="text-secondary"
-                          style={{ opacity: 0.3 }}
+                          style={{ opacity: 0.3, fontSize: '1.5rem' }}
                         />
                       )}
                     </div>
@@ -2490,6 +2532,25 @@ const ModuleContent = ({
     });
   };
 
+  // Add an effect to refresh completion data when window gains focus
+  useEffect(() => {
+    if (userRole === "student") {
+      // Function to handle window focus
+      const handleFocus = () => {
+        console.log('Window focused - refreshing completion data');
+        fetchStudentCompletions();
+      };
+      
+      // Add event listener
+      window.addEventListener('focus', handleFocus);
+      
+      // Clean up
+      return () => {
+        window.removeEventListener('focus', handleFocus);
+      };
+    }
+  }, [userRole]);
+
   return (
     <div className="module-content p-4">
       <header className="mb-4">
@@ -2512,21 +2573,21 @@ const ModuleContent = ({
                   onClick={handleDateSave}
                   style={{ cursor: "pointer" }}
                 />
-          </div>
+              </div>
             ) : (
               <div className="d-flex align-items-center">
-                <small className="text-muted d-block">
+                <small className="text-muted d-flex align-items-center">
                   {module.date || "Ingen dato"}
+                  {isTeacherMode && (
+                    <BsPencil
+                      size={12}
+                      className="ms-1 text-muted"
+                      onClick={handleDateEdit}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
                 </small>
-                {isTeacherMode && (
-                  <BsPencil
-                    size={12}
-                    className="ms-2 text-muted edit-icon"
-                    onClick={handleDateEdit}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-        </div>
+              </div>
             )}
 
             {editingTitle && isTeacherMode ? (
@@ -2554,21 +2615,21 @@ const ModuleContent = ({
               </div>
             ) : (
               <div className="d-flex align-items-center">
-                <h1 className="h3 mb-0 module-title" style={{ 
+                <h1 className="h3 mb-0 module-title d-flex align-items-center" style={{ 
                   wordWrap: "break-word", 
                   overflowWrap: "break-word",
-                  maxWidth: "calc(100% - 30px)" // Leave space for the edit icon
+                  maxWidth: "100%"
                 }}>
                   {module.title || "Unnamed Module"}
+                  {isTeacherMode && (
+                    <BsPencil
+                      size={16}
+                      className="ms-2 text-muted"
+                      onClick={handleTitleEdit}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
                 </h1>
-                {isTeacherMode && (
-                  <BsPencil
-                    size={16}
-                    className="ms-3 text-muted edit-icon flex-shrink-0"
-                    onClick={handleTitleEdit}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
               </div>
             )}
           </div>
@@ -2631,7 +2692,7 @@ const ModuleContent = ({
                 className="position-absolute top-0 end-0 p-0 text-muted"
                 onClick={() => setEditingDescription(true)}
               >
-                <BsPencilSquare />
+                <BsPencil />
               </Button>
             )}
           </div>
@@ -2648,7 +2709,7 @@ const ModuleContent = ({
           <div className="mb-2 mt-4">
             <ProgressBar
               now={progressPercentage}
-              variant="primary"
+              variant={progressPercentage === 100 ? "success" : "primary"}
               style={{ height: "8px" }}
               className="w-100 mb-2"
             />
