@@ -30,6 +30,7 @@ import {
   BsChevronDown,
   BsChevronRight,
   BsBook,
+  BsTrophy
 } from "react-icons/bs";
 import ModuleTabs from "./ModuleTabs";
 import { useNavigate } from "react-router-dom";
@@ -52,6 +53,7 @@ const ModuleContent = ({
 
   const [activities, setActivities] = useState([]);
   const [completedActivities, setCompletedActivities] = useState([]);
+  const [completionData, setCompletionData] = useState({});
   const [activeTab, setActiveTab] = useState("indhold");
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -222,11 +224,33 @@ const ModuleContent = ({
   // Function to fetch student activity completions
   const fetchStudentCompletions = async () => {
     try {
-      const response = await fetch("/api/student-activity-completions?studentId=1");
+      // Add a timestamp to prevent caching
+      const response = await fetch(`/api/student-activity-completions?studentId=1&_t=${Date.now()}`);
       if (response.ok) {
         const data = await response.json();
         if (data.success && Array.isArray(data.completed_activities)) {
           setCompletedActivities(data.completed_activities);
+          console.log(`Loaded ${data.completed_activities.length} completed activities`);
+          
+          // Also store completion data with scores if available
+          if (Array.isArray(data.completed_activities_data)) {
+            const scoresMap = {};
+            
+            data.completed_activities_data.forEach(activityData => {
+              if (activityData.id) {
+                // Store the score (even if null)
+                scoresMap[activityData.id] = activityData.score;
+                
+                // Log when a 100% score is found
+                if (activityData.score === 100) {
+                  console.log(`Trophy eligible: ${activityData.id} has score of 100%`);
+                }
+              }
+            });
+            
+            setCompletionData(scoresMap);
+            console.log('Completion data with scores:', scoresMap);
+          }
         }
       } else {
         console.error("Error fetching activity completions");
@@ -512,6 +536,17 @@ const ModuleContent = ({
   // Check if an activity is completed by the current student
   const isActivityCompleted = (activityId) => {
     return completedActivities.includes(activityId);
+  };
+
+  // Check if an activity should display a trophy (perfect score)
+  const isPerfectScore = (activityId) => {
+    // First check if the activity is completed
+    if (!completedActivities.includes(activityId)) {
+      return false;
+    }
+    
+    // Check if the activity has a score of 100
+    return completionData[activityId] === 100;
   };
 
   const getIconForType = (type, url = null) => {
@@ -1888,6 +1923,7 @@ const ModuleContent = ({
   const renderActivityItem = (activity, depth = 0) => {
     // Check if activity is completed by the current student
     const completed = isActivityCompleted(activity.id);
+    const perfect = isPerfectScore(activity.id);
     
     // For folders, render with children
     if (activity.type === 'folder') {
@@ -2017,6 +2053,9 @@ const ModuleContent = ({
                                 <div>
                                   <h5 className="mb-1 module-title">
                                     {childActivity.title || "Unnamed Activity"}
+                                    {userRole === "student" && isPerfectScore(childActivity.id) && (
+                                      <BsTrophy className="text-warning ms-2" style={{ fontSize: '1.2em' }} title="Perfekt score!" />
+                                    )}
                                   </h5>
                                   {childActivity.description && (
                                     <div className="text-muted small">
@@ -2221,6 +2260,9 @@ const ModuleContent = ({
                 <div>
                   <h5 className="mb-1 module-title">
                     {activity.title || "Unnamed Activity"}
+                    {userRole === "student" && isPerfectScore(activity.id) && (
+                      <BsTrophy className="text-warning ms-2" style={{ fontSize: '1.2em' }} title="Perfekt score!" />
+                    )}
                   </h5>
                   {activity.description && (
                     <div className="text-muted small">
@@ -2489,6 +2531,25 @@ const ModuleContent = ({
       return orderA - orderB;
     });
   };
+
+  // Add an effect to refresh completion data when window gains focus
+  useEffect(() => {
+    if (userRole === "student") {
+      // Function to handle window focus
+      const handleFocus = () => {
+        console.log('Window focused - refreshing completion data');
+        fetchStudentCompletions();
+      };
+      
+      // Add event listener
+      window.addEventListener('focus', handleFocus);
+      
+      // Clean up
+      return () => {
+        window.removeEventListener('focus', handleFocus);
+      };
+    }
+  }, [userRole]);
 
   return (
     <div className="module-content p-4">

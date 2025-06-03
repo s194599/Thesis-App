@@ -396,6 +396,7 @@ def complete_activity():
         module_id = data.get("moduleId")
         student_id = data.get("studentId", "1")  # Default to Christian Wu (ID: 1)
         student_name = data.get("studentName", "Christian Wu")  # Default name
+        quiz_score = data.get("quizScore")  # Get quiz score if provided
         
         if not activity_id or not module_id:
             return jsonify({"success": False, "message": "Activity ID and Module ID are required"}), 400
@@ -411,8 +412,14 @@ def complete_activity():
         for completion in completions["completions"]:
             if (completion.get("activity_id") == activity_id and 
                 completion.get("student_id") == student_id):
-                completion_exists = True
-                break
+                # If record exists and we have a quiz score, update it
+                if quiz_score is not None:
+                    completion["quiz_score"] = quiz_score
+                    completion_exists = True
+                    break
+                else:
+                    completion_exists = True
+                    break
                 
         # Add completion if it doesn't exist
         if not completion_exists:
@@ -423,11 +430,20 @@ def complete_activity():
                 "student_name": student_name,
                 "timestamp": datetime.now().isoformat()
             }
+            
+            # Add quiz score if provided
+            if quiz_score is not None:
+                new_completion["quiz_score"] = quiz_score
+                
             completions["completions"].append(new_completion)
             
             # Save completions back to file
             if not save_json_file(completions_file, completions):
                 return jsonify({"success": False, "message": "Failed to save completion"}), 500
+        else:
+            # Save any updates made to existing completions
+            if not save_json_file(completions_file, completions):
+                return jsonify({"success": False, "message": "Failed to update completion"}), 500
         
         return jsonify({"success": True, "message": "Activity marked as completed"})
         
@@ -461,10 +477,20 @@ def get_student_activity_completions():
             completion.get("activity_id") for completion in student_completions
         ]
         
+        # Include detailed completion data with scores
+        completed_activities_data = []
+        for completion in student_completions:
+            activity_data = {
+                "id": completion.get("activity_id"),
+                "score": completion.get("quiz_score")
+            }
+            completed_activities_data.append(activity_data)
+        
         return jsonify({
             "success": True, 
             "student_id": student_id,
-            "completed_activities": completed_activity_ids
+            "completed_activities": completed_activity_ids,
+            "completed_activities_data": completed_activities_data
         })
         
     except Exception as e:

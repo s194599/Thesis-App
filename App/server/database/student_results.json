@@ -246,8 +246,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T15:27:16.659560",
-      "start_timestamp": "2025-05-26T13:27:15.092Z",
+      "timestamp": "2025-06-03T12:21:58.673647",
+      "start_timestamp": "2025-06-03T10:21:56.745Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
       "score": 5,
@@ -294,13 +294,13 @@
           "viewed": true
         }
       ],
-      "attempts": 20,
+      "attempts": 23,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T15:29:11.865965",
-      "start_timestamp": "2025-05-26T13:28:58.339Z",
+      "timestamp": "2025-06-03T12:22:43.434214",
+      "start_timestamp": "2025-06-03T10:22:38.319Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
       "score": 2,
@@ -319,7 +319,7 @@
           "correct": true
         }
       ],
-      "attempts": 30,
+      "attempts": 33,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
