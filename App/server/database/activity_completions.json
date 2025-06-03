@@ -76,7 +76,7 @@
       "student_id": "1",
       "student_name": "Christian Wu",
       "timestamp": "2025-05-12T13:42:47.694495",
-      "quiz_score": 100
+      "quiz_score": 60
     },
     {
       "activity_id": "activity_quiz_quiz_1747041853_module-3_1747041855736",
@@ -105,7 +105,8 @@
       "module_id": "module-2",
       "student_id": "1",
       "student_name": "Christian Wu",
-      "timestamp": "2025-05-26T14:13:22.683173"
+      "timestamp": "2025-05-26T14:13:22.683173",
+      "quiz_score": 100
     }
   ]
 }

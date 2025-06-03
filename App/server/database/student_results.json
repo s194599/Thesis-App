@@ -246,11 +246,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T12:21:58.673647",
-      "start_timestamp": "2025-06-03T10:21:56.745Z",
+      "timestamp": "2025-06-03T13:35:51.764341",
+      "start_timestamp": "2025-06-03T11:34:14.464Z",
       "quiz_id": "quiz_1747042463",
       "quiz_title": "Flashcard om Romantikken",
-      "score": 5,
+      "score": 3,
       "total_questions": 5,
       "answers": [
         {
@@ -280,27 +280,27 @@
         {
           "question_id": "fc4",
           "question": "Term: Intertextuality",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc5",
           "question": "Term: Sovereign artist",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 23,
+      "attempts": 24,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T12:42:37.885284",
-      "start_timestamp": "2025-06-03T10:42:29.518Z",
+      "timestamp": "2025-06-03T13:12:20.756493",
+      "start_timestamp": "2025-06-03T11:12:14.290Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
       "score": 2,
@@ -319,7 +319,7 @@
           "correct": true
         }
       ],
-      "attempts": 40,
+      "attempts": 44,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -369,11 +369,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T14:15:08.707085",
-      "start_timestamp": "2025-05-26T12:14:58.812Z",
+      "timestamp": "2025-06-03T13:23:15.063317",
+      "start_timestamp": "2025-06-03T11:19:30.735Z",
       "quiz_id": "quiz_1747057433",
       "quiz_title": "Quiz om 2. Verdenskrig",
-      "score": 2,
+      "score": 5,
       "total_questions": 5,
       "answers": [
         {
@@ -391,23 +391,23 @@
         {
           "question_id": "q3",
           "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?",
-          "answer": "Den danske regering tilbyder at danser til tysk musik",
-          "correct": false
+          "answer": "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
+          "correct": true
         },
         {
           "question_id": "q4",
           "question": "Hvilken af f\u00f8lgende betegnelser kendetegner den tidlige begyndelse p\u00e5 samarbejdspolitikken?",
-          "answer": "Politisk uafh\u00e6ngighed",
-          "correct": false
+          "answer": "Positivt svar",
+          "correct": true
         },
         {
           "question_id": "q5",
           "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?",
-          "answer": "Der er generale valg i Danmark",
-          "correct": false
+          "answer": "Der er et store nazistm\u00f8de i K\u00f8benhavn, der slutter med slagsm\u00e5l og arrestationer",
+          "correct": true
         }
       ],
-      "attempts": 2,
+      "attempts": 6,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

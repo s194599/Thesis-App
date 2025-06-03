@@ -8,6 +8,8 @@ import {
   Alert,
   Spinner,
   Badge,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
 import {
   BsArrowLeft,
@@ -17,9 +19,13 @@ import {
   BsTrophyFill,
   BsHouseDoor,
   BsStarFill,
+  BsVolumeUp,
+  BsVolumeMute,
 } from "react-icons/bs";
 import { getQuiz } from "../../../services/api";
 import confetti from "canvas-confetti";
+import useSoundEffects from "../../../hooks/useSoundEffects";
+import "./Quiz.css";
 
 // Helper function to shuffle array (Fisher-Yates algorithm)
 const shuffleArray = (array) => {
@@ -34,6 +40,9 @@ const shuffleArray = (array) => {
 const TakeQuiz = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
+
+  // Sound effects hook
+  const { playSound, toggleMute, muted, loaded: soundsLoaded } = useSoundEffects();
 
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -52,6 +61,7 @@ const TakeQuiz = () => {
   const [quizStartTime, setQuizStartTime] = useState(null);
   const [flashcardResponse, setFlashcardResponse] = useState(null);
   const [swipeDirection, setSwipeDirection] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -248,7 +258,7 @@ const TakeQuiz = () => {
     quiz,
   ]);
 
-  // Effect to trigger confetti when the quiz is completed
+  // Effect to trigger confetti when the quiz is completed with 100% score
   useEffect(() => {
     if (quizCompleted) {
       confetti({
@@ -268,6 +278,8 @@ const TakeQuiz = () => {
       // Only proceed if this is a flashcard
       if (currentQuestion?.type === "flashcard") {
         const handleKeyDown = (e) => {
+          if (isTransitioning) return; // Prevent interactions during transitions
+          
           // Space key to flip card
           if (e.code === 'Space') {
             e.preventDefault(); // Prevent page scrolling
@@ -278,6 +290,9 @@ const TakeQuiz = () => {
           if (showAnswer) {
             // Left arrow Det vidste jeg ikke
             if (e.code === 'ArrowLeft') {
+              // Play wrong sound
+              playSound('wrong');
+              
               // Record that the student didn't know the answer
               const newAnswers = [...answers];
               newAnswers[currentQuestion.originalIndex] = {
@@ -287,11 +302,19 @@ const TakeQuiz = () => {
               setAnswers(newAnswers);
               setFlashcardResponse(false);
               
-              // Move to next card or finish quiz
+              // Move to next card or finish quiz with proper transition
               if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                setIsTransitioning(true);
+                
+                // First, reset to front side
                 setShowAnswer(false);
-                setFlashcardResponse(null);
-                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                
+                // Give time for the flip animation to complete before changing card
+                setTimeout(() => {
+                  setCurrentQuestionIndex(currentQuestionIndex + 1);
+                  setFlashcardResponse(null);
+                  setIsTransitioning(false);
+                }, 300); // Half of the flip animation time (0.6s)
               } else {
                 setQuizCompleted(true);
               }
@@ -299,6 +322,9 @@ const TakeQuiz = () => {
             
             // Right arrow Det vidste jeg godt
             if (e.code === 'ArrowRight') {
+              // Play correct sound
+              playSound('correct');
+              
               // Record that the student knew the answer and increment score
               const newAnswers = [...answers];
               newAnswers[currentQuestion.originalIndex] = {
@@ -309,11 +335,19 @@ const TakeQuiz = () => {
               setScore(prevScore => prevScore + 1);
               setFlashcardResponse(true);
               
-              // Move to next card or finish quiz
+              // Move to next card or finish quiz with proper transition
               if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                setIsTransitioning(true);
+                
+                // First, reset to front side
                 setShowAnswer(false);
-                setFlashcardResponse(null);
-                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                
+                // Give time for the flip animation to complete before changing card
+                setTimeout(() => {
+                  setCurrentQuestionIndex(currentQuestionIndex + 1);
+                  setFlashcardResponse(null);
+                  setIsTransitioning(false);
+                }, 300); // Half of the flip animation time (0.6s)
               } else {
                 setQuizCompleted(true);
               }
@@ -330,7 +364,7 @@ const TakeQuiz = () => {
         };
       }
     }
-  }, [quiz, quizCompleted, randomizedQuestions, currentQuestionIndex, showAnswer, answers, setAnswers, setShowAnswer, setScore, setFlashcardResponse, setCurrentQuestionIndex, setQuizCompleted]);
+  }, [quiz, quizCompleted, randomizedQuestions, currentQuestionIndex, showAnswer, answers, setAnswers, setShowAnswer, setScore, setFlashcardResponse, setCurrentQuestionIndex, setQuizCompleted, playSound, isTransitioning]);
 
   const handleAnswerSelect = (answer) => {
     if (showAnswer) return; // Prevent changing answer after submission
@@ -352,6 +386,11 @@ const TakeQuiz = () => {
     // Update score if answer is correct
     if (isCorrect) {
       setScore((prevScore) => prevScore + 1);
+      // Play correct sound
+      playSound('correct');
+    } else {
+      // Play wrong sound
+      playSound('wrong');
     }
 
     setShowAnswer(true);
@@ -366,6 +405,7 @@ const TakeQuiz = () => {
       setShowAnswer(false);
     } else {
       setQuizCompleted(true);
+      
       // Trigger confetti for successful quiz completion
       confetti({
         particleCount: 100,
@@ -398,6 +438,59 @@ const TakeQuiz = () => {
     return "outline-secondary";
   };
 
+  // Add this to handle flashcard interactions with sound
+  const handleFlashcardFlip = () => {
+    if (isTransitioning) return; // Prevent flipping during transitions
+    setShowAnswer(!showAnswer);
+  };
+
+  const handleFlashcardResponse = (knew) => {
+    if (isTransitioning) return; // Prevent responses during transitions
+    
+    // Record that the student knew/didn't know the answer
+    const currentQuestion = randomizedQuestions[currentQuestionIndex];
+    const newAnswers = [...answers];
+    newAnswers[currentQuestion.originalIndex] = {
+      flashcardResponse: knew,
+      viewed: true
+    };
+    setAnswers(newAnswers);
+    
+    // Play appropriate sound
+    if (knew) {
+      playSound('correct');
+      setScore(prevScore => prevScore + 1);
+    } else {
+      playSound('wrong');
+    }
+    
+    setFlashcardResponse(knew);
+    
+    // Move to next card or finish quiz with proper transition
+    if (currentQuestionIndex < randomizedQuestions.length - 1) {
+      setIsTransitioning(true);
+      
+      // First, reset to front side if we're showing the back
+      if (showAnswer) {
+        setShowAnswer(false);
+        
+        // Give time for the flip animation to complete before changing card
+        setTimeout(() => {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setFlashcardResponse(null);
+          setIsTransitioning(false);
+        }, 300); // Half of the flip animation time (0.6s)
+      } else {
+        // If already on front side, we can move directly
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setFlashcardResponse(null);
+        setIsTransitioning(false);
+      }
+    } else {
+      setQuizCompleted(true);
+    }
+  };
+
   const renderQuestion = () => {
     if (!quiz || randomizedQuestions.length === 0) return null;
 
@@ -412,10 +505,10 @@ const TakeQuiz = () => {
               <h4>Flashcard {currentQuestionIndex + 1} af {randomizedQuestions.length}</h4>
             </div>
             
-            <div className="flashcard-container">
+            <div className={`flashcard-container mb-4 ${isTransitioning ? 'transitioning' : ''}`}>
               <div 
                 className={`flashcard ${showAnswer ? "flipped" : ""}`}
-                onClick={() => setShowAnswer(!showAnswer)}
+                onClick={handleFlashcardFlip}
               >
                 <div className="flashcard-front">
                   <p>{currentQuestion.question}</p>
@@ -426,7 +519,7 @@ const TakeQuiz = () => {
               </div>
             </div>
             
-            <div className="flashcard-flip-hint">
+            <div className="flashcard-flip-hint text-center mb-3">
               {showAnswer ? "Klik for at se spørgsmålet" : "Klik for at se svaret"}
             </div>
             
@@ -450,7 +543,8 @@ const TakeQuiz = () => {
                   <Button
                     variant="primary"
                     size="lg"
-                    onClick={() => setShowAnswer(true)}
+                    onClick={handleFlashcardFlip}
+                    disabled={isTransitioning}
                   >
                     Vis svar
                   </Button>
@@ -464,25 +558,8 @@ const TakeQuiz = () => {
                     variant="danger"
                     size="lg"
                     className="px-4"
-                    onClick={() => {
-                      // Record that the student didn't know the answer
-                      const newAnswers = [...answers];
-                      newAnswers[currentQuestion.originalIndex] = {
-                        flashcardResponse: false,
-                        viewed: true
-                      };
-                      setAnswers(newAnswers);
-                      setFlashcardResponse(false);
-                      
-                      // Move to next card or finish quiz
-                      if (currentQuestionIndex < randomizedQuestions.length - 1) {
-                        setShowAnswer(false);
-                        setFlashcardResponse(null);
-                        setCurrentQuestionIndex(currentQuestionIndex + 1);
-                      } else {
-                        setQuizCompleted(true);
-                      }
-                    }}
+                    onClick={() => handleFlashcardResponse(false)}
+                    disabled={isTransitioning}
                   >
                     Det vidste jeg ikke
                   </Button>
@@ -490,26 +567,8 @@ const TakeQuiz = () => {
                     variant="success"
                     size="lg"
                     className="px-4"
-                    onClick={() => {
-                      // Record that the student knew the answer and increment score
-                      const newAnswers = [...answers];
-                      newAnswers[currentQuestion.originalIndex] = {
-                        flashcardResponse: true,
-                        viewed: true
-                      };
-                      setAnswers(newAnswers);
-                      setScore(prevScore => prevScore + 1);
-                      setFlashcardResponse(true);
-                      
-                      // Move to next card or finish quiz
-                      if (currentQuestionIndex < randomizedQuestions.length - 1) {
-                        setShowAnswer(false);
-                        setFlashcardResponse(null);
-                        setCurrentQuestionIndex(currentQuestionIndex + 1);
-                      } else {
-                        setQuizCompleted(true);
-                      }
-                    }}
+                    onClick={() => handleFlashcardResponse(true)}
+                    disabled={isTransitioning}
                   >
                     Det vidste jeg godt
                   </Button>
@@ -643,7 +702,7 @@ const TakeQuiz = () => {
       return (
         <div className="text-center mb-4">
           <h1 className="mb-3 text-center">
-            {knewCount === totalQuestions && totalQuestions > 0 && <BsTrophyFill className="me-3 text-warning" />}
+            {knewCount === totalQuestions && totalQuestions > 0 && <BsTrophyFill className="me-3 text-warning trophy-celebrate" />}
             {resultMessage}
           </h1>
 
@@ -748,7 +807,7 @@ const TakeQuiz = () => {
         <Card.Body className="text-center">
           {/* Dynamic Message */}
           <h2 className={`mb-4 text-${messageVariant}`}>
-            {percentage === 100 && <BsTrophyFill className="me-3 text-warning" />}
+            {percentage === 100 && <BsTrophyFill className="me-3 text-warning trophy-celebrate" />}
             {resultMessage}
           </h2>
 
@@ -864,11 +923,29 @@ const TakeQuiz = () => {
           >
             <BsArrowLeft className="me-2" /> Tilbage
           </Button>
-          {!quizCompleted && (
-            <Badge bg="primary" className="fs-6 px-3 py-2">
-              {currentQuestionIndex + 1} / {randomizedQuestions.length}
-            </Badge>
-          )}
+          
+          <div className="d-flex align-items-center">
+            {/* Sound toggle button */}
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>{muted ? "Slå lyd til" : "Slå lyd fra"}</Tooltip>}
+            >
+              <Button 
+                variant="light" 
+                size="sm" 
+                className="me-2 rounded-circle sound-control-btn" 
+                onClick={toggleMute}
+              >
+                {muted ? <BsVolumeMute className="muted" /> : <BsVolumeUp />}
+              </Button>
+            </OverlayTrigger>
+            
+            {!quizCompleted && (
+              <Badge bg="primary" className="fs-6 px-3 py-2">
+                {currentQuestionIndex + 1} / {randomizedQuestions.length}
+              </Badge>
+            )}
+          </div>
         </div>
 
         <h1 className="mb-2">{quiz.title || "Untitled Quiz"}</h1>
