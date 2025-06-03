@@ -299,8 +299,8 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T12:22:43.434214",
-      "start_timestamp": "2025-06-03T10:22:38.319Z",
+      "timestamp": "2025-06-03T12:42:37.885284",
+      "start_timestamp": "2025-06-03T10:42:29.518Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
       "score": 2,
@@ -319,7 +319,7 @@
           "correct": true
         }
       ],
-      "attempts": 33,
+      "attempts": 40,
       "student_id": "1",
       "student_name": "Christian Wu"
     },

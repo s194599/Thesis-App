@@ -550,25 +550,6 @@ const TakeQuiz = () => {
                 onClick={() => handleAnswerSelect(option)}
                 disabled={showAnswer}
               >
-                {showAnswer &&
-                  option ===
-                    quiz.questions[currentQuestion.originalIndex]
-                      .correctAnswer && (
-                    <BsCheckCircleFill
-                      className="position-absolute top-50 end-0 translate-middle-y me-3 text-success"
-                      size={20}
-                    />
-                  )}
-                {showAnswer &&
-                  option === selectedAnswer &&
-                  option !==
-                    quiz.questions[currentQuestion.originalIndex]
-                      .correctAnswer && (
-                    <BsXCircleFill
-                      className="position-absolute top-50 end-0 translate-middle-y me-3 text-danger"
-                      size={20}
-                    />
-                  )}
                 {option}
               </Button>
             ))}

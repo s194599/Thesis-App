@@ -2521,17 +2521,6 @@ const ModuleContent = ({
     }
   };
   
-  // Helper to sort activities based on order
-  const sortActivities = (activities) => {
-    if (!activities || !activities.length) return [];
-    
-    return [...activities].sort((a, b) => {
-      const orderA = activityOrder[a.id] !== undefined ? activityOrder[a.id] : 999;
-      const orderB = activityOrder[b.id] !== undefined ? activityOrder[b.id] : 999;
-      return orderA - orderB;
-    });
-  };
-
   // Add an effect to refresh completion data when window gains focus
   useEffect(() => {
     if (userRole === "student") {
@@ -2549,7 +2538,18 @@ const ModuleContent = ({
         window.removeEventListener('focus', handleFocus);
       };
     }
-  }, [userRole]);
+  }, [userRole, fetchStudentCompletions]);
+
+  // Helper to sort activities based on order
+  const sortActivities = (activities) => {
+    if (!activities || !activities.length) return [];
+    
+    return [...activities].sort((a, b) => {
+      const orderA = activityOrder[a.id] !== undefined ? activityOrder[a.id] : 999;
+      const orderB = activityOrder[b.id] !== undefined ? activityOrder[b.id] : 999;
+      return orderA - orderB;
+    });
+  };
 
   return (
     <div className="module-content p-4">
