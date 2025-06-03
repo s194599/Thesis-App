@@ -40,6 +40,14 @@ ALLOWED_EXTENSIONS = {
     "png",
     "jpeg",
     "jpg",
+    "ppt",
+    "pptx",
+    "xls",
+    "xlsx",
+    "mp3",
+    "wav",
+    "ogg",
+    "m4a",
 }
 
 # API configuration

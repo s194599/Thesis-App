@@ -5,6 +5,8 @@ import { FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { 
   BsFileEarmarkPdf, 
   BsFileEarmarkWord, 
+  BsFileEarmarkExcel,
+  BsFileEarmarkPpt,
   BsYoutube,
   BsListCheck,
   BsFileEarmark,
@@ -302,6 +304,10 @@ const ModuleOverview = () => {
           return <BsYoutube className="text-danger" size={20} />;
         case "word":
           return <BsFileEarmarkWord className="text-primary" size={20} />;
+        case "powerpoint":
+          return <BsFileEarmarkPpt className="text-warning" size={20} />;
+        case "excel":
+          return <BsFileEarmarkExcel className="text-success" size={20} />;
         case "quiz":
           return <BsListCheck className="text-warning" size={20} />;
         case "image":

@@ -240,6 +240,10 @@ def upload_file():
                 file_type = "pdf"
             elif ext.lower() in [".doc", ".docx"]:
                 file_type = "word"
+            elif ext.lower() in [".ppt", ".pptx"]:
+                file_type = "powerpoint"
+            elif ext.lower() in [".xls", ".xlsx"]:
+                file_type = "excel"
             elif ext.lower() in [".jpg", ".jpeg", ".png"]:
                 file_type = "image"
             elif ext.lower() in [".mp4", ".mov", ".avi", ".webm"]:
@@ -295,6 +299,32 @@ def uploaded_file(filename):
                 "application/msword"
                 if ext.lower() == ".doc"
                 else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+            return send_from_directory(
+                UPLOAD_FOLDER,
+                filename,
+                mimetype=mimetype,
+                as_attachment=True,
+                download_name=filename,
+            )
+        elif ext.lower() in [".ppt", ".pptx"]:
+            mimetype = (
+                "application/vnd.ms-powerpoint"
+                if ext.lower() == ".ppt"
+                else "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            )
+            return send_from_directory(
+                UPLOAD_FOLDER,
+                filename,
+                mimetype=mimetype,
+                as_attachment=True,
+                download_name=filename,
+            )
+        elif ext.lower() in [".xls", ".xlsx"]:
+            mimetype = (
+                "application/vnd.ms-excel"
+                if ext.lower() == ".xls"
+                else "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
             return send_from_directory(
                 UPLOAD_FOLDER,

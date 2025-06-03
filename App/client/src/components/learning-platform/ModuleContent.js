@@ -13,6 +13,8 @@ import {
   BsCircleFill, 
   BsFileEarmarkPdf, 
   BsFileEarmarkWord, 
+  BsFileEarmarkExcel,
+  BsFileEarmarkPpt,
   BsYoutube,
   BsListCheck,
   BsPencil,
@@ -576,6 +578,10 @@ const ModuleContent = ({
         return <BsYoutube className="text-danger" size={20} />;
       case "word":
         return <BsFileEarmarkWord className="text-primary" size={20} />;
+      case "powerpoint":
+        return <BsFileEarmarkPpt className="text-warning" size={20} />;
+      case "excel":
+        return <BsFileEarmarkExcel className="text-success" size={20} />;
       case "quiz":
       case "multiple_choice":
         return <BsListCheck className="text-warning" size={20} />;
@@ -611,6 +617,16 @@ const ModuleContent = ({
       lowerFilename.endsWith(".docx")
     ) {
       return "word";
+    } else if (
+      lowerFilename.endsWith(".ppt") ||
+      lowerFilename.endsWith(".pptx")
+    ) {
+      return "powerpoint";
+    } else if (
+      lowerFilename.endsWith(".xls") ||
+      lowerFilename.endsWith(".xlsx")
+    ) {
+      return "excel";
     } else if (
       lowerFilename.includes("youtube.com") ||
       lowerFilename.includes("youtu.be") ||
@@ -3060,17 +3076,17 @@ const ModuleContent = ({
                       <div className="text-muted small mb-2">
                         Slip filer her, eller klik for at vælge
                       </div>
-                      <Form.Control
-                        type="file"
+                      <Form.Control 
+                        type="file" 
                         name="file"
                         onChange={handleModalInputChange}
-                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.webm,.mov,.avi,.mp3,.wav,.ogg,.m4a"
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.webm,.mov,.avi,.mp3,.wav,.ogg,.m4a,.ppt,.pptx,.xls,.xlsx"
                         className="file-input-hidden"
                       />
                     </label>
                   </div>
                   <div className="text-muted small mt-1 text-center">
-                    Accepterede filtyper: PDF, Word dokumenter, billeder, videoer, lydfiler
+                    Accepterede filtyper: PDF, Word dokumenter, billeder, videoer, lydfiler, PowerPoint, Excel
                   </div>
 
                   {newActivity.file && (
@@ -3278,13 +3294,13 @@ const ModuleContent = ({
                         type="file" 
                         name="file"
                         onChange={handleModalInputChange}
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.webm,.mov,.avi,.mp3,.wav,.ogg,.m4a"
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.webm,.mov,.avi,.mp3,.wav,.ogg,.m4a,.ppt,.pptx,.xls,.xlsx"
                         className="file-input-hidden"
                       />
                     </label>
                   </div>
                   <div className="text-muted small mt-1 text-center">
-                        Accepterede filtyper: PDF, Word dokumenter, billeder, videoer, lydfiler
+                        Accepterede filtyper: PDF, Word dokumenter, billeder, videoer, lydfiler, PowerPoint, Excel
                   </div>
                 </div>
                 {newActivity.url && (

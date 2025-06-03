@@ -5,6 +5,8 @@ import {
   BsUpload,
   BsFileEarmarkPdf,
   BsFileEarmarkWord,
+  BsFileEarmarkExcel,
+  BsFileEarmarkPpt,
   BsFileEarmarkText,
   BsFileEarmarkPlay,
   BsYoutube,
@@ -47,6 +49,12 @@ const FileUploader = () => {
       "application/msword": [".doc"],
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
+      "application/vnd.ms-powerpoint": [".ppt"],
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+        [".pptx"],
+      "application/vnd.ms-excel": [".xls"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        [".xlsx"],
       "text/plain": [".txt"],
       "video/mp4": [".mp4"],
       "video/quicktime": [".mov"],
@@ -66,6 +74,10 @@ const FileUploader = () => {
       return <BsFileEarmarkPdf size={24} className="text-danger" />;
     } else if (fileType.includes("word") || fileType.includes("doc")) {
       return <BsFileEarmarkWord size={24} className="text-primary" />;
+    } else if (fileType.includes("powerpoint") || fileType.includes("presentation")) {
+      return <BsFileEarmarkPpt size={24} className="text-warning" />;
+    } else if (fileType.includes("excel") || fileType.includes("spreadsheet")) {
+      return <BsFileEarmarkExcel size={24} className="text-success" />;
     } else if (fileType.includes("video")) {
       return <BsFileEarmarkPlay size={24} className="text-success" />;
     } else if (fileType.includes("audio")) {

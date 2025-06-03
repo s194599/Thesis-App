@@ -107,5 +107,29 @@
     "type": "link",
     "url": "https://www.linkedin.com/in/oliver-theva/",
     "moduleId": "module-4"
+  },
+  {
+    "id": "activity_1748954681415",
+    "title": "Dansk-stx-10-En-nat-i-kulden-med-de-hjemloese-Analyse.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-3",
+    "url": "http://localhost:5001/api/uploads/Dansk-stx-10-En-nat-i-kulden-med-de-hjemloese-Analyse_1748954681.pdf"
+  },
+  {
+    "id": "activity_1748954891066",
+    "title": "Legater-oversigt.xlsx",
+    "description": "",
+    "type": "excel",
+    "moduleId": "module-3",
+    "url": "http://localhost:5001/api/uploads/Legater-oversigt_1748954891.xlsx"
+  },
+  {
+    "id": "activity_1748954919521",
+    "title": "Group 1 - DSB Mini Case-competion.pptx",
+    "description": "",
+    "type": "powerpoint",
+    "moduleId": "module-3",
+    "url": "http://localhost:5001/api/uploads/Group_1_-_DSB_Mini_Case-competion_1748954919.pptx"
   }
 ]
