@@ -55,7 +55,8 @@ const TakeQuiz = () => {
     toggleMusicMute, 
     startBackgroundMusic,
     stopBackgroundMusic,
-    userInteracted
+    userInteracted,
+    markQuizStarted
   } = useSoundEffects();
 
   const [quiz, setQuiz] = useState(null);
@@ -85,6 +86,11 @@ const TakeQuiz = () => {
   // Badge related state
   const [earnedBadges, setEarnedBadges] = useState([]);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
+
+  // Mark the quiz as started when the component loads
+  useEffect(() => {
+    markQuizStarted();
+  }, [markQuizStarted]);
 
   // Start background music when quiz loads and sounds are loaded
   useEffect(() => {
@@ -366,6 +372,9 @@ const TakeQuiz = () => {
       
       // Reset the user interaction flag so it doesn't affect future quizzes
       localStorage.removeItem('quizUserInteracted');
+      
+      // Mark the quiz as not started to stop background music
+      localStorage.setItem('quizStarted', 'false');
     }
   }, [quizCompleted]);
 
@@ -1107,6 +1116,8 @@ const TakeQuiz = () => {
     return () => {
       // Make sure to remove the interaction flag when leaving the quiz
       localStorage.removeItem('quizUserInteracted');
+      // Also mark the quiz as not started to prevent background music
+      localStorage.setItem('quizStarted', 'false');
     };
   }, []);
 

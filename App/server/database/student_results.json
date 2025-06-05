@@ -299,33 +299,33 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T13:36:51.180517",
-      "start_timestamp": "2025-06-03T11:36:46.239Z",
+      "timestamp": "2025-06-05T10:50:10.848575",
+      "start_timestamp": "2025-06-05T08:50:00.754Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
-      "score": 2,
+      "score": 0,
       "total_questions": 2,
       "answers": [
         {
           "question_id": "q1",
           "question": "According to the text, which of the following best describes the attitude of many Romantics towards the everyday social world around them?",
-          "answer": "They were completely indifferent to it.",
-          "correct": true
+          "answer": "They preferred the exotic over the everyday.",
+          "correct": false
         },
         {
           "question_id": "q2",
           "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
-          "answer": "The artist is a fiercely independent genius who creates original works of art.",
-          "correct": true
+          "answer": "The artist is a socially and politically disengaged individual.",
+          "correct": false
         }
       ],
-      "attempts": 45,
+      "attempts": 46,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-05-26T14:19:25.576826",
-      "start_timestamp": "2025-05-26T12:19:21.309Z",
+      "timestamp": "2025-06-05T10:51:08.992439",
+      "start_timestamp": "2025-06-05T08:50:57.575Z",
       "quiz_id": "quiz_1747059689",
       "quiz_title": "Flashcards om 2. Verdenskrig",
       "score": 3,
@@ -350,30 +350,30 @@
         {
           "question_id": "fc3",
           "question": "DNSAP",
-          "answer": "Didn't know it",
-          "correct": false,
+          "answer": "Knew it",
+          "correct": true,
           "is_flashcard": true,
           "viewed": true
         },
         {
           "question_id": "fc4",
           "question": "H\u00f8jgaard-kreds",
-          "answer": "Knew it",
-          "correct": true,
+          "answer": "Didn't know it",
+          "correct": false,
           "is_flashcard": true,
           "viewed": true
         }
       ],
-      "attempts": 8,
+      "attempts": 9,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-05T10:35:51.169650",
-      "start_timestamp": "2025-06-05T08:35:28.824Z",
+      "timestamp": "2025-06-05T10:53:16.864005",
+      "start_timestamp": "2025-06-05T08:52:58.092Z",
       "quiz_id": "quiz_1747057433",
       "quiz_title": "Quiz om 2. Verdenskrig",
-      "score": 3,
+      "score": 4,
       "total_questions": 5,
       "answers": [
         {
@@ -391,8 +391,8 @@
         {
           "question_id": "q3",
           "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?",
-          "answer": "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
-          "correct": false
+          "answer": "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
+          "correct": true
         },
         {
           "question_id": "q4",
@@ -403,11 +403,11 @@
         {
           "question_id": "q5",
           "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?",
-          "answer": "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "answer": "Der er generale valg i Danmark",
           "correct": false
         }
       ],
-      "attempts": 24,
+      "attempts": 26,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

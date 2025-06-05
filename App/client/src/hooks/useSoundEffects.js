@@ -28,6 +28,12 @@ const useSoundEffects = () => {
     const savedInteraction = localStorage.getItem('quizUserInteracted');
     return savedInteraction === 'true';
   });
+  
+  // Track if the quiz has actually started (to control background music)
+  const [quizStarted, setQuizStarted] = useState(() => {
+    const savedQuizStarted = localStorage.getItem('quizStarted');
+    return savedQuizStarted === 'true';
+  });
 
   // Audio object references
   const [sounds, setSounds] = useState({
@@ -243,7 +249,7 @@ const useSoundEffects = () => {
     if (loaded && sounds.background) {
       if (musicMuted) {
         sounds.background.pause();
-      } else if (userInteracted) {
+      } else if (userInteracted && quizStarted) {
         try {
           const playPromise = sounds.background.play();
           
@@ -256,9 +262,13 @@ const useSoundEffects = () => {
         } catch (error) {
           console.error('Error with background music:', error);
         }
+      } else if (!quizStarted && sounds.background.played.length > 0) {
+        // If quiz isn't started but music is playing, stop it
+        sounds.background.pause();
+        sounds.background.currentTime = 0;
       }
     }
-  }, [musicMuted, loaded, sounds.background, userInteracted]);
+  }, [musicMuted, loaded, sounds.background, userInteracted, quizStarted]);
 
   // Toggle mute function for sound effects
   const toggleMute = useCallback(() => {
@@ -286,8 +296,10 @@ const useSoundEffects = () => {
         
         // Force a check of localStorage in case it was updated in another component
         const storedInteraction = localStorage.getItem('quizUserInteracted') === 'true';
+        const storedQuizStarted = localStorage.getItem('quizStarted') === 'true';
         
-        if (userInteracted || storedInteraction) {
+        // Only play if the quiz has actually started
+        if ((userInteracted || storedInteraction) && (quizStarted || storedQuizStarted)) {
           const playPromise = sounds.background.play();
           
           // Handle the play promise to catch any autoplay issues
@@ -301,13 +313,13 @@ const useSoundEffects = () => {
             });
           }
         } else {
-          console.log('Waiting for user interaction before playing audio');
+          console.log('Waiting for user interaction and quiz start before playing music');
         }
       } catch (error) {
         console.error('Error with background music:', error);
       }
     }
-  }, [loaded, sounds.background, musicMuted, userInteracted]);
+  }, [loaded, sounds.background, musicMuted, userInteracted, quizStarted]);
 
   // Stop background music
   const stopBackgroundMusic = useCallback(() => {
@@ -318,6 +330,23 @@ const useSoundEffects = () => {
       } catch (error) {
         console.error('Error stopping background music:', error);
       }
+    }
+  }, [loaded, sounds.background]);
+
+  // Mark quiz as started (sets flag for background music)
+  const markQuizStarted = useCallback(() => {
+    localStorage.setItem('quizStarted', 'true');
+    setQuizStarted(true);
+  }, []);
+  
+  // Mark quiz as not started (prevents background music from playing)
+  const markQuizNotStarted = useCallback(() => {
+    localStorage.setItem('quizStarted', 'false');
+    setQuizStarted(false);
+    // Also stop any currently playing music
+    if (loaded && sounds.background) {
+      sounds.background.pause();
+      sounds.background.currentTime = 0;
     }
   }, [loaded, sounds.background]);
 
@@ -355,7 +384,9 @@ const useSoundEffects = () => {
     toggleMusicMute,
     startBackgroundMusic,
     stopBackgroundMusic,
-    userInteracted
+    userInteracted,
+    markQuizStarted,
+    markQuizNotStarted
   };
 };
 

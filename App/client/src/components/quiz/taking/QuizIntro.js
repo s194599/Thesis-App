@@ -7,9 +7,21 @@ import {
   Spinner,
   Alert,
   Badge,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
-import { BsArrowLeft, BsPlay } from "react-icons/bs";
+import {
+  BsArrowLeft,
+  BsPlay,
+  BsVolumeUp,
+  BsVolumeMute,
+  BsMusicNote,
+  BsMusicNoteBeamed,
+  BsLightningChargeFill
+} from "react-icons/bs";
 import { getQuiz } from "../../../services/api";
+import useSoundEffects from "../../../hooks/useSoundEffects";
+import "./Quiz.css";
 
 const QuizIntro = () => {
   const { quizId } = useParams();
@@ -23,6 +35,49 @@ const QuizIntro = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quizResults, setQuizResults] = useState(null);
+  
+  // Local state to track user interaction for UI purposes
+  const [localUserInteracted, setLocalUserInteracted] = useState(() => {
+    const savedInteraction = localStorage.getItem('quizUserInteracted');
+    return savedInteraction === 'true';
+  });
+
+  // Sound effects hook
+  const { 
+    toggleMute, 
+    muted, 
+    musicMuted, 
+    toggleMusicMute,
+    markQuizNotStarted
+  } = useSoundEffects();
+
+  useEffect(() => {
+    // Mark the quiz as not started when on the intro page
+    markQuizNotStarted();
+    
+    // Enable user interaction when any interaction happens
+    const enableAudio = () => {
+      setLocalUserInteracted(true);
+      localStorage.setItem('quizUserInteracted', 'true');
+      
+      // Remove the listeners after first interaction
+      ['click', 'touchstart', 'keydown'].forEach(event => {
+        document.removeEventListener(event, enableAudio);
+      });
+    };
+    
+    // Add listeners for user interaction
+    ['click', 'touchstart', 'keydown'].forEach(event => {
+      document.addEventListener(event, enableAudio);
+    });
+    
+    return () => {
+      // Cleanup listeners
+      ['click', 'touchstart', 'keydown'].forEach(event => {
+        document.removeEventListener(event, enableAudio);
+      });
+    };
+  }, [markQuizNotStarted]);
 
   useEffect(() => {
     const fetchQuizAndResults = async () => {
@@ -76,6 +131,10 @@ const QuizIntro = () => {
     // Set a flag in localStorage to indicate user interaction has occurred
     // This will enable audio to play immediately when the quiz starts
     localStorage.setItem('quizUserInteracted', 'true');
+    setLocalUserInteracted(true);
+    
+    // Mark that the quiz is starting to enable background music
+    localStorage.setItem('quizStarted', 'true');
     
     // Navigate to the actual quiz page with the same query parameters
     navigate(`/quiz/take/${quizId}${location.search}`);
@@ -126,69 +185,80 @@ const QuizIntro = () => {
   };
 
   return (
-    <Container className="py-5">
-      <Button
-        variant="outline-secondary"
-        className="mb-4 d-flex align-items-center"
-        onClick={handleBack}
-      >
-        <BsArrowLeft className="me-2" /> Tilbage
-      </Button>
+    <Container className="py-5 quiz-intro-container">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <Button
+          variant="outline-secondary"
+          className="d-flex align-items-center"
+          onClick={handleBack}
+        >
+          <BsArrowLeft className="me-2" /> Tilbage
+        </Button>
 
-      <Card className="shadow-sm">
-        <Card.Header className="bg-primary text-white py-3">
-          <h3 className="mb-0">{quiz.title}</h3>
-        </Card.Header>
-        <Card.Body className="p-4">
-          {quiz.description && (
-            <div className="mb-4">
-              <h5>Beskrivelse</h5>
-              <p>{quiz.description}</p>
-            </div>
-          )}
+        <div className="d-flex align-items-center">
+          {/* Sound toggle button */}
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>{!localUserInteracted ? "Klik for at aktivere lyd" : muted ? "Slå lyd til" : "Slå lyd fra"}</Tooltip>}
+          >
+            <Button 
+              variant="light" 
+              size="sm" 
+              className={`me-2 rounded-circle sound-control-btn ${!localUserInteracted ? 'needs-interaction' : ''}`}
+              onClick={toggleMute}
+            >
+              {muted ? <BsVolumeMute className="muted" /> : <BsVolumeUp />}
+            </Button>
+          </OverlayTrigger>
+          
+          {/* Music toggle button */}
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>{!localUserInteracted ? "Klik for at aktivere musik" : musicMuted ? "Slå musik til" : "Slå musik fra"}</Tooltip>}
+          >
+            <Button 
+              variant="light" 
+              size="sm" 
+              className={`me-2 rounded-circle sound-control-btn ${!localUserInteracted ? 'needs-interaction' : ''}`}
+              onClick={toggleMusicMute}
+            >
+              {musicMuted ? <BsMusicNote className="muted" /> : <BsMusicNoteBeamed />}
+            </Button>
+          </OverlayTrigger>
+        </div>
+      </div>
 
-          <div className="d-flex justify-content-between align-items-start flex-wrap mb-4">
-            <div className="mb-3 mb-md-0">
-              <h5>Quiz information</h5>
-              <p className="mb-2">
-                <span className="fw-bold">Antal spørgsmål:</span>{" "}
-                {quiz.questions ? quiz.questions.length : 0}
+      <Card className="shadow quiz-intro-card">
+        <Card.Body className="p-5 text-center">
+          <h5 className="text-muted mb-3">Velkommen til</h5>
+          <h1 className="display-4 fw-bold mb-4">{quiz.title}</h1>
+
+          <div className="quiz-details mb-5">
+            <div className="py-3">
+              <p className="fs-5 mb-0 text-center">
+                <span className="text-muted">Antal spørgsmål:</span>{" "}
+                <span className="fw-bold">{quiz.questions ? quiz.questions.length : 0}</span>
               </p>
               
-              <p className="mb-2">
-                <span className="fw-bold">Dine forsøg:</span>{" "}
-                {quizResults ? `${quizResults.attempts || 1}` : "0"} / Ubegrænset
-              </p>
-              
-              {quizResults ? (
-                <p className="mb-0">
-                  <span className="fw-bold">Din seneste score:</span>{" "}
-                  <Badge bg="info" className="fs-6 px-2 py-1">
+              {quizResults && (
+                <div className="mt-3 d-flex justify-content-center align-items-center">
+                  <span className="text-muted me-2">Din seneste score:</span>
+                  <Badge bg="primary" className="score-badge px-3 py-2">
                     {formatScore(quizResults.score, quizResults.total_questions)}
                   </Badge>
-                  <span className="ms-2 text-muted">
-                    ({quizResults.score || 0} af {quizResults.total_questions || 0} korrekte)
-                  </span>
-                </p>
-              ) : (
-                <p className="mb-0">
-                  <span className="fw-bold">Din seneste score:</span>{" "}
-                  <Badge bg="secondary" className="fs-6 px-2 py-1">
-                    Ingen tidligere forsøg
-                  </Badge>
-                </p>
+                </div>
               )}
             </div>
           </div>
 
-          <div className="text-center mt-4">
+          <div className="text-center">
             <Button 
-              variant="success" 
+              variant="primary" 
               size="lg" 
-              className="px-5 py-3 d-flex align-items-center mx-auto"
+              className="start-quiz-btn px-5 py-3 d-flex align-items-center mx-auto"
               onClick={handleStartQuiz}
             >
-              <BsPlay size={24} className="me-2" /> Start quiz
+              <BsLightningChargeFill size={20} className="me-2" /> Start Quizzen
             </Button>
           </div>
         </Card.Body>
