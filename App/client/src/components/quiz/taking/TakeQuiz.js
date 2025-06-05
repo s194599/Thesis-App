@@ -23,6 +23,8 @@ import {
   BsVolumeUp,
   BsVolumeMute,
   BsLightningChargeFill,
+  BsMusicNote,
+  BsMusicNoteBeamed,
 } from "react-icons/bs";
 import { getQuiz } from "../../../services/api";
 import confetti from "canvas-confetti";
@@ -44,7 +46,17 @@ const TakeQuiz = () => {
   const navigate = useNavigate();
 
   // Sound effects hook
-  const { playSound, toggleMute, muted, loaded: soundsLoaded } = useSoundEffects();
+  const { 
+    playSound, 
+    toggleMute, 
+    muted, 
+    loaded: soundsLoaded, 
+    musicMuted, 
+    toggleMusicMute, 
+    startBackgroundMusic,
+    stopBackgroundMusic,
+    userInteracted
+  } = useSoundEffects();
 
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -73,6 +85,36 @@ const TakeQuiz = () => {
   // Badge related state
   const [earnedBadges, setEarnedBadges] = useState([]);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
+
+  // Start background music when quiz loads and sounds are loaded
+  useEffect(() => {
+    if (soundsLoaded && !quizCompleted) {
+      // Force a check of localStorage in case it was updated in another component
+      const storedInteraction = localStorage.getItem('quizUserInteracted') === 'true';
+      
+      console.log('Attempting to start background music. User interacted:', userInteracted || storedInteraction);
+      
+      // Try to start background music immediately
+      startBackgroundMusic();
+      
+      // For cases where the audio context might still be suspended, try again after a small delay
+      if (storedInteraction) {
+        setTimeout(() => {
+          startBackgroundMusic();
+        }, 500);
+      }
+    } else if (quizCompleted && soundsLoaded) {
+      console.log('Stopping background music');
+      stopBackgroundMusic();
+    }
+    
+    // Cleanup function to stop background music when component unmounts
+    return () => {
+      if (soundsLoaded) {
+        stopBackgroundMusic();
+      }
+    };
+  }, [soundsLoaded, startBackgroundMusic, stopBackgroundMusic, quizCompleted, userInteracted]);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -321,6 +363,9 @@ const TakeQuiz = () => {
       // Reset streak when quiz is completed
       setStreak(0);
       setShowStreakMessage(false);
+      
+      // Reset the user interaction flag so it doesn't affect future quizzes
+      localStorage.removeItem('quizUserInteracted');
     }
   }, [quizCompleted]);
 
@@ -458,10 +503,6 @@ const TakeQuiz = () => {
   const getStreakMessage = (streakCount) => {
     if (streakCount === 0) {
       return ""; // Empty message for streak 0
-    } else if (streakCount === 3) {
-      return "🔥 3 korrekte i streg!";
-    } else if (streakCount === 5) {
-      return "🔥 5 korrekte i streg!";
     } else if (streakCount === 7) {
       return "🔥 Fantastisk stime!";
     } else if (streakCount === 10) {
@@ -1061,6 +1102,14 @@ const TakeQuiz = () => {
     );
   };
 
+  // Cleanup effect when component unmounts
+  useEffect(() => {
+    return () => {
+      // Make sure to remove the interaction flag when leaving the quiz
+      localStorage.removeItem('quizUserInteracted');
+    };
+  }, []);
+
   if (loading) {
     return (
       <Container
@@ -1115,6 +1164,15 @@ const TakeQuiz = () => {
 
   return (
     <Container className="mt-4 mb-5">
+      {/* Floating streak message overlay */}
+      {showStreakMessage && (
+        <div className="streak-message-container">
+          <div className={`streak-message ${streak === 0 ? 'streak-reset' : 'streak-active'}`}>
+            <span>{streakMessage}</span>
+          </div>
+        </div>
+      )}
+      
       {/* Quiz Header */}
       <div className="mb-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -1140,15 +1198,30 @@ const TakeQuiz = () => {
             {/* Sound toggle button */}
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip>{muted ? "Slå lyd til" : "Slå lyd fra"}</Tooltip>}
+              overlay={<Tooltip>{!userInteracted ? "Klik for at aktivere lyd" : muted ? "Slå lyd til" : "Slå lyd fra"}</Tooltip>}
             >
               <Button 
                 variant="light" 
                 size="sm" 
-                className="me-2 rounded-circle sound-control-btn" 
+                className={`me-2 rounded-circle sound-control-btn ${!userInteracted ? 'needs-interaction' : ''}`}
                 onClick={toggleMute}
               >
                 {muted ? <BsVolumeMute className="muted" /> : <BsVolumeUp />}
+              </Button>
+            </OverlayTrigger>
+            
+            {/* Music toggle button */}
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>{!userInteracted ? "Klik for at aktivere musik" : musicMuted ? "Slå musik til" : "Slå musik fra"}</Tooltip>}
+            >
+              <Button 
+                variant="light" 
+                size="sm" 
+                className={`me-2 rounded-circle sound-control-btn ${!userInteracted ? 'needs-interaction' : ''}`}
+                onClick={toggleMusicMute}
+              >
+                {musicMuted ? <BsMusicNote className="muted" /> : <BsMusicNoteBeamed />}
               </Button>
             </OverlayTrigger>
             
@@ -1162,13 +1235,6 @@ const TakeQuiz = () => {
 
         <h1 className="mb-2">{quiz?.title || "Untitled Quiz"}</h1>
         {/* {quiz?.description && <p className="text-muted">{quiz.description}</p>} */}
-
-        {/* Streak message */}
-        {showStreakMessage && (
-          <div className={`streak-message text-center mb-3 ${streak === 0 ? 'streak-reset' : 'streak-active'}`}>
-            <span>{streakMessage}</span>
-          </div>
-        )}
 
         {!quizCompleted && (
           <>

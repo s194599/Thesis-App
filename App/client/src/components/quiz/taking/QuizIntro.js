@@ -73,6 +73,10 @@ const QuizIntro = () => {
   }, [quizId]);
 
   const handleStartQuiz = () => {
+    // Set a flag in localStorage to indicate user interaction has occurred
+    // This will enable audio to play immediately when the quiz starts
+    localStorage.setItem('quizUserInteracted', 'true');
+    
     // Navigate to the actual quiz page with the same query parameters
     navigate(`/quiz/take/${quizId}${location.search}`);
   };

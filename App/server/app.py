@@ -107,6 +107,12 @@ def serve_static(path):
     return send_from_directory('static', path)
 
 
+# Route specifically for sound files
+@app.route('/sounds/<filename>')
+def serve_sound(filename):
+    return send_from_directory('static/sounds', filename)
+
+
 # Handle 404s
 @app.errorhandler(404)
 def not_found(e):

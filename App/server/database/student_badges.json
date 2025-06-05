@@ -46,6 +46,24 @@
         "completion_time": 20.0,
         "score_percent": 100.0
       }
+    },
+    {
+      "badge_id": "quiz_streak_3",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "badge_name": "Quiz Stribe",
+      "badge_description": "Gennemf\u00f8rt 3 quizzer i tr\u00e6k med score over 80%",
+      "badge_icon": "\ud83d\udd25",
+      "earned_timestamp": "2025-06-05T10:00:45.773529"
+    },
+    {
+      "badge_id": "quiz_master",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "badge_name": "Quiz Mester",
+      "badge_description": "Gennemf\u00f8rt 5 quizzer",
+      "badge_icon": "\ud83c\udf93",
+      "earned_timestamp": "2025-06-05T10:27:59.918937"
     }
   ]
 }

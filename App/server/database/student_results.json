@@ -369,11 +369,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-03T15:29:47.272192",
-      "start_timestamp": "2025-06-03T13:29:19.358Z",
+      "timestamp": "2025-06-05T10:35:51.169650",
+      "start_timestamp": "2025-06-05T08:35:28.824Z",
       "quiz_id": "quiz_1747057433",
       "quiz_title": "Quiz om 2. Verdenskrig",
-      "score": 5,
+      "score": 3,
       "total_questions": 5,
       "answers": [
         {
@@ -391,8 +391,8 @@
         {
           "question_id": "q3",
           "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?",
-          "answer": "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
-          "correct": true
+          "answer": "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "correct": false
         },
         {
           "question_id": "q4",
@@ -403,11 +403,11 @@
         {
           "question_id": "q5",
           "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?",
-          "answer": "Der er et store nazistm\u00f8de i K\u00f8benhavn, der slutter med slagsm\u00e5l og arrestationer",
-          "correct": true
+          "answer": "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "correct": false
         }
       ],
-      "attempts": 18,
+      "attempts": 24,
       "student_id": "1",
       "student_name": "Christian Wu"
     }
