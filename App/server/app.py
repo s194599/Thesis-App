@@ -27,6 +27,7 @@ from routes.module_routes import module_routes
 from routes.student_routes import student_bp
 from routes.completion_routes import completion_routes
 from routes.forum_routes import forum_routes
+from routes.badge_routes import badge_routes
 
 # Create Flask app
 app = Flask(__name__, static_folder='static')
@@ -74,6 +75,7 @@ app.register_blueprint(module_routes, url_prefix="/api")
 app.register_blueprint(student_bp, url_prefix="/api")
 app.register_blueprint(completion_routes, url_prefix="/api")
 app.register_blueprint(forum_routes, url_prefix="/api")
+app.register_blueprint(badge_routes, url_prefix="/api")
 
 # Create necessary directories
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

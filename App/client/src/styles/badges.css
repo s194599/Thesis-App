@@ -1,0 +1,87 @@
+/* Badge styles */
+.badges-container {
+  margin-top: 20px;
+}
+
+.badge-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 12px;
+  border: 2px solid #eee;
+  height: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.badge-card:hover {
+  transform: translateY(-5px);
+  border-color: #007bff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.badge-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.badge-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Badge modal styles */
+.badge-modal .modal-content {
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.badge-modal .modal-header {
+  border-bottom: 2px solid #f8f9fa;
+  background-color: #f8f9fa;
+  border-radius: 15px 15px 0 0;
+}
+
+.badge-earned {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  animation: badge-glow 2s infinite alternate;
+}
+
+.badge-earned h3 {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+@keyframes badge-glow {
+  from {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* Badge overview page styles */
+.badges-overview {
+  padding: 20px 0;
+}
+
+.badges-overview h2 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.badges-section {
+  margin-bottom: 30px;
+}
+
+.badges-section-title {
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #555;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+} 

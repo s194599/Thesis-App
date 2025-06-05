@@ -1,0 +1,77 @@
+{
+  "badges": [
+    {
+      "badge_id": "quiz_first",
+      "name": "Første Quiz",
+      "description": "Gennemført din første quiz",
+      "icon": "🏆",
+      "type": "achievement",
+      "criteria": {
+        "quiz_completions": 1
+      }
+    },
+    {
+      "badge_id": "quiz_master",
+      "name": "Quiz Mester",
+      "description": "Gennemført 5 quizzer",
+      "icon": "🎓",
+      "type": "achievement",
+      "criteria": {
+        "quiz_completions": 5
+      }
+    },
+    {
+      "badge_id": "perfect_score",
+      "name": "Perfekt Score",
+      "description": "Opnået fuld score på en quiz",
+      "icon": "⭐",
+      "type": "achievement",
+      "criteria": {
+        "quiz_perfect_score": true
+      }
+    },
+    {
+      "badge_id": "quiz_streak_3",
+      "name": "Quiz Stribe",
+      "description": "Gennemført 3 quizzer i træk med score over 80%",
+      "icon": "🔥",
+      "type": "achievement",
+      "criteria": {
+        "quiz_streak": 3,
+        "min_score_percent": 80
+      }
+    },
+    {
+      "badge_id": "quiz_variety",
+      "name": "Quiz Opdager",
+      "description": "Gennemført quizzer i 3 forskellige moduler",
+      "icon": "🧭",
+      "type": "achievement",
+      "criteria": {
+        "unique_module_completions": 3
+      }
+    },
+    {
+      "badge_id": "never_give_up",
+      "name": "Giv aldrig op",
+      "description": "Prøvet den samme quiz 10 gange",
+      "icon": "🏋️‍♂️",
+      "type": "achievement",
+      "criteria": {
+        "same_quiz_attempts": 10
+      }
+    },
+    {
+      "badge_id": "speed_demon",
+      "name": "Speed Demon",
+      "description": "Gennemførte en quiz på under 30 sekunder med mindst 80% rigtige",
+      "icon": "⚡",
+      "type": "achievement",
+      "criteria": {
+        "quick_completion": true,
+        "max_seconds": 30,
+        "min_score_percent": 80
+      }
+    }
+  ]
+} 

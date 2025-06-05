@@ -14,9 +14,24 @@ import { Container, Alert, Button, Spinner } from "react-bootstrap";
 import { getQuiz } from "./services/api";
 import QuizResults from './components/quiz/results/QuizResults';
 import ModuleOverview from './components/learning-platform/ModuleOverview';
+import BadgeDashboard from './components/student/BadgeDashboard';
 
 function App() {
   const { generatedQuiz } = useQuizContext();
+
+  // Initialize userRole in localStorage if not already set
+  useEffect(() => {
+    const savedUserRole = localStorage.getItem('userRole');
+    if (!savedUserRole) {
+      // Set default role to 'teacher'
+      localStorage.setItem('userRole', 'teacher');
+      console.log('App initialized default userRole: teacher');
+      // Dispatch the custom event for any components already listening
+      window.dispatchEvent(new CustomEvent('userRoleChanged', { detail: 'teacher' }));
+    } else {
+      console.log('App loaded existing userRole:', savedUserRole);
+    }
+  }, []);
 
   return (
     <div className="App d-flex flex-column min-vh-100">
@@ -38,6 +53,16 @@ function App() {
             <TopBar />
             <div className="flex-grow-1">
               <ModuleOverview />
+            </div>
+          </>
+        } />
+
+        {/* Badge Dashboard Route */}
+        <Route path="/badges" element={
+          <>
+            <TopBar />
+            <div className="flex-grow-1">
+              <BadgeDashboard />
             </div>
           </>
         } />

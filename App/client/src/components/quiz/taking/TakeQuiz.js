@@ -10,6 +10,7 @@ import {
   Badge,
   OverlayTrigger,
   Tooltip,
+  Modal,
 } from "react-bootstrap";
 import {
   BsArrowLeft,
@@ -68,6 +69,10 @@ const TakeQuiz = () => {
   const [streak, setStreak] = useState(0);
   const [streakMessage, setStreakMessage] = useState("");
   const [showStreakMessage, setShowStreakMessage] = useState(false);
+  
+  // Badge related state
+  const [earnedBadges, setEarnedBadges] = useState([]);
+  const [showBadgeModal, setShowBadgeModal] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -216,34 +221,74 @@ const TakeQuiz = () => {
             }`
           );
 
-          const requestData = {
+          // Calculate quiz score percentage
+          const scorePercent = Math.round((score / randomizedQuestions.length) * 100);
+
+          // First, record activity completion as before
+          const activityRequestData = {
             moduleId: moduleId,
-            quizScore: Math.round((score / randomizedQuestions.length) * 100),
-            quizId: quizId, // Always include quizId for better identification
+            quizScore: scorePercent,
+            quizId: quizId,
           };
 
           // Include activityId if available
           if (activityId) {
-            requestData.activityId = activityId;
+            activityRequestData.activityId = activityId;
           }
 
-          const response = await fetch("/api/complete-activity", {
+          const activityResponse = await fetch("/api/complete-activity", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestData),
+            body: JSON.stringify(activityRequestData),
           });
 
-          const responseData = await response.json();
+          const activityResponseData = await activityResponse.json();
 
-          if (response.ok) {
-            console.log("Quiz marked as completed successfully:", responseData);
+          if (activityResponse.ok) {
+            console.log("Quiz marked as completed successfully:", activityResponseData);
             setAlreadyMarkedComplete(true);
+            
+            // Now record the quiz completion for the badge system
+            const badgeRequestData = {
+              student_id: "1", // Hardcoded for Christian Wu
+              quiz_id: quizId,
+              module_id: moduleId,
+              score: score,
+              total_questions: randomizedQuestions.length
+            };
+            
+            const badgeResponse = await fetch("/api/record-quiz-completion", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(badgeRequestData),
+            });
+            
+            const badgeResponseData = await badgeResponse.json();
+            
+            if (badgeResponse.ok && badgeResponseData.newly_earned_badges && 
+                badgeResponseData.newly_earned_badges.length > 0) {
+              // Store newly earned badges and show the badge modal
+              setEarnedBadges(badgeResponseData.newly_earned_badges);
+              setShowBadgeModal(true);
+              
+              // Launch extra confetti for badge earned
+              setTimeout(() => {
+                confetti({
+                  particleCount: 150,
+                  spread: 90,
+                  origin: { y: 0.3 },
+                  colors: ['#FFD700', '#FFA500', '#FF6347'] // Gold, orange, red
+                });
+              }, 500);
+            }
           } else {
             console.error(
               "Failed to mark quiz as completed:",
-              responseData.message
+              activityResponseData.message
             );
           }
         } catch (error) {
@@ -765,6 +810,38 @@ const TakeQuiz = () => {
     );
   };
 
+  // Badge modal component
+  const renderBadgeModal = () => {
+    return (
+      <Modal
+        show={showBadgeModal}
+        onHide={() => setShowBadgeModal(false)}
+        centered
+        className="badge-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Nyt badge optjent!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          {earnedBadges.map((badge, index) => (
+            <div key={index} className="badge-earned mb-3">
+              <div className="badge-icon mb-2" style={{ fontSize: '3rem' }}>
+                {badge.badge_icon}
+              </div>
+              <h3>{badge.badge_name}</h3>
+              <p>{badge.badge_description}</p>
+            </div>
+          ))}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => setShowBadgeModal(false)}>
+            Luk
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
+
   const renderResults = () => {
     // Check if it's a flashcard quiz
     if (quiz.type === "flashcard") {
@@ -1130,6 +1207,7 @@ const TakeQuiz = () => {
       <div className="quiz-content">
         {quizCompleted ? renderResults() : renderQuestion()}
       </div>
+      {renderBadgeModal()}
     </Container>
   );
 };

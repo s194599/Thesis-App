@@ -17,6 +17,7 @@ import {
   fetchModuleActivities,
   updateModule,
 } from "../../services/moduleService";
+import { BsTrophy } from "react-icons/bs";
 
 const PlatformOverview = () => {
   const navigate = useNavigate();
@@ -402,6 +403,9 @@ const PlatformOverview = () => {
     console.log(`Switching role from ${userRole} to ${role}`);
     setUserRole(role);
     localStorage.setItem("userRole", role);
+    
+    // Dispatch a custom event to notify other components
+    window.dispatchEvent(new CustomEvent('userRoleChanged', { detail: role }));
     
     // Reload modules to update completion status when switching to student view
     if (role === 'student') {
