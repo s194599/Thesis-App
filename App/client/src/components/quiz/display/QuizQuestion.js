@@ -105,7 +105,7 @@ const QuizQuestion = ({ question, index, onDelete }) => {
   };
 
   // Special handling for flashcard type questions
-  if (question.type === "flashcard") {
+  if (question.type === "flashcard" || question.type === "flashcards") {
     return (
       <Card className="mb-4">
         <Card.Body>
@@ -169,20 +169,20 @@ const QuizQuestion = ({ question, index, onDelete }) => {
           {isEditingQuestion ? (
             <div>
               <Form.Group className="mb-3">
-                <Form.Label>Front (Question)</Form.Label>
+                <Form.Label>Forside (spørgsmål)</Form.Label>
                 <Form.Control
                   as="textarea"
-                  rows={2}
+                  rows={3}
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Back (Answer)</Form.Label>
+                <Form.Label>Bagside (svar)</Form.Label>
                 <Form.Control
                   as="textarea"
-                  rows={2}
+                  rows={3}
                   value={correctAnswer}
                   onChange={(e) => setCorrectAnswer(e.target.value)}
                 />
@@ -190,12 +190,15 @@ const QuizQuestion = ({ question, index, onDelete }) => {
             </div>
           ) : (
             <div>
-              <p className="mb-3">
-                <strong>Front:</strong> {questionText}
-              </p>
-              <p className="mb-0">
-                <strong>Back:</strong> {correctAnswer}
-              </p>
+              <Card className="mb-2 bg-light">
+                <Card.Header className="bg-primary text-white">Forside (spørgsmål)</Card.Header>
+                <Card.Body>{questionText}</Card.Body>
+              </Card>
+              
+              <Card>
+                <Card.Header className="bg-success text-white">Bagside (svar)</Card.Header>
+                <Card.Body>{correctAnswer}</Card.Body>
+              </Card>
             </div>
           )}
         </Card.Body>

@@ -32,7 +32,8 @@ import {
   BsChevronDown,
   BsChevronRight,
   BsBook,
-  BsTrophy
+  BsTrophy,
+  BsCardText
 } from "react-icons/bs";
 import ModuleTabs from "./ModuleTabs";
 import { useNavigate } from "react-router-dom";
@@ -65,6 +66,7 @@ const ModuleContent = ({
   const [showActivityTypeModal, setShowActivityTypeModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showQuizChoiceModal, setShowQuizChoiceModal] = useState(false);
+  const [showQuizTypeModal, setShowQuizTypeModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [openFolders, setOpenFolders] = useState({});
   const [selectedFolder, setSelectedFolder] = useState(null);
@@ -931,7 +933,9 @@ const ModuleContent = ({
   
   // Handle quiz creation method selection
   const handleQuizMethodSelect = (method) => {
+    // Close both modals
     setShowQuizChoiceModal(false);
+    setShowQuizTypeModal(false);
     
     // Collect module documents to pass to quiz generator
     const moduleDocuments = activities
@@ -955,10 +959,15 @@ const ModuleContent = ({
       documents: moduleDocuments
     }));
     
+    // Store quiz type for manual creation
+    if (method === "manual-quiz" || method === "manual-flashcard") {
+      localStorage.setItem('manualQuizType', method === "manual-flashcard" ? "flashcards" : "multiple_choice");
+    }
+    
     if (method === "ai") {
       // Navigate to AI quiz generation page
       navigate("/quiz/create");
-    } else if (method === "manual") {
+    } else if (method === "manual-quiz" || method === "manual-flashcard") {
       // Navigate to manual quiz creation page
       navigate("/quiz/manual-create");
     }
@@ -3449,7 +3458,7 @@ const ModuleContent = ({
             <Button
               variant="outline-primary"
               className="p-3 d-flex align-items-center"
-              onClick={() => handleQuizMethodSelect("manual")}
+              onClick={() => setShowQuizTypeModal(true)}
             >
               <BsPencilSquare className="me-3 fs-4" />
               <div className="text-start">
@@ -3457,6 +3466,48 @@ const ModuleContent = ({
                 <small className="text-muted">
                   Opret og tilpas din egen quiz med dine egne spørgsmål og svarmuligheder.
                   Fuld kontrol over indholdet.
+                </small>
+              </div>
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      
+      {/* Manual Quiz Type Selection Modal */}
+      <Modal
+        show={showQuizTypeModal}
+        onHide={() => setShowQuizTypeModal(false)}
+        backdrop="static"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Vælg spørgsmålstype</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="d-flex flex-column gap-3">
+            <Button
+              variant="outline-primary"
+              className="p-3 d-flex align-items-center"
+              onClick={() => handleQuizMethodSelect("manual-quiz")}
+            >
+              <BsListCheck className="me-3 fs-4" />
+              <div className="text-start">
+                <h5 className="mb-1">Multiple choice quiz</h5>
+                <small className="text-muted">
+                  Opret multiple choice spørgsmål med svarmuligheder
+                </small>
+              </div>
+            </Button>
+
+            <Button
+              variant="outline-primary"
+              className="p-3 d-flex align-items-center"
+              onClick={() => handleQuizMethodSelect("manual-flashcard")}
+            >
+              <BsCardText className="me-3 fs-4" />
+              <div className="text-start">
+                <h5 className="mb-1">Flashcards</h5>
+                <small className="text-muted">
+                  Opret flashcards med spørgsmål og svar par
                 </small>
               </div>
             </Button>

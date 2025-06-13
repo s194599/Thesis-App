@@ -108,7 +108,7 @@ const QuizOutput = () => {
   const renderQuizQuestions = () => {
     return generatedQuiz.questions.map((question, questionIndex) => {
       // Handle flashcard type questions differently
-      if (question.type === "flashcard") {
+      if (question.type === "flashcard" || question.type === "flashcards") {
         return (
           <div
             className="bg-white rounded shadow-sm mb-4 overflow-hidden question-item"
@@ -128,11 +128,11 @@ const QuizOutput = () => {
             {/* Flashcard front and back */}
             <div className="p-3">
               <div className="mb-3">
-                <strong>Front (Question):</strong>
+                <strong>Forside (Spørgsmål):</strong>
                 <div className="p-3 bg-light rounded mt-1">{question.question}</div>
               </div>
               <div>
-                <strong>Back (Answer):</strong>
+                <strong>Bagside (Svar):</strong>
                 <div className="p-3 bg-light rounded mt-1">{question.correctAnswer}</div>
               </div>
             </div>
@@ -265,14 +265,14 @@ const QuizOutput = () => {
         pdf.setFont(undefined, 'bold');
         
         // Handle flashcards differently
-        if (question.type === "flashcard") {
+        if (question.type === "flashcard" || question.type === "flashcards") {
           pdf.text(`Flashcard ${i + 1}`, margin, yPosition);
           yPosition += 7;
           
           pdf.setFont(undefined, 'normal');
           
           // Front side
-          pdf.text("Front (Question):", margin, yPosition);
+          pdf.text("Forside (Spørgsmål):", margin, yPosition);
           yPosition += 5;
           
           // Question text with wrap
@@ -281,7 +281,7 @@ const QuizOutput = () => {
           yPosition += 6 * frontLines.length + 5;
           
           // Back side
-          pdf.text("Back (Answer):", margin, yPosition);
+          pdf.text("Bagside (Svar):", margin, yPosition);
           yPosition += 5;
           
           // Answer text with wrap
@@ -624,9 +624,9 @@ const QuizOutput = () => {
           >
             <BsPencilSquare className="me-1" /> Rediger Quiz
           </Button>
-          <Button variant="outline-secondary" size="sm" onClick={resetForm}>
+        {/*   <Button variant="outline-secondary" size="sm" onClick={resetForm}>
             Opret Ny Quiz
-          </Button>
+          </Button> */}
         </div>
       </div>
 

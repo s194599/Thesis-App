@@ -87,7 +87,7 @@ const QuizEditor = () => {
 
   const handleAddQuestion = () => {
     // Determine if this is a flashcard quiz by checking the quiz type
-    let isFlashcardQuiz = editingQuiz.type === "flashcard";
+    let isFlashcardQuiz = editingQuiz.type === "flashcard" || editingQuiz.type === "flashcards";
     
     let newQuestion;
     
@@ -95,9 +95,10 @@ const QuizEditor = () => {
       // Create a flashcard-type question
       newQuestion = {
         id: `q${Date.now()}`,
-        question: "Front (Question)",
-        correctAnswer: "Back (Answer)",
-        options: [] // Empty options array for flashcards
+        question: "Forside (Spørgsmål)",
+        correctAnswer: "Bagside (Svar)",
+        options: [], // Empty options array for flashcards
+        type: "flashcard" // Ensure type is set
       };
     } else {
       // Create a standard multiple-choice question
@@ -283,36 +284,14 @@ const QuizEditor = () => {
 
       {/* Add Question Button */}
       <div className="mt-4 mb-5">
-        <Dropdown>
-          <Dropdown.Toggle
-            variant="primary"
-            id="add-question-dropdown"
-            className="d-flex align-items-center"
-            disabled={isSaving}
-          >
-            <BsPlusCircle className="me-2" /> Tilføj Spørgsmål
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={addQuestionManually}>
-              <BsTextLeft className="me-2" /> Tilføj Manuelt
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={generateQuestion}
-              disabled={generatingQuestion}
-            >
-              <BsRobot className="me-2" />
-              {generatingQuestion ? "Genererer..." : "Generer med AI"}
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-
-        {generatingQuestion && (
-          <div className="mt-3 d-flex align-items-center text-muted">
-            <Spinner animation="border" size="sm" className="me-2" />
-            Genererer nyt spørgsmål med AI...
-          </div>
-        )}
+        <Button
+          variant="primary"
+          className="d-flex align-items-center"
+          onClick={addQuestionManually}
+          disabled={isSaving}
+        >
+          <BsPlusCircle className="me-2" /> Tilføj Spørgsmål
+        </Button>
       </div>
     </Container>
   );
