@@ -139,5 +139,29 @@
     "type": "pdf",
     "moduleId": "module-3",
     "url": "http://localhost:5001/api/uploads/App_design_thesis_1749799850.pdf"
+  },
+  {
+    "id": "activity_1749815740797",
+    "title": "EMU",
+    "description": "",
+    "type": "link",
+    "url": "https://www.emu.dk/grundskole/dansk/fortolkning/syndefaldsmyten#:~:text=Om%20syndefaldsmyten,opdagede%2C%20at%20de%20var%20n%C3%B8gne.",
+    "moduleId": "module-8"
+  },
+  {
+    "id": "activity_1749815782609",
+    "title": "Syndefaldet___Fadervor_-_1.-3.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-8",
+    "url": "http://localhost:5001/api/uploads/Syndefaldet___Fadervor_-_1.-3._klasse_1749815782.pdf"
+  },
+  {
+    "id": "activity_1749815797263",
+    "title": "Syndefaldsmyten.pdf",
+    "description": "L\u00c6S KAPITEL 5\n",
+    "type": "pdf",
+    "moduleId": "module-8",
+    "url": "http://localhost:5001/api/uploads/Syndefaldsmyten_1749815797.pdf"
   }
 ]
