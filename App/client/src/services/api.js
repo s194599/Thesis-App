@@ -279,23 +279,35 @@ export const addForumComment = async (moduleId, postId, commentData) => {
   }
 };
 
-// Delete a forum post
+// Delete a forum post (teacher only)
 export const deleteForumPost = async (moduleId, postId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/forum/${moduleId}/post/${postId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    await axios.delete(`${API_BASE_URL}/forum/${moduleId}/post/${postId}`, {
+      timeout: 10000
     });
-    
-    if (!response.ok) {
-      throw new Error('Failed to delete forum post');
-    }
-    
-    return await response.json();
+    return true;
   } catch (error) {
     console.error('Error deleting forum post:', error);
+    throw error;
+  }
+};
+
+// Toggle forum status (enable/disable) globally (teacher only)
+export const toggleForumStatus = async (moduleId, status) => {
+  try {
+    // Use the global-specific endpoint when moduleId is 'global'
+    const endpoint = moduleId === 'global' 
+      ? `${API_BASE_URL}/forum/global/status`
+      : `${API_BASE_URL}/forum/${moduleId}/status`;
+      
+    const response = await axios.put(
+      endpoint,
+      { status },
+      { timeout: 10000 }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error toggling forum status:', error);
     throw error;
   }
 };

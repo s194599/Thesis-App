@@ -644,7 +644,7 @@ const PlatformOverview = () => {
               onQuizAccess={handleQuizAccess}
               onUpdateActivities={updateModuleActivities}
               onModuleUpdate={handleModuleUpdate}
-              userRole={viewMode === 'topics' ? 'student' : userRole} // Force student mode for topic view
+              userRole={userRole} // Use actual user role for all views
               resetTabFn={fn => resetTabRef.current = fn}
               isTopicView={viewMode === 'topics'}
             />

@@ -74,11 +74,52 @@ def save_forum_posts(module_id, posts):
         print(f"Error saving forum posts: {str(e)}")
         return False
 
-# Get all forum posts for a module
+# Helper function to get forum status
+def get_forum_status(module_id=None):
+    # Use a global status file
+    status_file_path = os.path.join(FORUM_DIR, 'global_forum_status.json')
+    
+    if not os.path.exists(status_file_path):
+        # Default status is enabled
+        with open(status_file_path, 'w') as f:
+            json.dump({"status": "enabled"}, f)
+        return "enabled"
+    
+    try:
+        with open(status_file_path, 'r') as f:
+            data = json.load(f)
+            return data.get("status", "enabled")
+    except Exception as e:
+        print(f"Error loading forum status: {str(e)}")
+        return "enabled"
+
+# Helper function to save forum status
+def save_forum_status(status, module_id=None):
+    # Use a global status file
+    status_file_path = os.path.join(FORUM_DIR, 'global_forum_status.json')
+    
+    try:
+        with open(status_file_path, 'w') as f:
+            json.dump({"status": status}, f, indent=2)
+        return True
+    except Exception as e:
+        print(f"Error saving forum status: {str(e)}")
+        return False
+
+# Get all forum posts including status for a module
 @forum_routes.route('/forum/<module_id>', methods=['GET'])
 def get_module_forum_posts(module_id):
+    # Get forum status
+    status = get_forum_status(module_id)
+    
+    # Get forum posts
     posts = get_forum_posts(module_id)
-    return jsonify(posts)
+    
+    # Return both posts and forum status
+    return jsonify({
+        "forumStatus": status,
+        "posts": posts
+    })
 
 # Create a new forum post
 @forum_routes.route('/forum/<module_id>/post', methods=['POST'])
@@ -203,6 +244,64 @@ def delete_forum_post(module_id, post_id):
             return jsonify({'message': 'Post deleted successfully'}), 200
         else:
             return jsonify({'error': 'Failed to save changes'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Toggle forum status (enable/disable) globally
+@forum_routes.route('/forum/<module_id>/status', methods=['PUT'])
+def update_forum_status(module_id):
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if 'status' not in data:
+            return jsonify({'error': 'Missing required field: status'}), 400
+        
+        # Get new status
+        new_status = data['status']
+        
+        # Validate status value
+        if new_status not in ['enabled', 'disabled']:
+            return jsonify({'error': 'Invalid status value. Must be "enabled" or "disabled"'}), 400
+        
+        # Save new status (globally)
+        if save_forum_status(new_status):
+            return jsonify({
+                'forumStatus': new_status,
+                'message': f'All forums {new_status} successfully'
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to update forum status'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Alternative endpoint that makes the global nature more explicit
+@forum_routes.route('/forum/global/status', methods=['PUT'])
+def update_global_forum_status():
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if 'status' not in data:
+            return jsonify({'error': 'Missing required field: status'}), 400
+        
+        # Get new status
+        new_status = data['status']
+        
+        # Validate status value
+        if new_status not in ['enabled', 'disabled']:
+            return jsonify({'error': 'Invalid status value. Must be "enabled" or "disabled"'}), 400
+        
+        # Save new status (globally)
+        if save_forum_status(new_status):
+            return jsonify({
+                'forumStatus': new_status,
+                'message': f'All forums {new_status} successfully'
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to update forum status'}), 500
             
     except Exception as e:
         return jsonify({'error': str(e)}), 500 

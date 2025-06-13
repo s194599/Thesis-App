@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, Form, Button, Image, Badge, Spinner, Alert, Modal } from 'react-bootstrap';
-import { BsPersonCircle, BsReply, BsArrowReturnRight, BsTrash, BsExclamationCircle, BsImage, BsX } from 'react-icons/bs';
-import { getForumPosts, createForumPost, addForumComment, deleteForumPost } from '../../services/api';
+import { BsPersonCircle, BsReply, BsArrowReturnRight, BsTrash, BsExclamationCircle, BsImage, BsX, BsToggleOn, BsToggleOff } from 'react-icons/bs';
+import { getForumPosts, createForumPost, addForumComment, deleteForumPost, toggleForumStatus } from '../../services/api';
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 
@@ -25,6 +25,8 @@ const Forum = ({ moduleId, userRole }) => {
   const [error, setError] = useState(null);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [replyingToPostId, setReplyingToPostId] = useState(null);
+  const [isForumEnabled, setIsForumEnabled] = useState(true);
+  const [forumStatusLoading, setForumStatusLoading] = useState(false);
   
   // State for new post form
   const [newPostTitle, setNewPostTitle] = useState('');
@@ -55,7 +57,15 @@ const Forum = ({ moduleId, userRole }) => {
       
       setLoading(true);
       try {
-        const fetchedPosts = await getForumPosts(moduleId);
+        const response = await getForumPosts(moduleId);
+        
+        // Check if response includes forum status
+        if (response.forumStatus !== undefined) {
+          setIsForumEnabled(response.forumStatus === 'enabled');
+        }
+        
+        const fetchedPosts = response.posts || response; // Handle both formats
+        
         // Sort posts by timestamp (newest first)
         const sortedPosts = fetchedPosts.sort((a, b) => 
           new Date(b.timestamp) - new Date(a.timestamp)
@@ -249,6 +259,22 @@ const Forum = ({ moduleId, userRole }) => {
     }
   };
 
+  // Handle toggling forum status globally (enabled/disabled)
+  const handleToggleForumStatus = async () => {
+    setForumStatusLoading(true);
+    try {
+      const newStatus = !isForumEnabled ? 'enabled' : 'disabled';
+      await toggleForumStatus('global', newStatus); // Use 'global' to indicate this affects all forums
+      setIsForumEnabled(!isForumEnabled);
+      setError(null);
+    } catch (err) {
+      console.error('Error toggling forum status:', err);
+      setError(`Der opstod en fejl ved ${isForumEnabled ? 'deaktivering' : 'aktivering'} af forum-funktionen. Prøv igen senere.`);
+    } finally {
+      setForumStatusLoading(false);
+    }
+  };
+
   // Show delete confirmation modal
   const confirmDelete = (postId) => {
     setPostToDelete(postId);
@@ -272,12 +298,65 @@ const Forum = ({ moduleId, userRole }) => {
         </Alert>
       )}
       
-      {/* <div className="mb-4">
+      {/* Forum header with title and teacher controls */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
         <h3>Forum</h3>
-      </div> */}
+        
+        {/* Teacher controls for global forum status */}
+        {userRole === 'teacher' && (
+          <div>
+            <Button
+              variant={isForumEnabled ? "outline-danger" : "outline-success"}
+              onClick={handleToggleForumStatus}
+              disabled={forumStatusLoading}
+              className="d-flex align-items-center"
+            >
+              {forumStatusLoading ? (
+                <Spinner size="sm" animation="border" className="me-2" />
+              ) : isForumEnabled ? (
+                <BsToggleOn size={20} className="me-2" />
+              ) : (
+                <BsToggleOff size={20} className="me-2" />
+              )}
+              {isForumEnabled ? "Deaktivér alle forum" : "Aktivér alle forum"}
+            </Button>
+          </div>
+        )}
+      </div>
       
+      {/* Disabled Forum Message */}
+      {!isForumEnabled && (
+        <Alert variant="info" className="mb-4">
+          <div className="d-flex align-items-center">
+            {/* <BsToggleOff size={24} className="text-secondary me-3" /> */}
+            <div>
+              <h5 className="mb-1">Forum er deaktiveret</h5>
+              <p className="mb-0">Underviseren har deaktiveret forum-funktionen for hele platformen.</p>
+              {/* {userRole === 'teacher' && (
+                <Button 
+                  variant="primary" 
+                  size="sm" 
+                  className="mt-2"
+                  onClick={handleToggleForumStatus}
+                  disabled={forumStatusLoading}
+                >
+                  {forumStatusLoading ? (
+                    <>
+                      <Spinner size="sm" animation="border" className="me-1" />
+                      Aktiverer...
+                    </>
+                  ) : (
+                    "Aktivér alle forum"
+                  )}
+                </Button>
+              )} */}
+            </div>
+          </div>
+        </Alert>
+      )}
+
       {/* New Post Form */}
-      {showNewPostForm && (
+      {showNewPostForm && isForumEnabled && (
         <Card className="mb-4">
           <Card.Header className="bg-light">
             <h5 className="mb-0">Opret nyt indlæg</h5>
@@ -357,7 +436,7 @@ const Forum = ({ moduleId, userRole }) => {
       )}
       
       {/* Forum Posts */}
-      {posts.length > 0 ? (
+      {isForumEnabled && posts.length > 0 ? (
         posts.map(post => (
           <Card className="mb-4 forum-post" key={post.id}>
             <Card.Header className="bg-white">
@@ -541,7 +620,7 @@ const Forum = ({ moduleId, userRole }) => {
             </Card.Body>
           </Card>
         ))
-      ) : (
+      ) : isForumEnabled ? (
         <div className="text-center my-5 py-5 bg-light rounded">
           <BsPersonCircle size={40} className="text-secondary mb-3" />
           <h5>Ingen indlæg endnu</h5>
@@ -550,10 +629,10 @@ const Forum = ({ moduleId, userRole }) => {
             Opret nyt indlæg
           </Button>
         </div>
-      )}
+      ) : null}
       
-      {/* Create new post button - now positioned at the bottom (only when there are posts) */}
-      {!showNewPostForm && posts.length > 0 && (
+      {/* Create new post button - now positioned at the bottom (only when there are posts and forum is enabled) */}
+      {!showNewPostForm && isForumEnabled && posts.length > 0 && (
         <div className="mb-4 mt-4">
           <Button 
             variant="primary"
