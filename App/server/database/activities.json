@@ -8,7 +8,8 @@
     "title": "\ud83d\udcd5\ud83d\udc9aROMANTIKKEN - da forfatterne ble sett p\u00e5 som genier (LITTERATURHISTORIEN 5 av 15)",
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=760P94LaNGs&ab_channel=S%C3%B8lvbergetbibliotekogkulturhus",
-    "parentId": null
+    "parentId": null,
+    "isHomework": false
   },
   {
     "title": "Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner.pdf",
@@ -16,7 +17,8 @@
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner_1744270048.pdf",
     "id": "activity_1744270048086",
-    "moduleId": "module-4"
+    "moduleId": "module-4",
+    "isHomework": false
   },
   {
     "description": "",
@@ -27,7 +29,8 @@
     "title": "Unges brug af sociale medier - konsekvenesr",
     "type": "youtube",
     "url": "https://www.youtube.com/watch?v=Q8Kabmpda2w",
-    "parentId": "folder_1747299681360"
+    "parentId": "folder_1747299681360",
+    "isHomework": false
   },
   {
     "title": "Intro-to-Romanticism.pdf",
@@ -36,7 +39,8 @@
     "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1744272217.pdf",
     "isNew": true,
     "id": "activity_1744272217607",
-    "moduleId": "module-3"
+    "moduleId": "module-3",
+    "isHomework": false
   },
   {
     "id": "activity_1746018403078",
@@ -44,7 +48,8 @@
     "description": "L\u00e6s kaptiel 5-7",
     "type": "pdf",
     "moduleId": "module-2",
-    "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf"
+    "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf",
+    "isHomework": false
   },
   {
     "id": "activity_1746536749566",
@@ -53,7 +58,8 @@
     "type": "book",
     "url": "",
     "content": "",
-    "moduleId": "module-1"
+    "moduleId": "module-1",
+    "isHomework": false
   },
   {
     "moduleId": "module-3",
@@ -61,7 +67,8 @@
     "title": "Quiz om Romantikken",
     "type": "multiple_choice",
     "quizId": "quiz_1747041853",
-    "moduleSpecific": true
+    "moduleSpecific": true,
+    "isHomework": false
   },
   {
     "moduleId": "module-3",
@@ -69,7 +76,8 @@
     "title": "Flashcard om Romantikken",
     "type": "flashcard",
     "quizId": "quiz_1747042463",
-    "moduleSpecific": true
+    "moduleSpecific": true,
+    "isHomework": false
   },
   {
     "moduleId": "module-2",
@@ -77,7 +85,8 @@
     "title": "Quiz om 2. Verdenskrig",
     "type": "multiple_choice",
     "quizId": "quiz_1747057433",
-    "moduleSpecific": true
+    "moduleSpecific": true,
+    "isHomework": false
   },
   {
     "moduleId": "module-2",
@@ -85,7 +94,8 @@
     "title": "Flashcards om 2. Verdenskrig",
     "type": "flashcard",
     "quizId": "quiz_1747059689",
-    "moduleSpecific": true
+    "moduleSpecific": true,
+    "isHomework": false
   },
   {
     "title": "Test mappe",
@@ -96,7 +106,8 @@
     "isNew": true,
     "parentId": null,
     "id": "folder_1747299681360",
-    "moduleId": "module-4"
+    "moduleId": "module-4",
+    "isHomework": false
   },
   {
     "id": "activity_1747299892099",
@@ -104,7 +115,8 @@
     "description": "",
     "type": "link",
     "url": "https://www.linkedin.com/in/oliver-theva/",
-    "moduleId": "module-4"
+    "moduleId": "module-4",
+    "isHomework": false
   },
   {
     "id": "activity_1748954681415",
@@ -112,7 +124,8 @@
     "description": "",
     "type": "pdf",
     "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/Dansk-stx-10-En-nat-i-kulden-med-de-hjemloese-Analyse_1748954681.pdf"
+    "url": "http://localhost:5001/api/uploads/Dansk-stx-10-En-nat-i-kulden-med-de-hjemloese-Analyse_1748954681.pdf",
+    "isHomework": false
   },
   {
     "id": "activity_1748954891066",
@@ -120,15 +133,8 @@
     "description": "",
     "type": "excel",
     "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/Legater-oversigt_1748954891.xlsx"
-  },
-  {
-    "id": "activity_1748954919521",
-    "title": "Group 1 - DSB Mini Case-competion.pptx",
-    "description": "",
-    "type": "powerpoint",
-    "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/Group_1_-_DSB_Mini_Case-competion_1748954919.pptx"
+    "url": "http://localhost:5001/api/uploads/Legater-oversigt_1748954891.xlsx",
+    "isHomework": false
   },
   {
     "id": "activity_1749799850799",
@@ -136,6 +142,25 @@
     "description": "",
     "type": "pdf",
     "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/App_design_thesis_1749799850.pdf"
+    "url": "http://localhost:5001/api/uploads/App_design_thesis_1749799850.pdf",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1749818632321",
+    "title": "2.Verdenskrig-lektie.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-3",
+    "url": "http://localhost:5001/api/uploads/2.Verdenskrig_1749818632.pdf",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1749819260129",
+    "title": "HEHAEDALKNSDNLK",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-3",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/2.Verdenskrig_1749819260.pdf"
   }
 ]

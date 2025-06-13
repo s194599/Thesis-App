@@ -7,6 +7,8 @@ import {
   Modal,
   Form,
   Spinner,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "react-bootstrap";
 import { 
   BsCheckCircleFill, 
@@ -81,6 +83,7 @@ const ModuleContent = ({
     url: "",
     file: null,
     content: "",
+    isHomework: false, // Add isHomework field with default false
   });
   const [editActivityId, setEditActivityId] = useState(null);
   const [dragActive, setDragActive] = useState(false);
@@ -256,6 +259,7 @@ const ModuleContent = ({
         url: "",
         file: null,
         content: "",
+        isHomework: false, // Add isHomework field with default false
       });
     } else {
       setActivities([]);
@@ -890,7 +894,8 @@ const ModuleContent = ({
         url: "",
         file: null,
         isNew: true,
-        parentId: targetFolderId // Use the target folder as parent if set
+        parentId: targetFolderId, // Use the target folder as parent if set
+        isHomework: false, // Add isHomework field with default false
       });
       setShowFileUploadModal(true);
     } else if (type === "link") {
@@ -901,7 +906,8 @@ const ModuleContent = ({
         url: "",
         file: null,
         isNew: true,
-        parentId: targetFolderId // Use the target folder as parent if set
+        parentId: targetFolderId, // Use the target folder as parent if set
+        isHomework: false, // Add isHomework field with default false
       });
       setShowUrlModal(true);
     } else if (type === "folder") {
@@ -912,7 +918,8 @@ const ModuleContent = ({
         url: "",
         file: null,
         isNew: true,
-        parentId: targetFolderId // Use the target folder as parent if set
+        parentId: targetFolderId, // Use the target folder as parent if set
+        isHomework: false, // Add isHomework field with default false
       });
       setShowFolderModal(true);
     } else if (type === "quiz") {
@@ -925,7 +932,8 @@ const ModuleContent = ({
         url: "",
         file: null,
         isNew: true,
-        parentId: targetFolderId // Use the target folder as parent if set
+        parentId: targetFolderId, // Use the target folder as parent if set
+        isHomework: false, // Add isHomework field with default false
       });
       setShowAddModal(true);
     }
@@ -989,12 +997,14 @@ const ModuleContent = ({
         type: activity.type,
         url: activity.url,
         file: null, // Don't pass the file object when editing
+        isHomework: false, // Add isHomework field with default false
       });
       setShowAddModal(true);
     } else if (activity.type === "youtube" || activity.type === "link") {
       setNewActivity({
         ...activity,
         file: null, // Don't pass the file object when editing
+        isHomework: false, // Add isHomework field with default false
       });
       setShowUrlModal(true);
     } else if (activity.type === "quiz" || activity.type === "multiple_choice" || activity.type === "flashcard" || activity.type === "flashcards") {
@@ -1151,9 +1161,15 @@ const ModuleContent = ({
   };
   
   const handleModalInputChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, type, checked } = e.target;
     
-    if (name === "file" && files && files.length > 0) {
+    if (name === "isHomework") {
+      // Handle checkbox/toggle specifically
+      setNewActivity({
+        ...newActivity,
+        [name]: checked
+      });
+    } else if (name === "file" && files && files.length > 0) {
       const file = files[0];
       const fileType = detectFileType(file.name);
       
@@ -1255,7 +1271,8 @@ const ModuleContent = ({
       type: newActivity.type || "text",
       url: newActivity.url || "",
       content: newActivity.content || "",
-      moduleId: module?.id
+      moduleId: module?.id,
+      isHomework: newActivity.isHomework || false
     };
     
     // Handle file upload if there's a file
@@ -1346,6 +1363,7 @@ const ModuleContent = ({
               url: "",
               file: null,
               content: "",
+              isHomework: false, // Add isHomework field with default false
             });
             setEditActivityId(null);
         } else {
@@ -1408,6 +1426,7 @@ const ModuleContent = ({
         url: "",
         file: null,
         content: "",
+        isHomework: false, // Add isHomework field with default false
       });
       setEditActivityId(null);
     }
@@ -1482,7 +1501,8 @@ const ModuleContent = ({
       title: newActivity.title,
       description: newActivity.description || "",
       type: newActivity.type || "pdf",
-      moduleId: module?.id
+      moduleId: module?.id,
+      isHomework: newActivity.isHomework || false
     };
 
     // Create form data for file upload
@@ -1571,6 +1591,7 @@ const ModuleContent = ({
             url: "",
             file: null,
             content: "",
+            isHomework: false, // Add isHomework field with default false
           });
           setEditActivityId(null);
         } else {
@@ -1623,7 +1644,8 @@ const ModuleContent = ({
       description: newActivity.description || "",
       type: activityType,
       url: finalUrl,
-      moduleId: module?.id
+      moduleId: module?.id,
+      isHomework: newActivity.isHomework || false
     };
 
     // Store activity on the server
@@ -1676,6 +1698,7 @@ const ModuleContent = ({
       url: "",
       file: null,
       content: "",
+      isHomework: false, // Add isHomework field with default false
     });
     setEditActivityId(null);
   };
@@ -1838,6 +1861,7 @@ const ModuleContent = ({
       url: "",
       file: null,
       content: "",
+      isHomework: false, // Add isHomework field with default false
     });
   };
   
@@ -2589,6 +2613,19 @@ const ModuleContent = ({
     });
   };
 
+  // Function to group activities by homework status for rendering
+  const groupActivitiesByHomework = (activities) => {
+    const homeworkActivities = activities.filter(a => a.isHomework === true && a.type !== 'folder' && !a.parentId);
+    const regularActivities = activities.filter(a => a.isHomework !== true && a.type !== 'folder' && !a.parentId);
+    const folderActivities = activities.filter(a => a.type === 'folder' && !a.parentId);
+    
+    return {
+      homework: sortActivities(homeworkActivities),
+      regular: sortActivities(regularActivities),
+      folders: sortActivities(folderActivities)
+    };
+  };
+
   return (
     <div className="module-content p-4">
       <header className="mb-4">
@@ -2788,53 +2825,162 @@ const ModuleContent = ({
         >
           {activities.length > 0 ? (
             <>
-              {/* Get root level activities and folders */}
+              {/* Group activities by homework status */}
               {(() => {
-                // Filter root level items
-                const rootItems = activities.filter(activity => !activity.parentId);
-                
-                // Sort by order
-                const sortedRootItems = sortActivities(rootItems);
-                
-                if (sortedRootItems.length === 0) return null;
+                // Filter and group activities
+                const groupedActivities = groupActivitiesByHomework(activities);
                 
                 return (
                   <>
-                    {/* First drop zone */}
-                    {isTeacherMode && (
-                      <div 
-                        className={`drop-zone ${isDraggingOver === 'before' && dragTarget?.id === sortedRootItems[0].id ? 'drag-over' : ''}`}
-                        onDragOver={(e) => handleDropZoneDragOver(e, 'before', sortedRootItems[0])}
-                        onDragLeave={(e) => handleDropZoneDragLeave(e, 'before', sortedRootItems[0])}
-                        onDrop={(e) => handleReorderDrop(e, 'before', sortedRootItems[0])}
-                      >
-                        <div 
-                          id={`drop-indicator-before-${sortedRootItems[0].id}`}
-                          className="drop-indicator"
-                        ></div>
-                      </div>
-                    )}
-                    
-                    {sortedRootItems.map((activity, index) => (
-                      <React.Fragment key={activity.id}>
-                        {renderActivityItem(activity)}
-                        
-                        {/* Drop zone after each item */}
+                    {/* Folders Section */}
+                    {groupedActivities.folders.length > 0 && (
+                      <div className="mb-5">
                         {isTeacherMode && (
+                          <div className="mb-3">
+                            <h5 className="border-bottom pb-2">Mapper</h5>
+                          </div>
+                        )}
+                        
+                        {/* First drop zone for folders */}
+                        {isTeacherMode && groupedActivities.folders.length > 0 && (
                           <div 
-                            className={`drop-zone ${isDraggingOver === 'after' && dragTarget?.id === activity.id ? 'drag-over' : ''}`}
-                            onDragOver={(e) => handleDropZoneDragOver(e, 'after', activity)}
-                            onDragLeave={(e) => handleDropZoneDragLeave(e, 'after', activity)}
-                            onDrop={(e) => handleReorderDrop(e, 'after', activity)}
+                            className={`drop-zone ${isDraggingOver === 'before' && dragTarget?.id === groupedActivities.folders[0].id ? 'drag-over' : ''}`}
+                            onDragOver={(e) => handleDropZoneDragOver(e, 'before', groupedActivities.folders[0])}
+                            onDragLeave={(e) => handleDropZoneDragLeave(e, 'before', groupedActivities.folders[0])}
+                            onDrop={(e) => handleReorderDrop(e, 'before', groupedActivities.folders[0])}
                           >
                             <div 
-                              id={`drop-indicator-after-${activity.id}`}
+                              id={`drop-indicator-before-${groupedActivities.folders[0].id}`}
                               className="drop-indicator"
                             ></div>
                           </div>
                         )}
-                      </React.Fragment>
-                    ))}
+                        
+                        {groupedActivities.folders.map((activity, index) => (
+                          <React.Fragment key={activity.id}>
+                            {renderActivityItem(activity)}
+                            
+                            {/* Drop zone after each folder */}
+                            {isTeacherMode && (
+                              <div 
+                                className={`drop-zone ${isDraggingOver === 'after' && dragTarget?.id === activity.id ? 'drag-over' : ''}`}
+                                onDragOver={(e) => handleDropZoneDragOver(e, 'after', activity)}
+                                onDragLeave={(e) => handleDropZoneDragLeave(e, 'after', activity)}
+                                onDrop={(e) => handleReorderDrop(e, 'after', activity)}
+                              >
+                                <div 
+                                  id={`drop-indicator-after-${activity.id}`}
+                                  className="drop-indicator"
+                                ></div>
+                              </div>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Regular Activities Section */}
+                    {groupedActivities.regular.length > 0 && (
+                      <div className="mb-5">
+                        <div className="mb-3">
+                          <h5 className="border-bottom pb-2">Undervisningsmateriale</h5>
+                        </div>
+                        
+                        {/* First drop zone */}
+                        {isTeacherMode && groupedActivities.regular.length > 0 && (
+                          <div 
+                            className={`drop-zone ${isDraggingOver === 'before' && dragTarget?.id === groupedActivities.regular[0].id ? 'drag-over' : ''}`}
+                            onDragOver={(e) => handleDropZoneDragOver(e, 'before', groupedActivities.regular[0])}
+                            onDragLeave={(e) => handleDropZoneDragLeave(e, 'before', groupedActivities.regular[0])}
+                            onDrop={(e) => handleReorderDrop(e, 'before', groupedActivities.regular[0])}
+                          >
+                            <div 
+                              id={`drop-indicator-before-${groupedActivities.regular[0].id}`}
+                              className="drop-indicator"
+                            ></div>
+                          </div>
+                        )}
+                        
+                        {groupedActivities.regular.map((activity, index) => (
+                          <React.Fragment key={activity.id}>
+                            {renderActivityItem(activity)}
+                            
+                            {/* Drop zone after each item */}
+                            {isTeacherMode && (
+                              <div 
+                                className={`drop-zone ${isDraggingOver === 'after' && dragTarget?.id === activity.id ? 'drag-over' : ''}`}
+                                onDragOver={(e) => handleDropZoneDragOver(e, 'after', activity)}
+                                onDragLeave={(e) => handleDropZoneDragLeave(e, 'after', activity)}
+                                onDrop={(e) => handleReorderDrop(e, 'after', activity)}
+                              >
+                                <div 
+                                  id={`drop-indicator-after-${activity.id}`}
+                                  className="drop-indicator"
+                                ></div>
+                              </div>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Homework Activities Section */}
+                    {groupedActivities.homework.length > 0 && (
+                      <div className="mb-5">
+                        <div className="mb-3">
+                          <h5 className="border-bottom pb-2">Lektier</h5>
+                        </div>
+                        
+                        {/* First drop zone for homework */}
+                        {isTeacherMode && groupedActivities.homework.length > 0 && (
+                          <div 
+                            className={`drop-zone ${isDraggingOver === 'before' && dragTarget?.id === groupedActivities.homework[0].id ? 'drag-over' : ''}`}
+                            onDragOver={(e) => handleDropZoneDragOver(e, 'before', groupedActivities.homework[0])}
+                            onDragLeave={(e) => handleDropZoneDragLeave(e, 'before', groupedActivities.homework[0])}
+                            onDrop={(e) => handleReorderDrop(e, 'before', groupedActivities.homework[0])}
+                          >
+                            <div 
+                              id={`drop-indicator-before-${groupedActivities.homework[0].id}`}
+                              className="drop-indicator"
+                            ></div>
+                          </div>
+                        )}
+                        
+                        {groupedActivities.homework.map((activity, index) => (
+                          <React.Fragment key={activity.id}>
+                            {renderActivityItem(activity)}
+                            
+                            {/* Drop zone after each item */}
+                            {isTeacherMode && (
+                              <div 
+                                className={`drop-zone ${isDraggingOver === 'after' && dragTarget?.id === activity.id ? 'drag-over' : ''}`}
+                                onDragOver={(e) => handleDropZoneDragOver(e, 'after', activity)}
+                                onDragLeave={(e) => handleDropZoneDragLeave(e, 'after', activity)}
+                                onDrop={(e) => handleReorderDrop(e, 'after', activity)}
+                              >
+                                <div 
+                                  id={`drop-indicator-after-${activity.id}`}
+                                  className="drop-indicator"
+                                ></div>
+                              </div>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* If no activities are found */}
+                    {groupedActivities.regular.length === 0 && 
+                     groupedActivities.homework.length === 0 && 
+                     groupedActivities.folders.length === 0 && (
+                      <div className="text-center p-4">
+                        <p className="text-muted">
+                          {isTeacherMode
+                            ? 'Der er ingen aktiviteter tilføjet til dette modul endnu. Klik på "Tilføj aktivitet" for at komme i gang.'
+                            : "Der er ingen aktiviteter tilføjet til dette modul endnu."}
+                        </p>
+                      </div>
+                    )}
                   </>
                 );
               })()}
@@ -3083,6 +3229,21 @@ const ModuleContent = ({
                   />
                 </Form.Group>
 
+                {/* Add isHomework toggle */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Aktivitetstype</Form.Label>
+                  <div>
+                    <Form.Check 
+                      type="switch"
+                      id="homework-switch"
+                      label="Markér som lektie"
+                      name="isHomework"
+                      checked={newActivity.isHomework}
+                      onChange={handleModalInputChange}
+                    />
+                  </div>
+                </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Fil</Form.Label>
                   <div
@@ -3180,6 +3341,21 @@ const ModuleContent = ({
                     onChange={handleModalInputChange}
                     placeholder="Angiv en beskrivelse (valgfrit)"
                   />
+                </Form.Group>
+
+                {/* Add isHomework toggle */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Aktivitetstype</Form.Label>
+                  <div>
+                    <Form.Check 
+                      type="switch"
+                      id="homework-switch-url"
+                      label="Markér som lektie"
+                      name="isHomework"
+                      checked={newActivity.isHomework}
+                      onChange={handleModalInputChange}
+                    />
+                  </div>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -3283,6 +3459,21 @@ const ModuleContent = ({
                 onChange={handleModalInputChange}
                 placeholder="Angiv en beskrivelse (valgfrit)"
               />
+            </Form.Group>
+            
+            {/* Add isHomework toggle */}
+            <Form.Group className="mb-3">
+              <Form.Label>Aktivitetstype</Form.Label>
+              <div>
+                <Form.Check 
+                  type="switch"
+                  id="homework-switch-edit"
+                  label="Markér som lektie"
+                  name="isHomework"
+                  checked={newActivity.isHomework}
+                  onChange={handleModalInputChange}
+                />
+              </div>
             </Form.Group>
             
             {newActivity.type !== "book" && (

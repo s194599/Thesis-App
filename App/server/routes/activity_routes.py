@@ -31,6 +31,10 @@ def store_activity():
         # Remove completed field if present
         if "completed" in activity_data:
             del activity_data["completed"]
+            
+        # Make sure isHomework field exists, default to false if not provided
+        if "isHomework" not in activity_data:
+            activity_data["isHomework"] = False
 
         # Load existing activities
         activities_file = os.path.join(DATABASE_FOLDER, "activities.json")
