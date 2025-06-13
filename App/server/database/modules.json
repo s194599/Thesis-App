@@ -49,5 +49,47 @@
     "date": "15. Marts 2023",
     "description": "Dialekter, sociolekter og sproglige tendenser.",
     "topicId": "topic-1"
+  },
+  {
+    "id": "module-8",
+    "title": "Syndefaldsmyten: Introduktion",
+    "date": "1. April 2023",
+    "description": "<p>Dette modul introducerer <strong>Syndefaldsmyten</strong> fra Biblen, med fokus på 'Første Mosebog', 3. kapitel. Vi gennemgår mytens grundlæggende symbolik, kulturhistoriske betydning og dens indflydelse på litteraturen gennem tiden.</p>",
+    "topicId": "topic-2"
+  },
+  {
+    "id": "module-9",
+    "title": "Litterære analysemetoder",
+    "date": "8. April 2023",
+    "description": "<p>Introduktion til de centrale analysemetoder, der anvendes i forløbet: <strong>strukturalistisk</strong>, <strong>psykoanalytisk</strong>, <strong>socialhistorisk</strong> og <strong>ideologikritisk</strong> metode. Modulet giver et teoretisk grundlag for de efterfølgende tekstanalyser.</p>",
+    "topicId": "topic-2"
+  },
+  {
+    "id": "module-10",
+    "title": "Klaus Rifbjerg: Den kroniske uskyld",
+    "date": "15. April 2023",
+    "description": "<p>Analyse og fortolkning af udvalgte uddrag fra Klaus Rifbjergs roman 'Den kroniske uskyld' (1958). Vi undersøger temaer om uskyldstab, seksualitet og identitetsdannelse i moderniteten med fokus på paralleller til Syndefaldsmyten.</p>",
+    "topicId": "topic-2"
+  },
+  {
+    "id": "module-11",
+    "title": "Anders Bodelsen: Drivhuset",
+    "date": "22. April 2023",
+    "description": "<p>Nærlæsning og analyse af novellen 'Drivhuset' af Anders Bodelsen. Vi arbejder med velfærdssamfundets syndefald og materialismens konsekvenser, med særligt fokus på socialhistorisk og ideologikritisk læsning.</p>",
+    "topicId": "topic-2"
+  },
+  {
+    "id": "module-12",
+    "title": "Ernest Hemingway: Indianerlejr",
+    "date": "29. April 2023",
+    "description": "<p>Analyse af Hemingways novelle 'Indianerlejr' med fokus på uskyldstab og manderoller. Vi anvender især psykoanalytisk metode og diskuterer novellens modernistiske træk i relation til Syndefaldsmyten.</p>",
+    "topicId": "topic-2"
+  },
+  {
+    "id": "module-13",
+    "title": "Helle Helle: Sit eget system",
+    "date": "6. Maj 2023",
+    "description": "<p>Undersøgelse af minimalisme og hverdagsrealisme i Helle Helles novelle 'Sit eget system'. Vi diskuterer hvordan moderne eksistentielle problemstillinger og identitetsdannelse relaterer sig til Syndefaldsmytens tematikker om skyld og erkendelse.</p>",
+    "topicId": "topic-2"
   }
 ]
