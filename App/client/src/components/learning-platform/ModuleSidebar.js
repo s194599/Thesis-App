@@ -9,6 +9,8 @@ import {
   Tabs,
   Image,
   Alert,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "react-bootstrap";
 import {
   BsCheckCircleFill,
@@ -35,6 +37,7 @@ const ModuleSidebar = ({
   userRole = "teacher",
   onModuleUpdate,
   onSidebarStateChange,
+  onTopicSelect,
 }) => {
   const navigate = useNavigate();
   const [showIconModal, setShowIconModal] = useState(false);
@@ -56,10 +59,98 @@ const ModuleSidebar = ({
   const [moduleToDelete, setModuleToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [viewMode, setViewMode] = useState('modules'); // 'modules' or 'topics'
+  const [topics, setTopics] = useState([]);
+  const [selectedTopicId, setSelectedTopicId] = useState(null);
 
   useEffect(() => {
     setRenderKey((prevKey) => prevKey + 1);
   }, [userRole]);
+
+  // Fetch topics from the server when in topics view
+  useEffect(() => {
+    if (viewMode === 'topics') {
+      fetchTopics().then(() => {
+        // Auto-select the first topic if no topic is selected
+        if (!selectedTopicId && topics.length > 0) {
+          setSelectedTopicId(topics[0].id);
+          if (onTopicSelect) {
+            onTopicSelect(topics[0].id);
+          }
+        }
+      });
+    }
+  }, [viewMode]);
+  
+  // Select first topic when topics array is populated
+  useEffect(() => {
+    if (viewMode === 'topics' && !selectedTopicId && topics.length > 0) {
+      setSelectedTopicId(topics[0].id);
+      if (onTopicSelect) {
+        onTopicSelect(topics[0].id);
+      }
+    }
+  }, [topics, viewMode, selectedTopicId, onTopicSelect]);
+
+  // Fetch topics from the API
+  const fetchTopics = async () => {
+    try {
+      const response = await fetch('/api/topics');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && Array.isArray(data.topics)) {
+          setTopics(data.topics);
+          return data.topics;
+        }
+      } else {
+        console.error('Failed to fetch topics');
+      }
+      return [];
+    } catch (error) {
+      console.error('Error fetching topics:', error);
+      return [];
+    }
+  };
+
+  // Handle view mode change
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    if (mode === 'topics') {
+      // When switching to topics view, automatically select the first topic if available
+      fetchTopics().then(() => {
+        if (topics.length > 0) {
+          // Select the first topic
+          setSelectedTopicId(topics[0].id);
+          if (onTopicSelect) {
+            onTopicSelect(topics[0].id);
+          }
+        } else {
+          // If there are no topics yet but they might be loading, set up a small delay to check again
+          setTimeout(() => {
+            if (topics.length > 0) {
+              setSelectedTopicId(topics[0].id);
+              if (onTopicSelect) {
+                onTopicSelect(topics[0].id);
+              }
+            }
+          }, 500);
+        }
+      });
+    } else {
+      // Reset to module view
+      if (onModuleSelect) {
+        onModuleSelect(selectedModuleId);
+      }
+    }
+  };
+
+  // Handle topic selection
+  const handleTopicSelect = (topicId) => {
+    setSelectedTopicId(topicId);
+    if (onTopicSelect) {
+      onTopicSelect(topicId);
+    }
+  };
 
   // Load minimized state from localStorage
   useEffect(() => {
@@ -276,6 +367,7 @@ const ModuleSidebar = ({
               }.${newModule.date.getFullYear()}`
             : newModule.date
         ),
+        topicId: "topic-1", // Default to topic-1 for now
       };
 
       // Create the module with formatted date
@@ -335,6 +427,156 @@ const ModuleSidebar = ({
     setIsMinimized((prev) => !prev);
   };
 
+  // Render topics list for Forløb view
+  const renderTopicsList = () => {
+    if (topics.length === 0) {
+      return (
+        <div className="text-center p-3">
+          <p className="text-muted">Ingen forløb tilgængelige.</p>
+        </div>
+      );
+    }
+
+    return (
+      <ListGroup variant="flush" className="module-list">
+        {topics.map(topic => (
+          <ListGroup.Item
+            key={topic.id}
+            action
+            active={topic.id === selectedTopicId}
+            onClick={() => handleTopicSelect(topic.id)}
+            className="d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item"
+            style={{ overflow: "hidden" }}
+          >
+            <div className="d-flex flex-column w-100" style={{ minWidth: 0 }}>
+              <div>
+                <span className="fw-medium module-title">
+                  {topic.name}
+                </span>
+              </div>
+            </div>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    );
+  };
+
+  // Render modules list for Moduler view
+  const renderModulesList = () => {
+    if (safeModules.length === 0) {
+      return (
+        <div className="text-center p-3">
+          <p className="text-muted">No modules available.</p>
+        </div>
+      );
+    }
+
+    return (
+      <ListGroup variant="flush" className="module-list">
+        {safeModules.map((module) => {
+          if (!module) return null;
+
+          const moduleActivities = Array.isArray(module.activities)
+            ? module.activities
+            : [];
+          // Filter out folder-type activities
+          const nonFolderActivities = moduleActivities.filter(
+            (act) => act && act.type !== "folder"
+          );
+          const totalActivities = nonFolderActivities.length;
+          const completedActivities = nonFolderActivities.filter(
+            (act) => act && act.completed
+          ).length;
+          const allCompleted =
+            totalActivities > 0 &&
+            completedActivities === totalActivities;
+
+          return (
+            <ListGroup.Item
+              key={module.id || Math.random().toString()}
+              action
+              active={module.id === selectedModuleId}
+              onClick={() => onModuleSelect && onModuleSelect(module.id)}
+              className="d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item"
+              style={{ overflow: "hidden" }}
+            >
+              <div
+                className="d-flex flex-column w-100"
+                style={{ minWidth: 0 }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <div
+                    className="text-nowrap small text-muted"
+                    style={{ fontSize: "0.8rem" }}
+                  >
+                    {module.date || "No date"}
+                  </div>
+
+                  {userRole === "student" &&
+                    (allCompleted ? (
+                      <BsCheckCircleFill
+                        className="text-success"
+                        style={{ fontSize: "1.5rem" }}
+                      />
+                    ) : (
+                      <BsCircleFill
+                        className={
+                          completedActivities > 0
+                            ? "text-warning"
+                            : "text-secondary"
+                        }
+                        style={{ opacity: 0.5, fontSize: "1.5rem" }}
+                      />
+                    ))}
+                </div>
+
+                <div>
+                  <span className="fw-medium module-title">
+                    {module.title}
+                  </span>
+                  {module.subtitle && (
+                    <small className="text-muted d-block">
+                      {module.subtitle}
+                    </small>
+                  )}
+
+                  {/* Add progress indicator for students */}
+                  {userRole === "student" && totalActivities > 0 && (
+                    <small className="text-muted d-block">
+                      {completedActivities} af {totalActivities}{" "}
+                      aktiviteter gennemført
+                    </small>
+                  )}
+
+                  {/* Add activity count for teachers */}
+                  {/* {userRole === "teacher" && totalActivities > 0 && (
+                    <small className="text-muted d-block">
+                      {totalActivities}{" "}
+                      {totalActivities === 1
+                        ? "aktivitet"
+                        : "aktiviteter"}
+                    </small>
+                  )} */}
+                </div>
+              </div>
+
+              {/* Delete button (only visible for teachers on hover) */}
+              {userRole === "teacher" && (
+                <div
+                  className="module-delete-btn"
+                  onClick={(e) => handleDeleteClick(e, module)}
+                  title="Slet modul"
+                >
+                  <BsX size={20} />
+                </div>
+              )}
+            </ListGroup.Item>
+          );
+        })}
+      </ListGroup>
+    );
+  };
+
   return (
     <div
       className={`module-sidebar p-3 ${isMinimized ? "minimized" : ""}`}
@@ -375,7 +617,7 @@ const ModuleSidebar = ({
                     e.target.src = "https://via.placeholder.com/55?text=ABC";
                   }}
                 />
-                {userRole === "teacher" && (
+                {userRole === "teacher" && viewMode === 'modules' && (
                   <div
                     className="course-icon-edit"
                     onClick={() => setShowIconModal(true)}
@@ -389,118 +631,24 @@ const ModuleSidebar = ({
               <h4 className="mb-0 module-title">{courseTitle}</h4>
             </div>
           </div>
+          
+          {/* View toggle buttons */}
+          <div className="mb-3 d-flex justify-content-center">
+            <ToggleButtonGroup type="radio" name="view-options" value={viewMode} onChange={handleViewModeChange}>
+              <ToggleButton id="tbg-radio-1" value="modules" variant="outline-primary" size="sm">
+                Moduler
+              </ToggleButton>
+              <ToggleButton id="tbg-radio-2" value="topics" variant="outline-primary" size="sm">
+                Forløb
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
 
-          <ListGroup variant="flush" className="module-list">
-            {safeModules.length > 0 ? (
-              safeModules.map((module) => {
-                if (!module) return null;
+          {/* Render content based on view mode */}
+          {viewMode === 'modules' ? renderModulesList() : renderTopicsList()}
 
-                const moduleActivities = Array.isArray(module.activities)
-                  ? module.activities
-                  : [];
-                // Filter out folder-type activities
-                const nonFolderActivities = moduleActivities.filter(
-                  (act) => act && act.type !== "folder"
-                );
-                const totalActivities = nonFolderActivities.length;
-                const completedActivities = nonFolderActivities.filter(
-                  (act) => act && act.completed
-                ).length;
-                const allCompleted =
-                  totalActivities > 0 &&
-                  completedActivities === totalActivities;
-
-                return (
-                  <ListGroup.Item
-                    key={module.id || Math.random().toString()}
-                    action
-                    active={module.id === selectedModuleId}
-                    onClick={() => onModuleSelect && onModuleSelect(module.id)}
-                    className="d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item"
-                    style={{ overflow: "hidden" }}
-                  >
-                    <div
-                      className="d-flex flex-column w-100"
-                      style={{ minWidth: 0 }}
-                    >
-                      <div className="d-flex justify-content-between align-items-center mb-1">
-                        <div
-                          className="text-nowrap small text-muted"
-                          style={{ fontSize: "0.8rem" }}
-                        >
-                          {module.date || "No date"}
-                        </div>
-
-                        {userRole === "student" &&
-                          (allCompleted ? (
-                            <BsCheckCircleFill
-                              className="text-success"
-                              style={{ fontSize: "1.5rem" }}
-                            />
-                          ) : (
-                            <BsCircleFill
-                              className={
-                                completedActivities > 0
-                                  ? "text-warning"
-                                  : "text-secondary"
-                              }
-                              style={{ opacity: 0.5, fontSize: "1.5rem" }}
-                            />
-                          ))}
-                      </div>
-
-                      <div>
-                        <span className="fw-medium module-title">
-                          {module.title}
-                        </span>
-                        {module.subtitle && (
-                          <small className="text-muted d-block">
-                            {module.subtitle}
-                          </small>
-                        )}
-
-                        {/* Add progress indicator for students */}
-                        {userRole === "student" && totalActivities > 0 && (
-                          <small className="text-muted d-block">
-                            {completedActivities} af {totalActivities}{" "}
-                            aktiviteter gennemført
-                          </small>
-                        )}
-
-                        {/* Add activity count for teachers */}
-                        {/* {userRole === "teacher" && totalActivities > 0 && (
-                          <small className="text-muted d-block">
-                            {totalActivities}{" "}
-                            {totalActivities === 1
-                              ? "aktivitet"
-                              : "aktiviteter"}
-                          </small>
-                        )} */}
-                      </div>
-                    </div>
-
-                    {/* Delete button (only visible for teachers on hover) */}
-                    {userRole === "teacher" && (
-                      <div
-                        className="module-delete-btn"
-                        onClick={(e) => handleDeleteClick(e, module)}
-                        title="Slet modul"
-                      >
-                        <BsX size={20} />
-                      </div>
-                    )}
-                  </ListGroup.Item>
-                );
-              })
-            ) : (
-              <div className="text-center p-3">
-                <p className="text-muted">No modules available.</p>
-              </div>
-            )}
-          </ListGroup>
-
-          {/* Create Module Button (only for teachers) */}
-          {userRole === "teacher" && (
+          {/* Create Module Button (only for teachers in module view) */}
+          {userRole === "teacher" && viewMode === 'modules' && (
             <div className="mt-3 mb-3">
               <Button
                 variant="outline-primary"

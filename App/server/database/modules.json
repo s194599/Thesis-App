@@ -3,44 +3,51 @@
     "id": "module-1",
     "title": "Introduktion til SoMe og personlig branding",
     "date": "1. Februar 2023",
-    "description": "<p><strong>Gennemgang</strong> af grundl\u00e6ggende <s>grammatikregler</s> og \u00f8velser.</p>"
+    "description": "<p><strong>Gennemgang</strong> af grundl\u00e6ggende <s>grammatikregler</s> og \u00f8velser.</p>",
+    "topicId": "topic-1"
   },
   {
     "id": "module-2",
     "title": "2. Verdenskrig",
     "date": "8. Februar 2023",
     "description": "<p>Dette modul omhandler 2. verdenskrig, <u>specifik</u> omkring Tyskland</p>",
-    "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png"
+    "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+    "topicId": "topic-1"
   },
   {
     "id": "module-3",
     "title": "Romantikken",
     "date": "15. Februar 2023",
-    "description": "Opbygning af essays og andre skriftlige opgaver."
+    "description": "Opbygning af essays og andre skriftlige opgaver.",
+    "topicId": "topic-1"
   },
   {
     "id": "module-4",
     "title": "Sociale Medier",
     "date": "22. Februar 2023",
     "description": "<p><u>Metoder</u> til analyse af forskellige <strong>litter\u00e6re</strong> v\u00e6rker.</p>",
-    "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png"
+    "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+    "topicId": "topic-1"
   },
   {
     "id": "module-5",
     "title": "Mundtlig fremstilling",
     "date": "1. Marts 2023",
-    "description": "Teknikker til pr\u00e6sentationer og diskussioner."
+    "description": "Teknikker til pr\u00e6sentationer og diskussioner.",
+    "topicId": "topic-1"
   },
   {
     "id": "module-6",
     "title": "Medieanalyse",
     "date": "8. Marts 2025",
-    "description": "Kritisk analyse af forskellige medier og budskaber."
+    "description": "Kritisk analyse af forskellige medier og budskaber.",
+    "topicId": "topic-1"
   },
   {
     "id": "module-7",
     "title": "Sproglig variation",
     "date": "15. Marts 2023",
-    "description": "Dialekter, sociolekter og sproglige tendenser."
+    "description": "Dialekter, sociolekter og sproglige tendenser.",
+    "topicId": "topic-1"
   }
 ]

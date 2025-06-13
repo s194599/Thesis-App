@@ -10,11 +10,16 @@ This document outlines the data structure used in the application, particularly 
 
 The application stores data in JSON files on the server:
 
-1. **Modules**: Stored in `server/database/modules.json`
-   - Contains the base module information (id, title, date, description)
+1. **Topics**: Stored in `server/database/topics.json`
+   - Contains topic information (id, name)
+   - Each module is associated with a topic
+
+2. **Modules**: Stored in `server/database/modules.json`
+   - Contains the base module information (id, title, date, description, topicId)
+   - The topicId field links a module to its topic
    - Does not contain activities directly
 
-2. **Activities**: Stored in `server/database/activities.json`
+3. **Activities**: Stored in `server/database/activities.json`
    - Each activity includes a `moduleId` field to associate it with a module
    - Activities are stored separately from modules for better performance and separation of concerns
 
@@ -22,24 +27,27 @@ The application stores data in JSON files on the server:
 
 The application provides several endpoints to interact with the data:
 
-1. **GET `/api/modules`**
+1. **GET `/api/topics`**
+   - Returns a list of all topics
+
+2. **GET `/api/modules`**
    - Returns a list of all modules without their activities
 
-2. **GET `/api/modules-with-activities`**
+3. **GET `/api/modules-with-activities`**
    - Returns all modules with their activities attached
    - Activities are cross-referenced using the `moduleId` field
 
-3. **GET `/api/module-activities/:moduleId`**
+4. **GET `/api/module-activities/:moduleId`**
    - Returns all activities for a specific module
 
-4. **POST `/api/update-module`**
-   - Updates a module's information (title, date, description)
+5. **POST `/api/update-module`**
+   - Updates a module's information (title, date, description, topicId)
 
-5. **POST `/api/store-activity`**
+6. **POST `/api/store-activity`**
    - Saves a new activity or updates an existing one
    - Activities must include a `moduleId` to link them to a module
 
-6. **POST `/api/delete-activity`**
+7. **POST `/api/delete-activity`**
    - Deletes an activity from server storage
 
 ### Client-Side Data Management
@@ -55,7 +63,7 @@ The front-end handles data in the following way:
    - This ensures the most up-to-date activities are displayed
 
 3. **Module Updates**
-   - When module information (title, date, description) is edited, changes are sent to the server
+   - When module information (title, date, description, topicId) is edited, changes are sent to the server
    - Updates are also stored in localStorage for persistence
 
 4. **Activity Management**

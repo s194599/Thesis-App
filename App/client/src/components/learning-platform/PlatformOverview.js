@@ -33,6 +33,34 @@ const PlatformOverview = () => {
   });
   const resetTabRef = useRef(null);
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
+  const [viewMode, setViewMode] = useState('modules'); // 'modules' or 'topics'
+  const [selectedTopicId, setSelectedTopicId] = useState(null);
+  const [topicActivities, setTopicActivities] = useState([]);
+  const [topicModules, setTopicModules] = useState([]);
+  const [topics, setTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+
+  // Fetch topics when component mounts
+  useEffect(() => {
+    fetchTopics();
+  }, []);
+
+  // Function to fetch topics from the server
+  const fetchTopics = async () => {
+    try {
+      const response = await fetch('/api/topics');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && Array.isArray(data.topics)) {
+          setTopics(data.topics);
+        }
+      } else {
+        console.error('Failed to fetch topics');
+      }
+    } catch (error) {
+      console.error('Error fetching topics:', error);
+    }
+  };
 
   // Load data from server or localStorage
   useEffect(() => {
@@ -250,7 +278,14 @@ const PlatformOverview = () => {
   };
 
   const handleModuleSelect = (moduleId) => {
-    if (moduleId === selectedModuleId) return; // Do nothing if selecting the same module
+    if (moduleId === selectedModuleId && viewMode === 'modules') return; // Do nothing if selecting the same module
+    
+    // Switch to module view if we're in topic view
+    if (viewMode === 'topics') {
+      setViewMode('modules');
+      setSelectedTopicId(null);
+      setSelectedTopic(null);
+    }
 
     console.log(`Selecting module: ${moduleId}`);
     
@@ -271,6 +306,52 @@ const PlatformOverview = () => {
     // If in student mode, make sure to update completion status
     if (userRole === 'student') {
       fetchCompletionStatusForModule(moduleId);
+    }
+  };
+
+  // Handle topic selection to show all activities from modules with this topic
+  const handleTopicSelect = async (topicId) => {
+    if (topicId === selectedTopicId && viewMode === 'topics') return;
+    
+    console.log(`Selecting topic: ${topicId}`);
+    
+    // Find the topic details
+    const topic = topics.find(t => t.id === topicId);
+    
+    // Update state with the selected topic
+    setSelectedTopicId(topicId);
+    setSelectedTopic(topic);
+    setViewMode('topics');
+    
+    // Filter modules by the selected topic
+    const modulesWithTopic = modules.filter(module => 
+      module && module.topicId === topicId
+    );
+    
+    setTopicModules(modulesWithTopic);
+    
+    // Collect all activities from these modules
+    const allActivities = [];
+    
+    modulesWithTopic.forEach(module => {
+      if (module && Array.isArray(module.activities)) {
+        module.activities.forEach(activity => {
+          if (activity) {
+            // Clone the activity and add module title for reference
+            allActivities.push({
+              ...activity,
+              moduleTitle: module.title
+            });
+          }
+        });
+      }
+    });
+    
+    setTopicActivities(allActivities);
+    
+    // If in student mode, make sure to update completion status
+    if (userRole === 'student') {
+      await fetchCompletionStatus();
     }
   };
 
@@ -465,6 +546,34 @@ const PlatformOverview = () => {
     setIsSidebarMinimized(isMinimized);
   };
 
+  // Create a virtual module for topic view
+  const createTopicModule = (topicId) => {
+    // Use the selected topic if available
+    if (selectedTopic) {
+      return {
+        id: `topic-view-${topicId}`,
+        title: selectedTopic.name,
+        description: selectedTopic.description,
+        activities: topicActivities,
+        isTopicView: true, // Flag to indicate this is a topic view
+      };
+    }
+    
+    // Fallback if no topic is selected
+    return {
+      id: `topic-view-${topicId}`,
+      title: "Forløb",
+      description: "Alle aktiviteter i dette forløb",
+      activities: topicActivities,
+      isTopicView: true,
+    };
+  };
+  
+  // Determine the content to show
+  const contentToShow = viewMode === 'topics' && selectedTopicId ? 
+    createTopicModule(selectedTopicId) : 
+    selectedModule;
+
   if (loading) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
@@ -524,18 +633,20 @@ const PlatformOverview = () => {
             userRole={userRole}
             onModuleUpdate={handleModuleUpdate}
             onSidebarStateChange={handleSidebarStateChange}
+            onTopicSelect={handleTopicSelect}
           />
         </Col>
         <Col md={isSidebarMinimized ? 11 : 9} className="content-col" style={{ transition: 'flex 0.3s ease, max-width 0.3s ease' }}>
-          {selectedModule ? (
+          {contentToShow ? (
             <ModuleContent 
-              module={selectedModule}
+              module={contentToShow}
               onActivityCompletion={handleActivityCompletion}
               onQuizAccess={handleQuizAccess}
               onUpdateActivities={updateModuleActivities}
               onModuleUpdate={handleModuleUpdate}
-              userRole={userRole}
+              userRole={viewMode === 'topics' ? 'student' : userRole} // Force student mode for topic view
               resetTabFn={fn => resetTabRef.current = fn}
+              isTopicView={viewMode === 'topics'}
             />
           ) : (
             <div className="p-4 text-center">

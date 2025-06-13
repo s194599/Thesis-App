@@ -9,6 +9,22 @@ from utils.file_helpers import load_json_file, save_json_file
 module_routes = Blueprint("module_routes", __name__)
 
 
+@module_routes.route("/topics", methods=["GET"])
+def get_topics():
+    """
+    Retrieves all topics from the server
+    """
+    try:
+        topics_file = os.path.join(DATABASE_FOLDER, "topics.json")
+        topics = load_json_file(topics_file, [])
+        
+        return jsonify({"success": True, "topics": topics})
+    
+    except Exception as e:
+        logger.error(f"Error retrieving topics: {str(e)}")
+        return jsonify({"success": False, "message": str(e), "topics": []}), 500
+
+
 @module_routes.route("/modules", methods=["GET"])
 def get_modules():
     """
@@ -91,7 +107,7 @@ def update_module():
             return jsonify({"success": False, "message": f"Module with ID {module_id} not found"}), 404
         
         # Update module properties, preserving any that aren't in the request
-        updatable_fields = ["title", "date", "description", "subtitle", "icon"]
+        updatable_fields = ["title", "date", "description", "subtitle", "icon", "topicId"]
         for field in updatable_fields:
             if field in module_data:
                 modules[module_index][field] = module_data[field]
@@ -144,7 +160,8 @@ def create_module():
             "id": new_id,
             "title": module_data.get("title"),
             "date": module_data.get("date", ""),
-            "description": module_data.get("description", "")
+            "description": module_data.get("description", ""),
+            "topicId": module_data.get("topicId", "topic-1")  # Default to topic-1 if not specified
         }
         
         # Add optional fields if provided

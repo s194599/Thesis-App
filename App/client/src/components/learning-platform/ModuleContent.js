@@ -49,9 +49,10 @@ const ModuleContent = ({
   onModuleUpdate,
   resetTabFn,
   userRole = "teacher", // Default to teacher role if not provided
+  isTopicView = false,  // New prop to indicate if we're in topic view
 }) => {
   // Check if in teacher mode (can edit)
-  const isTeacherMode = userRole === "teacher";
+  const isTeacherMode = userRole === "teacher" && !isTopicView; // Disable editing in topic view
 
   const [activities, setActivities] = useState([]);
   const [completedActivities, setCompletedActivities] = useState([]);
@@ -101,6 +102,45 @@ const ModuleContent = ({
   const [showAudioModal, setShowAudioModal] = useState(false);
   const navigate = useNavigate();
   
+  // Function to fetch student activity completions
+  const fetchStudentCompletions = async () => {
+    try {
+      // Add a timestamp to prevent caching
+      const response = await fetch(`/api/student-activity-completions?studentId=1&_t=${Date.now()}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && Array.isArray(data.completed_activities)) {
+          setCompletedActivities(data.completed_activities);
+          console.log(`Loaded ${data.completed_activities.length} completed activities`);
+          
+          // Also store completion data with scores if available
+          if (Array.isArray(data.completed_activities_data)) {
+            const scoresMap = {};
+            
+            data.completed_activities_data.forEach(activityData => {
+              if (activityData.id) {
+                // Store the score (even if null)
+                scoresMap[activityData.id] = activityData.score;
+                
+                // Log when a 100% score is found
+                if (activityData.score === 100) {
+                  console.log(`Trophy eligible: ${activityData.id} has score of 100%`);
+                }
+              }
+            });
+            
+            setCompletionData(scoresMap);
+            console.log('Completion data with scores:', scoresMap);
+          }
+        }
+      } else {
+        console.error("Error fetching activity completions");
+      }
+    } catch (error) {
+      console.error("Error fetching activity completions:", error);
+    }
+  };
+
   // Expose the setActiveTab function through the resetTabFn prop
   useEffect(() => {
     if (resetTabFn) {
@@ -148,9 +188,9 @@ const ModuleContent = ({
             }
           }
 
-          // Verify this activity belongs to the current module
-          if (activity.moduleId && activity.moduleId !== module.id) {
-            // Skip activities from other modules that were accidentally included
+          // Verify this activity belongs to the current module, but keep if we're in topic view
+          if (!isTopicView && activity.moduleId && activity.moduleId !== module.id) {
+            // Skip activities from other modules that were accidentally included (unless in topic view)
             return false;
           }
 
@@ -163,7 +203,8 @@ const ModuleContent = ({
           const { completed, ...activityWithoutCompleted } = activity;
           return {
             ...activityWithoutCompleted,
-            moduleId: module.id,
+            // In topic view, preserve the original moduleId; otherwise set to current module
+            moduleId: isTopicView ? activity.moduleId : module.id,
             parentId: activity.parentId || null
           };
         });
@@ -172,9 +213,15 @@ const ModuleContent = ({
       const quizzes = normalizedActivities.filter(
         (a) => a && (a.type === "quiz" || a.type === "multiple_choice" || a.type === "flashcard" || a.type === "flashcards")
       );
-      console.log(
-        `Setting ${normalizedActivities.length} activities for module ${module.id}, including ${quizzes.length} quizzes`
-      );
+      if (isTopicView) {
+        console.log(
+          `Setting ${normalizedActivities.length} activities for topic view ${module.id}, including ${quizzes.length} quizzes`
+        );
+      } else {
+        console.log(
+          `Setting ${normalizedActivities.length} activities for module ${module.id}, including ${quizzes.length} quizzes`
+        );
+      }
 
       // Initialize open folder state
       const initialOpenState = {};
@@ -222,45 +269,6 @@ const ModuleContent = ({
       fetchStudentCompletions();
     }
   }, [activities, userRole]);
-
-  // Function to fetch student activity completions
-  const fetchStudentCompletions = async () => {
-    try {
-      // Add a timestamp to prevent caching
-      const response = await fetch(`/api/student-activity-completions?studentId=1&_t=${Date.now()}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && Array.isArray(data.completed_activities)) {
-          setCompletedActivities(data.completed_activities);
-          console.log(`Loaded ${data.completed_activities.length} completed activities`);
-          
-          // Also store completion data with scores if available
-          if (Array.isArray(data.completed_activities_data)) {
-            const scoresMap = {};
-            
-            data.completed_activities_data.forEach(activityData => {
-              if (activityData.id) {
-                // Store the score (even if null)
-                scoresMap[activityData.id] = activityData.score;
-                
-                // Log when a 100% score is found
-                if (activityData.score === 100) {
-                  console.log(`Trophy eligible: ${activityData.id} has score of 100%`);
-                }
-              }
-            });
-            
-            setCompletionData(scoresMap);
-            console.log('Completion data with scores:', scoresMap);
-          }
-        }
-      } else {
-        console.error("Error fetching activity completions");
-      }
-    } catch (error) {
-      console.error("Error fetching activity completions:", error);
-    }
-  };
 
   // Initialize activity orders when activities change
   useEffect(() => {
@@ -2273,18 +2281,23 @@ const ModuleContent = ({
             
             <div className="activity-content flex-grow-1">
               <div className="d-flex justify-content-between align-items-start">
-                <div>
-                  <h5 className="mb-1 module-title">
-                    {activity.title || "Unnamed Activity"}
-                    {userRole === "student" && isPerfectScore(activity.id) && (
-                      <BsTrophy className="text-warning ms-2" style={{ fontSize: '1.2em' }} title="Perfekt score!" />
-                    )}
-                  </h5>
-                  {activity.description && (
-                    <div className="text-muted small">
-                      {activity.description}
-                    </div>
-                  )}
+                                                <div>
+                                  <h5 className="mb-1 module-title">
+                                    {activity.title || "Unnamed Activity"}
+                                    {userRole === "student" && isPerfectScore(activity.id) && (
+                                      <BsTrophy className="text-warning ms-2" style={{ fontSize: '1.2em' }} title="Perfekt score!" />
+                                    )}
+                                  </h5>
+                                  {isTopicView && activity.moduleTitle && (
+                                    <div className="text-primary small mb-1">
+                                      <strong>{activity.moduleTitle}</strong>
+                                    </div>
+                                  )}
+                                  {activity.description && (
+                                    <div className="text-muted small">
+                                      {activity.description}
+                                    </div>
+                                  )}
                   {activity.type === "youtube" && activity.url && (
                     <div className="d-flex align-items-center">
                       <div
@@ -2539,13 +2552,14 @@ const ModuleContent = ({
   
   // Add an effect to refresh completion data when window gains focus
   useEffect(() => {
+    // Function to handle window focus
+    const handleFocus = () => {
+      console.log('Window focused - refreshing completion data');
+      fetchStudentCompletions();
+    };
+    
+    // Only attach event listener for students
     if (userRole === "student") {
-      // Function to handle window focus
-      const handleFocus = () => {
-        console.log('Window focused - refreshing completion data');
-        fetchStudentCompletions();
-      };
-      
       // Add event listener
       window.addEventListener('focus', handleFocus);
       
@@ -2572,38 +2586,42 @@ const ModuleContent = ({
       <header className="mb-4">
         <div className="d-flex align-items-center mb-3">
           <div style={{ width: "100%", minWidth: 0 }}> {/* Add minWidth: 0 to allow children to shrink below content size */}
-            {editingDate && isTeacherMode ? (
-              <div className="d-flex align-items-center mb-1">
-                <Form.Control
-                  size="sm"
-                  type="text"
-                  value={editedDate}
-                  onChange={(e) => setEditedDate(e.target.value)}
-                  onKeyDown={handleDateKeyPress}
-                  autoFocus
-                  style={{ width: "100px" }}
-                />
-                <BsCheck
-                  className="text-success ms-1 clickable"
-                  size={16}
-                  onClick={handleDateSave}
-                  style={{ cursor: "pointer" }}
-                />
-              </div>
-            ) : (
-              <div className="d-flex align-items-center">
-                <small className="text-muted d-flex align-items-center">
-                  {module.date || "Ingen dato"}
-                  {isTeacherMode && (
-                    <BsPencil
-                      size={12}
-                      className="ms-1 text-muted"
-                      onClick={handleDateEdit}
+            {!isTopicView && (
+              <>
+                {editingDate && isTeacherMode ? (
+                  <div className="d-flex align-items-center mb-1">
+                    <Form.Control
+                      size="sm"
+                      type="text"
+                      value={editedDate}
+                      onChange={(e) => setEditedDate(e.target.value)}
+                      onKeyDown={handleDateKeyPress}
+                      autoFocus
+                      style={{ width: "100px" }}
+                    />
+                    <BsCheck
+                      className="text-success ms-1 clickable"
+                      size={16}
+                      onClick={handleDateSave}
                       style={{ cursor: "pointer" }}
                     />
-                  )}
-                </small>
-              </div>
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center">
+                    <small className="text-muted d-flex align-items-center">
+                      {module.date || "Ingen dato"}
+                      {isTeacherMode && (
+                        <BsPencil
+                          size={12}
+                          className="ms-1 text-muted"
+                          onClick={handleDateEdit}
+                          style={{ cursor: "pointer" }}
+                        />
+                      )}
+                    </small>
+                  </div>
+                )}
+              </>
             )}
 
             {editingTitle && isTeacherMode ? (
@@ -2637,7 +2655,7 @@ const ModuleContent = ({
                   maxWidth: "100%"
                 }}>
                   {module.title || "Unnamed Module"}
-                  {isTeacherMode && (
+                  {isTeacherMode && !isTopicView && (
                     <BsPencil
                       size={16}
                       className="ms-2 text-muted"
@@ -2702,7 +2720,7 @@ const ModuleContent = ({
                   : "Ingen beskrivelse."}
               </p>
             )}
-            {isTeacherMode && (
+            {isTeacherMode && !isTopicView && (
               <Button
                 variant="link"
                 className="position-absolute top-0 end-0 p-0 text-muted"
@@ -2736,8 +2754,8 @@ const ModuleContent = ({
           </div>
         )}
 
-        {/* Add Activity Button - Only visible in teacher mode */}
-        {activeTab === "indhold" && isTeacherMode && (
+        {/* Add Activity Button - Only visible in teacher mode and not in topic view */}
+        {activeTab === "indhold" && isTeacherMode && !isTopicView && (
           <div className="d-flex justify-content-end my-3">
             <Button 
               variant="outline-primary" 
