@@ -14,20 +14,16 @@ const LanguageSelector = () => {
     <div className="mb-4">
       <Form.Group>
         <Form.Label className="fw-bold">Output sprog</Form.Label>
-        <div className="d-flex gap-3">
+        <Form.Select
+          value={formData.language}
+          onChange={(e) => updateFormData("language", e.target.value)}
+        >
           {languages.map((lang) => (
-            <Form.Check
-              key={lang.value}
-              type="radio"
-              id={`lang-${lang.value}`}
-              label={lang.label}
-              value={lang.value}
-              checked={formData.language === lang.value}
-              onChange={(e) => updateFormData("language", e.target.value)}
-              className="mb-0"
-            />
+            <option key={lang.value} value={lang.value}>
+              {lang.label}
+            </option>
           ))}
-        </div>
+        </Form.Select>
        {/*  <Form.Text className="text-muted">
           Vælg det sprog, som quizspørgsmålene skal genereres på.
         </Form.Text> */}

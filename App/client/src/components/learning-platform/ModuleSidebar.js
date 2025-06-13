@@ -52,6 +52,7 @@ const ModuleSidebar = ({
     title: "",
     date: new Date(),
     description: "",
+    topicId: "topic-1", // Default to the first topic
   });
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState(null);
@@ -66,6 +67,11 @@ const ModuleSidebar = ({
   useEffect(() => {
     setRenderKey((prevKey) => prevKey + 1);
   }, [userRole]);
+  
+  // Fetch topics once when component mounts (for both views and for modal)
+  useEffect(() => {
+    fetchTopics();
+  }, []);
 
   // Fetch topics from the server when in topics view
   useEffect(() => {
@@ -367,7 +373,8 @@ const ModuleSidebar = ({
               }.${newModule.date.getFullYear()}`
             : newModule.date
         ),
-        topicId: "topic-1", // Default to topic-1 for now
+        // Use the selected topicId from the dropdown
+        topicId: newModule.topicId || "topic-1",
       };
 
       // Create the module with formatted date
@@ -379,6 +386,7 @@ const ModuleSidebar = ({
         title: "",
         date: new Date(),
         description: "",
+        topicId: "topic-1", // Reset to default topic
       });
 
       // Reload the modules or add the newly created module to the list
@@ -654,7 +662,12 @@ const ModuleSidebar = ({
                 variant="outline-primary"
                 size="sm"
                 className="w-100 d-flex align-items-center justify-content-center"
-                onClick={() => setShowCreateModal(true)}
+                onClick={() => {
+                  // Fetch topics to ensure we have the latest list
+                  fetchTopics();
+                  // Open the modal
+                  setShowCreateModal(true);
+                }}
               >
                 <BsPlusCircle className="me-2" /> Opret nyt modul
               </Button>
@@ -753,6 +766,24 @@ const ModuleSidebar = ({
                 placeholder="Indtast modulbeskrivelse"
                 rows={3}
               />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Forløb</Form.Label>
+              <Form.Select
+                name="topicId"
+                value={newModule.topicId}
+                onChange={handleCreateModuleChange}
+              >
+                {topics.map(topic => (
+                  <option key={topic.id} value={topic.id}>{topic.name}</option>
+                ))}
+                {topics.length === 0 && (
+                  <option value="topic-1">Romantikken</option>
+                )}
+              </Form.Select>
+              <Form.Text className="text-muted">
+                Vælg hvilket forløb modulet skal tilhøre
+              </Form.Text>
             </Form.Group>
             {error && <Alert variant="danger">{error}</Alert>}
           </Form>

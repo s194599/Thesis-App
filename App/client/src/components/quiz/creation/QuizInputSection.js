@@ -2,6 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
 import FileUploader from "./FileUploader";
+import FilesList from "./FilesList";
 
 const QuizInputSection = () => {
   const { formData, updateFormData } = useQuizContext();
@@ -61,14 +62,16 @@ const QuizInputSection = () => {
 
       case "document":
         return (
-          <Form.Group className="mb-3">
-            <Form.Label className="fw-bold">Upload dokumenter</Form.Label>
-            <FileUploader />
-            {/* <Form.Text className="text-muted">
-              Upload et dokument (PDF, DOC, DOCX, TXT) for at generere
-              quizspørgsmål.
-            </Form.Text> */}
-          </Form.Group>
+          <>
+            {/* Display selected files first (if any) */}
+            <FilesList />
+            
+            {/* File upload section */}
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Upload dokumenter</Form.Label>
+              <FileUploader />
+            </Form.Group>
+          </>
         );
 
       default:

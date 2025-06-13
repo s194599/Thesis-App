@@ -6,7 +6,6 @@ import {
   InputTypeSelector,
   QuizInputSection,
   QuestionTypeSelector,
-  StudentLevelSelector,
   LanguageSelector,
   NumQuestionsSelector,
 } from "./";
@@ -45,7 +44,6 @@ const QuizForm = () => {
     updateFormData("url", "");
     updateFormData("files", null);
     updateFormData("questionType", "multipleChoice");
-    updateFormData("studentLevel", "");
     updateFormData("numQuestions", 5);
     updateFormData("language", "danish");
     updateFormData("additionalInstructions", "");
@@ -265,7 +263,6 @@ const QuizForm = () => {
         content: contentToProcess,
         inputType: formData.inputType,
         questionType: formData.questionType,
-        studentLevel: formData.studentLevel,
         additionalInstructions: formData.additionalInstructions,
         language: formData.language,
         numQuestions: formData.numQuestions,
@@ -364,6 +361,9 @@ const QuizForm = () => {
                     />
                   </Form.Group>
 
+                  {/* Question type selection - moved up as it's very important */}
+                  <QuestionTypeSelector />
+
                   {/* Display error message if any */}
                   {error && (
                     <Alert variant="danger" className="mb-4">
@@ -373,25 +373,18 @@ const QuizForm = () => {
 
                   {/* Input type selection */}
                   <InputTypeSelector />
-
+                  
                   {/* Quiz input section (changes based on selected input type) */}
                   <QuizInputSection />
 
-                  {/* Question type selection */}
-                  <QuestionTypeSelector />
-
                   <hr className="my-4" />
 
-                  <div className="row">
-                    <div className="col-md-4">
-                      {/* Student level selection */}
-                      <StudentLevelSelector />
-                    </div>
-                    <div className="col-md-4">
+                  <div className="row gy-0 gx-3">
+                    <div className="col-md-6">
                       {/* Number of questions selection */}
                       <NumQuestionsSelector />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       {/* Language selection */}
                       <LanguageSelector />
                     </div>

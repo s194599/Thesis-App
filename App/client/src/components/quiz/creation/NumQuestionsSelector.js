@@ -20,7 +20,7 @@ const NumQuestionsSelector = () => {
         >
           {questionOptions.map((num) => (
             <option key={num} value={num}>
-              {num} {num === 1 ? "spørgsmål" : "spørgsmål"}
+              {num} spørgsmål
             </option>
           ))}
         </Form.Select>

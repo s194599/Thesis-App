@@ -168,7 +168,7 @@ const FileUploader = () => {
             : "Træk og slip filer her, eller klik for at vælge filer"}
         </p>
         <p className="text-muted small">
-          Accepterede formater: PDF, DOC, DOCX, TXT, MP4, MOV, AVI, WEBM, MP3, WAV, M4A
+          Accepterede formater: PDF, DOC, DOCX, TXT, MP3, MP4
           (Maksimal størrelse: 50MB per fil)
         </p>
       </div>
@@ -193,67 +193,7 @@ const FileUploader = () => {
           </Button>
         </InputGroup>
         {youtubeError && <div className="text-danger small mb-2">{youtubeError}</div>}
-        {/* <p className="text-muted small">
-          Tilføj YouTube videoer til at generere quiz-spørgsmål baseret på videoindholdet.
-        </p> */}
       </div>
-
-      {formData.files && formData.files.length > 0 && (
-        <div className="mt-3">
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h6 className="mb-0 fw-bold">
-              Valgte filer ({formData.files.length})
-            </h6>
-            <span className="text-muted small">
-              Samlet størrelse: {totalFileSize.toFixed(2)} MB
-            </span>
-          </div>
-
-          {/* {(hasVideoFiles || hasYoutubeVideos) && (
-            <div className="mt-3">
-              <Alert variant="info">
-                <strong>Bemærk:</strong> {hasVideoFiles ? "Videoer vil blive transskriberet automatisk ved hjælp af AI-talegenkendelse." : ""} 
-                {hasYoutubeVideos ? "YouTube videoer vil blive analyseret via undertekster og videoindhold." : ""}
-                <br />
-                <strong>Tips:</strong> Brug videoer med tydelig lyd eller undertekster for de bedste resultater.
-              </Alert>
-            </div>
-          )} */}
-
-          <div className="border rounded">
-            {formData.files.map((file, index) => (
-              <div
-                key={`${file.name}-${index}`}
-                className={`p-2 d-flex align-items-center justify-content-between ${
-                  index !== formData.files.length - 1 ? "border-bottom" : ""
-                }`}
-              >
-                <div className="d-flex align-items-center">
-                  {renderFileIcon(file)}
-                  <div className="ms-2">
-                    <p className="mb-0 small">{file.name}</p>
-                    <p className="mb-0 text-muted small">
-                      {file.isYoutubeVideo 
-                        ? "YouTube Video" 
-                        : `${(file.size / 1024 / 1024).toFixed(2)} MB`}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFile(index);
-                  }}
-                >
-                  Fjern
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

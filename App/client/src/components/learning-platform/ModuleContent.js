@@ -2555,19 +2555,18 @@ const ModuleContent = ({
     // Function to handle window focus
     const handleFocus = () => {
       console.log('Window focused - refreshing completion data');
-      fetchStudentCompletions();
+      if (userRole === "student") {
+        fetchStudentCompletions();
+      }
     };
     
-    // Only attach event listener for students
-    if (userRole === "student") {
-      // Add event listener
-      window.addEventListener('focus', handleFocus);
-      
-      // Clean up
-      return () => {
-        window.removeEventListener('focus', handleFocus);
-      };
-    }
+    // Add event listener
+    window.addEventListener('focus', handleFocus);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [userRole, fetchStudentCompletions]);
 
   // Helper to sort activities based on order

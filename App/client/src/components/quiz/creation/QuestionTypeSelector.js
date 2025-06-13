@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 import { useQuizContext } from "../../../context/QuizContext";
-import { BsListCheck, BsToggleOn, BsTextLeft, BsCardText } from "react-icons/bs";
+import { BsListCheck, BsCardText } from "react-icons/bs";
 
 const QuestionTypeSelector = () => {
   const { formData, updateFormData } = useQuizContext();
@@ -18,21 +18,7 @@ const QuestionTypeSelector = () => {
       label: "Flashcards",
       icon: <BsCardText />,
       description: "Spørgsmål og svar præsenteret som interaktive kort",
-    },
-    {
-      value: "trueFalse",
-      label: "Sand/falsk",
-      icon: <BsToggleOn />,
-      description: "Spørgsmål med sand eller falsk svar",
-      disabled: true,
-    },
-    {
-      value: "shortAnswer",
-      label: "Kort svar",
-      icon: <BsTextLeft />,
-      description: "Spørgsmål der kræver korte tekstsvar",
-      disabled: true,
-    },
+    }
   ];
 
   return (
@@ -46,17 +32,13 @@ const QuestionTypeSelector = () => {
                 className={`p-3 rounded border ${
                   formData.questionType === type.value
                     ? "border-primary bg-light"
-                    : type.disabled
-                    ? "text-muted opacity-50"
                     : ""
                 }`}
                 style={{
-                  cursor: type.disabled ? "not-allowed" : "pointer",
+                  cursor: "pointer",
                   height: "100%",
                 }}
-                onClick={() =>
-                  !type.disabled && updateFormData("questionType", type.value)
-                }
+                onClick={() => updateFormData("questionType", type.value)}
               >
                 <Form.Check
                   type="radio"
@@ -78,7 +60,6 @@ const QuestionTypeSelector = () => {
                   onChange={(e) =>
                     updateFormData("questionType", e.target.value)
                   }
-                  disabled={type.disabled}
                   className="mb-0"
                 />
               </div>

@@ -6,5 +6,6 @@ export { default as StudentLevelSelector } from "./StudentLevelSelector";
 export { default as LanguageSelector } from "./LanguageSelector";
 export { default as NumQuestionsSelector } from "./NumQuestionsSelector";
 export { default as FileUploader } from "./FileUploader";
+export { default as FilesList } from "./FilesList";
 export { default as QuizCreationChoice } from "./QuizCreationChoice";
 export { default as ManualQuizCreation } from "./ManualQuizCreation";
