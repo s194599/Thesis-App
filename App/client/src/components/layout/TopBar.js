@@ -50,7 +50,7 @@ const TopBar = () => {
               <BsTrophy className="me-1" /> Mine Badges
             </Nav.Link>
           )}
-          <Nav.Link as={Link} to="/platform">Platform</Nav.Link>
+          {/* <Nav.Link as={Link} to="/platform">Platform</Nav.Link> */}
         </Nav>
       </Container>
     </Navbar>

@@ -64,14 +64,12 @@
     "moduleSpecific": true
   },
   {
-    "id": "activity_quiz_quiz_1747042463_module-3_1747042464678",
     "moduleId": "module-3",
-    "moduleSpecific": true,
-    "quizId": "quiz_1747042463",
+    "id": "activity_quiz_quiz_1747042463_module-3_1749815568122",
     "title": "Flashcard om Romantikken",
     "type": "flashcard",
-    "isNew": false,
-    "parentId": null
+    "quizId": "quiz_1747042463",
+    "moduleSpecific": true
   },
   {
     "moduleId": "module-2",

@@ -225,7 +225,7 @@ const QuizPreviewComponent = () => {
           <Alert.Heading>Error</Alert.Heading>
           <p>{error}</p>
           <Button variant="outline-primary" onClick={() => navigate("/platform")}>
-            Back to Platform
+            Tilbage til modul
           </Button>
         </Alert>
       </Container>
@@ -239,7 +239,7 @@ const QuizPreviewComponent = () => {
           <Alert.Heading>Quiz Not Found</Alert.Heading>
           <p>The quiz you're looking for does not exist or has been deleted.</p>
           <Button variant="outline-primary" onClick={() => navigate("/platform")}>
-            Back to Platform
+            Tilbage til modul
           </Button>
         </Alert>
       </Container>
@@ -249,20 +249,20 @@ const QuizPreviewComponent = () => {
   return (
     <Container className="mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Quiz Preview</h2>
+        <h2>Forhåndsvisning</h2>
         <div>
           <Button 
             variant="outline-success" 
             className="me-2"
             onClick={() => navigate(`/quiz/${quizId}/results`)}
           >
-            View Results
+            Se resultater
           </Button>
           <Button 
             variant="outline-primary" 
             onClick={() => navigate("/platform")}
           >
-            Back to Platform
+            Tilbage til modul
           </Button>
         </div>
       </div>

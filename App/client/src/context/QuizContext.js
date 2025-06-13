@@ -151,7 +151,7 @@ export const QuizProvider = ({ children }) => {
   // Add a new question manually
   const addQuestionManually = () => {
     // Determine the question type based on quiz type
-    let isFlashcardQuiz = editingQuiz.type === "flashcard";
+    let isFlashcardQuiz = editingQuiz.type === "flashcard" || editingQuiz.type === "flashcards";
     
     let newQuestion;
     
@@ -159,9 +159,10 @@ export const QuizProvider = ({ children }) => {
       // Create a flashcard-type question
       newQuestion = {
         id: `q${Date.now()}`,
-        question: "Front (Question)",
-        correctAnswer: "Back (Answer)",
-        options: [] // Empty options array for flashcards
+        question: "Forside (Spørgsmål)",
+        correctAnswer: "Bagside (Svar)",
+        options: [], // Empty options array for flashcards
+        type: "flashcard" // Ensure type is set
       };
     } else {
       // Create a standard multiple-choice question
@@ -184,24 +185,13 @@ export const QuizProvider = ({ children }) => {
   const generateQuestion = async () => {
     setGeneratingQuestion(true);
     try {
-      // Mock API call - in reality, this would call your backend
-      // await api.generateAdditionalQuestion(formData);
-
-      // For now, let's just simulate a delay and add a mock question
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
+      // Create a standard multiple-choice question instead of using AI
       const newQuestion = {
         id: `q${Date.now()}`,
-        question: "AI Generated Question: What is the main function of DNA?",
-        options: [
-          "Store genetic information",
-          "Produce energy",
-          "Break down nutrients",
-          "Transport oxygen",
-        ],
-        correctAnswer: "Store genetic information",
-        explanation:
-          "DNA (deoxyribonucleic acid) stores genetic information in the form of genes.",
+        question: "New Question",
+        options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+        correctAnswer: "Option 1",
+        explanation: "Add explanation here",
       };
 
       setEditingQuiz((prev) => ({
@@ -209,7 +199,7 @@ export const QuizProvider = ({ children }) => {
         questions: [...prev.questions, newQuestion],
       }));
     } catch (err) {
-      setError("Failed to generate a new question");
+      setError("Failed to add a new question");
       console.error(err);
     } finally {
       setGeneratingQuestion(false);

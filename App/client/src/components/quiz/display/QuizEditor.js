@@ -52,10 +52,15 @@ const QuizEditor = ({ quizId }) => {
 
   const handleAddQuestion = () => {
     // Determine if this is a flashcard quiz by checking the first question
+    // or by checking the quiz type directly
     let isFlashcardQuiz = false;
     
-    if (quiz.questions && quiz.questions.length > 0) {
-      // Check if the first question is a flashcard - assume quiz is consistent
+    // Check quiz type if available
+    if (quiz.type === "flashcard" || quiz.type === "flashcards") {
+      isFlashcardQuiz = true;
+    }
+    // As a fallback, check the first question
+    else if (quiz.questions && quiz.questions.length > 0) {
       isFlashcardQuiz = quiz.questions[0].type === "flashcard";
     }
     
@@ -65,8 +70,8 @@ const QuizEditor = ({ quizId }) => {
       // Create a flashcard-type question
       newQuestion = {
         id: `q${Date.now()}`,
-        question: "Front (Question)",
-        correctAnswer: "Back (Answer)",
+        question: "Forside (Spørgsmål)",
+        correctAnswer: "Bagside (Svar)",
         type: "flashcard",
         options: [] // Empty options array for flashcards
       };
