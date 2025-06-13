@@ -18,7 +18,7 @@ const InputTypeSelector = () => {
   return (
     <div className="mb-4">
       <Form.Group>
-        <Form.Label className="fw-bold">Materialetype</Form.Label>
+        <Form.Label className="fw-bold">Materialetype til generering</Form.Label>
         <div className="d-flex flex-wrap gap-2">
           <div className="flex-grow-1">
             <div

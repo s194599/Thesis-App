@@ -120,6 +120,28 @@
       "total_questions": 5,
       "score_percent": 80,
       "timestamp": "2025-06-05T10:53:16.886578"
+    },
+    {
+      "completion_id": "qc_1749804347",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "quiz_id": "quiz_1747041853",
+      "module_id": "module-3",
+      "score": 1,
+      "total_questions": 2,
+      "score_percent": 50,
+      "timestamp": "2025-06-13T10:45:47.563330"
+    },
+    {
+      "completion_id": "qc_1749804356",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "quiz_id": "quiz_1747041853",
+      "module_id": "module-3",
+      "score": 2,
+      "total_questions": 2,
+      "score_percent": 100,
+      "timestamp": "2025-06-13T10:45:56.243967"
     }
   ]
 }

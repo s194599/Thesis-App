@@ -272,15 +272,9 @@ const Forum = ({ moduleId, userRole }) => {
         </Alert>
       )}
       
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      {/* <div className="mb-4">
         <h3>Forum</h3>
-        <Button 
-          variant={showNewPostForm ? "secondary" : "primary"} 
-          onClick={() => setShowNewPostForm(!showNewPostForm)}
-        >
-          {showNewPostForm ? "Annuller" : "Opret nyt indlæg"}
-        </Button>
-      </div>
+      </div> */}
       
       {/* New Post Form */}
       {showNewPostForm && (
@@ -553,6 +547,18 @@ const Forum = ({ moduleId, userRole }) => {
           <h5>Ingen indlæg endnu</h5>
           <p className="text-muted">Vær den første til at starte en samtale!</p>
           <Button variant="primary" onClick={() => setShowNewPostForm(true)}>
+            Opret nyt indlæg
+          </Button>
+        </div>
+      )}
+      
+      {/* Create new post button - now positioned at the bottom (only when there are posts) */}
+      {!showNewPostForm && posts.length > 0 && (
+        <div className="mb-4 mt-4">
+          <Button 
+            variant="primary"
+            onClick={() => setShowNewPostForm(true)}
+          >
             Opret nyt indlæg
           </Button>
         </div>

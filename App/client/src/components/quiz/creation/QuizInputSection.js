@@ -68,7 +68,7 @@ const QuizInputSection = () => {
             
             {/* File upload section */}
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Upload dokumenter</Form.Label>
+              <Form.Label className="fw-bold">Tilføj yderligere dokumenter (valgfrit)</Form.Label>
               <FileUploader />
             </Form.Group>
           </>

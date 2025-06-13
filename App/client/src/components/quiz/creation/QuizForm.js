@@ -349,7 +349,7 @@ const QuizForm = () => {
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                   {/* Quiz Title */}
                   <Form.Group className="mb-4">
-                    <Form.Label className="fw-bold">Quiz titel</Form.Label>
+                    <Form.Label className="fw-bold">Titel</Form.Label>
                     <Form.Control
                       type="text"
                       value={formData.quizTitle}

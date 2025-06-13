@@ -175,7 +175,7 @@ const FileUploader = () => {
 
       {/* YouTube URL input section */}
       <div className="mt-3">
-        <Form.Label className="fw-bold">YouTube video URL</Form.Label>
+        <Form.Label className="fw-bold">Tilføj YouTube video (valgfrit)</Form.Label>
         <InputGroup className="mb-2">
           <Form.Control
             type="text"
