@@ -48,10 +48,15 @@ const PlatformOverview = () => {
   // Function to fetch topics from the server
   const fetchTopics = async () => {
     try {
-      const response = await fetch('/api/topics');
+      const response = await fetch('/api/topics', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         if (data.success && Array.isArray(data.topics)) {
+          console.log('Loaded topics:', data.topics);
           setTopics(data.topics);
         }
       } else {

@@ -1434,7 +1434,42 @@ const ModuleContent = ({
 
   const handleSaveDescription = () => {
     if (module) {
-      if (onModuleUpdate) {
+      if (isTopicView) {
+        console.log(`Updating topic description for ID: ${module.id}`);
+        // Save topic description
+        fetch("/api/topics/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            id: module.id,
+            description: moduleDescription
+          }),
+        })
+          .then(response => {
+            console.log(`Topic description update response status: ${response.status}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log("Topic description update response:", data);
+            if (data.success) {
+              // Show success message
+              alert("Emne beskrivelse opdateret!");
+              // Update module in memory to reflect changes
+              module.description = moduleDescription;
+            } else {
+              alert(`Fejl ved opdatering af beskrivelse: ${data.error || 'Ukendt fejl'}`);
+            }
+          })
+          .catch(error => {
+            console.error("Error updating topic description:", error);
+            alert("Der opstod en fejl ved opdatering af emne beskrivelse. Prøv igen.");
+          });
+      } else if (onModuleUpdate) {
         // Use the dedicated module update function
         onModuleUpdate(module.id, { description: moduleDescription });
       } else if (onUpdateActivities) {
@@ -1735,7 +1770,42 @@ const ModuleContent = ({
   // Function to save edited title
   const handleTitleSave = () => {
     if (module) {
-      if (onModuleUpdate) {
+      if (isTopicView) {
+        console.log(`Updating topic title for ID: ${module.id}, new title: ${editedTitle}`);
+        // Save topic title
+        fetch("/api/topics/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            id: module.id,
+            name: editedTitle
+          }),
+        })
+          .then(response => {
+            console.log(`Topic title update response status: ${response.status}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log("Topic title update response:", data);
+            if (data.success) {
+              // Show success message
+              alert("Emne titel opdateret!");
+              // Update module in memory to reflect changes
+              module.title = editedTitle;
+            } else {
+              alert(`Fejl ved opdatering af titel: ${data.error || 'Ukendt fejl'}`);
+            }
+          })
+          .catch(error => {
+            console.error("Error updating topic title:", error);
+            alert("Der opstod en fejl ved opdatering af emne titel. Prøv igen.");
+          });
+      } else if (onModuleUpdate) {
         // Use the dedicated module update function
         onModuleUpdate(module.id, { title: editedTitle });
       } else if (onUpdateActivities) {

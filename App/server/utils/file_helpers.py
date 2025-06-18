@@ -60,10 +60,13 @@ def load_json_file(filepath, default_value=None):
         return default_value if default_value is not None else []
 
     try:
-        with open(filepath, "r") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             return json.load(f)
     except json.JSONDecodeError:
         logger.error(f"Error reading JSON file: {filepath}")
+        return default_value if default_value is not None else []
+    except UnicodeDecodeError:
+        logger.error(f"Character encoding error in file: {filepath}")
         return default_value if default_value is not None else []
 
 
@@ -84,8 +87,8 @@ def save_json_file(filepath, data, indent=2):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        with open(filepath, "w") as f:
-            json.dump(data, f, indent=indent)
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=indent, ensure_ascii=False)
         return True
     except Exception as e:
         logger.error(f"Error saving JSON file {filepath}: {str(e)}")

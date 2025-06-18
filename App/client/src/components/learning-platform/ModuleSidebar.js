@@ -130,10 +130,15 @@ const ModuleSidebar = ({
   // Fetch topics from the API
   const fetchTopics = async () => {
     try {
-      const response = await fetch('/api/topics');
+      const response = await fetch('/api/topics', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         if (data.success && Array.isArray(data.topics)) {
+          console.log('Fetched topics for sidebar:', data.topics);
           setTopics(data.topics);
           return data.topics;
         }

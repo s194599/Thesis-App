@@ -16,7 +16,15 @@ def get_topics():
     """
     try:
         topics_file = os.path.join(DATABASE_FOLDER, "topics.json")
-        topics = load_json_file(topics_file, [])
+        
+        # Explicitly read with UTF-8 encoding
+        if os.path.exists(topics_file):
+            with open(topics_file, 'r', encoding='utf-8') as f:
+                topics = json.load(f)
+                logger.info(f"Successfully loaded {len(topics)} topics")
+        else:
+            logger.warning(f"Topics file not found at {topics_file}")
+            topics = []
         
         return jsonify({"success": True, "topics": topics})
     
@@ -227,4 +235,77 @@ def delete_module(module_id):
         
     except Exception as e:
         logger.error(f"Error deleting module: {str(e)}")
-        return jsonify({"success": False, "message": str(e)}), 500 
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@module_routes.route("/topics/update", methods=["POST"])
+def update_topic():
+    """
+    Updates topic information (name, description)
+    """
+    try:
+        # Log received request
+        logger.info("Topics update endpoint called")
+        
+        # Get request data
+        topic_data = request.json
+        logger.info(f"Received data for topic update: {topic_data}")
+        
+        topic_id = topic_data.get('id')
+        if not topic_id:
+            logger.error("Error: Topic ID is missing")
+            return jsonify({"success": False, "error": "Topic ID is required"}), 400
+        
+        # Get file path and verify it exists
+        topics_file = os.path.join(DATABASE_FOLDER, "topics.json")
+        if not os.path.exists(topics_file):
+            logger.error(f"Error: topics.json file not found at {topics_file}")
+            return jsonify({"success": False, "error": "Topics file not found"}), 404
+            
+        # Explicitly load topics file with UTF-8 encoding
+        with open(topics_file, 'r', encoding='utf-8') as f:
+            topics = json.load(f)
+            logger.info(f"Successfully loaded topics from {topics_file}")
+            
+        # Find and update the topic
+        topic_found = False
+        topic_updated = False
+        
+        for topic in topics:
+            if topic.get('id') == topic_id:
+                logger.info(f"Found topic with ID {topic_id}")
+                topic_found = True
+                
+                # Update name if provided
+                if 'name' in topic_data:
+                    old_name = topic.get('name', '')
+                    topic['name'] = topic_data['name']
+                    logger.info(f"Updated topic name from '{old_name}' to '{topic_data['name']}'")
+                    topic_updated = True
+                    
+                # Update description if provided
+                if 'description' in topic_data:
+                    topic['description'] = topic_data['description']
+                    logger.info(f"Updated topic description")
+                    topic_updated = True
+                
+                break
+                
+        if not topic_found:
+            logger.error(f"Topic with ID {topic_id} not found")
+            return jsonify({"success": False, "error": f"Topic with ID {topic_id} not found"}), 404
+            
+        if not topic_updated:
+            logger.warning("No changes were made to the topic")
+            return jsonify({"success": False, "error": "No changes provided"}), 400
+            
+        # Explicitly save with UTF-8 encoding and ensure_ascii=False
+        with open(topics_file, 'w', encoding='utf-8') as f:
+            json.dump(topics, f, indent=2, ensure_ascii=False)
+        logger.info(f"Successfully saved updated topics to {topics_file}")
+            
+        return jsonify({"success": True, "message": f"Topic {topic_id} updated successfully"})
+        
+    except Exception as e:
+        logger.error(f"Unexpected error in update_topic: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500 
