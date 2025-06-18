@@ -2619,6 +2619,16 @@ const ModuleContent = ({
     const regularActivities = activities.filter(a => a.isHomework !== true && a.type !== 'folder' && !a.parentId);
     const folderActivities = activities.filter(a => a.type === 'folder' && !a.parentId);
     
+    // In topic view (forløb), don't split by homework status
+    if (isTopicView) {
+      const allActivities = [...homeworkActivities, ...regularActivities];
+      return {
+        homework: [],
+        regular: sortActivities(allActivities),
+        folders: sortActivities(folderActivities)
+      };
+    }
+    
     return {
       homework: sortActivities(homeworkActivities),
       regular: sortActivities(regularActivities),
@@ -2879,12 +2889,12 @@ const ModuleContent = ({
                       </div>
                     )}
                     
-                    {/* Regular Activities Section */}
-                    {groupedActivities.regular.length > 0 && (
-                      <div className="mb-5">
-                        <div className="mb-3">
-                          <h5 className="border-bottom pb-2">Undervisningsmateriale</h5>
-                        </div>
+                                         {/* Regular Activities Section */}
+                     {groupedActivities.regular.length > 0 && (
+                       <div className="mb-5">
+                         <div className="mb-3">
+                           <h5 className="border-bottom pb-2">{isTopicView ? "Indhold" : "Undervisningsmateriale"}</h5>
+                         </div>
                         
                         {/* First drop zone */}
                         {isTeacherMode && groupedActivities.regular.length > 0 && (
@@ -2924,12 +2934,12 @@ const ModuleContent = ({
                       </div>
                     )}
                     
-                    {/* Homework Activities Section */}
-                    {groupedActivities.homework.length > 0 && (
-                      <div className="mb-5">
-                        <div className="mb-3">
-                          <h5 className="border-bottom pb-2">Lektier</h5>
-                        </div>
+                                         {/* Homework Activities Section */}
+                     {!isTopicView && groupedActivities.homework.length > 0 && (
+                       <div className="mb-5">
+                         <div className="mb-3">
+                           <h5 className="border-bottom pb-2">Lektier</h5>
+                         </div>
                         
                         {/* First drop zone for homework */}
                         {isTeacherMode && groupedActivities.homework.length > 0 && (
