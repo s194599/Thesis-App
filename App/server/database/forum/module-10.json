@@ -1,0 +1,20 @@
+[
+  {
+    "id": "af4690dd-f2cc-4511-b368-b13a90ea4bf2",
+    "authorName": "Christian Wu",
+    "postTitle": "titel",
+    "bodyText": "Jeg forst\u00e5r ikke helt hvad titlen betyder \u2013 kan nogen forklare det?",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/18.jpg",
+    "timestamp": "2025-06-18T11:08:21.494348",
+    "comments": [
+      {
+        "id": "92f76028-bf1b-473d-a0b3-ee87578195b1",
+        "authorName": "Carsten Blachmann",
+        "bodyText": "Jeg tror \u201ckronisk uskyld\u201d refererer til hovedpersonens manglende evne til at forst\u00e5 virkeligheden omkring ham, selv som han bliver \u00e6ldre.",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/76.jpg",
+        "timestamp": "2025-06-18T11:08:33.780567"
+      }
+    ],
+    "moduleId": "module-10"
+  }
+]

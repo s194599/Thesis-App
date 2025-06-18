@@ -1,12 +1,20 @@
 [
   {
-    "id": "e8b1300a-8c63-4cb2-b17c-feb50bc83fb4",
-    "authorName": "Carsten Blachmann",
-    "postTitle": "Test a forum 1",
-    "bodyText": "Her er inholdet af testen",
-    "profilePictureUrl": "https://randomuser.me/api/portraits/men/42.jpg",
-    "timestamp": "2025-04-28T15:15:11.659050",
-    "comments": [],
+    "id": "3155a5be-5eb4-4a17-82a1-7dd1fe1c1a7c",
+    "authorName": "Christian Wu",
+    "postTitle": "Biedermeier-litteratur",
+    "bodyText": "Er det korrekt at Biedermeier-litteratur prim\u00e6rt handler om hverdagslivet?",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/18.jpg",
+    "timestamp": "2025-06-18T11:06:29.049564",
+    "comments": [
+      {
+        "id": "e9dc6b16-2487-40b1-9948-1c3958ecde42",
+        "authorName": "Carsten Blachmann",
+        "bodyText": "Ja, det fokuserer ofte p\u00e5 det n\u00e6re og hjemlige som en modreaktion p\u00e5 romantikkens storladne idealer.\n\n",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/76.jpg",
+        "timestamp": "2025-06-18T11:06:38.297473"
+      }
+    ],
     "moduleId": "module-5"
   }
 ]

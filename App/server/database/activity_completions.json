@@ -22,13 +22,6 @@
       "timestamp": "2025-04-22T15:00:14.431600"
     },
     {
-      "activity_id": "activity_1744270289536",
-      "module_id": "module-4",
-      "student_id": "1",
-      "student_name": "Christian Wu",
-      "timestamp": "2025-04-22T15:00:32.277575"
-    },
-    {
       "activity_id": "activity_1745845666177",
       "module_id": "module-5",
       "student_id": "1",
@@ -110,18 +103,39 @@
       "quiz_score": 80
     },
     {
-      "activity_id": "activity_1748954681415",
-      "module_id": "module-3",
+      "activity_id": "activity_1750164428486",
+      "module_id": "topic-view-topic-2",
       "student_id": "1",
       "student_name": "Christian Wu",
-      "timestamp": "2025-06-03T15:07:33.361113"
+      "timestamp": "2025-06-18T10:34:51.399776"
     },
     {
-      "activity_id": "activity_1748954891066",
-      "module_id": "module-3",
+      "activity_id": "activity_1750164658198",
+      "module_id": "module-5",
       "student_id": "1",
       "student_name": "Christian Wu",
-      "timestamp": "2025-06-03T15:07:37.326805"
+      "timestamp": "2025-06-18T11:01:20.327131"
+    },
+    {
+      "activity_id": "activity_1750236023170",
+      "module_id": "module-6",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "timestamp": "2025-06-18T11:01:26.380398"
+    },
+    {
+      "activity_id": "activity_1750236262077",
+      "module_id": "module-9",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "timestamp": "2025-06-18T11:01:34.120458"
+    },
+    {
+      "activity_id": "activity_1747299892099",
+      "module_id": "module-4",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "timestamp": "2025-06-18T11:01:57.231594"
     }
   ]
 }
