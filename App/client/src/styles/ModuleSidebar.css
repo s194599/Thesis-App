@@ -249,4 +249,50 @@
   .vertical-text {
     font-size: 0.9rem;
   }
+}
+
+/* Current module highlighting */
+.module-item.current-module {
+  border-left: 3px solid #0d6efd !important;
+  background-color: rgba(13, 110, 253, 0.08);
+  position: relative;
+}
+
+/* Remove the ::after pseudo-element that adds the "I dag" label */
+/* .module-item.today-module::after {
+  content: "I dag";
+  position: absolute;
+  top: 5px;
+  right: 40px;
+  background-color: #0d6efd;
+  color: white;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 18px;
+  z-index: 5;
+} */
+
+.module-item.current-module:hover {
+  background-color: rgba(13, 110, 253, 0.12);
+}
+
+/* Today's module (without selection highlighting) */
+.module-item.today-module {
+  position: relative;
+}
+
+/* Inline today badge */
+.today-badge {
+  display: inline-block;
+  background-color: #0d6efd;
+  color: white;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 16px;
+  margin-left: 6px;
+  vertical-align: middle;
 } 

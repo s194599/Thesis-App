@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ListGroup,
   Card,
@@ -23,6 +23,8 @@ import {
   BsCalendar,
   BsChevronLeft,
   BsChevronRight,
+  BsEye,
+  BsFilter,
 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -34,12 +36,15 @@ const ModuleSidebar = ({
   modules = [],
   selectedModuleId,
   onModuleSelect,
-  userRole = "teacher",
+  userRole = "student", // Default to student role for testing
   onModuleUpdate,
   onSidebarStateChange,
   onTopicSelect,
 }) => {
   const navigate = useNavigate();
+  // Ensure modules is always an array - moved earlier in the component
+  const safeModules = Array.isArray(modules) ? modules : [];
+
   const [showIconModal, setShowIconModal] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [iconFile, setIconFile] = useState(null);
@@ -63,7 +68,31 @@ const ModuleSidebar = ({
   const [viewMode, setViewMode] = useState('modules'); // 'modules' or 'topics'
   const [topics, setTopics] = useState([]);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
-
+  const [showAllModules, setShowAllModules] = useState(false);
+  
+  // Ref to track auto-selection state to prevent infinite loops
+  const isAutoSelectingRef = useRef(false);
+  
+  // Ref to track if this is the initial mount
+  const isInitialMountRef = useRef(true);
+  
+  // Use the passed userRole prop instead of forcing student mode
+  const effectiveUserRole = userRole;
+  
+  // Use a fixed date for testing - April 15, 2023
+  const useFixedTestDate = true;
+  const getToday = () => {
+    if (useFixedTestDate) {
+      // Using April 15, 2023 as a fixed date for testing
+      return new Date(2023, 3, 15); // Month is 0-indexed (3 = April)
+    } else {
+      return new Date();
+    }
+  };
+  
+  // Only show debug info in development mode
+  const isDevMode = process.env.NODE_ENV === 'development';
+  
   useEffect(() => {
     setRenderKey((prevKey) => prevKey + 1);
   }, [userRole]);
@@ -118,6 +147,128 @@ const ModuleSidebar = ({
     }
   };
 
+  // Parse Danish date format (e.g., "8. Februar 2023" or "8. feb 2023" or "8/2/2023")
+  const parseDanishDate = (dateString) => {
+    if (!dateString) return null;
+    
+    // Map of Danish month names (including abbreviations)
+    const monthMap = {
+      'januar': 0, 'jan': 0, 
+      'februar': 1, 'feb': 1, 
+      'marts': 2, 'mar': 2, 
+      'april': 3, 'apr': 3, 
+      'maj': 4, 
+      'juni': 5, 'jun': 5, 
+      'juli': 6, 'jul': 6, 
+      'august': 7, 'aug': 7, 
+      'september': 8, 'sep': 8, 
+      'oktober': 9, 'okt': 9, 
+      'november': 10, 'nov': 10, 
+      'december': 11, 'dec': 11
+    };
+    
+    try {
+      // First try the standard format: "8. Februar 2023"
+      const standardPattern = /(\d{1,2})\.\s+([a-zA-ZæøåÆØÅ]+)\s+(\d{4})/i;
+      const standardMatch = dateString.match(standardPattern);
+      
+      if (standardMatch) {
+        const day = parseInt(standardMatch[1], 10);
+        const monthLower = standardMatch[2].toLowerCase();
+        const month = monthMap[monthLower];
+        const year = parseInt(standardMatch[3], 10);
+        
+        if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+          return new Date(year, month, day);
+        }
+      }
+      
+      // Try numeric format: "8/2/2023" or "8-2-2023" or "8.2.2023"
+      const numericPattern = /(\d{1,2})[./\-](\d{1,2})[./\-](\d{4})/;
+      const numericMatch = dateString.match(numericPattern);
+      
+      if (numericMatch) {
+        const day = parseInt(numericMatch[1], 10);
+        const month = parseInt(numericMatch[2], 10) - 1; // Month is 0-indexed in JS Date
+        const year = parseInt(numericMatch[3], 10);
+        
+        if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+          return new Date(year, month, day);
+        }
+      }
+      
+      // Check for ISO format YYYY-MM-DD
+      const isoPattern = /(\d{4})-(\d{2})-(\d{2})/;
+      const isoMatch = dateString.match(isoPattern);
+      
+      if (isoMatch) {
+        const year = parseInt(isoMatch[1], 10);
+        const month = parseInt(isoMatch[2], 10) - 1;
+        const day = parseInt(isoMatch[3], 10);
+        
+        if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+          return new Date(year, month, day);
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error parsing date:', error);
+    }
+    
+    return null;
+  };
+  
+  // Filter modules by date proximity (with a 15-day window)
+  const getFilteredModules = () => {
+    // For any user role, apply filtering based on toggle state
+    if (!showAllModules) {
+      if (isDevMode) console.log(`${effectiveUserRole} mode - filtered view`);
+      
+      const today = getToday();
+      today.setHours(0, 0, 0, 0);
+      
+      // Use a 15-day window before and after the current date
+      const fifteenDaysAgo = new Date(today);
+      fifteenDaysAgo.setDate(today.getDate() - 15); 
+      
+      const fifteenDaysFromNow = new Date(today);
+      fifteenDaysFromNow.setDate(today.getDate() + 15);
+      
+      if (isDevMode) console.log(`Date filter window: ${fifteenDaysAgo.toDateString()} - ${today.toDateString()} - ${fifteenDaysFromNow.toDateString()}`);
+
+      let filtered = safeModules.filter(module => {
+        const moduleDate = parseDanishDate(module.date);
+        
+        if (!moduleDate) return false; // Skip modules without valid dates
+        
+        moduleDate.setHours(0, 0, 0, 0);
+        return moduleDate >= fifteenDaysAgo && moduleDate <= fifteenDaysFromNow;
+      });
+      
+      if (isDevMode) console.log(`Filtered from ${safeModules.length} to ${filtered.length} modules`);
+      
+      // If no modules match the date range, show the first one
+      if (filtered.length === 0 && safeModules.length > 0) {
+        if (isDevMode) console.log('No modules in range, showing first module');
+        filtered = [safeModules[0]];
+      }
+      
+      return sortModulesByDate(filtered);
+    } else {
+      if (isDevMode) console.log(`${effectiveUserRole} mode - showing all modules`);
+      return sortModulesByDate(safeModules);
+    }
+  };
+  
+  // Helper function to sort modules by date
+  const sortModulesByDate = (modules) => {
+    return [...modules].sort((a, b) => {
+      const dateA = parseDanishDate(a.date) || new Date(0);
+      const dateB = parseDanishDate(b.date) || new Date(0);
+      return dateA - dateB;
+    });
+  };
+
   // Handle view mode change
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
@@ -143,9 +294,24 @@ const ModuleSidebar = ({
         }
       });
     } else {
-      // Reset to module view
-      if (onModuleSelect) {
-        onModuleSelect(selectedModuleId);
+      // Reset to module view - try to select the previously selected module
+      const savedModuleId = localStorage.getItem("selectedModuleId");
+      
+      if (savedModuleId) {
+        // Check if the saved module still exists in our current module list
+        const moduleExists = modules.some(m => m.id === savedModuleId);
+        
+        if (moduleExists) {
+          // Restore the saved module selection
+          if (isDevMode) console.log('Restoring saved module when returning to module view:', savedModuleId);
+          handleModuleSelection(savedModuleId);
+        } else if (selectedModuleId) {
+          // Fall back to current selection if available
+          handleModuleSelection(selectedModuleId);
+        }
+      } else if (selectedModuleId) {
+        // No saved module, but we have a current selection
+        handleModuleSelection(selectedModuleId);
       }
     }
   };
@@ -164,6 +330,12 @@ const ModuleSidebar = ({
     if (savedState) {
       setIsMinimized(savedState === "true");
     }
+    
+    // Load module filter preference
+    const savedFilterState = localStorage.getItem("showAllModules");
+    if (savedFilterState) {
+      setShowAllModules(savedFilterState === "true");
+    }
   }, []);
 
   // Save minimized state to localStorage when it changes
@@ -173,6 +345,236 @@ const ModuleSidebar = ({
       onSidebarStateChange(isMinimized);
     }
   }, [isMinimized, onSidebarStateChange]);
+  
+  // Save filter preference to localStorage
+  useEffect(() => {
+    localStorage.setItem("showAllModules", showAllModules);
+    
+    // When switching to filtered view, check if current module is visible
+    if (!showAllModules && selectedModuleId) {
+      // Check if the current module would be filtered out
+      const wouldBeFilteredOut = isModuleFilteredByDate(selectedModuleId);
+      
+      if (wouldBeFilteredOut) {
+        if (isDevMode) console.log('Current module filtered out after toggle - selecting today\'s module');
+        
+        // Find and select today's module or first available module in filtered list
+        const today = getToday();
+        today.setHours(0, 0, 0, 0);
+        
+        const fifteenDaysAgo = new Date(today);
+        fifteenDaysAgo.setDate(today.getDate() - 15);
+        
+        const fifteenDaysFromNow = new Date(today);
+        fifteenDaysFromNow.setDate(today.getDate() + 15);
+        
+        // Get modules within date range
+        const filteredModules = safeModules.filter(module => {
+          const moduleDate = parseDanishDate(module.date);
+          if (!moduleDate) return false;
+          
+          moduleDate.setHours(0, 0, 0, 0);
+          return moduleDate >= fifteenDaysAgo && moduleDate <= fifteenDaysFromNow;
+        });
+        
+        // Sort by date
+        const sortedFilteredModules = sortModulesByDate(filteredModules);
+        
+        // Try to find today's module first
+        const todaysModule = sortedFilteredModules.find(module => {
+          const moduleDate = parseDanishDate(module.date);
+          if (!moduleDate) return false;
+          
+          return (
+            moduleDate.getDate() === today.getDate() &&
+            moduleDate.getMonth() === today.getMonth() &&
+            moduleDate.getFullYear() === today.getFullYear()
+          );
+        });
+        
+        if (todaysModule) {
+          // Select today's module
+          if (isDevMode) console.log('Selecting today\'s module after filter:', todaysModule.id);
+          isAutoSelectingRef.current = true;
+          handleModuleSelection(todaysModule.id);
+        } else if (sortedFilteredModules.length > 0) {
+          // Select first available module in filtered list
+          if (isDevMode) console.log('Selecting first filtered module after filter:', sortedFilteredModules[0].id);
+          isAutoSelectingRef.current = true;
+          handleModuleSelection(sortedFilteredModules[0].id);
+        }
+      }
+    }
+  }, [showAllModules]);
+  
+  // Persist selected module ID to localStorage when it changes
+  useEffect(() => {
+    // Only save if we have a valid selection and it's not the initial mount
+    if (selectedModuleId && !isAutoSelectingRef.current) {
+      if (isDevMode) console.log('Saving selected module ID to localStorage:', selectedModuleId);
+      localStorage.setItem("selectedModuleId", selectedModuleId);
+    }
+  }, [selectedModuleId, isDevMode]);
+  
+  // Auto-select today's module if selected module is not in filtered list
+  useEffect(() => {
+    if (viewMode !== 'modules') return;
+    
+    // Skip if we're already handling a selection
+    if (isAutoSelectingRef.current) {
+      isAutoSelectingRef.current = false;
+      return;
+    }
+    
+    const checkAndSelectModule = async () => {
+      // We need to make a fresh calculation of the filtered module list
+      let filteredModules = [];
+      
+      if (!showAllModules) {
+        const today = getToday();
+        const fifteenDaysAgo = new Date(today);
+        fifteenDaysAgo.setDate(today.getDate() - 15);
+        
+        const fifteenDaysFromNow = new Date(today);
+        fifteenDaysFromNow.setDate(today.getDate() + 15);
+        
+        // Basic filter by date range
+        filteredModules = safeModules.filter(module => {
+          const moduleDate = parseDanishDate(module.date);
+          if (!moduleDate) return false;
+          
+          return moduleDate >= fifteenDaysAgo && moduleDate <= fifteenDaysFromNow;
+        });
+      } else {
+        // Show all modules
+        filteredModules = safeModules;
+      }
+      
+      // Sort modules by date
+      filteredModules.sort((a, b) => {
+        const dateA = parseDanishDate(a.date) || new Date(0);
+        const dateB = parseDanishDate(b.date) || new Date(0);
+        return dateA - dateB;
+      });
+      
+      // Check if selected module is in the filtered list
+      const selectedExists = filteredModules.some(m => m.id === selectedModuleId);
+      
+      // Only for initial load or URL navigation - don't auto-switch to "show all" for user toggle actions
+      if (!selectedExists && selectedModuleId && !document.referrer.includes(window.location.host)) {
+        // If the currently selected module would be filtered out and this is initial navigation,
+        // we should show all modules instead of auto-selecting a different one
+        const moduleExists = safeModules.some(m => m.id === selectedModuleId);
+        if (moduleExists) {
+          if (isDevMode) console.log('Currently selected module would be filtered out, showing all modules');
+          setShowAllModules(true);
+          return;
+        }
+      }
+      
+      if (!selectedExists && filteredModules.length > 0) {
+        // Mark that we're auto-selecting to prevent loops
+        isAutoSelectingRef.current = true;
+        
+        // First check if there's a previously selected module in localStorage
+        // that exists in our current filtered list
+        const savedModuleId = localStorage.getItem("selectedModuleId");
+        const savedModuleInFilter = savedModuleId && 
+          filteredModules.some(m => m.id === savedModuleId);
+        
+        if (savedModuleInFilter) {
+          // Use the previously selected module that's in our filtered list
+          if (isDevMode) console.log('Selecting previously saved module from filter:', savedModuleId);
+          handleModuleSelection(savedModuleId);
+          return;
+        }
+        
+        // If no previously selected module available, find today's module
+        const today = getToday();
+        const todaysModule = filteredModules.find(module => {
+          const moduleDate = parseDanishDate(module.date);
+          if (!moduleDate) return false;
+          
+          return (
+            moduleDate.getDate() === today.getDate() &&
+            moduleDate.getMonth() === today.getMonth() &&
+            moduleDate.getFullYear() === today.getFullYear()
+          );
+        });
+        
+        if (todaysModule) {
+          // Select today's module
+          if (isDevMode) console.log('Auto-selecting today\'s module:', todaysModule.id);
+          handleModuleSelection(todaysModule.id);
+        } else if (filteredModules.length > 0) {
+          // Select first module
+          if (isDevMode) console.log('Auto-selecting first module:', filteredModules[0].id);
+          handleModuleSelection(filteredModules[0].id);
+        }
+      }
+    };
+    
+    // Run the check and selection logic
+    checkAndSelectModule();
+    
+  }, [showAllModules, selectedModuleId, safeModules]); // Run when filter toggle changes or selected module changes
+
+  // Add a function to check if a module would be filtered by date
+  const isModuleFilteredByDate = (moduleId) => {
+    if (!moduleId || showAllModules) return false;
+    
+    const module = safeModules.find(m => m.id === moduleId);
+    if (!module) return false;
+    
+    const moduleDate = parseDanishDate(module.date);
+    if (!moduleDate) return false;
+    
+    const today = getToday();
+    today.setHours(0, 0, 0, 0);
+    
+    const fifteenDaysAgo = new Date(today);
+    fifteenDaysAgo.setDate(today.getDate() - 15);
+    
+    const fifteenDaysFromNow = new Date(today);
+    fifteenDaysFromNow.setDate(today.getDate() + 15);
+    
+    moduleDate.setHours(0, 0, 0, 0);
+    return !(moduleDate >= fifteenDaysAgo && moduleDate <= fifteenDaysFromNow);
+  };
+  
+  // Modified useEffect for initial module selection with added check for filtered out modules
+  useEffect(() => {
+    if (isInitialMountRef.current && modules.length > 0) {
+      isInitialMountRef.current = false;
+      
+      // Get the previously selected module ID from localStorage
+      const savedModuleId = localStorage.getItem("selectedModuleId");
+      
+      if (savedModuleId) {
+        // Check if the saved module ID still exists in the current module list
+        const moduleExists = modules.some(m => m.id === savedModuleId);
+        
+        if (moduleExists) {
+          // If the module exists and differs from the current selection, select it
+          if (savedModuleId !== selectedModuleId) {
+            if (isDevMode) console.log('Restoring previously selected module:', savedModuleId);
+            
+            // Check if this module would be filtered out by date
+            if (isModuleFilteredByDate(savedModuleId)) {
+              if (isDevMode) console.log('Saved module would be filtered out - showing all modules');
+              setShowAllModules(true);
+            }
+            
+            isAutoSelectingRef.current = true;
+            handleModuleSelection(savedModuleId);
+          }
+        } else {
+          // If saved module doesn't exist anymore, remove it from localStorage
+          localStorage.removeItem("selectedModuleId");
+        }
+      }
+    }
+  }, [modules, selectedModuleId, onModuleSelect, isDevMode]);
 
   // Load course title from localStorage
   useEffect(() => {
@@ -191,9 +593,6 @@ const ModuleSidebar = ({
     };
     loadCourseTitle();
   }, []);
-
-  // Ensure modules is always an array
-  const safeModules = Array.isArray(modules) ? modules : [];
 
   // Predefined icons gallery
   const predefinedIcons = [
@@ -431,6 +830,24 @@ const ModuleSidebar = ({
     }
   };
 
+  // Helper function to handle module selection and persist it
+  const handleModuleSelection = (moduleId) => {
+    if (!moduleId) return;
+    
+    // Save to localStorage first to ensure it's available for back navigation
+    localStorage.setItem("selectedModuleId", moduleId);
+    
+    if (isDevMode) console.log('Selected and saved module ID:', moduleId);
+    
+    // We're removing the automatic switching to "show all modules" here
+    // to allow the filter toggle to work independently
+    
+    // Call the parent component's handler
+    if (onModuleSelect) {
+      onModuleSelect(moduleId);
+    }
+  };
+
   const toggleSidebar = () => {
     setIsMinimized((prev) => !prev);
   };
@@ -471,119 +888,213 @@ const ModuleSidebar = ({
 
   // Render modules list for Moduler view
   const renderModulesList = () => {
-    if (safeModules.length === 0) {
+    let modulesToDisplay = getFilteredModules();
+    
+    // In filtered view, don't force the display of filtered out modules
+    // This allows the filter toggle to work properly and show only the expected modules
+    // The automatic selection of today's module is now handled in the filter toggle effect
+    
+    if (modulesToDisplay.length === 0) {
       return (
         <div className="text-center p-3">
-          <p className="text-muted">No modules available.</p>
+          {showAllModules ? (
+            <p className="text-muted">Ingen moduler tilgængelige</p>
+          ) : (
+            <div>
+              <p className="text-muted mb-1">Ingen aktuelle moduler</p>
+              <Button 
+                variant="outline-primary" 
+                size="sm"
+                onClick={() => setShowAllModules(true)}
+              >
+                Vis alle moduler
+              </Button>
+            </div>
+          )}
         </div>
       );
     }
 
     return (
-      <ListGroup variant="flush" className="module-list">
-        {safeModules.map((module) => {
-          if (!module) return null;
+      <>
+        <ListGroup variant="flush" className="module-list">
+          {modulesToDisplay.map((module) => {
+            if (!module) return null;
 
-          const moduleActivities = Array.isArray(module.activities)
-            ? module.activities
-            : [];
-          // Filter out folder-type activities
-          const nonFolderActivities = moduleActivities.filter(
-            (act) => act && act.type !== "folder"
-          );
-          const totalActivities = nonFolderActivities.length;
-          const completedActivities = nonFolderActivities.filter(
-            (act) => act && act.completed
-          ).length;
-          const allCompleted =
-            totalActivities > 0 &&
-            completedActivities === totalActivities;
+            const moduleActivities = Array.isArray(module.activities)
+              ? module.activities
+              : [];
+            // Filter out folder-type activities
+            const nonFolderActivities = moduleActivities.filter(
+              (act) => act && act.type !== "folder"
+            );
+            const totalActivities = nonFolderActivities.length;
+            const completedActivities = nonFolderActivities.filter(
+              (act) => act && act.completed
+            ).length;
+            const allCompleted =
+              totalActivities > 0 &&
+              completedActivities === totalActivities;
+            
+            // Highlight current module
+            const moduleDate = parseDanishDate(module.date);
+            const today = getToday();
+            
+            // Set hours, minutes, seconds to 0 for date comparison
+            if (moduleDate) {
+              moduleDate.setHours(0, 0, 0, 0);
+              today.setHours(0, 0, 0, 0);
+            }
+            
+            const isCurrentModule = moduleDate && 
+              moduleDate.getDate() === today.getDate() &&
+              moduleDate.getMonth() === today.getMonth() &&
+              moduleDate.getFullYear() === today.getFullYear();
+            
+            // Debug current module detection (only in development)
+            if (isDevMode && isCurrentModule) {
+              console.log(`Current module: ${module.id} - ${module.title} - ${moduleDate.toDateString()}`);
+            }
 
-          return (
-            <ListGroup.Item
-              key={module.id || Math.random().toString()}
-              action
-              active={module.id === selectedModuleId}
-              onClick={() => onModuleSelect && onModuleSelect(module.id)}
-              className="d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item"
-              style={{ overflow: "hidden" }}
-            >
-              <div
-                className="d-flex flex-column w-100"
-                style={{ minWidth: 0 }}
+            // Determine CSS class based on module status:
+            // - 'current-module' for the selected module
+            // - 'today-module' for today's module (when not selected)
+            // - no special class for other modules
+            const isSelected = module.id === selectedModuleId;
+            let moduleClass = '';
+            
+            if (isSelected) {
+              moduleClass = 'current-module';
+            } else if (isCurrentModule) {
+              moduleClass = 'today-module';
+            }
+
+            return (
+              <ListGroup.Item
+                key={module.id || Math.random().toString()}
+                action
+                active={isSelected}
+                onClick={() => handleModuleSelection(module.id)}
+                className={`d-flex justify-content-between align-items-center border-start-0 border-end-0 position-relative module-item ${moduleClass}`}
+                style={{ overflow: "hidden" }}
               >
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                  <div
-                    className="text-nowrap small text-muted"
-                    style={{ fontSize: "0.8rem" }}
-                  >
-                    {module.date || "No date"}
+                <div
+                  className="d-flex flex-column w-100"
+                  style={{ minWidth: 0 }}
+                >
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <div
+                      className={`text-nowrap small ${isSelected ? 'text-primary fw-bold' : 'text-muted'}`}
+                      style={{ fontSize: "0.8rem" }}
+                    >
+                      {module.date || "No date"}
+                      {isCurrentModule && !isSelected && (
+                        <span className="today-badge">I dag</span>
+                      )}
+                    </div>
+
+                    {effectiveUserRole === "student" &&
+                      (allCompleted ? (
+                        <BsCheckCircleFill
+                          className="text-success"
+                          style={{ fontSize: "1.5rem" }}
+                        />
+                      ) : (
+                        <BsCircleFill
+                          className={
+                            completedActivities > 0
+                              ? "text-warning"
+                              : "text-secondary"
+                          }
+                          style={{ opacity: 0.5, fontSize: "1.5rem" }}
+                        />
+                      ))}
                   </div>
 
-                  {userRole === "student" &&
-                    (allCompleted ? (
-                      <BsCheckCircleFill
-                        className="text-success"
-                        style={{ fontSize: "1.5rem" }}
-                      />
-                    ) : (
-                      <BsCircleFill
-                        className={
-                          completedActivities > 0
-                            ? "text-warning"
-                            : "text-secondary"
-                        }
-                        style={{ opacity: 0.5, fontSize: "1.5rem" }}
-                      />
-                    ))}
+                  <div>
+                    <span className={`fw-medium module-title ${isSelected ? 'text-primary' : ''}`}>
+                      {module.title}
+                    </span>
+                    {module.subtitle && (
+                      <small className="text-muted d-block">
+                        {module.subtitle}
+                      </small>
+                    )}
+
+                    {/* Add progress indicator for students */}
+                    {effectiveUserRole === "student" && totalActivities > 0 && (
+                      <small className="text-muted d-block">
+                        {completedActivities} af {totalActivities}{" "}
+                        aktiviteter gennemført
+                      </small>
+                    )}
+
+                    {/* Add activity count for teachers */}
+                    {/* {userRole === "teacher" && totalActivities > 0 && (
+                      <small className="text-muted d-block">
+                        {totalActivities}{" "}
+                        {totalActivities === 1
+                          ? "aktivitet"
+                          : "aktiviteter"}
+                      </small>
+                    )} */}
+                  </div>
                 </div>
 
-                <div>
-                  <span className="fw-medium module-title">
-                    {module.title}
-                  </span>
-                  {module.subtitle && (
-                    <small className="text-muted d-block">
-                      {module.subtitle}
-                    </small>
-                  )}
-
-                  {/* Add progress indicator for students */}
-                  {userRole === "student" && totalActivities > 0 && (
-                    <small className="text-muted d-block">
-                      {completedActivities} af {totalActivities}{" "}
-                      aktiviteter gennemført
-                    </small>
-                  )}
-
-                  {/* Add activity count for teachers */}
-                  {/* {userRole === "teacher" && totalActivities > 0 && (
-                    <small className="text-muted d-block">
-                      {totalActivities}{" "}
-                      {totalActivities === 1
-                        ? "aktivitet"
-                        : "aktiviteter"}
-                    </small>
-                  )} */}
-                </div>
-              </div>
-
-              {/* Delete button (only visible for teachers on hover) */}
-              {userRole === "teacher" && (
-                <div
-                  className="module-delete-btn"
-                  onClick={(e) => handleDeleteClick(e, module)}
-                  title="Slet modul"
-                >
-                  <BsX size={20} />
-                </div>
-              )}
-            </ListGroup.Item>
-          );
-        })}
-      </ListGroup>
+                {/* Delete button (only visible for teachers on hover) */}
+                {effectiveUserRole === "teacher" && (
+                  <div
+                    className="module-delete-btn"
+                    onClick={(e) => handleDeleteClick(e, module)}
+                    title="Slet modul"
+                  >
+                    <BsX size={20} />
+                  </div>
+                )}
+              </ListGroup.Item>
+            );
+          })}
+        </ListGroup>
+      </>
     );
   };
+
+  // Add effect to check URL for module ID param on initial mount
+  useEffect(() => {
+    // Only run this once on initial mount
+    if (!isInitialMountRef.current) return;
+    
+    try {
+      // Get the current URL path
+      const path = window.location.pathname;
+      
+      // Check if the URL contains a module ID pattern like /module/module-123/...
+      const modulePattern = /\/module\/(module-\w+)\//;
+      const match = path.match(modulePattern);
+      
+      if (match && match[1]) {
+        const urlModuleId = match[1];
+        if (isDevMode) console.log('Found module ID in URL:', urlModuleId);
+        
+        // Check if this module exists in our list
+        const moduleExists = safeModules.some(m => m.id === urlModuleId);
+        
+        if (moduleExists) {
+          // Ensure the module will be visible in the sidebar
+          if (isModuleFilteredByDate(urlModuleId)) {
+            if (isDevMode) console.log('Module from URL would be filtered out - showing all modules');
+            setShowAllModules(true);
+          }
+          
+          // Select this module
+          isAutoSelectingRef.current = true;
+          handleModuleSelection(urlModuleId);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking URL for module ID:', error);
+    }
+  }, [safeModules]); // Only run when module list changes (effectively just on initial load)
 
   return (
     <div
@@ -625,7 +1136,7 @@ const ModuleSidebar = ({
                     e.target.src = "https://via.placeholder.com/55?text=ABC";
                   }}
                 />
-                {userRole === "teacher" && viewMode === 'modules' && (
+                {effectiveUserRole === "teacher" && viewMode === 'modules' && (
                   <div
                     className="course-icon-edit"
                     onClick={() => setShowIconModal(true)}
@@ -651,12 +1162,30 @@ const ModuleSidebar = ({
               </ToggleButton>
             </ToggleButtonGroup>
           </div>
+          
+          {/* Toggle to show all modules (for all users in module view) */}
+          {viewMode === 'modules' && (
+            <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="filterSwitch"
+                  checked={!showAllModules}
+                  onChange={() => setShowAllModules(!showAllModules)}
+                />
+                <label className="form-check-label" htmlFor="filterSwitch">
+                  <small>Vis aktuelle moduler</small>
+                </label>
+              </div>
+            </div>
+          )}
 
           {/* Render content based on view mode */}
           {viewMode === 'modules' ? renderModulesList() : renderTopicsList()}
 
           {/* Create Module Button (only for teachers in module view) */}
-          {userRole === "teacher" && viewMode === 'modules' && (
+          {effectiveUserRole === "teacher" && viewMode === 'modules' && (
             <div className="mt-3 mb-3">
               <Button
                 variant="outline-primary"

@@ -12,25 +12,14 @@
     "isHomework": false
   },
   {
-    "title": "Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner.pdf",
+    "id": "activity_1744270048086",
+    "title": "Natur og syn i 1908",
     "description": "L\u00e6s kapitel 5\n",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner_1744270048.pdf",
-    "id": "activity_1744270048086",
+    "content": "",
     "moduleId": "module-4",
-    "isHomework": false
-  },
-  {
-    "description": "",
-    "file": null,
-    "id": "activity_1744270289536",
-    "isNew": true,
-    "moduleId": "module-4",
-    "title": "Unges brug af sociale medier - konsekvenesr",
-    "type": "youtube",
-    "url": "https://www.youtube.com/watch?v=Q8Kabmpda2w",
-    "parentId": "folder_1747299681360",
-    "isHomework": false
+    "isHomework": true
   },
   {
     "title": "Intro-to-Romanticism.pdf",
@@ -44,16 +33,17 @@
   },
   {
     "id": "activity_1746018403078",
-    "title": "2.Verdenskrig.pdf",
+    "title": "Universal romantikken",
     "description": "L\u00e6s kaptiel 5-7",
     "type": "pdf",
-    "moduleId": "module-2",
     "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf",
+    "content": "",
+    "moduleId": "module-2",
     "isHomework": false
   },
   {
     "id": "activity_1746536749566",
-    "title": "\u00d8ehalf",
+    "title": "Romantikken STX",
     "description": "L\u00e6s kap. 4-5",
     "type": "book",
     "url": "",
@@ -98,20 +88,8 @@
     "isHomework": false
   },
   {
-    "title": "Test mappe",
-    "description": "",
-    "type": "folder",
-    "url": "",
-    "file": null,
-    "isNew": true,
-    "parentId": null,
-    "id": "folder_1747299681360",
-    "moduleId": "module-4",
-    "isHomework": false
-  },
-  {
     "id": "activity_1747299892099",
-    "title": "linkedin",
+    "title": "Moderne natursyn",
     "description": "",
     "type": "link",
     "url": "https://www.linkedin.com/in/oliver-theva/",
@@ -119,48 +97,186 @@
     "isHomework": false
   },
   {
-    "id": "activity_1748954681415",
-    "title": "Dansk-stx-10-En-nat-i-kulden-med-de-hjemloese-Analyse.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/Dansk-stx-10-En-nat-i-kulden-med-de-hjemloese-Analyse_1748954681.pdf",
-    "isHomework": false
-  },
-  {
-    "id": "activity_1748954891066",
-    "title": "Legater-oversigt.xlsx",
-    "description": "",
-    "type": "excel",
-    "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/Legater-oversigt_1748954891.xlsx",
-    "isHomework": false
-  },
-  {
-    "id": "activity_1749799850799",
-    "title": "App_design_thesis.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-3",
-    "url": "http://localhost:5001/api/uploads/App_design_thesis_1749799850.pdf",
-    "isHomework": false
-  },
-  {
     "id": "activity_1749818632321",
-    "title": "2.Verdenskrig-lektie.pdf",
-    "description": "",
+    "title": "Nationalisme-lektie.pdf",
+    "description": "l\u00e6s kap 5",
     "type": "pdf",
-    "moduleId": "module-3",
     "url": "http://localhost:5001/api/uploads/2.Verdenskrig_1749818632.pdf",
+    "content": "",
+    "moduleId": "module-3",
     "isHomework": true
   },
   {
     "id": "activity_1749819260129",
-    "title": "HEHAEDALKNSDNLK",
+    "title": "Dansk nationalisme",
     "description": "",
     "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/2.Verdenskrig_1749819260.pdf",
+    "content": "",
     "moduleId": "module-3",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1750164272766",
+    "title": "Syndefaldsmyten.pdf",
+    "description": "L\u00e6s inden timen ",
+    "type": "pdf",
+    "moduleId": "module-8",
     "isHomework": true,
-    "url": "http://localhost:5001/api/uploads/2.Verdenskrig_1749819260.pdf"
+    "url": "http://localhost:5001/api/uploads/Syndefaldsmyten_1750164272.pdf"
+  },
+  {
+    "id": "activity_1750164344144",
+    "title": "Dansk-Syndefald-Analyse.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-8",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Dansk-Syndefald-Analyse_1750164344.pdf"
+  },
+  {
+    "id": "activity_1750164428486",
+    "title": "Moderne-synd.jpg",
+    "description": "",
+    "type": "image",
+    "moduleId": "module-8",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Moderne-synd_1750164428.jpg"
+  },
+  {
+    "id": "activity_1750164624874",
+    "title": "biedermeier",
+    "description": "",
+    "type": "link",
+    "url": "https://lex.dk/biedermeier",
+    "moduleId": "module-5",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1750164658198",
+    "title": "Biedermeier og poetisk realisme (1820-1870)",
+    "description": "Husk at login for at f\u00e5 adgang",
+    "type": "link",
+    "url": "https://eux-dansk.praxis.dk/1903",
+    "moduleId": "module-5",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1750164679304",
+    "title": "Hjorts\u00f8, Biedermeier, s. 92-100.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-5",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/Hjorts_Grsk_Mytologi_s._92-100_1750164679.pdf"
+  },
+  {
+    "id": "activity_1750236023170",
+    "title": "Forelskelse og k\u00e6rlighed - kompendium.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-6",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Forelskelse_og_krlighed_-_kompendium_1750236023.pdf"
+  },
+  {
+    "id": "activity_1750236125717",
+    "title": "Hosekr\u00e6mmeren",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=WwBNhaP0g30&ab_channel=RatherHomemade",
+    "moduleId": "module-6",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1750236196304",
+    "title": "Georg Brandes : en Bog om Ret og Uret : Bidrag til dansk Aandslivs Historie i de sidste Decennier af det 19de Aarhundrede.pdf",
+    "description": "l\u00e6s kap 5, 7, 12",
+    "type": "pdf",
+    "moduleId": "module-7",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/130009869795_bw_1750236196.pdf"
+  },
+  {
+    "id": "activity_1750236227140",
+    "title": "Hovedstr\u00f8mninger i det 19. Aarhundredes Litteratur : Forel\u00e6sninger holdte ved Kj\u00f8benhavns Universitet.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-7",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/130020871920_1750236227.pdf"
+  },
+  {
+    "id": "activity_1750236262077",
+    "title": "Strukturalistisk metode",
+    "description": "",
+    "type": "link",
+    "url": "https://dansksiderne.dk/index.php?id=4992",
+    "moduleId": "module-9",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1750236332759",
+    "title": "danske studier Udgivet af Iver Kj\u00e6r og Flemming Lundgreen-Nielsen under medvirken af 1994.pdf",
+    "description": "L\u00e6s kapitel 3-5",
+    "type": "pdf",
+    "moduleId": "module-9",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/1994_1750236332.pdf"
+  },
+  {
+    "id": "activity_1750236372284",
+    "title": "Klaus Rifbjerg wiki",
+    "description": "",
+    "type": "link",
+    "url": "https://da.wikipedia.org/wiki/Klaus_Rifbjerg",
+    "moduleId": "module-10",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1750236459057",
+    "title": "Den kroniske uskyld - Klaus Rifjberg",
+    "description": "L\u00e6s kapitel 5",
+    "type": "book",
+    "url": "",
+    "content": "",
+    "moduleId": "module-10",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1750236512817",
+    "title": "drivhuset-analyse",
+    "description": "",
+    "type": "link",
+    "url": "https://www.studocu.com/da/document/niels-brock-copenhagen-business-college/dansk-analyse/drivhuset-analyse/49894623",
+    "moduleId": "module-11",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1750236522556",
+    "title": "Drivhuset.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-11",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Drivhuset_1750236522.pdf"
+  },
+  {
+    "id": "activity_1750236563907",
+    "title": "Ernest Hemingway",
+    "description": "F\u00e5 en forst\u00e5else af hvem han var",
+    "type": "link",
+    "url": "https://en.wikipedia.org/wiki/Ernest_Hemingway",
+    "moduleId": "module-12",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1750236619265",
+    "title": "hemingway.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-12",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/hemingway_1750236619.pdf"
   }
 ]
