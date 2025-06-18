@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "139eec4e-838d-4ce2-a310-b4e4adf93fe1",
+    "authorName": "Christian Wu",
+    "postTitle": "forskel",
+    "bodyText": "Hvad er forskellen p\u00e5 en temaanalyse og en symbolanalyse?",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/18.jpg",
+    "timestamp": "2025-06-18T11:07:42.709157",
+    "comments": [
+      {
+        "id": "ee3e75c5-c7ba-4b40-b889-47dd271a75ee",
+        "authorName": "Carsten Blachmann",
+        "bodyText": "Temaanalyse fokuserer p\u00e5 hovedbudskaber, mens symbolanalyse unders\u00f8ger hvordan specifikke billeder eller symboler skaber mening.",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/76.jpg",
+        "timestamp": "2025-06-18T11:07:51.717126"
+      }
+    ],
+    "moduleId": "module-9"
+  }
+]

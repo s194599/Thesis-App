@@ -1,0 +1,20 @@
+[
+  {
+    "id": "c0d7fe4b-e01f-422a-a335-607f9a2206d4",
+    "authorName": "Christian Wu",
+    "postTitle": "N\u00c6STE gang",
+    "bodyText": "Skal vi l\u00e6se hele Bibel-teksten til n\u00e6ste gang eller kun udvalgte dele?",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/18.jpg",
+    "timestamp": "2025-06-18T11:07:04.782182",
+    "comments": [
+      {
+        "id": "bde79d58-fc1e-4661-8fa5-5789b9de1543",
+        "authorName": "Carsten Blachmann",
+        "bodyText": "Kun udvalgte afsnit \u2013 se hvilke i dokumentet \u201cSyndefaldet_tekstuddrag.pdf\u201d under modulet.",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/76.jpg",
+        "timestamp": "2025-06-18T11:07:16.133360"
+      }
+    ],
+    "moduleId": "module-8"
+  }
+]

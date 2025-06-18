@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "b72c7d5c-87d8-4e7b-b800-7cf6dd5548f4",
+    "authorName": "Christian Wu",
+    "postTitle": "forskellen",
+    "bodyText": "Hvad er forskellen p\u00e5 nationalromantikkens og universalromantikkens syn p\u00e5 naturen?",
+    "profilePictureUrl": "https://randomuser.me/api/portraits/men/18.jpg",
+    "timestamp": "2025-06-18T11:05:51.187358",
+    "comments": [
+      {
+        "id": "e1ad8319-b6a6-4f18-bc92-11b12f26b2b4",
+        "authorName": "Carsten Blachmann",
+        "bodyText": "Nationalromantikken bruger naturen som symbol p\u00e5 f\u00e6llesskab og identitet, mens universalromantikken ser naturen som en adgang til det guddommelige og det universelle.",
+        "profilePictureUrl": "https://randomuser.me/api/portraits/men/76.jpg",
+        "timestamp": "2025-06-18T11:06:00.638970"
+      }
+    ],
+    "moduleId": "module-3"
+  }
+]
