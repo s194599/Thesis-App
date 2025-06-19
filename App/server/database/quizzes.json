@@ -80,15 +80,15 @@
     "id": "quiz_1747057433",
     "questions": [
       {
-        "correctAnswer": "De f\u00f8rste tyske tropper tr\u00e6nger ind i Danmark",
+        "correctAnswer": "De første tyske tropper trænger ind i Danmark",
         "id": "q1",
         "options": [
-          "Den danske regering giver oplysninger om at den vil blive en del af det tyske rigsf\u00e6llesskab",
-          "De f\u00f8rste tyske tropper tr\u00e6nger ind i Danmark",
-          "Der udkommer et ny \u00e5rsskrift fra Det Danske Arbejderparti",
+          "Den danske regering giver oplysninger om at den vil blive en del af det tyske rigsfællesskab",
+          "De første tyske tropper trænger ind i Danmark",
+          "Der udkommer et ny årsskrift fra Det Danske Arbejderparti",
           "Der er generale valg i Danmark"
         ],
-        "question": "Hvilken af f\u00f8lgende begivenheder fandt sted den 9. april 1940?"
+        "question": "Hvilken af følgende begivenheder fandt sted den 9. april 1940?"
       },
       {
         "correctAnswer": "Den danske nazistgruppe DNSAP",
@@ -99,18 +99,18 @@
           "Den danske nazistgruppe DNSAP",
           "Socialdemokratiet"
         ],
-        "question": "Hvilken af f\u00f8lgende partier var en af de mest modsatte til den danske regering under bes\u00e6ttelsen?"
+        "question": "Hvilken af følgende partier var en af de mest modsatte til den danske regering under besættelsen?"
       },
       {
         "correctAnswer": "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
         "id": "q3",
         "options": [
-          "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "Tyskerne trænger ind i Danmark den 9. april 1940",
           "Den danske regering tilbyder at danser til tysk musik",
           "Det danske nazistparti DNSAP bliver arresterede den 25. oktober 1940",
-          "Der findes ingen af disse begivenheder, der er en af de vigtigste i den danske bes\u00e6ttelse"
+          "Der findes ingen af disse begivenheder, der er en af de vigtigste i den danske besættelse"
         ],
-        "question": "Hvilken af f\u00f8lgende begivenheder er en af de vigtigste i den danske bes\u00e6ttelse?"
+        "question": "Hvilken af følgende begivenheder er en af de vigtigste i den danske besættelse?"
       },
       {
         "correctAnswer": "Positivt svar",
@@ -118,21 +118,21 @@
         "options": [
           "Positivt svar",
           "Negativt svar",
-          "Politisk uafh\u00e6ngighed",
+          "Politisk uafhængighed",
           "Krigsberedskab"
         ],
-        "question": "Hvilken af f\u00f8lgende betegnelser kendetegner den tidlige begyndelse p\u00e5 samarbejdspolitikken?"
+        "question": "Hvilken af følgende betegnelser kendetegner den tidlige begyndelse på samarbejdspolitikken?"
       },
       {
-        "correctAnswer": "Der er et store nazistm\u00f8de i K\u00f8benhavn, der slutter med slagsm\u00e5l og arrestationer",
+        "correctAnswer": "Der er et store nazistmøde i København, der slutter med slagsmål og arrestationer",
         "id": "q5",
         "options": [
-          "Der er et store nazistm\u00f8de i K\u00f8benhavn, der slutter med slagsm\u00e5l og arrestationer",
-          "Den danske regering giver oplysninger om at den vil blive en del af det tyske rigsf\u00e6llesskab",
-          "Tyskerne tr\u00e6nger ind i Danmark den 9. april 1940",
+          "Der er et store nazistmøde i København, der slutter med slagsmål og arrestationer",
+          "Den danske regering giver oplysninger om at den vil blive en del af det tyske rigsfællesskab",
+          "Tyskerne trænger ind i Danmark den 9. april 1940",
           "Der er generale valg i Danmark"
         ],
-        "question": "Hvilken af f\u00f8lgende begivenheder foreg\u00e5r den 17. november 1940?"
+        "question": "Hvilken af følgende begivenheder foregår den 17. november 1940?"
       }
     ],
     "timestamp": "2025-06-18T08:36:56.638Z",
@@ -144,38 +144,38 @@
     "id": "quiz_1747057854",
     "questions": [
       {
-        "correctAnswer": "politik der fors\u00f8gte at bevare danmarks demokratiske samfundsform under den tyske bes\u00e6ttelse i 1940-erne.",
+        "correctAnswer": "politik der forsøgte at bevare danmarks demokratiske samfundsform under den tyske besættelse i 1940-erne.",
         "id": "fc1",
         "options": [],
         "question": "Term: Samarbejdspolitikken (Samarbejdspolitik)",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "det danske nazistparti, der blev ledet af frits clausen og havde til form\u00e5l at overtage magten i danmark i k\u00f8lvandet p\u00e5 tysklands fremgang.",
+        "correctAnswer": "det danske nazistparti, der blev ledet af frits clausen og havde til formål at overtage magten i danmark i kølvandet på tysklands fremgang.",
         "id": "fc2",
         "options": [],
         "question": "Term: DNSAP (Dansk Socialistisk Parti)",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "en r\u00e6kke folkelige arrangementer, der samlede mange danskere for at synges patriotiske sange i protest mod den tyske bes\u00e6ttelse.",
+        "correctAnswer": "en række folkelige arrangementer, der samlede mange danskere for at synges patriotiske sange i protest mod den tyske besættelse.",
         "id": "fc3",
         "options": [],
-        "question": "Term: Alsangsbev\u00e6gelsen (Alsangsst\u00e6vnerne)",
+        "question": "Term: Alsangsbevægelsen (Alsangsstævnerne)",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "den danske modstandsbev\u00e6gelse var en gruppe af mennesker, der arbejdede for at fjerne den tyske bes\u00e6ttelse fra danmark.",
+        "correctAnswer": "den danske modstandsbevægelse var en gruppe af mennesker, der arbejdede for at fjerne den tyske besættelse fra danmark.",
         "id": "fc4",
         "options": [],
-        "question": "Term: Modstandsbev\u00e6gelsen (Modstand)",
+        "question": "Term: Modstandsbevægelsen (Modstand)",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "statue i k\u00f8benhavn, der symboliserer en af de vigtigste kampagner under den danske modstandsbev\u00e6gelse.",
+        "correctAnswer": "statue i københavn, der symboliserer en af de vigtigste kampagner under den danske modstandsbevægelse.",
         "id": "fc5",
         "options": [],
-        "question": "Term: Den lille Hornbl\u00e6ser (Den lille hornbl\u00e6ser)",
+        "question": "Term: Den lille Hornblæser (Den lille hornblæser)",
         "type": "flashcard"
       }
     ],
@@ -188,27 +188,27 @@
     "description": "Quiz generated from your content",
     "questions": [
       {
-        "correctAnswer": "f\u00e6llessangbev\u00e6gelse der startede i \u00e5lborg i juli m\u00e5ned og kulminerede i f\u00e6lledparken i k\u00f8benhavn den 1. september 1940, hvor over 700.000 mennesker deltog",
+        "correctAnswer": "fællessangbevægelse der startede i ålborg i juli måned og kulminerede i fælledparken i københavn den 1. september 1940, hvor over 700.000 mennesker deltog",
         "id": "fc1",
-        "question": "Alsangsst\u00e6vner",
+        "question": "Alsangsstævner",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "udenrigsminister fra den 8. juli 1940 og blev kritiseret for at f\u00f8re en passiv politik mod bes\u00e6ttelsesmagten, som han i sin tiltr\u00e6delseserkl\u00e6ring udtalte: \"ved de store sejre, der har sl\u00e5et verden med forbavselse og beundring, er en ny tid oprundet i europa, der vil medf\u00f8re en nyordning i politisk og \u00f8konomisk henseende under tysklands f\u00f8rerskab.\"",
+        "correctAnswer": "udenrigsminister fra den 8. juli 1940 og blev kritiseret for at føre en passiv politik mod besættelsesmagten, som han i sin tiltrædelseserklæring udtalte: \"ved de store sejre, der har slået verden med forbavselse og beundring, er en ny tid oprundet i europa, der vil medføre en nyordning i politisk og økonomisk henseende under tysklands førerskab.\"",
         "id": "fc2",
         "question": "Erik Scavenius",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "dansk national socialistiske arbejderparti (dnsap), danske nazister der havde h\u00e5bet p\u00e5 at overtage regeringsmagten i danmark i k\u00f8lvandet af den tyske fremgang",
+        "correctAnswer": "dansk national socialistiske arbejderparti (dnsap), danske nazister der havde håbet på at overtage regeringsmagten i danmark i kølvandet af den tyske fremgang",
         "id": "fc3",
         "question": "DNSAP",
         "type": "flashcard"
       },
       {
-        "correctAnswer": "en repr\u00e6sentant for den s\u00e5kaldte h\u00f8jgaard-kreds m\u00f8dte privataudiens hos christian 10 den 14. november og foreslog kongen at udn\u00e6vne en ny regering uden om folketinget og de politiske partier, kongen afviste forslaget",
+        "correctAnswer": "en repræsentant for den såkaldte højgaard-kreds mødte privataudiens hos christian 10 den 14. november og foreslog kongen at udnævne en ny regering uden om folketinget og de politiske partier, kongen afviste forslaget",
         "id": "fc4",
-        "question": "H\u00f8jgaard-kreds",
+        "question": "Højgaard-kreds",
         "type": "flashcard"
       }
     ],
@@ -216,5 +216,67 @@
     "timestamp": "2025-05-12T14:21:29.402Z",
     "id": "quiz_1747059689",
     "type": "flashcard"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Literær tekst er et separat, individuelt levende \"organisme\"",
+        "id": "q1",
+        "options": [
+          "Literær tekst er et separat, individuelt levende \"organisme\"",
+          "Kunstneren er et afhængigt kollektivt \"lyd\" fra andre stemmer og tekster",
+          "Kun en selvstændig og original skaber af kunstværker",
+          "Alle tekster er en del af en sammenhængende arkiv af andre former for diskurs i en kultur"
+        ],
+        "question": "Hvilket af følgende er en væsentlig karakteristik for det romantiske literaturforskning?"
+      },
+      {
+        "correctAnswer": "Udtrykket som et radikalt manifesto til establishmenten",
+        "id": "q2",
+        "options": [
+          "Udtrykket som et radikalt manifesto til establishmenten",
+          "Skaberen af kunstværker er en kollektiv \"lyd\" fra andre stemmer og tekster",
+          "En selvstændig og bevidst skabende agent i litteraturen",
+          "Ideer der har deltaget i en revolutionær spiritus i litteraturverdenen"
+        ],
+        "question": "Hvilket af følgende beskriver den eksplosive optræden af radikale idéer i det moderne teori om litteratur?"
+      }
+    ],
+    "title": "Quiz om Nationalromantikken - JB lmao",
+    "timestamp": "2025-06-19T08:57:52.571Z",
+    "id": "quiz_1750323472",
+    "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Symbolisme",
+        "id": "q1",
+        "options": [
+          "Symbolisme",
+          "Realisme",
+          "Det moderne",
+          "Det klassiske"
+        ],
+        "question": "Hvilken er den primære identifikation, der ofte bruges om den romantiske bevægelse?"
+      },
+      {
+        "correctAnswer": "Det klassiske liv",
+        "id": "q2",
+        "options": [
+          "Den unge verden",
+          "Den døde verden",
+          "Det moderne liv",
+          "Det klassiske liv"
+        ],
+        "question": "Hvilket træk fra det romantiske fremstilles som en kontrast mellem kunstner og borgerlig \"Filistiner\"?"
+      }
+    ],
+    "title": "Quiz om Nationalromantikken - Bumble God",
+    "timestamp": "2025-06-19T09:04:31.967Z",
+    "id": "quiz_1750323871",
+    "type": "multiple_choice"
   }
 ]
