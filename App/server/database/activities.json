@@ -92,7 +92,7 @@
     "title": "Moderne natursyn",
     "description": "",
     "type": "link",
-    "url": "https://www.linkedin.com/in/oliver-theva/",
+    "url": "https://lex.dk/natur",
     "moduleId": "module-4",
     "isHomework": false
   },
@@ -278,23 +278,5 @@
     "moduleId": "module-12",
     "isHomework": false,
     "url": "http://localhost:5001/api/uploads/hemingway_1750236619.pdf"
-  },
-  {
-    "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1750323472_module-3_1750323474908",
-    "title": "Quiz om Nationalromantikken - JB lmao",
-    "type": "multiple_choice",
-    "quizId": "quiz_1750323472",
-    "moduleSpecific": true,
-    "isHomework": false
-  },
-  {
-    "moduleId": "module-3",
-    "id": "activity_quiz_quiz_1750323871_module-3_1750323872720",
-    "title": "Quiz om Nationalromantikken - Bumble God",
-    "type": "multiple_choice",
-    "quizId": "quiz_1750323871",
-    "moduleSpecific": true,
-    "isHomework": false
   }
 ]
