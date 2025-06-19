@@ -13,6 +13,7 @@ import {
   BsImage,
   BsBook,
 } from "react-icons/bs";
+import { getModuleFeedback } from '../../services/homeworkFeedbackService';
 
 const ModuleOverview = () => {
   const { moduleId } = useParams();
@@ -24,6 +25,7 @@ const ModuleOverview = () => {
   const [activities, setActivities] = useState([]);
   const [students, setStudents] = useState([]);
   const [completions, setCompletions] = useState([]);
+  const [homeworkFeedback, setHomeworkFeedback] = useState({});
 
   // Profile image URLs (open source)
   const profileImages = {
@@ -113,6 +115,14 @@ const ModuleOverview = () => {
         const studentsData = await studentsResponse.json();
         const allStudents = studentsData.students || [];
         setStudents(allStudents);
+        
+        // Collect feedback for all students
+        const feedbackData = {};
+        allStudents.forEach(student => {
+          const studentId = student.student_id || student.id;
+          feedbackData[studentId] = getModuleFeedback(moduleId, studentId);
+        });
+        setHomeworkFeedback(feedbackData);
         
         // For the prototype, we'll assume only Christian Wu has completions
         // In a real implementation, you would fetch completions for each student
@@ -362,6 +372,92 @@ const ModuleOverview = () => {
     );
   };
 
+  // Render feedback square with tooltip
+  const renderFeedbackSquare = (activity, studentId) => {
+    // Skip non-homework activities
+    if (!activity.isHomework) {
+      return null;
+    }
+    
+    // Skip image-type activities as per the requirements
+    if (activity.type === 'image') {
+      return null;
+    }
+    
+    const feedback = homeworkFeedback[studentId]?.[activity.id];
+    
+    if (!feedback) {
+      return (
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id={`feedback-tooltip-${activity.id}-${studentId}`}>
+              <div>Ingen feedback</div>
+            </Tooltip>
+          }
+        >
+          <div
+            className="d-inline-block"
+            style={{
+              width: '22px',
+              height: '22px',
+              backgroundColor: '#e9ecef', // Gray for no feedback
+              margin: '0 3px',
+              borderRadius: '3px'
+            }}
+          />
+        </OverlayTrigger>
+      );
+    }
+    
+    // Set color based on difficulty
+    let color = '#e9ecef'; // Default gray
+    let emojiIcon = '';
+    let difficultyText = '';
+    
+    if (feedback.difficulty === 'hard') {
+      color = '#dc3545'; // Red
+      emojiIcon = '🔴';
+      difficultyText = 'Svær';
+    } else if (feedback.difficulty === 'medium') {
+      color = '#ffc107'; // Yellow
+      emojiIcon = '🟡';
+      difficultyText = 'Mellem';
+    } else if (feedback.difficulty === 'easy') {
+      color = '#28a745'; // Green
+      emojiIcon = '🟢';
+      difficultyText = 'Let';
+    }
+    
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id={`feedback-tooltip-${activity.id}-${studentId}`}>
+            <div className="d-flex flex-column">
+              <div className="fw-bold">{activity.title}</div>
+              <div>{emojiIcon} {difficultyText}</div>
+              {feedback.comment && (
+                <div className="mt-1 font-italic">"{feedback.comment}"</div>
+              )}
+            </div>
+          </Tooltip>
+        }
+      >
+        <div
+          className="d-inline-block"
+          style={{
+            width: '22px',
+            height: '22px',
+            backgroundColor: color,
+            margin: '0 3px',
+            borderRadius: '3px'
+          }}
+        />
+      </OverlayTrigger>
+    );
+  };
+
   return (
     <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -387,6 +483,7 @@ const ModuleOverview = () => {
                 <th>Studerende</th>
                 <th>Klasse</th>
                 <th>Sidste aktivitet gennemført</th>
+                <th>Lektiefeedback</th>
                 <th>Aktiviteter status</th>
                 <th className="text-center">Gennemført</th>
               </tr>
@@ -418,6 +515,13 @@ const ModuleOverview = () => {
                   </td>
                   <td className="align-middle text-center">
                     {formatTimestamp(student.latestTimestamp)}
+                  </td>
+                  <td className="align-middle">
+                    <div className="d-flex flex-wrap gap-2 justify-content-center">
+                      {activities
+                        .filter(activity => activity.isHomework)
+                        .map(activity => renderFeedbackSquare(activity, student.student_id))}
+                    </div>
                   </td>
                   <td className="align-middle">
                     <div className="d-flex flex-wrap gap-2 justify-content-center">
