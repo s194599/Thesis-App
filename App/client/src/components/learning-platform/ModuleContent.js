@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Card,
   ProgressBar,
@@ -43,6 +43,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Forum from './Forum';
 import '../../styles/Forum.css';
+import HomeworkFeedbackModal from "../student/HomeworkFeedbackModal";
+import { getFeedback } from "../../services/homeworkFeedbackService";
 
 const ModuleContent = ({
   module,
@@ -105,6 +107,8 @@ const ModuleContent = ({
   const [dragTarget, setDragTarget] = useState(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showAudioModal, setShowAudioModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [currentHomeworkActivity, setCurrentHomeworkActivity] = useState(null);
   const navigate = useNavigate();
   
   // Function to fetch student activity completions
@@ -780,6 +784,17 @@ const ModuleContent = ({
 
   const handleActivityClick = async (activity) => {
     if (userRole === "student") {
+      // Show feedback modal for homework activities (but not images)
+      if (activity.isHomework && activity.type !== "image") {
+        // Check if feedback was already given for this activity
+        const existingFeedback = getFeedback(userRole === "student" ? "1" : null, activity.id);
+        
+        if (!existingFeedback) {
+          setCurrentHomeworkActivity(activity);
+          setShowFeedbackModal(true);
+        }
+      }
+
       if (activity.type === "quiz" || activity.type === "multiple_choice" || activity.type === "flashcard" || activity.type === "flashcards") {
         // Navigate to quiz intro view with the quiz ID and activity/module IDs as query params
         navigate(
@@ -3839,6 +3854,15 @@ const ModuleContent = ({
           </audio>
         </Modal.Body>
       </Modal>
+      
+      {/* Homework Feedback Modal */}
+      <HomeworkFeedbackModal
+        show={showFeedbackModal}
+        onHide={() => setShowFeedbackModal(false)}
+        activity={currentHomeworkActivity}
+        moduleId={module.id}
+        studentId={userRole === "student" ? "1" : null}
+      />
     </div>
   );
 };
