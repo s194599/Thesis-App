@@ -2387,7 +2387,7 @@ const ModuleContent = ({
                                         <small className="ms-2 text-primary">
                                           Klik for at åbne
                                         </small>
-                                                                           </div>
+                                      </div>
                                     )}
                                   {childActivity.type === "audio" &&
                                     childActivity.url && (

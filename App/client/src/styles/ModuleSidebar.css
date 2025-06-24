@@ -295,4 +295,47 @@
   line-height: 16px;
   margin-left: 6px;
   vertical-align: middle;
-} 
+}
+
+/* Icon gallery styles for course icon selection modal */
+.icon-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.icon-item {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 8px;
+}
+
+.icon-item:hover {
+  border-color: #0d6efd;
+  background-color: #e9ecef;
+  transform: scale(1.05);
+}
+
+.icon-item.selected {
+  border-color: #0d6efd;
+  background-color: #e7f3ff;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+.icon-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  max-width: 64px;
+  max-height: 64px;
+}
