@@ -9,3 +9,4 @@ export { default as FileUploader } from "./FileUploader";
 export { default as FilesList } from "./FilesList";
 export { default as QuizCreationChoice } from "./QuizCreationChoice";
 export { default as ManualQuizCreation } from "./ManualQuizCreation";
+export { default as ModelSelector } from "./ModelSelector";

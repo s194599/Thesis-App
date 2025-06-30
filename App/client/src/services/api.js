@@ -311,3 +311,60 @@ export const toggleForumStatus = async (moduleId, status) => {
     throw error;
   }
 };
+
+// Function to get available LLM models
+export const getAvailableModels = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/models`, {
+      timeout: 10000,
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      },
+    });
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to get available models");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error getting available models:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+    }
+    throw error;
+  }
+};
+
+// Function to switch the current LLM model
+export const switchModel = async (modelName) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/models/switch`,
+      { model: modelName },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+        validateStatus: function (status) {
+          return status >= 200 && status < 500;
+        },
+      }
+    );
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "Failed to switch model");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error switching model:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+    }
+    throw error;
+  }
+};

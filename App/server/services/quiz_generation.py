@@ -6,7 +6,7 @@ from config.app_config import logger, OLLAMA_API
 def generate_quiz_with_ollama(
     content,
     num_questions=5,
-    model="llama3.1:8b",
+    model="llama3.1:8b-instruct-q4_0",
     question_type="multipleChoice",
     additional_instructions="",
 ):
@@ -16,7 +16,7 @@ def generate_quiz_with_ollama(
     Args:
         content (str): Content to base the quiz on
         num_questions (int): Number of questions to generate
-        model (str): LLM model to use (default: llama3.1:8b)
+        model (str): LLM model to use (default: llama3.1:8b-instruct-q4_0)
         question_type (str): Type of questions (multipleChoice, trueFalse, shortAnswer, flashcards)
         additional_instructions (str): Additional instructions for the LLM
 

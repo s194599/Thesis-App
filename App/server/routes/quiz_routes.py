@@ -3,7 +3,7 @@ import os
 import time
 import json
 
-from config.app_config import DATABASE_FOLDER, logger
+from config.app_config import DATABASE_FOLDER, logger, QUIZ_MODEL, AVAILABLE_MODELS
 from services.quiz_generation import generate_quiz_with_ollama
 from services.quiz_parsing import parse_quiz
 from utils.file_helpers import load_json_file, save_json_file
@@ -76,11 +76,11 @@ def generate_quiz():
             )
 
             # Generate quiz using Ollama with the user-specified number of questions
-            logger.info("Starting LLM quiz generation")
+            logger.info(f"Starting LLM quiz generation using model: {QUIZ_MODEL}")
             raw_quiz = generate_quiz_with_ollama(
                 content,
                 num_questions=num_questions,  # Use the value from the request
-                model="llama3.1:8b",  # Updated to use your new Llama 3.1 model
+                model=QUIZ_MODEL,  # Use the configurable model from app_config
                 question_type=question_type,
                 additional_instructions=combined_instructions,
             )
@@ -261,4 +261,55 @@ def get_quiz(quiz_id):
 
     except Exception as e:
         logger.error(f"Error getting quiz: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@quiz_routes.route("/models", methods=["GET"])
+def get_available_models():
+    """
+    Get available LLM models for quiz generation
+    """
+    try:
+        return jsonify({
+            "success": True,
+            "current_model": QUIZ_MODEL,
+            "available_models": AVAILABLE_MODELS
+        })
+    except Exception as e:
+        logger.error(f"Error getting models: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@quiz_routes.route("/models/switch", methods=["POST"])
+def switch_model():
+    """
+    Switch the current model for quiz generation
+    """
+    try:
+        data = request.json
+        new_model = data.get("model")
+        
+        if not new_model:
+            return jsonify({"success": False, "message": "No model specified"}), 400
+            
+        if new_model not in AVAILABLE_MODELS:
+            return jsonify({"success": False, "message": f"Model '{new_model}' not available"}), 400
+        
+        # Update the environment variable for this session
+        os.environ["QUIZ_MODEL"] = new_model
+        
+        # Update the global variable
+        import config.app_config
+        config.app_config.QUIZ_MODEL = new_model
+        
+        logger.info(f"Switched to model: {new_model}")
+        
+        return jsonify({
+            "success": True,
+            "message": f"Switched to model: {new_model}",
+            "current_model": new_model
+        })
+        
+    except Exception as e:
+        logger.error(f"Error switching model: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 500

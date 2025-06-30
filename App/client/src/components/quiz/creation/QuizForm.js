@@ -8,6 +8,7 @@ import {
   QuestionTypeSelector,
   LanguageSelector,
   NumQuestionsSelector,
+  ModelSelector,
 } from "./";
 import { LoadingSpinner } from "../../common";
 import { QuizOutput } from "../../quiz/display";
@@ -405,6 +406,9 @@ const QuizForm = () => {
                       <LanguageSelector />
                     </div>
                   </div>
+
+                  {/* AI Model Selection */}
+                  <ModelSelector />
 
                   {/* Additional instructions */}
                   <div className="mb-4">
