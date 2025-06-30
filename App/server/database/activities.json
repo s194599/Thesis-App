@@ -33,7 +33,7 @@
   },
   {
     "id": "activity_1746018403078",
-    "title": "Universal romantikken",
+    "title": "Universal-romantikken.pdf",
     "description": "Læs kaptiel 5-7",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/spaerretid_skolehaefte_1746018403.pdf",
@@ -278,5 +278,14 @@
     "moduleId": "module-12",
     "isHomework": false,
     "url": "http://localhost:5001/api/uploads/hemingway_1750236619.pdf"
+  },
+  {
+    "moduleId": "module-2",
+    "id": "activity_quiz_quiz_1751290046_module-2_1751290047398",
+    "title": "Quiz om Nationalromantikken",
+    "type": "multiple_choice",
+    "quizId": "quiz_1751290046",
+    "moduleSpecific": true,
+    "isHomework": false
   }
 ]

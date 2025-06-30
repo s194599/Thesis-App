@@ -435,8 +435,8 @@ const QuizForm = () => {
                       variant="primary"
                       size="lg"
                       type="submit"
-                      //disabled={loading || !isFormValid()}
-                      disabled={true}
+                      disabled={loading || !isFormValid()}
+                      //disabled={true}
                     >
                       {formData.useSampleQuiz
                         ? "Opret eksempelquiz"

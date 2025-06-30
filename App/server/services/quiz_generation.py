@@ -6,7 +6,7 @@ from config.app_config import logger, OLLAMA_API
 def generate_quiz_with_ollama(
     content,
     num_questions=5,
-    model="mistral",
+    model="llama3.1:8b-instruct-q4_0",
     question_type="multipleChoice",
     additional_instructions="",
 ):

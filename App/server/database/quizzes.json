@@ -278,5 +278,69 @@
     "timestamp": "2025-06-19T09:04:31.967Z",
     "id": "quiz_1750323871",
     "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Invasion af Danmark af tyske styrker",
+        "id": "q1",
+        "options": [
+          "Genforening af Sønderjylland til Danmark",
+          "Indførelse af tv-licenspligt i Danmark",
+          "Dannelsk uafhængighedskrigets begyndelse",
+          "Invasion af Danmark af tyske styrker"
+        ],
+        "question": "Hvilken af følgende begivenheder skete den 9. april 1940?"
+      },
+      {
+        "correctAnswer": "Frits Clausen",
+        "id": "q2",
+        "options": [
+          "Frits Clausen",
+          "Martin Lidegaard",
+          "Vilhelm Morgentau",
+          "Erik Scavenius"
+        ],
+        "question": "Hvad er navnet på den danske nazistleder, der marchede med sine medlemmer til Rådhuspladsen i København d. 17. november 1940?"
+      },
+      {
+        "correctAnswer": "Den norske kapitulation til Tyskland under anden verdenskrig",
+        "id": "q3",
+        "options": [
+          "Fællessangstævnerne i København med flere hundrede tusind deltagere",
+          "Den norske kapitulation til Tyskland under anden verdenskrig",
+          "Dannelse af den frie danske regering i London",
+          "Genforening af Nordschleswig til Tyskland"
+        ],
+        "question": "Hvilken af følgende begivenheder fandt sted i juni 1940?"
+      },
+      {
+        "correctAnswer": "Dansk Nationalsocialistisk Arbejderparti (DNSAP)",
+        "id": "q4",
+        "options": [
+          "Det Konservative Folkeparti",
+          "Det Radikale Venstre",
+          "Det Socialdemokratiske Parti",
+          "Dansk Nationalsocialistisk Arbejderparti (DNSAP)"
+        ],
+        "question": "Hvilket politiske parti havde Frits Clausen som leder?"
+      },
+      {
+        "correctAnswer": "Jørgen Kristensen",
+        "id": "q5",
+        "options": [
+          "P. Munch",
+          "Erik Scavenius",
+          "Christian X",
+          "Jørgen Kristensen"
+        ],
+        "question": "Hvilken dansk politiker foreslog kongen at udnævne en ny regering uden om folketinget og de politiske partier den 14. november 1940?"
+      }
+    ],
+    "title": "Quiz om Nationalromantikken",
+    "timestamp": "2025-06-30T13:27:26.925Z",
+    "id": "quiz_1751290046",
+    "type": "multiple_choice"
   }
 ]
