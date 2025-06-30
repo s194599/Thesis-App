@@ -61,35 +61,38 @@ const QuizForm = () => {
     if (quizDocuments) {
       try {
         const { moduleId, moduleName, documents } = JSON.parse(quizDocuments);
-        
+
         // Set a default quiz title based on the module name
         if (moduleName) {
-          const titlePrefix = formData.questionType === "flashcards" ? "Flashcards" : "Quiz";
+          const titlePrefix =
+            formData.questionType === "flashcards" ? "Flashcards" : "Quiz";
           updateFormData("quizTitle", `${titlePrefix} om ${moduleName}`);
         }
-        
+
         if (documents && documents.length > 0) {
           // Set input type to document
           updateFormData("inputType", "document");
 
           // Process YouTube links separately
-          const youtubeVideos = documents.filter(doc => doc.type === "youtube").map(doc => ({
-            name: `YouTube Video (${doc.title})`,
-            size: 0,
-            type: "youtube",
-            youtubeUrl: doc.url,
-            videoId: extractYoutubeVideoId(doc.url),
-            isYoutubeVideo: true
-          }));
-          
+          const youtubeVideos = documents
+            .filter((doc) => doc.type === "youtube")
+            .map((doc) => ({
+              name: `YouTube Video (${doc.title})`,
+              size: 0,
+              type: "youtube",
+              youtubeUrl: doc.url,
+              videoId: extractYoutubeVideoId(doc.url),
+              isYoutubeVideo: true,
+            }));
+
           // Convert document URLs to File objects (only for non-YouTube content)
           Promise.all(
             documents
-              .filter(doc => doc.type !== "youtube")
+              .filter((doc) => doc.type !== "youtube")
               .map(async (doc) => {
                 const response = await fetch(doc.url);
                 const blob = await response.blob();
-                
+
                 // Determine mime type based on the document type
                 let mimeType;
                 switch (doc.type) {
@@ -102,21 +105,27 @@ const QuizForm = () => {
                     break;
                   case "video":
                     mimeType = "video/mp4"; // Default to mp4, most common format
-                    if (doc.url.toLowerCase().endsWith('.webm')) mimeType = "video/webm";
-                    if (doc.url.toLowerCase().endsWith('.mov')) mimeType = "video/quicktime";
-                    if (doc.url.toLowerCase().endsWith('.avi')) mimeType = "video/x-msvideo";
+                    if (doc.url.toLowerCase().endsWith(".webm"))
+                      mimeType = "video/webm";
+                    if (doc.url.toLowerCase().endsWith(".mov"))
+                      mimeType = "video/quicktime";
+                    if (doc.url.toLowerCase().endsWith(".avi"))
+                      mimeType = "video/x-msvideo";
                     break;
                   case "audio":
                     mimeType = "audio/mpeg"; // Default to mp3, most common format
-                    if (doc.url.toLowerCase().endsWith('.wav')) mimeType = "audio/wav";
-                    if (doc.url.toLowerCase().endsWith('.ogg')) mimeType = "audio/ogg";
-                    if (doc.url.toLowerCase().endsWith('.m4a')) mimeType = "audio/mp4";
+                    if (doc.url.toLowerCase().endsWith(".wav"))
+                      mimeType = "audio/wav";
+                    if (doc.url.toLowerCase().endsWith(".ogg"))
+                      mimeType = "audio/ogg";
+                    if (doc.url.toLowerCase().endsWith(".m4a"))
+                      mimeType = "audio/mp4";
                     break;
                   default:
                     mimeType = "application/octet-stream"; // Generic binary
                     break;
                 }
-                
+
                 return new File([blob], doc.title, { type: mimeType });
               })
           )
@@ -138,10 +147,11 @@ const QuizForm = () => {
   // Function to extract YouTube video ID
   const extractYoutubeVideoId = (url) => {
     if (!url) return null;
-    
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
+    return match && match[2].length === 11 ? match[2] : null;
   };
 
   // Effect to scroll to loading spinner when loading state changes to true
@@ -285,17 +295,20 @@ const QuizForm = () => {
 
       // Update the state with the generated quiz
       setGeneratedQuiz(finalQuizData);
-      
+
       // Instead of completely removing quizDocuments, preserve the moduleId for later use
       const quizDocuments = localStorage.getItem("quizDocuments");
       if (quizDocuments) {
         try {
           const { moduleId, moduleName } = JSON.parse(quizDocuments);
           // Keep only the moduleId and moduleName for later module association
-          localStorage.setItem("quizDocuments", JSON.stringify({
-            moduleId,
-            moduleName
-          }));
+          localStorage.setItem(
+            "quizDocuments",
+            JSON.stringify({
+              moduleId,
+              moduleName,
+            })
+          );
         } catch (error) {
           console.error("Error preserving module information:", error);
         }
@@ -314,10 +327,13 @@ const QuizForm = () => {
   useEffect(() => {
     // Only update if we have a title that follows the pattern
     if (formData.quizTitle) {
-      const titleMatch = formData.quizTitle.match(/^(Quiz|Flashcards) om (.+)$/);
+      const titleMatch = formData.quizTitle.match(
+        /^(Quiz|Flashcards) om (.+)$/
+      );
       if (titleMatch) {
         const moduleName = titleMatch[2];
-        const titlePrefix = formData.questionType === "flashcards" ? "Flashcards" : "Quiz";
+        const titlePrefix =
+          formData.questionType === "flashcards" ? "Flashcards" : "Quiz";
         updateFormData("quizTitle", `${titlePrefix} om ${moduleName}`);
       }
     }
@@ -373,7 +389,7 @@ const QuizForm = () => {
 
                   {/* Input type selection */}
                   <InputTypeSelector />
-                  
+
                   {/* Quiz input section (changes based on selected input type) */}
                   <QuizInputSection />
 
@@ -412,7 +428,7 @@ const QuizForm = () => {
                   </div>
 
                   {/* Sample Quiz Toggle */}
-                 {/*  <div className="mb-4">
+                  {/*  <div className="mb-4">
                     <Form.Check
                       type="switch"
                       id="sample-quiz-toggle"
@@ -435,8 +451,7 @@ const QuizForm = () => {
                       variant="primary"
                       size="lg"
                       type="submit"
-                      //disabled={loading || !isFormValid()}
-                      disabled={true}
+                      disabled={loading || !isFormValid()}
                     >
                       {formData.useSampleQuiz
                         ? "Opret eksempelquiz"

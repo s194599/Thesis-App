@@ -80,7 +80,7 @@ def generate_quiz():
             raw_quiz = generate_quiz_with_ollama(
                 content,
                 num_questions=num_questions,  # Use the value from the request
-                model="mistral",
+                model="llama3.1:8b",  # Updated to use your new Llama 3.1 model
                 question_type=question_type,
                 additional_instructions=combined_instructions,
             )

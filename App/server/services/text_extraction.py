@@ -20,10 +20,20 @@ def extract_text_from_pdf(pdf_path, max_pages=10):
         for page_num in range(min(len(doc), max_pages)):
             text += doc[page_num].get_text("text") + "\n"
         doc.close()  # Close the document properly
-        return text.strip()
+        
+        # Check if we actually extracted any meaningful text
+        cleaned_text = text.strip()
+        if not cleaned_text:
+            logger.warning(f"No text content extracted from PDF: {pdf_path}")
+            return f"[PDF EXTRACTION WARNING] No readable text content found in PDF file. The PDF might be image-based, encrypted, or corrupted."
+        
+        logger.info(f"Successfully extracted {len(cleaned_text)} characters from PDF: {pdf_path}")
+        return cleaned_text
+        
     except Exception as e:
-        logger.error(f"Error extracting text from PDF: {str(e)}")
-        raise
+        error_msg = f"[PDF EXTRACTION ERROR] Failed to extract text from PDF '{pdf_path}': {str(e)}"
+        logger.error(error_msg)
+        return error_msg
 
 
 def extract_text_from_file(file_path):
@@ -38,7 +48,27 @@ def extract_text_from_file(file_path):
     """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
+            content = f.read()
+        
+        if not content.strip():
+            logger.warning(f"No text content found in file: {file_path}")
+            return f"[FILE EXTRACTION WARNING] No readable text content found in file."
+        
+        logger.info(f"Successfully extracted {len(content)} characters from file: {file_path}")
+        return content
+        
+    except UnicodeDecodeError as e:
+        # Try different encodings
+        try:
+            with open(file_path, "r", encoding="latin-1") as f:
+                content = f.read()
+            logger.info(f"Successfully extracted text using latin-1 encoding from: {file_path}")
+            return content
+        except Exception as fallback_error:
+            error_msg = f"[FILE EXTRACTION ERROR] Failed to read text file '{file_path}' with multiple encodings: {str(fallback_error)}"
+            logger.error(error_msg)
+            return error_msg
     except Exception as e:
-        logger.error(f"Error reading text file: {str(e)}")
-        raise
+        error_msg = f"[FILE EXTRACTION ERROR] Failed to read text file '{file_path}': {str(e)}"
+        logger.error(error_msg)
+        return error_msg

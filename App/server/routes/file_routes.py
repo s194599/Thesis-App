@@ -109,21 +109,54 @@ def upload_files():
         # Process file uploads if present
         if has_files:
             files = request.files.getlist("files")
+            logger.info(f"Found {len(files)} files in request")
+            
             if not files or all(file.filename == "" for file in files):
                 if not has_youtube:  # Only return error if no YouTube URLs were processed
                     return jsonify({"error": "No files selected"}), 400
             else:
-                for file in files:
-                    if file and allowed_file(file.filename):
+                for i, file in enumerate(files):
+                    logger.info(f"Processing file {i+1}: {file}")
+                    logger.info(f"File object type: {type(file)}")
+                    
+                    # Add null checks for file and filename
+                    if not file:
+                        logger.warning(f"File {i+1} is None, skipping")
+                        continue
+                        
+                    logger.info(f"File filename attribute: {file.filename}")
+                    logger.info(f"File filename type: {type(file.filename)}")
+                    
+                    if not file.filename:
+                        logger.warning(f"File {i+1} has empty or null filename, skipping")
+                        continue
+                        
+                    if allowed_file(file.filename):
                         filename = secure_filename(file.filename)
+                        logger.info(f"Secured filename: {filename}")
+                        
+                        # Additional check after secure_filename
+                        if not filename:
+                            logger.warning("Skipping file - secure_filename returned empty string")
+                            continue
+                            
                         file_path = os.path.join(UPLOAD_FOLDER, filename)
                         logger.info(f"Saving file to: {file_path}")
                         file.save(file_path)
 
-                        # Process file based on its type
-                        file_extension = (
-                            filename.rsplit(".", 1)[1].lower() if "." in filename else ""
-                        )
+                        # Process file based on its type - safer extension extraction
+                        file_extension = ""
+                        try:
+                            if "." in filename:
+                                parts = filename.rsplit(".", 1)
+                                logger.info(f"Filename parts: {parts}")
+                                if len(parts) > 1:
+                                    file_extension = parts[1].lower()
+                                    logger.info(f"File extension: {file_extension}")
+                        except Exception as ext_error:
+                            logger.error(f"Error extracting file extension from {filename}: {str(ext_error)}")
+                            file_extension = ""
+                        
                         content = ""
 
                         if file_extension in ["mp4", "mov", "avi", "webm"]:
@@ -168,7 +201,50 @@ def upload_files():
                                 )
                         elif file_extension == "pdf":
                             # Process PDF
+                            logger.info(f"Processing PDF file: {filename}")
                             content = extract_text_from_pdf(file_path)
+                            logger.info(f"PDF extraction result length: {len(content) if content else 0}")
+                            
+                            # Check if PDF extraction failed
+                            if content and content.startswith("[PDF EXTRACTION ERROR]"):
+                                logger.error(f"PDF extraction failed: {content}")
+                                return (
+                                    jsonify(
+                                        {
+                                            "error": "PDF text extraction failed",
+                                            "message": content,
+                                            "filename": filename,
+                                        }
+                                    ),
+                                    400,
+                                )
+                            elif content and content.startswith("[PDF EXTRACTION WARNING]"):
+                                # Log warning but continue with the warning message as content
+                                logger.warning(f"PDF extraction warning for {filename}: {content}")
+                                # You can choose to continue with the warning or return an error
+                                # For now, let's return an error for empty PDFs
+                                return (
+                                    jsonify(
+                                        {
+                                            "error": "No readable content in PDF",
+                                            "message": content,
+                                            "filename": filename,
+                                        }
+                                    ),
+                                    400,
+                                )
+                            elif not content:
+                                logger.error(f"PDF extraction returned empty content for {filename}")
+                                return (
+                                    jsonify(
+                                        {
+                                            "error": "No content extracted from PDF",
+                                            "message": "The PDF file appears to be empty or unreadable",
+                                            "filename": filename,
+                                        }
+                                    ),
+                                    400,
+                                )
                         elif file_extension in ["doc", "docx"]:
                             # For simplicity, assuming .doc/.docx files are handled elsewhere or by a library
                             content = "Document content (processing not shown in this example)"
@@ -176,9 +252,11 @@ def upload_files():
                             # For text files, read directly
                             try:
                                 content = extract_text_from_file(file_path)
-                            except:
-                                content = f"Failed to extract content from {filename}"
+                            except Exception as text_error:
+                                logger.error(f"Error extracting text from {filename}: {str(text_error)}")
+                                content = f"Failed to extract content from {filename}: {str(text_error)}"
 
+                        logger.info(f"Final content length for {filename}: {len(content) if content else 0}")
                         combined_content.append(content)
                         file_info.append(
                             {
@@ -190,10 +268,11 @@ def upload_files():
                             }
                         )
                     else:
+                        logger.error(f"File type not allowed for: {file.filename}")
                         return (
                             jsonify(
                                 {
-                                    "error": f"File type not allowed. Allowed types: {', '.join(allowed_file.__defaults__[0])}"
+                                    "error": f"File type not allowed. Allowed types: {', '.join(['pdf', 'doc', 'docx', 'txt', 'mp4', 'mov', 'avi', 'webm', 'mp3', 'wav', 'ogg', 'm4a'])}"
                                 }
                             ),
                             400,
