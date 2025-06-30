@@ -77,20 +77,20 @@ export const uploadFiles = async (files) => {
     }
 
     // Filter YouTube videos from regular files
-    const regularFiles = files.filter(file => !file.isYoutubeVideo);
-    const youtubeVideos = files.filter(file => file.isYoutubeVideo);
-    
+    const regularFiles = files.filter((file) => !file.isYoutubeVideo);
+    const youtubeVideos = files.filter((file) => file.isYoutubeVideo);
+
     // Extract YouTube URLs
-    const youtubeUrls = youtubeVideos.map(file => file.youtubeUrl).join(',');
-    
+    const youtubeUrls = youtubeVideos.map((file) => file.youtubeUrl).join(",");
+
     // Create FormData for regular files
     const formData = new FormData();
-    
+
     // Add all regular files to the form data
     regularFiles.forEach((file) => {
       formData.append("files", file);
     });
-    
+
     // Add YouTube URLs to the form data if any exist
     if (youtubeUrls) {
       formData.append("youtubeUrls", youtubeUrls);
@@ -238,11 +238,11 @@ export const getQuiz = async (quizId) => {
 export const getForumPosts = async (moduleId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/forum/${moduleId}`, {
-      timeout: 10000
+      timeout: 10000,
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching forum posts:', error);
+    console.error("Error fetching forum posts:", error);
     throw error;
   }
 };
@@ -250,15 +250,19 @@ export const getForumPosts = async (moduleId) => {
 // Create a new forum post
 export const createForumPost = async (moduleId, postData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/forum/${moduleId}/post`, postData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 30000 // Increased timeout for potential image uploads
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/forum/${moduleId}/post`,
+      postData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 30000, // Increased timeout for potential image uploads
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error creating forum post:', error);
+    console.error("Error creating forum post:", error);
     throw error;
   }
 };
@@ -266,15 +270,19 @@ export const createForumPost = async (moduleId, postData) => {
 // Add a comment to a forum post
 export const addForumComment = async (moduleId, postId, commentData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/forum/${moduleId}/post/${postId}/comment`, commentData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 30000 // Increased timeout for potential image uploads
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/forum/${moduleId}/post/${postId}/comment`,
+      commentData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 30000, // Increased timeout for potential image uploads
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error adding forum comment:', error);
+    console.error("Error adding forum comment:", error);
     throw error;
   }
 };
@@ -283,11 +291,11 @@ export const addForumComment = async (moduleId, postId, commentData) => {
 export const deleteForumPost = async (moduleId, postId) => {
   try {
     await axios.delete(`${API_BASE_URL}/forum/${moduleId}/post/${postId}`, {
-      timeout: 10000
+      timeout: 10000,
     });
     return true;
   } catch (error) {
-    console.error('Error deleting forum post:', error);
+    console.error("Error deleting forum post:", error);
     throw error;
   }
 };
@@ -296,18 +304,15 @@ export const deleteForumPost = async (moduleId, postId) => {
 export const toggleForumStatus = async (moduleId, status) => {
   try {
     // Use the global-specific endpoint when moduleId is 'global'
-    const endpoint = moduleId === 'global' 
-      ? `${API_BASE_URL}/forum/global/status`
-      : `${API_BASE_URL}/forum/${moduleId}/status`;
-      
-    const response = await axios.put(
-      endpoint,
-      { status },
-      { timeout: 10000 }
-    );
+    const endpoint =
+      moduleId === "global"
+        ? `${API_BASE_URL}/forum/global/status`
+        : `${API_BASE_URL}/forum/${moduleId}/status`;
+
+    const response = await axios.put(endpoint, { status }, { timeout: 10000 });
     return response.data;
   } catch (error) {
-    console.error('Error toggling forum status:', error);
+    console.error("Error toggling forum status:", error);
     throw error;
   }
 };
@@ -323,7 +328,9 @@ export const getAvailableModels = async () => {
     });
 
     if (response.status >= 400) {
-      throw new Error(response.data.message || "Failed to get available models");
+      throw new Error(
+        response.data.message || "Failed to get available models"
+      );
     }
 
     return response.data;

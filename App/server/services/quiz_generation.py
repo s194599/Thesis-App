@@ -1,6 +1,7 @@
 import requests
 import logging
 from config.app_config import logger, OLLAMA_API
+from services.instruction_templates import format_instruction_prompt
 
 
 def generate_quiz_with_ollama(
@@ -11,7 +12,7 @@ def generate_quiz_with_ollama(
     additional_instructions="",
 ):
     """
-    Generate a quiz using Ollama's Llama 3.1 model with proper instruct formatting
+    Generate a quiz using Ollama with proper instruct formatting
 
     Args:
         content (str): Content to base the quiz on
@@ -30,115 +31,17 @@ def generate_quiz_with_ollama(
         logger.warning("Content too long, truncating to 128,000 characters")
         content = content[:128000]
 
-    # Create system message for instruction-tuned models
-    system_message = """You are an expert quiz generator. You create high-quality educational quizzes based on provided content. You follow formatting instructions precisely and generate engaging, accurate questions."""
+    # Use the instruction templates to format the prompt
+    formatted_prompt = format_instruction_prompt(
+        content=content,
+        question_type=question_type,
+        num_questions=num_questions,
+        model_name=model,
+        additional_instructions=additional_instructions,
+    )
 
-    # Adjust prompt based on question type with proper instruction format
-    if question_type == "multipleChoice":
-        user_instruction = f"""Create a multiple-choice quiz with {num_questions} questions based on the following content.
-
-CONTENT:
-{content}
-
-REQUIREMENTS:
-- Generate exactly {num_questions} questions
-- Each question must have 4 options (A, B, C, D)
-- Only ONE option should be correct
-- Base all questions on the provided content
-- Use EXACTLY this format:
-
-1. [Question text]
-A) [Option 1]
-B) [Option 2]
-C) [Option 3]
-D) [Option 4]
-Correct answer: [A, B, C, or D]
-
-2. [Question text]
-A) [Option 1]
-B) [Option 2]
-C) [Option 3]
-D) [Option 4]
-Correct answer: [A, B, C, or D]
-
-Continue this format for all {num_questions} questions."""
-
-    elif question_type == "flashcards":
-        user_instruction = f"""Create {num_questions} flashcards based on the following content.
-
-CONTENT:
-{content}
-
-REQUIREMENTS:
-- Generate exactly {num_questions} flashcards
-- Focus on key concepts, terms, and important information
-- Front side should be concise questions or terms
-- Back side should provide clear explanations or definitions
-- Use EXACTLY this format:
-
-1. [Term or question]
-Flip side: [Definition or answer]
-
-2. [Term or question]
-Flip side: [Definition or answer]
-
-Continue this format for all {num_questions} flashcards."""
-
-    elif question_type == "trueFalse":
-        user_instruction = f"""Create a true/false quiz with {num_questions} questions based on the following content.
-
-CONTENT:
-{content}
-
-REQUIREMENTS:
-- Generate exactly {num_questions} questions
-- Each question should test factual information from the content
-- Use EXACTLY this format:
-
-1. [Question text]
-A) True
-B) False
-Correct answer: [A or B]
-
-2. [Question text]
-A) True
-B) False
-Correct answer: [A or B]
-
-Continue this format for all {num_questions} questions."""
-
-    else:  # Short answer
-        user_instruction = f"""Create a short answer quiz with {num_questions} questions based on the following content.
-
-CONTENT:
-{content}
-
-REQUIREMENTS:
-- Generate exactly {num_questions} questions
-- Questions should test understanding of key concepts
-- Answers should be brief but complete
-- Use EXACTLY this format:
-
-1. [Question text]
-Correct answer: [Brief answer]
-
-2. [Question text]
-Correct answer: [Brief answer]
-
-Continue this format for all {num_questions} questions."""
-
-    # Add any additional instructions from the user
-    if additional_instructions:
-        user_instruction += f"\n\nADDITIONAL REQUIREMENTS:\n{additional_instructions}"
-
-    # Format the prompt using Llama 3.1's chat template
-    formatted_prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-
-{system_message}<|eot_id|><|start_header_id|>user<|end_header_id|>
-
-{user_instruction}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-"""
+    # Log the formatted prompt for debugging (first 500 characters)
+    logger.info(f"Formatted prompt preview: {formatted_prompt[:500]}...")
 
     # Prepare payload for Ollama API
     payload = {"model": model, "prompt": formatted_prompt, "stream": False}

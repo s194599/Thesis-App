@@ -16,7 +16,7 @@ const ModelSelector = () => {
         setLoading(true);
         setError(null);
         const response = await getAvailableModels();
-        
+
         // Add defensive checks for the response structure
         if (response && response.available_models && response.current_model) {
           setModels(response.available_models);
@@ -27,7 +27,9 @@ const ModelSelector = () => {
         }
       } catch (err) {
         console.error("Error fetching models:", err);
-        setError("Failed to load available models. Please make sure the server is running.");
+        setError(
+          "Failed to load available models. Please make sure the server is running."
+        );
       } finally {
         setLoading(false);
       }
@@ -44,7 +46,7 @@ const ModelSelector = () => {
       setSwitching(true);
       setError(null);
       const response = await switchModel(selectedModel);
-      
+
       if (response && response.success) {
         setCurrentModel(selectedModel);
         console.log(`Switched to model: ${selectedModel}`);
@@ -66,7 +68,9 @@ const ModelSelector = () => {
           <Spinner size="sm" className="me-2" />
           AI Model
         </Form.Label>
-        <Form.Text className="text-muted">Loading available models...</Form.Text>
+        <Form.Text className="text-muted">
+          Loading available models...
+        </Form.Text>
       </Form.Group>
     );
   }
@@ -100,13 +104,13 @@ const ModelSelector = () => {
         AI Model
         {switching && <Spinner size="sm" className="ms-2" />}
       </Form.Label>
-      
+
       {error && (
         <Alert variant="warning" className="py-2 mb-2">
           <small>{error}</small>
         </Alert>
       )}
-      
+
       <Form.Select
         value={currentModel}
         onChange={(e) => handleModelChange(e.target.value)}
@@ -117,7 +121,7 @@ const ModelSelector = () => {
           const config = modelConfig || {};
           const name = config.name || modelId;
           const isDefault = config.default || false;
-          
+
           return (
             <option key={modelId} value={modelId}>
               {name} {isDefault ? "(Default)" : ""}
@@ -125,10 +129,10 @@ const ModelSelector = () => {
           );
         })}
       </Form.Select>
-      
+
       <Form.Text className="text-muted">
-        {models[currentModel] && models[currentModel].description 
-          ? models[currentModel].description 
+        {models[currentModel] && models[currentModel].description
+          ? models[currentModel].description
           : "Select an AI model for quiz generation"}
         {currentModel && (
           <Badge bg="success" className="ms-2">
