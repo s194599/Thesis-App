@@ -171,24 +171,6 @@
     "url": "http://localhost:5001/api/uploads/130020871920_1750236227.pdf"
   },
   {
-    "id": "activity_1750236563907",
-    "title": "Ernest Hemingway",
-    "description": "Få en forståelse af hvem han var",
-    "type": "link",
-    "url": "https://en.wikipedia.org/wiki/Ernest_Hemingway",
-    "moduleId": "module-12",
-    "isHomework": true
-  },
-  {
-    "id": "activity_1750236619265",
-    "title": "hemingway.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-12",
-    "isHomework": false,
-    "url": "http://localhost:5001/api/uploads/hemingway_1750236619.pdf"
-  },
-  {
     "moduleId": "module-2",
     "id": "activity_quiz_quiz_1751290046_module-2_1751290047398",
     "title": "Quiz om Nationalromantikken",
@@ -268,5 +250,14 @@
     "quizId": "quiz_1751722045",
     "moduleSpecific": true,
     "isHomework": false
+  },
+  {
+    "id": "activity_1751722526583",
+    "title": "Chapter-8-The-Industrial-Revolution.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-12",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Chapter-8-The-Industrial-Revolution_1751722526.pdf"
   }
 ]

@@ -80,11 +80,11 @@
     "topicId": "topic-2"
   },
   {
-    "id": "module-12",
-    "title": "Medieanalyse",
-    "date": "29. April 2023",
-    "description": "<p>Introduktion til grundlæggende medieanalyse. Vi ser på nyhedsindslag, reklamer og SoMe-opslag og arbejder med at identificere virkemidler og budskaber.</p>",
-    "topicId": "topic-2"
+  "id": "module-12",
+  "title": "Den industrielle revolution",
+  "date": "29. April 2023",
+  "description": "<p>Dette modul introducerer Den industrielle revolution fra slutningen af 1700-tallet og ind i 1800-tallet. Vi ser på de vigtigste opfindelser, teknologiske fremskridt og deres betydning for samfundet, økonomien og arbejdsforholdene.</p><p><br></p><p>Fokus er på årsager, konsekvenser og centrale personer som James Watt og Henry Ford, samt hvordan revolutionen banede vejen for det moderne industrisamfund.</p>",
+  "topicId": "topic-2"
   },
   {
     "id": "module-13",
