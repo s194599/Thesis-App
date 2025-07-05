@@ -216,25 +216,6 @@
     "url": "http://localhost:5001/api/uploads/1994_1750236332.pdf"
   },
   {
-    "id": "activity_1750236372284",
-    "title": "Klaus Rifbjerg wiki",
-    "description": "",
-    "type": "link",
-    "url": "https://da.wikipedia.org/wiki/Klaus_Rifbjerg",
-    "moduleId": "module-10",
-    "isHomework": false
-  },
-  {
-    "id": "activity_1750236459057",
-    "title": "Den kroniske uskyld - Klaus Rifjberg",
-    "description": "Læs kapitel 5",
-    "type": "book",
-    "url": "",
-    "content": "",
-    "moduleId": "module-10",
-    "isHomework": true
-  },
-  {
     "id": "activity_1750236512817",
     "title": "drivhuset-analyse",
     "description": "",
@@ -287,5 +268,14 @@
     "quizId": "quiz_1751294798",
     "moduleSpecific": true,
     "isHomework": false
+  },
+  {
+    "id": "activity_1751720586312",
+    "title": "Shakespeare_Summaries_of_Plays.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-10",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Shakespeare_Summaries_of_Plays_1751720586.pdf"
   }
 ]

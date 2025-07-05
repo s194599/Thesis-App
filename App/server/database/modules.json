@@ -57,32 +57,33 @@
     "description": "<p>Dette modul introducerer <strong>Syndefaldsmyten</strong> fra Biblen, med fokus p\u00e5 'F\u00f8rste Mosebog', 3. kapitel. Vi gennemg\u00e5r mytens grundl\u00e6ggende symbolik, kulturhistoriske betydning og dens indflydelse p\u00e5 litteraturen gennem tiden.</p>",
     "topicId": "topic-2"
   },
+
   {
     "id": "module-9",
-    "title": "Litter\u00e6re analysemetoder",
+    "title": "Romantikken",
     "date": "8. April 2023",
-    "description": "<p>Introduktion til de centrale analysemetoder, der anvendes i forl\u00f8bet: <strong>strukturalistisk</strong>, <strong>psykoanalytisk</strong>, <strong>socialhistorisk</strong> og <strong>ideologikritisk</strong> metode. </p><p><br></p><p>Modulet giver et teoretisk grundlag for de efterf\u00f8lgende tekstanalyser.</p>",
+    "description": "<p>Introduktion til Romantikken som litterær periode med fokus på centrale temaer som natur, følelser og national identitet. Vi analyserer udvalgte digte og diskuterer periodens betydning for dansk kultur.</p>",
     "topicId": "topic-2"
   },
   {
     "id": "module-10",
-    "title": "Klaus Rifbjerg: Den kroniske uskyld",
+    "title": "Shakespeare",
     "date": "15. April 2023",
-    "description": "<p>Analyse og fortolkning af udvalgte uddrag fra Klaus Rifbjergs roman 'Den kroniske uskyld' (1958). </p><p><br></p><p><br></p><p>Vi unders\u00f8ger temaer om uskyldstab, seksualitet og identitetsdannelse i moderniteten med fokus p\u00e5 paralleller til Syndefaldsmyten.</p>",
+    "description": "<p>Analyse og fortolkning af udvalgte scener fra William Shakespeares dramaer. Vi diskuterer karakterer, temaer og Shakespeares betydning for verdenslitteraturen.</p>",
     "topicId": "topic-2"
   },
   {
     "id": "module-11",
-    "title": "Anders Bodelsen: Drivhuset",
+    "title": "2. Verdenskrig",
     "date": "22. April 2023",
-    "description": "<p>N\u00e6rl\u00e6sning og analyse af novellen 'Drivhuset' af Anders Bodelsen. Vi arbejder med velf\u00e6rdssamfundets syndefald og materialismens konsekvenser, med s\u00e6rligt fokus p\u00e5 socialhistorisk og ideologikritisk l\u00e6sning.</p>",
+    "description": "<p>Forløb om 2. Verdenskrig med fokus på historiske kilder, dokumentariske tekster og filmklip. Vi arbejder med krigens årsager, forløb og konsekvenser og diskuterer etik og menneskesyn.</p>",
     "topicId": "topic-2"
   },
   {
     "id": "module-12",
-    "title": "Ernest Hemingway: Indianerlejr",
+    "title": "Medieanalyse",
     "date": "29. April 2023",
-    "description": "<p>Analyse af Hemingways novelle 'Indianerlejr' med fokus p\u00e5 uskyldstab og manderoller. Vi anvender is\u00e6r psykoanalytisk metode og diskuterer novellens modernistiske tr\u00e6k i relation til Syndefaldsmyten.</p>",
+    "description": "<p>Introduktion til grundlæggende medieanalyse. Vi ser på nyhedsindslag, reklamer og SoMe-opslag og arbejder med at identificere virkemidler og budskaber.</p>",
     "topicId": "topic-2"
   },
   {
