@@ -342,5 +342,122 @@
     "timestamp": "2025-06-30T13:27:26.925Z",
     "id": "quiz_1751290046",
     "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Romanticism",
+        "id": "q1",
+        "options": [
+          "Realism",
+          "Symbolism",
+          "Enlightenment",
+          "Romanticism"
+        ],
+        "question": "What movement began in the late eighteenth and early nineteenth centuries that was characterized by an emphasis on emotion, individualism, and the imagination?"
+      },
+      {
+        "correctAnswer": "Focus on political and social consciousness in the artist's work",
+        "id": "q2",
+        "options": [
+          "Use of down-to-earth characters and everyday language",
+          "Idealization of children as sources of greater wisdom than adults",
+          "Focus on political and social consciousness in the artist's work",
+          "Exploration of the exotic in time and/or place"
+        ],
+        "question": "Which of the following is NOT a characteristic of Romantic literature?"
+      },
+      {
+        "correctAnswer": "Mary Shelley",
+        "id": "q3",
+        "options": [
+          "Mary Shelley",
+          "Victor Hugo",
+          "Emily Bronte",
+          "Jane Austen"
+        ],
+        "question": "Which Romantic author is famous for creating the beautiful soul in an ugly body character, as seen in his novel \"Frankenstein\"?"
+      },
+      {
+        "correctAnswer": "Music, painting, sculpture, architecture, and literature",
+        "id": "q4",
+        "options": [
+          "Music and painting, but not sculpture or architecture",
+          "Architecture, but not music, painting, or sculpture",
+          "Music, painting, sculpture, architecture, and literature",
+          "Only literature"
+        ],
+        "question": "The Romantic Movement's revolutionary energy affected which of the following arts?"
+      },
+      {
+        "correctAnswer": "Everyday subject matter with social or political orientation",
+        "id": "q5",
+        "options": [
+          "The beautiful soul in an ugly body",
+          "Everyday subject matter with social or political orientation",
+          "The exotic in time and/or place, but not both",
+          "The supernatural with what was all too familiar"
+        ],
+        "question": "Which of the following is a paradoxical combination that often appeared in Romantic literature?"
+      },
+      {
+        "correctAnswer": "Russia",
+        "id": "q6",
+        "options": [
+          "Spain",
+          "France",
+          "Russia",
+          "Germany"
+        ],
+        "question": "In which country did the Romantic Movement spread eastward?"
+      },
+      {
+        "correctAnswer": "The separate, \"living\" work has been dissolved into a sea of intertextuality",
+        "id": "q7",
+        "options": [
+          "The separate, \"living\" work has been dissolved into a sea of intertextuality",
+          "The independently sovereign artist has been elevated to a heroic, consciously creative agent",
+          "The author's emotional engagement with their text is no longer relevant",
+          "Literature should be written in dialects for authenticity"
+        ],
+        "question": "Which of the following is a recent development in literary theory that challenges a major Romantic perception?"
+      },
+      {
+        "correctAnswer": "Emily Dickinson",
+        "id": "q8",
+        "options": [
+          "Oscar Wilde",
+          "Emily Dickinson",
+          "Mary Shelley",
+          "Victor Hugo"
+        ],
+        "question": "Which Romantic artist is known for his withdrawal from the public and assertion of individuality and differences that were often shocking to the middle class?"
+      },
+      {
+        "correctAnswer": "The intersection of other voices and texts, ultimately dependent upon possibilities dictated by language systems, conventions, and institutionalized power structures",
+        "id": "q9",
+        "options": [
+          "The intersection of other voices and texts, ultimately dependent upon possibilities dictated by language systems, conventions, and institutionalized power structures",
+          "A consciously creative agent, elevated from their original position",
+          "More controlled than controlling in the creation process",
+          "An emotionless observer of the world around them"
+        ],
+        "question": "In current theory, the artist is no longer considered a fiercely independent genius who creates original works of art but rather:"
+      },
+      {
+        "correctAnswer": "True",
+        "id": "q10",
+        "options": [
+          "True",
+          "False"
+        ],
+        "question": "The Romantic Movement transformed Western culture in many ways that still survive into our own times. True or False?"
+      }
+    ],
+    "title": "Quiz om Romanticism",
+    "timestamp": "2025-06-30T14:46:38.776Z",
+    "id": "quiz_1751294798",
+    "type": "multiple_choice"
   }
 ]

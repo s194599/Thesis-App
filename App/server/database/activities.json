@@ -13,7 +13,7 @@
   },
   {
     "id": "activity_1744270048086",
-    "title": "Natur og syn i 1908",
+    "title": "Natur-og-syn-i-1908.pdf",
     "description": "Læs kapitel 5\n",
     "type": "pdf",
     "url": "http://localhost:5001/api/uploads/Sociale_medier_-_brug__indhold_og_relationer_hovedkonklusioner_1744270048.pdf",
@@ -85,15 +85,6 @@
     "type": "flashcard",
     "quizId": "quiz_1747059689",
     "moduleSpecific": true,
-    "isHomework": false
-  },
-  {
-    "id": "activity_1747299892099",
-    "title": "Moderne natursyn",
-    "description": "",
-    "type": "link",
-    "url": "https://lex.dk/natur",
-    "moduleId": "module-4",
     "isHomework": false
   },
   {
@@ -285,6 +276,15 @@
     "title": "Quiz om Nationalromantikken",
     "type": "multiple_choice",
     "quizId": "quiz_1751290046",
+    "moduleSpecific": true,
+    "isHomework": false
+  },
+  {
+    "moduleId": "module-3",
+    "id": "activity_quiz_quiz_1751294798_module-3_1751294800239",
+    "title": "Quiz om Romanticism",
+    "type": "multiple_choice",
+    "quizId": "quiz_1751294798",
     "moduleSpecific": true,
     "isHomework": false
   }
