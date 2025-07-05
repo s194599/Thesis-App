@@ -103,13 +103,6 @@
       "quiz_score": 80
     },
     {
-      "activity_id": "activity_1750164428486",
-      "module_id": "topic-view-topic-2",
-      "student_id": "1",
-      "student_name": "Christian Wu",
-      "timestamp": "2025-06-18T10:34:51.399776"
-    },
-    {
       "activity_id": "activity_1750164658198",
       "module_id": "module-5",
       "student_id": "1",
@@ -122,20 +115,6 @@
       "student_id": "1",
       "student_name": "Christian Wu",
       "timestamp": "2025-06-18T11:01:26.380398"
-    },
-    {
-      "activity_id": "activity_1750236262077",
-      "module_id": "module-9",
-      "student_id": "1",
-      "student_name": "Christian Wu",
-      "timestamp": "2025-06-18T11:01:34.120458"
-    },
-    {
-      "activity_id": "activity_1750164272766",
-      "module_id": "module-8",
-      "student_id": "1",
-      "student_name": "Christian Wu",
-      "timestamp": "2025-06-19T10:40:22.033605"
     },
     {
       "activity_id": "activity_1749818632321",

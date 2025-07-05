@@ -108,33 +108,6 @@
     "isHomework": true
   },
   {
-    "id": "activity_1750164272766",
-    "title": "Syndefaldsmyten.pdf",
-    "description": "Læs inden timen ",
-    "type": "pdf",
-    "moduleId": "module-8",
-    "isHomework": true,
-    "url": "http://localhost:5001/api/uploads/Syndefaldsmyten_1750164272.pdf"
-  },
-  {
-    "id": "activity_1750164344144",
-    "title": "Dansk-Syndefald-Analyse.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-8",
-    "isHomework": false,
-    "url": "http://localhost:5001/api/uploads/Dansk-Syndefald-Analyse_1750164344.pdf"
-  },
-  {
-    "id": "activity_1750164428486",
-    "title": "Moderne-synd.jpg",
-    "description": "",
-    "type": "image",
-    "moduleId": "module-8",
-    "isHomework": false,
-    "url": "http://localhost:5001/api/uploads/Moderne-synd_1750164428.jpg"
-  },
-  {
     "id": "activity_1750164624874",
     "title": "biedermeier",
     "description": "",
@@ -198,42 +171,6 @@
     "url": "http://localhost:5001/api/uploads/130020871920_1750236227.pdf"
   },
   {
-    "id": "activity_1750236262077",
-    "title": "Strukturalistisk metode",
-    "description": "",
-    "type": "link",
-    "url": "https://dansksiderne.dk/index.php?id=4992",
-    "moduleId": "module-9",
-    "isHomework": false
-  },
-  {
-    "id": "activity_1750236332759",
-    "title": "danske studier Udgivet af Iver Kjær og Flemming Lundgreen-Nielsen under medvirken af 1994.pdf",
-    "description": "Læs kapitel 3-5",
-    "type": "pdf",
-    "moduleId": "module-9",
-    "isHomework": true,
-    "url": "http://localhost:5001/api/uploads/1994_1750236332.pdf"
-  },
-  {
-    "id": "activity_1750236512817",
-    "title": "drivhuset-analyse",
-    "description": "",
-    "type": "link",
-    "url": "https://www.studocu.com/da/document/niels-brock-copenhagen-business-college/dansk-analyse/drivhuset-analyse/49894623",
-    "moduleId": "module-11",
-    "isHomework": false
-  },
-  {
-    "id": "activity_1750236522556",
-    "title": "Drivhuset.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-11",
-    "isHomework": false,
-    "url": "http://localhost:5001/api/uploads/Drivhuset_1750236522.pdf"
-  },
-  {
     "id": "activity_1750236563907",
     "title": "Ernest Hemingway",
     "description": "Få en forståelse af hvem han var",
@@ -277,5 +214,59 @@
     "moduleId": "module-10",
     "isHomework": false,
     "url": "http://localhost:5001/api/uploads/Shakespeare_Summaries_of_Plays_1751720586.pdf"
+  },
+  {
+    "moduleId": "module-10",
+    "id": "activity_quiz_quiz_1751721036_module-10_1751721044503",
+    "title": "Quiz om Shakespeare",
+    "type": "multiple_choice",
+    "quizId": "quiz_1751721036",
+    "moduleSpecific": true,
+    "isHomework": false
+  },
+  {
+    "id": "activity_1751721140255",
+    "title": "Intro-to-Romanticism.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-9",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1751721140.pdf"
+  },
+  {
+    "id": "activity_1751721230423",
+    "title": "World-War-2.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-11",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/World-War-2_1751721230.pdf"
+  },
+  {
+    "id": "activity_1751721247863",
+    "title": "ww2.mp4",
+    "description": "",
+    "type": "video",
+    "moduleId": "module-11",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/ww2_1751721247.mp4"
+  },
+  {
+    "id": "activity_1751721735279",
+    "title": "Fall of Man.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-8",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Fall_of_Man_1751721735.pdf"
+  },
+  {
+    "moduleId": "module-8",
+    "id": "activity_quiz_quiz_1751722045_module-8_1751722046511",
+    "title": "Quiz om Syndefaldsmyten",
+    "type": "multiple_choice",
+    "quizId": "quiz_1751722045",
+    "moduleSpecific": true,
+    "isHomework": false
   }
 ]

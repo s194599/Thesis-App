@@ -459,5 +459,133 @@
     "timestamp": "2025-06-30T14:46:38.776Z",
     "id": "quiz_1751294798",
     "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "The Merry Wives of Windsor",
+        "id": "q1",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Romeo and Juliet",
+          "Othello"
+        ],
+        "question": "Which play features a character named Falstaff, who pretends to court two married women only to be tricked by them?"
+      },
+      {
+        "correctAnswer": "Othello",
+        "id": "q2",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Othello",
+          "Hamlet"
+        ],
+        "question": "In which play does a character named Iago deceive the Moor Othello into believing his wife Desdemona is unfaithful, leading to tragic consequences?"
+      },
+      {
+        "correctAnswer": "The Merchant of Venice",
+        "id": "q3",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Romeo and Juliet",
+          "The Merchant of Venice"
+        ],
+        "question": "In which play does a character named Portia outwit the suitors who wish to marry her and ultimately marry the man she truly loves?"
+      },
+      {
+        "correctAnswer": "All's Well That Ends Well",
+        "id": "q4",
+        "options": [
+          "The Winter's Tale",
+          "All's Well That Ends Well",
+          "Twelfth Night",
+          "Macbeth"
+        ],
+        "question": "Which play features a character named Helena who is in love with a man named Bertram, but faces obstacles due to her social status?"
+      },
+      {
+        "correctAnswer": "Romeo and Juliet",
+        "id": "q5",
+        "options": [
+          "The Winter's Tale",
+          "All's Well That Ends Well",
+          "Romeo and Juliet",
+          "Hamlet"
+        ],
+        "question": "Which play tells the story of two young lovers, one of whom is a Montague and the other a Capulet, and their tragic fate due to family rivalry?"
+      }
+    ],
+    "title": "Quiz om Shakespeare",
+    "timestamp": "2025-07-05T13:10:36.334Z",
+    "id": "quiz_1751721036",
+    "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Adam",
+        "id": "q1",
+        "options": [
+          "God",
+          "The serpent",
+          "Herself",
+          "Adam"
+        ],
+        "question": "Who did Eve blame for eating the forbidden fruit?"
+      },
+      {
+        "correctAnswer": "To crawl on the ground for the rest of its life",
+        "id": "q2",
+        "options": [
+          "To crawl on the ground for the rest of its life",
+          "To be killed immediately",
+          "To have a great amount of pain when it gave birth to its children",
+          "To rule over mankind"
+        ],
+        "question": "What was the punishment that God declared on the serpent?"
+      },
+      {
+        "correctAnswer": "The offspring would one day crush the head of the serpent, though the serpent would strike its heel",
+        "id": "q3",
+        "options": [
+          "The offspring would befriend the serpent",
+          "The serpent would always be able to deceive the offspring",
+          "The offspring would one day crush the head of the serpent, though the serpent would strike its heel",
+          "The offspring would never sin like the serpent"
+        ],
+        "question": "What was God's promise about the serpent and the offspring of Eve?"
+      },
+      {
+        "correctAnswer": "Animal skins",
+        "id": "q4",
+        "options": [
+          "Leaves from the fig tree",
+          "Animal skins",
+          "Clothes made by their own hands",
+          "Jewels from the Tree of Life"
+        ],
+        "question": "What did God use as a covering for Adam and Eve after they sinned?"
+      },
+      {
+        "correctAnswer": "They would be banished from the garden and not allowed to eat from the Tree of Life",
+        "id": "q5",
+        "options": [
+          "They would no longer have to work hard for food",
+          "Weeds and thorns would stop growing on the ground",
+          "They would not die eventually",
+          "They would be banished from the garden and not allowed to eat from the Tree of Life"
+        ],
+        "question": "What was the consequence that God declared for Adam and Eve after they sinned?"
+      }
+    ],
+    "title": "Quiz om Syndefaldsmyten",
+    "timestamp": "2025-07-05T13:27:25.288Z",
+    "id": "quiz_1751722045",
+    "type": "multiple_choice"
   }
 ]
