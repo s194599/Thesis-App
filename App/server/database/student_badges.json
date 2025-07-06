@@ -64,6 +64,15 @@
       "badge_description": "Gennemf\u00f8rt 5 quizzer",
       "badge_icon": "\ud83c\udf93",
       "earned_timestamp": "2025-06-05T10:27:59.918937"
+    },
+    {
+      "badge_id": "quiz_variety",
+      "student_id": "1",
+      "student_name": "Christian Wu",
+      "badge_name": "Quiz Opdager",
+      "badge_description": "Gennemf\u00f8rt quizzer i 3 forskellige moduler",
+      "badge_icon": "\ud83e\udded",
+      "earned_timestamp": "2025-07-05T15:50:58.168383"
     }
   ]
 }

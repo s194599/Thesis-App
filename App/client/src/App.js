@@ -1,35 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useParams,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./styles/PlatformOverview.css";
 import { Header, CourseSelection, TopBar } from "./components/layout";
 import { SavedQuizzes } from "./components/quiz/management";
 import { TakeQuiz, QuizIntro } from "./components/quiz/taking";
-import { QuizForm, QuizCreationChoice, ManualQuizCreation } from "./components/quiz/creation";
+import {
+  QuizForm,
+  QuizCreationChoice,
+  ManualQuizCreation,
+} from "./components/quiz/creation";
 import { PlatformOverview } from "./components/learning-platform";
 import { useQuizContext } from "./context/QuizContext";
 import { QuizOutput } from "./components/quiz/display";
 import { Container, Alert, Button, Spinner } from "react-bootstrap";
 import { getQuiz } from "./services/api";
-import QuizResults from './components/quiz/results/QuizResults';
-import ModuleOverview from './components/learning-platform/ModuleOverview';
-import BadgeDashboard from './components/student/BadgeDashboard';
+import QuizResults from "./components/quiz/results/QuizResults";
+import ModuleOverview from "./components/learning-platform/ModuleOverview";
+import BadgeDashboard from "./components/student/BadgeDashboard";
 
 function App() {
   const { generatedQuiz } = useQuizContext();
 
   // Initialize userRole in localStorage if not already set
   useEffect(() => {
-    const savedUserRole = localStorage.getItem('userRole');
+    const savedUserRole = localStorage.getItem("userRole");
     if (!savedUserRole) {
       // Set default role to 'teacher'
-      localStorage.setItem('userRole', 'teacher');
-      console.log('App initialized default userRole: teacher');
+      localStorage.setItem("userRole", "teacher");
+      console.log("App initialized default userRole: teacher");
       // Dispatch the custom event for any components already listening
-      window.dispatchEvent(new CustomEvent('userRoleChanged', { detail: 'teacher' }));
+      window.dispatchEvent(
+        new CustomEvent("userRoleChanged", { detail: "teacher" })
+      );
     } else {
-      console.log('App loaded existing userRole:', savedUserRole);
+      console.log("App loaded existing userRole:", savedUserRole);
     }
   }, []);
 
@@ -40,32 +53,41 @@ function App() {
         <Route path="/" element={<CourseSelection />} />
 
         {/* Platform Overview - Main Learning Platform */}
-        <Route path="/platform" element={
-          <>
-            <TopBar />
-            <PlatformOverview />
-          </>
-        } />
+        <Route
+          path="/platform"
+          element={
+            <>
+              <TopBar />
+              <PlatformOverview />
+            </>
+          }
+        />
 
         {/* Module Overview Route */}
-        <Route path="/module/:moduleId/overview" element={
-          <>
-            <TopBar />
-            <div className="flex-grow-1">
-              <ModuleOverview />
-            </div>
-          </>
-        } />
+        <Route
+          path="/module/:moduleId/overview"
+          element={
+            <>
+              <TopBar />
+              <div className="flex-grow-1">
+                <ModuleOverview />
+              </div>
+            </>
+          }
+        />
 
         {/* Badge Dashboard Route */}
-        <Route path="/badges" element={
-          <>
-            <TopBar />
-            <div className="flex-grow-1">
-              <BadgeDashboard />
-            </div>
-          </>
-        } />
+        <Route
+          path="/badges"
+          element={
+            <>
+              <TopBar />
+              <div className="flex-grow-1">
+                <BadgeDashboard />
+              </div>
+            </>
+          }
+        />
 
         {/* Quiz Routes */}
         <Route
@@ -160,19 +182,19 @@ function App() {
         />
 
         {/* Alias for backwards compatibility */}
-        <Route
-          path="/take-quiz/:quizId"
-          element={<Navigate to={location => `/quiz/intro/${location.pathname.split('/').pop()}${location.search}`} replace />}
-        />
+        <Route path="/take-quiz/:quizId" element={<TakeQuizRedirect />} />
 
-        <Route path="/quiz/:quizId/results" element={
-          <>
-            <TopBar />
-            <div className="flex-grow-1">
-              <QuizResults />
-            </div>
-          </>
-        } />
+        <Route
+          path="/quiz/:quizId/results"
+          element={
+            <>
+              <TopBar />
+              <div className="flex-grow-1">
+                <QuizResults />
+              </div>
+            </>
+          }
+        />
       </Routes>
     </div>
   );
@@ -193,7 +215,7 @@ const QuizPreviewComponent = () => {
         setLoading(true);
         const data = await getQuiz(quizId);
         // Ensure the quiz has a title if it's undefined or empty
-        if (!data.title || data.title.trim() === '') {
+        if (!data.title || data.title.trim() === "") {
           data.title = "Flashcard Quiz"; // Default title if none exists
         }
         setQuiz(data);
@@ -224,7 +246,10 @@ const QuizPreviewComponent = () => {
         <Alert variant="danger">
           <Alert.Heading>Error</Alert.Heading>
           <p>{error}</p>
-          <Button variant="outline-primary" onClick={() => navigate("/platform")}>
+          <Button
+            variant="outline-primary"
+            onClick={() => navigate("/platform")}
+          >
             Tilbage til modul
           </Button>
         </Alert>
@@ -238,7 +263,10 @@ const QuizPreviewComponent = () => {
         <Alert variant="warning">
           <Alert.Heading>Quiz Not Found</Alert.Heading>
           <p>The quiz you're looking for does not exist or has been deleted.</p>
-          <Button variant="outline-primary" onClick={() => navigate("/platform")}>
+          <Button
+            variant="outline-primary"
+            onClick={() => navigate("/platform")}
+          >
             Tilbage til modul
           </Button>
         </Alert>
@@ -251,15 +279,15 @@ const QuizPreviewComponent = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Forhåndsvisning</h2>
         <div>
-          <Button 
-            variant="outline-success" 
+          <Button
+            variant="outline-success"
             className="me-2"
             onClick={() => navigate(`/quiz/${quizId}/results`)}
           >
             Se resultater
           </Button>
-          <Button 
-            variant="outline-primary" 
+          <Button
+            variant="outline-primary"
             onClick={() => navigate("/platform")}
           >
             Tilbage til modul
@@ -269,6 +297,14 @@ const QuizPreviewComponent = () => {
       <QuizOutput />
     </Container>
   );
+};
+
+// Component to handle the redirect for backward compatibility
+const TakeQuizRedirect = () => {
+  const { quizId } = useParams();
+  const location = useLocation();
+
+  return <Navigate to={`/quiz/intro/${quizId}${location.search}`} replace />;
 };
 
 export default App;

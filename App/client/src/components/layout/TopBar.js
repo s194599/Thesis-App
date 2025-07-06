@@ -33,7 +33,7 @@ const TopBar = () => {
   return (
     <Navbar bg="white" className="border-bottom shadow-sm py-2">
       <Container fluid className="d-flex justify-content-between">
-        <Link to="/" className="navbar-brand d-flex align-items-center text-decoration-none">
+        <Link to="/platform" className="navbar-brand d-flex align-items-center text-decoration-none">
           <div className="lectio-brand me-2">
             <span className="lectio-text">Lectio</span>
           </div>
@@ -57,4 +57,4 @@ const TopBar = () => {
   );
 };
 
-export default TopBar; 
+export default TopBar;

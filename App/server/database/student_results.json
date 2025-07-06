@@ -299,11 +299,11 @@
       "student_name": "Christian Wu"
     },
     {
-      "timestamp": "2025-06-13T10:45:56.210306",
-      "start_timestamp": "2025-06-13T08:45:38.546Z",
+      "timestamp": "2025-07-06T10:07:42.927942",
+      "start_timestamp": "2025-07-06T08:07:21.467Z",
       "quiz_id": "quiz_1747041853",
       "quiz_title": "Quiz om Romantikken",
-      "score": 2,
+      "score": 1,
       "total_questions": 2,
       "answers": [
         {
@@ -315,11 +315,11 @@
         {
           "question_id": "q2",
           "question": "Which of the following best characterizes the Romantic concept of the artist as it was portrayed in the text?",
-          "answer": "The artist is a fiercely independent genius who creates original works of art.",
-          "correct": true
+          "answer": "The artist is a socially and politically disengaged individual.",
+          "correct": false
         }
       ],
-      "attempts": 48,
+      "attempts": 50,
       "student_id": "1",
       "student_name": "Christian Wu"
     },
@@ -408,6 +408,49 @@
         }
       ],
       "attempts": 26,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-07-06T10:00:13.170207",
+      "start_timestamp": "2025-07-06T07:59:40.398Z",
+      "quiz_id": "quiz_1751721036",
+      "quiz_title": "Quiz om Shakespeare",
+      "score": 1,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "Which play features a character named Falstaff, who pretends to court two married women only to be tricked by them?",
+          "answer": "Romeo and Juliet",
+          "correct": false
+        },
+        {
+          "question_id": "q2",
+          "question": "In which play does a character named Iago deceive the Moor Othello into believing his wife Desdemona is unfaithful, leading to tragic consequences?",
+          "answer": "The Merry Wives of Windsor",
+          "correct": false
+        },
+        {
+          "question_id": "q3",
+          "question": "In which play does a character named Portia outwit the suitors who wish to marry her and ultimately marry the man she truly loves?",
+          "answer": "The Merry Wives of Windsor",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "Which play features a character named Helena who is in love with a man named Bertram, but faces obstacles due to her social status?",
+          "answer": "Macbeth",
+          "correct": false
+        },
+        {
+          "question_id": "q5",
+          "question": "Which play tells the story of two young lovers, one of whom is a Montague and the other a Capulet, and their tragic fate due to family rivalry?",
+          "answer": "Romeo and Juliet",
+          "correct": true
+        }
+      ],
+      "attempts": 6,
       "student_id": "1",
       "student_name": "Christian Wu"
     }

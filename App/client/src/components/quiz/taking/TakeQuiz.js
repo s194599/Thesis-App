@@ -323,15 +323,20 @@ const TakeQuiz = () => {
               setEarnedBadges(badgeResponseData.newly_earned_badges);
               setShowBadgeModal(true);
               
-              // Launch extra confetti for badge earned
-              setTimeout(() => {
-                confetti({
-                  particleCount: 150,
-                  spread: 90,
-                  origin: { y: 0.3 },
-                  colors: ['#FFD700', '#FFA500', '#FF6347'] // Gold, orange, red
-                });
-              }, 500);
+              // Only launch extra confetti for badge earned if student got 100%
+              if (scorePercent === 100) {
+                console.log('Triggering badge confetti for 100% score!');
+                setTimeout(() => {
+                  confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.3 },
+                    colors: ['#FFD700', '#FFA500', '#FF6347'] // Gold, orange, red
+                  });
+                }, 500);
+              } else {
+                console.log('Badge earned but no confetti - score is not 100%');
+              }
             }
           } else {
             console.error(
@@ -360,11 +365,45 @@ const TakeQuiz = () => {
   // Effect to trigger confetti when the quiz is completed
   useEffect(() => {
     if (quizCompleted) {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
+      // Calculate percentage for both flashcard and multiple choice quizzes
+      let percentage = 0;
+      
+      if (quiz?.type === "flashcard") {
+        // For flashcards, calculate based on "knew" answers
+        let knewCount = 0;
+        let totalAssessed = 0;
+        
+        randomizedQuestions.forEach((question) => {
+          const originalIndex = question.originalIndex;
+          const answer = answers[originalIndex];
+          
+          if (answer && typeof answer === 'object' && answer.viewed) {
+            totalAssessed++;
+            if (answer.flashcardResponse === true) {
+              knewCount++;
+            }
+          }
+        });
+        
+        percentage = totalAssessed > 0 ? Math.round((knewCount / totalAssessed) * 100) : 0;
+      } else {
+        // For multiple choice quizzes
+        percentage = Math.round((score / randomizedQuestions.length) * 100);
+      }
+      
+      console.log(`Quiz completed with ${percentage}% score. Score: ${score}/${randomizedQuestions.length}`);
+      
+      // Only trigger confetti for 100% score
+      if (percentage === 100) {
+        console.log('Triggering confetti for 100% score!');
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+      } else {
+        console.log('No confetti - score is not 100%');
+      }
       
       // Reset streak when quiz is completed
       setStreak(0);
@@ -376,7 +415,7 @@ const TakeQuiz = () => {
       // Mark the quiz as not started to stop background music
       localStorage.setItem('quizStarted', 'false');
     }
-  }, [quizCompleted]);
+  }, [quizCompleted, quiz, score, randomizedQuestions, answers]);
 
   // Add a useEffect for keyboard event listeners
   useEffect(() => {
@@ -587,13 +626,7 @@ const TakeQuiz = () => {
       setShowAnswer(false);
     } else {
       setQuizCompleted(true);
-      
-      // Trigger confetti for successful quiz completion
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
+      // Removed confetti trigger here - now only triggers for 100% in useEffect
       // Quiz results are now saved in the dedicated useEffect hook
     }
   };
