@@ -216,15 +216,6 @@
     "url": "http://localhost:5001/api/uploads/Intro-to-Romanticism_1751721140.pdf"
   },
   {
-    "id": "activity_1751721230423",
-    "title": "World-War-2.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-11",
-    "isHomework": false,
-    "url": "http://localhost:5001/api/uploads/World-War-2_1751721230.pdf"
-  },
-  {
     "id": "activity_1751721247863",
     "title": "ww2.mp4",
     "description": "",
@@ -259,5 +250,14 @@
     "moduleId": "module-12",
     "isHomework": false,
     "url": "http://localhost:5001/api/uploads/Chapter-8-The-Industrial-Revolution_1751722526.pdf"
+  },
+  {
+    "id": "activity_1751793906661",
+    "title": "2.Verdenskrig.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-11",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/2.Verdenskrig_1751793906.pdf"
   }
 ]
