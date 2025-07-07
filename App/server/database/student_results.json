@@ -453,6 +453,135 @@
       "attempts": 6,
       "student_id": "1",
       "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-07-07T10:44:59.333820",
+      "start_timestamp": "2025-07-07T08:44:16.034Z",
+      "quiz_id": "quiz_1751877846",
+      "quiz_title": "Quiz om Shakespeare",
+      "score": 4,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "Which play features a character named Falstaff who tricks several people and gets tricked himself?",
+          "answer": "The Merry Wives of Windsor",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "In which play is there a character named Desdemona who meets an unfortunate end?",
+          "answer": "The Merry Wives of Windsor",
+          "correct": false
+        },
+        {
+          "question_id": "q3",
+          "question": "Which play features a character named Iago, who manipulates his superior officer Othello to tragic results?",
+          "answer": "Othello",
+          "correct": true
+        },
+        {
+          "question_id": "q4",
+          "question": "In which play does the character Don Pedro propose to Hero on behalf of Claudio?",
+          "answer": "Much Ado About Nothing",
+          "correct": true
+        },
+        {
+          "question_id": "q5",
+          "question": "Which play features the character Bottom, who is transformed into an ass by magic?",
+          "answer": "The Merry Wives of Windsor",
+          "correct": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-07-07T10:52:16.744387",
+      "start_timestamp": "2025-07-07T08:51:23.773Z",
+      "quiz_id": "quiz_1751722045",
+      "quiz_title": "Quiz om Syndefaldsmyten",
+      "score": 5,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "Who did Eve blame for eating the forbidden fruit?",
+          "answer": "Adam",
+          "correct": true
+        },
+        {
+          "question_id": "q2",
+          "question": "What was the punishment that God declared on the serpent?",
+          "answer": "To crawl on the ground for the rest of its life",
+          "correct": true
+        },
+        {
+          "question_id": "q3",
+          "question": "What was God's promise about the serpent and the offspring of Eve?",
+          "answer": "The offspring would one day crush the head of the serpent, though the serpent would strike its heel",
+          "correct": true
+        },
+        {
+          "question_id": "q4",
+          "question": "What did God use as a covering for Adam and Eve after they sinned?",
+          "answer": "Animal skins",
+          "correct": true
+        },
+        {
+          "question_id": "q5",
+          "question": "What was the consequence that God declared for Adam and Eve after they sinned?",
+          "answer": "They would be banished from the garden and not allowed to eat from the Tree of Life",
+          "correct": true
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
+    },
+    {
+      "timestamp": "2025-07-07T13:49:43.754623",
+      "start_timestamp": "2025-07-07T11:49:04.241Z",
+      "quiz_id": "quiz_1751888908",
+      "quiz_title": "Quiz om The Industrial Revolution",
+      "score": 0,
+      "total_questions": 5,
+      "answers": [
+        {
+          "question_id": "q1",
+          "question": "What was the main difference between domestic industry and the factory system?",
+          "answer": "Workers had more independence in the factory system",
+          "correct": false
+        },
+        {
+          "question_id": "q2",
+          "question": "What happened to the position of skilled weavers and other home laborers when they became factory workers?",
+          "answer": "They were allowed to work from home if they preferred",
+          "correct": false
+        },
+        {
+          "question_id": "q3",
+          "question": "What was the effect of rapid city growth on social and political conditions?",
+          "answer": "It resulted in a decline in the percentage of farmers in the total population",
+          "correct": false
+        },
+        {
+          "question_id": "q4",
+          "question": "What was one advantage of factory work over home labor?",
+          "answer": "Workers could vary the monotony of the task by digging or planting a garden patch",
+          "correct": false
+        },
+        {
+          "question_id": "q5",
+          "question": "What were some of the problems that arose for workers under laissez-faire?",
+          "answer": "Difficulties in finding and holding markets for their products",
+          "correct": false
+        }
+      ],
+      "attempts": 1,
+      "student_id": "1",
+      "student_name": "Christian Wu"
     }
   ]
 }

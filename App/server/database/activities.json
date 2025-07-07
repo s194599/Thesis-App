@@ -171,24 +171,6 @@
     "url": "http://localhost:5001/api/uploads/130020871920_1750236227.pdf"
   },
   {
-    "id": "activity_1750236563907",
-    "title": "Ernest Hemingway",
-    "description": "Få en forståelse af hvem han var",
-    "type": "link",
-    "url": "https://en.wikipedia.org/wiki/Ernest_Hemingway",
-    "moduleId": "module-12",
-    "isHomework": true
-  },
-  {
-    "id": "activity_1750236619265",
-    "title": "hemingway.pdf",
-    "description": "",
-    "type": "pdf",
-    "moduleId": "module-12",
-    "isHomework": false,
-    "url": "http://localhost:5001/api/uploads/hemingway_1750236619.pdf"
-  },
-  {
     "moduleId": "module-2",
     "id": "activity_quiz_quiz_1751290046_module-2_1751290047398",
     "title": "Quiz om Nationalromantikken",
@@ -266,6 +248,129 @@
     "title": "Quiz om Syndefaldsmyten",
     "type": "multiple_choice",
     "quizId": "quiz_1751722045",
+    "moduleSpecific": true,
+    "isHomework": false
+  },
+  {
+    "id": "activity_1751885337794",
+    "title": "Iron in the industrial revolution.pdf",
+    "description": "",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/The_Industrial_Revolution_1751885337.pdf",
+    "content": "",
+    "moduleId": "module-12",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1751885627307",
+    "title": "Industrial-Revolution.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-12",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/kids-britannica-com-students-article-Industrial-Revolution-275053..._1751885627.pdf"
+  },
+  {
+    "id": "activity_1751885975847",
+    "title": "Young shakespeare.jpg",
+    "description": "",
+    "type": "image",
+    "url": "http://localhost:5001/api/uploads/shakespeare_1751885975.jpg",
+    "content": "",
+    "moduleId": "module-10",
+    "isHomework": false
+  },
+  {
+    "id": "activity_1751886008045",
+    "title": "shakespeare-bio.pdf",
+    "description": "Read chapter 2",
+    "type": "pdf",
+    "url": "http://localhost:5001/api/uploads/shakespeare-bio_1751886008.pdf",
+    "content": "",
+    "moduleId": "module-10",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1751886064173",
+    "title": "Macbeth Official US Release Trailer (2015) - Michael Fassbender War Drama HD",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=YqHhKuCQmoY",
+    "moduleId": "module-10",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1751886473577",
+    "title": "The Industrial Revolution (18-19th Century)",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=xLhNP0qp38Q&ab_channel=SimpleHistory",
+    "moduleId": "module-12",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1751886611502",
+    "title": "Britannica-article-Romanticism.pdf",
+    "description": "",
+    "type": "pdf",
+    "moduleId": "module-9",
+    "isHomework": true,
+    "url": "http://localhost:5001/api/uploads/kids-britannica-com-students-article-Romanticism-276777..._1751886611.pdf"
+  },
+  {
+    "id": "activity_1751886658657",
+    "title": "History-What-is-romanticism",
+    "description": "",
+    "type": "link",
+    "url": "https://www.nationaltrust.org.uk/discover/history/what-is-romanticism",
+    "moduleId": "module-9",
+    "isHomework": false
+  },
+  {
+    "title": "Afleveringer",
+    "description": "",
+    "type": "folder",
+    "url": "",
+    "file": null,
+    "isNew": true,
+    "parentId": null,
+    "isHomework": false,
+    "id": "folder_1751886706044",
+    "moduleId": "module-9"
+  },
+  {
+    "id": "activity_1751886758942",
+    "title": "The Fall of Man",
+    "description": "",
+    "type": "youtube",
+    "url": "https://www.youtube.com/watch?v=POpB_s9V8Ak",
+    "moduleId": "module-8",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1751885627307",
+    "title": "Fall of man wiki",
+    "description": "Read the first section ",
+    "type": "link",
+    "url": "https://en.wikipedia.org/wiki/Fall_of_man",
+    "moduleId": "module-8",
+    "isHomework": true
+  },
+  {
+    "id": "activity_1751887020391",
+    "title": "Father and son.jpg",
+    "description": "",
+    "type": "image",
+    "moduleId": "module-12",
+    "isHomework": false,
+    "url": "http://localhost:5001/api/uploads/Father_and_son_1751887020.jpg"
+  },
+  {
+    "moduleId": "module-12",
+    "id": "activity_quiz_quiz_1751888908_module-12_1751888914719",
+    "title": "Quiz om The Industrial Revolution",
+    "type": "multiple_choice",
+    "quizId": "quiz_1751888908",
     "moduleSpecific": true,
     "isHomework": false
   }

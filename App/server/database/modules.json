@@ -3,14 +3,14 @@
     "id": "module-1",
     "title": "Introduktion til Romantikken",
     "date": "1. Februar 2023",
-    "description": "<p>Grundl\u00e6ggende gennemgang af <strong>Romantikken</strong> som kulturhistorisk periode (ca. 1800-1870). Dette modul giver en introduktion til periodens vigtigste id\u00e9er, samfundsforhold og kunstneriske str\u00f8mninger.</p>",
+    "description": "<p>Grundlæggende gennemgang af <strong>Romantikken</strong> som kulturhistorisk periode (ca. 1800-1870). Dette modul giver en introduktion til periodens vigtigste idéer, samfundsforhold og kunstneriske strømninger.</p>",
     "topicId": "topic-1"
   },
   {
     "id": "module-2",
     "title": "Universalromantikken",
     "date": "8. Februar 2023",
-    "description": "<p>Fokus p\u00e5 den tidlige romantiske periode med v\u00e6gt p\u00e5 <u>universalromantikkens</u> grundtanker. Vi arbejder med Schack Staffeldts digte og den filosofiske baggrund hos tyske t\u00e6nkere som Schelling.</p>",
+    "description": "<p>Fokus på den tidlige romantiske periode med vægt på <u>universalromantikkens</u> grundtanker. Vi arbejder med Schack Staffeldts digte og den filosofiske baggrund hos tyske tænkere som Schelling.</p>",
     "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
     "topicId": "topic-1"
   },
@@ -18,14 +18,14 @@
     "id": "module-3",
     "title": "Nationalromantikken",
     "date": "15. Februar 2023",
-    "description": "<p>Udforskning af det nationale som tema i romantikken. Vi analyserer Adam Oehlenschl\u00e4gers v\u00e6rker og diskuterer, hvordan det s\u00e6rligt danske blev dyrket i kunsten og litteraturen i k\u00f8lvandet p\u00e5 Napoleonskrigene.</p>",
+    "description": "<p>Udforskning af det nationale som tema i romantikken. Vi analyserer Adam Oehlenschlägers værker og diskuterer, hvordan det særligt danske blev dyrket i kunsten og litteraturen i kølvandet på Napoleonskrigene.</p>",
     "topicId": "topic-1"
   },
   {
     "id": "module-4",
     "title": "Romantismens natursyn",
     "date": "22. Februar 2023",
-    "description": "<p><u>Analyser</u> af <strong>naturens rolle</strong> i romantikkens litteratur. Vi unders\u00f8ger H.C. Andersens eventyr og Steen Steensen Blichers noveller med fokus p\u00e5 forholdet mellem menneske og natur.</p>",
+    "description": "<p><u>Analyser</u> af <strong>naturens rolle</strong> i romantikkens litteratur. Vi undersøger H.C. Andersens eventyr og Steen Steensen Blichers noveller med fokus på forholdet mellem menneske og natur.</p>",
     "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
     "topicId": "topic-1"
   },
@@ -33,31 +33,30 @@
     "id": "module-5",
     "title": "Biedermeier og poetisk realisme",
     "date": "1. Marts 2023",
-    "description": "<p>Unders\u00f8gelse af hverdagslivets romantisering i Biedermeier-perioden. Vi fokuserer p\u00e5 s\u00e6rligt Chr. Winthers digte og familieidealet i periodens litteratur og kunst.</p>",
+    "description": "<p>Undersøgelse af hverdagslivets romantisering i Biedermeier-perioden. Vi fokuserer på særligt Chr. Winthers digte og familieidealet i periodens litteratur og kunst.</p>",
     "topicId": "topic-1"
   },
   {
     "id": "module-6",
-    "title": "Romantisme og det h\u00e6slige",
+    "title": "Romantisme og det hæslige",
     "date": "8. Marts 2023",
-    "description": "<p>Analyse af romantismens fascination af det grusomme, h\u00e6slige og fantastiske. Vi arbejder med St. St. Blichers 'Hosekr\u00e6mmeren' og J.P. Jacobsens tidlige v\u00e6rker som eksempler.</p>",
+    "description": "<p>Analyse af romantismens fascination af det grusomme, hæslige og fantastiske. Vi arbejder med St. St. Blichers 'Hosekræmmeren' og J.P. Jacobsens tidlige værker som eksempler.</p>",
     "topicId": "topic-1"
   },
   {
     "id": "module-7",
     "title": "Det moderne gennembrud og romantikkens efterliv",
     "date": "15. Marts 2023",
-    "description": "<p>Afsluttende diskussion af romantikkens p\u00e5virkning p\u00e5 senere perioder og s\u00e6rligt det moderne gennembrud. Vi ser p\u00e5, hvordan forfattere som Georg Brandes og Henrik Pontoppidan forholdt sig til romantikkens arv.</p>",
+    "description": "<p>Afsluttende diskussion af romantikkens påvirkning på senere perioder og særligt det moderne gennembrud. Vi ser på, hvordan forfattere som Georg Brandes og Henrik Pontoppidan forholdt sig til romantikkens arv.</p>",
     "topicId": "topic-1"
   },
   {
     "id": "module-8",
     "title": "Syndefaldsmyten: Introduktion",
     "date": "1. April 2023",
-    "description": "<p>Dette modul introducerer <strong>Syndefaldsmyten</strong> fra Biblen, med fokus p\u00e5 'F\u00f8rste Mosebog', 3. kapitel. Vi gennemg\u00e5r mytens grundl\u00e6ggende symbolik, kulturhistoriske betydning og dens indflydelse p\u00e5 litteraturen gennem tiden.</p>",
+    "description": "<p>Dette modul introducerer <strong>Syndefaldsmyten</strong> fra Biblen, med fokus på<u> 'Første Mosebog', 3. kapitel</u>. Vi gennemgår mytens grundlæggende symbolik, kulturhistoriske betydning og dens indflydelse på litteraturen gennem tiden.</p>",
     "topicId": "topic-2"
   },
-
   {
     "id": "module-9",
     "title": "Romantikken",
@@ -73,24 +72,17 @@
     "topicId": "topic-2"
   },
   {
-    "id": "module-11",
-    "title": "2. Verdenskrig",
-    "date": "22. April 2023",
-    "description": "<p>Forløb om 2. Verdenskrig med fokus på historiske kilder, dokumentariske tekster og filmklip. Vi arbejder med krigens årsager, forløb og konsekvenser og diskuterer etik og menneskesyn.</p>",
-    "topicId": "topic-2"
-  },
-  {
     "id": "module-12",
-    "title": "Medieanalyse",
+    "title": "The Industrial Revolution",
     "date": "29. April 2023",
-    "description": "<p>Introduktion til grundlæggende medieanalyse. Vi ser på nyhedsindslag, reklamer og SoMe-opslag og arbejder med at identificere virkemidler og budskaber.</p>",
+    "description": "<p>This module explores the Industrial Revolution and its profound impact on society, economy, and technology. Students will learn about the key inventions, the shift from agrarian to industrial economies, urbanization, and changes in working conditions. The module also examines how the Industrial Revolution shaped modern life and sparked both progress and social challenges.</p>",
     "topicId": "topic-2"
   },
   {
     "id": "module-13",
     "title": "Helle Helle: Sit eget system",
     "date": "6. Maj 2023",
-    "description": "<p>Unders\u00f8gelse af minimalisme og hverdagsrealisme i Helle Helles novelle 'Sit eget system'. Vi diskuterer hvordan moderne eksistentielle problemstillinger og identitetsdannelse relaterer sig til Syndefaldsmytens tematikker om skyld og erkendelse.</p>",
+    "description": "<p>Undersøgelse af minimalisme og hverdagsrealisme i Helle Helles novelle 'Sit eget system'. Vi diskuterer hvordan moderne eksistentielle problemstillinger og identitetsdannelse relaterer sig til Syndefaldsmytens tematikker om skyld og erkendelse.</p>",
     "topicId": "topic-2"
   }
 ]

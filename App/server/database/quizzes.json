@@ -587,5 +587,197 @@
     "timestamp": "2025-07-05T13:27:25.288Z",
     "id": "quiz_1751722045",
     "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "The Merry Wives of Windsor",
+        "id": "q1",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Othello",
+          "Romeo and Juliet"
+        ],
+        "question": "Which play features a character named Falstaff who tricks several people and gets tricked himself?"
+      },
+      {
+        "correctAnswer": "Othello",
+        "id": "q2",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Othello",
+          "Romeo and Juliet"
+        ],
+        "question": "In which play is there a character named Desdemona who meets an unfortunate end?"
+      },
+      {
+        "correctAnswer": "Othello",
+        "id": "q3",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Othello",
+          "Romeo and Juliet"
+        ],
+        "question": "Which play features a character named Iago, who manipulates his superior officer Othello to tragic results?"
+      },
+      {
+        "correctAnswer": "Much Ado About Nothing",
+        "id": "q4",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Othello",
+          "Romeo and Juliet"
+        ],
+        "question": "In which play does the character Don Pedro propose to Hero on behalf of Claudio?"
+      },
+      {
+        "correctAnswer": "The Merry Wives of Windsor",
+        "id": "q5",
+        "options": [
+          "The Merry Wives of Windsor",
+          "Much Ado About Nothing",
+          "Othello",
+          "Romeo and Juliet"
+        ],
+        "question": "Which play features the character Bottom, who is transformed into an ass by magic?"
+      }
+    ],
+    "title": "Quiz om Shakespeare",
+    "timestamp": "2025-07-07T08:44:06.148Z",
+    "id": "quiz_1751877846",
+    "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "The independence of the workers",
+        "id": "q1",
+        "options": [
+          "The amount of work done per hour",
+          "The independence of the workers",
+          "The type of tools used",
+          "The location of the work"
+        ],
+        "question": "What was the main difference between domestic industry and the factory system?"
+      },
+      {
+        "correctAnswer": "The availability of jobs in factories",
+        "id": "q2",
+        "options": [
+          "Improved sanitary facilities",
+          "The availability of jobs in factories",
+          "Cheap housing options",
+          "Suburban escape from urban miseries"
+        ],
+        "question": "Which of the following was a cause of the rapid growth of cities during industrialization?"
+      },
+      {
+        "correctAnswer": "The railway system",
+        "id": "q3",
+        "options": [
+          "The steam engine",
+          "The telegraph",
+          "The printing press",
+          "The railway system"
+        ],
+        "question": "What invention allowed for the transport of heavy loads of coal more efficiently than by horse and wagon?"
+      },
+      {
+        "correctAnswer": "The steamboat",
+        "id": "q4",
+        "options": [
+          "The automobile",
+          "The locomotive",
+          "The steamship",
+          "The steamboat"
+        ],
+        "question": "Which American invention marked the beginning of modern transportation on land and sea?"
+      },
+      {
+        "correctAnswer": "Lack of independence",
+        "id": "q5",
+        "options": [
+          "Lack of independence",
+          "Loss of pride in their skills",
+          "Shortage of jobs",
+          "Improved working conditions"
+        ],
+        "question": "What problem did skilled workers face when they were forced into factories to do the bidding of another person for the same pay as unskilled workers?"
+      }
+    ],
+    "title": "Quiz om Medieanalyse",
+    "timestamp": "2025-07-07T10:56:49.799Z",
+    "id": "quiz_1751885809",
+    "type": "multiple_choice"
+  },
+  {
+    "description": "Quiz generated from your content",
+    "questions": [
+      {
+        "correctAnswer": "Home laborers worked continuously at the pace set by a machine",
+        "id": "q1",
+        "options": [
+          "Workers had more independence in the factory system",
+          "Workers could work whenever they pleased in domestic industry",
+          "Factory workers lived near their place of work",
+          "Home laborers worked continuously at the pace set by a machine"
+        ],
+        "question": "What was the main difference between domestic industry and the factory system?"
+      },
+      {
+        "correctAnswer": "They had to work long hours for the same pay as unskilled workers",
+        "id": "q2",
+        "options": [
+          "They were given more autonomy and better pay",
+          "They had to work long hours for the same pay as unskilled workers",
+          "They were allowed to work from home if they preferred",
+          "They were promoted to management positions in factories"
+        ],
+        "question": "What happened to the position of skilled weavers and other home laborers when they became factory workers?"
+      },
+      {
+        "correctAnswer": "It brought about far-reaching changes in the life of industrial workers",
+        "id": "q3",
+        "options": [
+          "It led to improved housing and sanitary facilities",
+          "It resulted in a decline in the percentage of farmers in the total population",
+          "It brought about far-reaching changes in the life of industrial workers",
+          "It allowed many people to escape from urban miseries through suburban growth"
+        ],
+        "question": "What was the effect of rapid city growth on social and political conditions?"
+      },
+      {
+        "correctAnswer": "Workers were able to work at a faster pace using machines",
+        "id": "q4",
+        "options": [
+          "Workers could vary the monotony of the task by digging or planting a garden patch",
+          "Workers had more control over their working hours and conditions",
+          "Workers no longer had to leave the farm for employment",
+          "Workers were able to work at a faster pace using machines"
+        ],
+        "question": "What was one advantage of factory work over home labor?"
+      },
+      {
+        "correctAnswer": "Long working hours, low wages, unemployment, accidents, and poor housing conditions",
+        "id": "q5",
+        "options": [
+          "Long working hours, low wages, unemployment, accidents, and poor housing conditions",
+          "Grave problems in organizing their factories to run efficiently",
+          "Difficulties in finding and holding markets for their products",
+          "Need for a better system of banking, currency, and credit"
+        ],
+        "question": "What were some of the problems that arose for workers under laissez-faire?"
+      }
+    ],
+    "title": "Quiz om The Industrial Revolution",
+    "timestamp": "2025-07-07T11:48:28.927Z",
+    "id": "quiz_1751888908",
+    "type": "multiple_choice"
   }
 ]
